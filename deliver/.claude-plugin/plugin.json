@@ -1,10 +1,10 @@
 {
   "name": "deliver",
-  "version": "0.8.4",
-  "description": "Spec and ship AI agents — instruction design, PRD templates (with deterministic mermaid workflow/userflow consistency gate), prompt engineering, sprint planning, demo videos, visual assets, PPTX 4-engine router (mckinsey/hifidelity/html-qa/video), and build-execution scaffolding (harness-design, parallel-team worktrees, build-loop). Use when writing agent PRDs, designing agent instructions, planning context window budgets, setting agent OKRs, creating demo videos, building infographics, preparing presentation decks, or running an autonomous build loop.",
+  "version": "0.9.0",
+  "description": "Spec, build, and ship AI agents — PRD templates, instruction design, prompt engineering, sprint planning, context budget, OKRs, stakeholder mapping, demo videos, visual assets, PPTX 4-engine router, build-execution scaffolding (harness-design, parallel-team worktrees, build-loop), prompt-level progress tracking (velocity, estimate, blocker-detect, gate-checkpoint), and UI/UX design-system enforcement (DESIGN.md, RESPECT.md, mobile-check, hierarchy-rules, motion-language, ui-drift-detect). Use when writing agent PRDs, building agents, or enforcing design quality during the build cycle.",
   "author": {
     "name": "AI PM Skills Contributors",
-    "url": "https://github.com/your-username"
+    "url": "https://github.com/kimsanguine"
   },
   "repository": "https://github.com/kimsanguine/hplan",
   "license": "MIT",
@@ -17,13 +17,9 @@
     "sprint",
     "pm",
     "stakeholder",
-    "change-management",
     "plan-review",
     "gemini",
     "image-generation",
-    "pipeline",
-    "infographic",
-    "gif",
     "pptx",
     "presentation",
     "demo-video",
@@ -31,8 +27,17 @@
     "mermaid",
     "harness",
     "worktree",
-    "parallel",
-    "build-loop"
+    "build-loop",
+    "track",
+    "progress",
+    "gate",
+    "design-system",
+    "design-md",
+    "respect-md",
+    "mobile-check",
+    "wcag",
+    "ui-drift",
+    "craft"
   ],
   "skills": "./skills/",
   "commands": "./commands/"

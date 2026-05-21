@@ -7,12 +7,12 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
 [![Skills](https://img.shields.io/badge/skills-65-blue?style=flat-square)](#plugins--full-skill-list)
-[![Plugins](https://img.shields.io/badge/plugins-9-purple?style=flat-square)](#the-agent-pm-journey--9-stages)
+[![Plugins](https://img.shields.io/badge/plugins-5-purple?style=flat-square)](#the-agent-pm-journey--5-plugins)
 [![Version](https://img.shields.io/badge/version-0.8.5-green?style=flat-square)](CHANGELOG.md)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)](CONTRIBUTING.md)
 [![한국어](https://img.shields.io/badge/lang-한국어-blue?style=flat-square)](README-ko.md)
 
-> **v0.8.5** — hplan is the **Product Build Gate** that asks WHETHER before AI tools rush to HOW. v0.8 layers two new plugins on top of the gate: **`track`** (build-time guardrail — prompt-level progress + event-driven blockers + α/β/γ respect-checkpoint) and **`craft`** (design-system enforcement — DESIGN.md + RESPECT.md + Playwright runtime measurement). v0.8.5 adds a **3-skill design workflow** spanning all four layers: `discover/design-reference` (100-site curated reference + DESIGN_BRIEF.md) → `architect/design-token` (semantic CSS token generation + DESIGN.md) → `craft/mobile-check` (Playwright 375/768/1440px hard gate). See [CHANGELOG.md](CHANGELOG.md).
+> **v0.9.0** — hplan is the **Product Build Gate** that asks WHETHER before AI tools rush to HOW. v0.9 consolidates from 9 loose plugins into a clean **5-plugin lifecycle**: `hplan` (gate) → `discover` → `architect` → `deliver` → `operate`. Track + Craft are now absorbed into `deliver`; Measure + Learn are now absorbed into `operate`. v0.9 also adds a **3-skill design workflow**: `discover/design-reference` (100-site curated reference + DESIGN_BRIEF.md) → `architect/design-token` (semantic CSS tokens + DESIGN.md) → `deliver/mobile-check` (Playwright 375/768/1440px hard gate). See [CHANGELOG.md](CHANGELOG.md).
 
 ### 📺 99-second intro
 
@@ -103,7 +103,7 @@ For the technically curious, here's what makes hplan different from every other 
 - 🛑 **Claude Code PreToolUse hook** — blocks writes to `PRD.md` / `specs/*` / `.kiro/specs/*` until `harness/build-gate/checkpoint.json` shows `status: "approved"`. Gate enforcement at the filesystem level, not just in prompts.
 - 🚚 **Multi-target handoff** — one brief JSON exports simultaneously to Spec-Kit `specs/NNN-slug/`, Kiro `.kiro/specs/`, GStack `/office-hours` brief, and Claude Code `AGENTS.md` + `CLAUDE.md`.
 
-*Renamed from `AI_PM_Skills` in v0.5. The flagship plugin (`hplan`) sits at Stage 0 of a 9-stage marketplace (v0.8 adds `track` + `craft`). Old URLs auto-redirect.*
+*Renamed from `AI_PM_Skills` in v0.5. v0.9 consolidates to a clean 5-plugin lifecycle: hplan (gate) → discover → architect → deliver → operate. Old URLs auto-redirect.*
 
 ---
 
@@ -141,52 +141,44 @@ This project turns those questions into **65 production-grade skills** across th
 # → p50 margin 95%, p90 90%, blended 49% → GREEN
 ```
 
-**Already past the gate?** Install one of the 8 lifecycle plugins:
+**Already past the gate?** Install by lifecycle stage:
 
 ```bash
-/plugin install discover@kimsanguine-hplan   # Discover — opportunity trees, assumptions, cost sim
-/plugin install architect@kimsanguine-hplan  # Architect — orchestration, memory, moat
-/plugin install deliver@kimsanguine-hplan    # Deliver — agent PRD, instructions, prompts
-/plugin install measure@kimsanguine-hplan    # Measure — KPI, burn rate, reliability
-/plugin install learn@kimsanguine-hplan      # Learn — PM tacit knowledge, decision patterns
-/plugin install operate@kimsanguine-hplan    # Operate — 5+ agent portfolio (T1~T5, scorecard, rollup)
-/plugin install track@kimsanguine-hplan      # Track ⭐ v0.8 — prompt-level progress, event-driven gates
-/plugin install craft@kimsanguine-hplan      # Craft ⭐ v0.8 — DESIGN.md + RESPECT.md design system
+/plugin install discover@kimsanguine-hplan   # Discover — opportunity trees, assumptions, cost sim, design-reference
+/plugin install architect@kimsanguine-hplan  # Architect — orchestration, memory, moat, design-token
+/plugin install deliver@kimsanguine-hplan    # Deliver — PRD, instructions, build tracking, UI/UX enforcement
+/plugin install operate@kimsanguine-hplan    # Operate — KPI, reliability, portfolio, PM knowledge capture
 ```
 
 ---
 
-## The Agent PM Journey — 9 Stages
+## The Agent PM Journey — 5 Plugins
 
-This isn't a random collection of skills. It's a **complete lifecycle** — the same path every agent PM walks. Starting in v0.5, **`hplan` is Stage 0** — the evidence gate that decides whether the thing should be built at all. v0.7 added **`operate`** as the portfolio stage for teams running 5+ agents. v0.8 adds **`track` + `craft`** as the build-to-ship gap closers — prompt-level progress visibility and mechanical design-system enforcement.
+This isn't a random collection of skills. It's a **complete lifecycle** — the same path every agent PM walks. `hplan` is the gate that decides whether the thing should be built at all. Then four plugins cover the full journey from discovery to operation.
 
 ```
-   Gate → Discover → Architect → Deliver → Measure → Learn → Operate → Track → Craft
-   hplan   discover    architect    deliver   measure    learn    operate    track     craft
-   7        7           8            15        8          3         4          7         5   skills
+   Gate  →  Discover  →  Architect  →  Deliver  →  Operate
+   hplan    discover      architect     deliver      operate
+   8 skills  7 skills     8 skills     27 skills    15 skills
 
-     ↑                                                                                        │
-     └──────────────── Accumulated TK feeds back into next agent ────────────────────────────┘
+     ↑                                                   │
+     └──── Operational insights feed back into gate ─────┘
 ```
 
-| Stage | Plugin | The Question | Key Skills |
-|-------|--------|-------------|------------|
-| **Gate** ⭐ | `hplan` | "Should we build this at all?" | evidence-rubric · interview-synthesis · exclusions · cogs-sentinel · ost · decision-log · handoff · pmf-gate |
-| **Discover** | `discover` | "What agent should we build?" | opp-tree · assumptions · build-or-buy · cost-sim · hitl · agent-gtm |
-| **Architect** | `architect` | "How should we structure it?" | 3-tier · orchestration · router · memory-arch · moat · growth-loop · biz-model |
-| **Ship** | `deliver` | "How to spec and ship it?" | claude-md · prd (+mermaid + craft routing) · instruction · prompt · ctx-budget · okr · stakeholder-map · agent-plan-review · pptx-ai-slide (4-engine router) · harness-design · parallel-team · build-loop + 4 comms tools |
-| **Measure** | `measure` | "How to measure and improve?" | kpi · reliability · premortem · burn-rate · north-star · agent-ab-test · cohort · incident |
-| **Learn** | `learn` | "How to make agents smarter over time?" | pm-framework · pm-decision · pm-engine (+`/pm-tacit-from-retro` auto-promote) |
-| **Operate** | `operate` | "How to run 5+ agents as a portfolio?" | agent-portfolio (T1~T5 tiering) · scorecard-5axis · weekly-rollup · cross-team-routing |
-| **Track** ⭐ v0.8 NEW | `track` | "How to see actual vs predicted prompt-level scope?" | velocity-baseline · estimate-tasks · progress-probe (Hook + shell fallback) · blocker-detect (50 regex/counter signals) · progress-report (7 event-driven triggers) · gate-checkpoint (6-phase PreToolUse) · respect-checkpoint (α/β/γ matrix) |
-| **Craft** ⭐ v0.8 NEW | `craft` | "How to enforce user-respecting UI/UX?" | respect-brief (RESPECT.md 5-section interview) · hierarchy-rules (Playwright + saliency + WCAG AA) · motion-language (CSS/framer-motion drift) · ui-drift-detect (pHash + DOM tree edit distance) · **mobile-check** ⭐ v0.8.5 (375/768/1440px hard gate) |
+| Plugin | The Question | Key Skills |
+|--------|-------------|------------|
+| **Gate** ⭐ `hplan` | "Should we build this at all?" | evidence-rubric · interview-synthesis · exclusions · cogs-sentinel · ost · decision-log · handoff · pmf-gate |
+| **Discover** `discover` | "What agent should we build?" | opp-tree · assumptions · build-or-buy · cost-sim · hitl · agent-gtm · **design-reference** |
+| **Architect** `architect` | "How should we structure it?" | 3-tier · orchestration · router · memory-arch · moat · growth-loop · biz-model · **design-token** |
+| **Deliver** `deliver` | "How to spec, build, and ship it?" | PRD · instruction · prompt · harness · tracking (velocity/estimate/gate-checkpoint) · UI enforcement (mobile-check/hierarchy-rules/respect-brief) + 16 more |
+| **Operate** `operate` | "How to run and improve agents over time?" | portfolio · scorecard · kpi · reliability · burn-rate · pm-engine · pm-framework + 8 more |
 
-### What makes hplan different from the other 8
+### What makes hplan different from the other 4
 
 Other plugins are **prompt-driven thinking** — LLM ponders, you decide.
-`hplan` adds **deterministic measurement** — Python scripts calculate p50/p90 COGS margins, append-only registries persist exclusions and decisions across runs, an MCP server lets Cursor/Windsurf/Kiro/Codex call hplan primitives, and a PreToolUse hook blocks PRD/spec writes until the human approves the gate. It is paired with discover/architect/deliver/measure/learn, not a replacement.
+`hplan` adds **deterministic measurement** — Python scripts calculate p50/p90 COGS margins, append-only registries persist exclusions and decisions across runs, an MCP server lets Cursor/Windsurf/Kiro/Codex call hplan primitives, and a PreToolUse hook blocks PRD/spec writes until the human approves the gate. It is paired with discover/architect/deliver/operate, not a replacement.
 
-Each skill **auto-loads from natural language** — describe your task and the right skill fires. Skills also **route across plugins**: burn-rate (measure) detects a cost spike → suggests router (architect) for model change → triggers cost-sim (discover) for re-simulation.
+Each skill **auto-loads from natural language** — describe your task and the right skill fires. Skills also **route across plugins**: burn-rate (operate) detects a cost spike → suggests router (architect) for model change → triggers cost-sim (discover) for re-simulation.
 
 ---
 
@@ -194,7 +186,7 @@ Each skill **auto-loads from natural language** — describe your task and the r
 
 ### ① Complete Agent Lifecycle, Not Random Tools
 
-65 skills map to 9 stages of agent product development (Gate → Discover → Architect → Deliver → Measure → Learn → Operate → Track → Craft). This isn't "AI tools for PMs" — it's **a structured methodology for building agents as products**, from discovery to self-improving agents and multi-agent portfolio operations.
+65 skills across 5 plugins cover the full agent product lifecycle (Gate → Discover → Architect → Deliver → Operate). This isn't "AI tools for PMs" — it's **a structured methodology for building agents as products**, from discovery to production operations.
 
 ### ② Two-Layer Architecture — Platform and Content Separation
 
@@ -310,35 +302,61 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 </details>
 
 <details>
-<summary><strong>4. deliver</strong> — How to spec and ship it? <code>(12 skills, 3 commands)</code></summary>
+<summary><strong>4. deliver</strong> — How to spec, build, and ship it? <code>(27 skills, 8 commands)</code></summary>
 
 > **Onboarding (1):** claude-md
 > **Core Spec (7):** instruction · prd · prompt · ctx-budget · okr · stakeholder-map · agent-plan-review
 > **Communication (4):** gemini-image-flow · infographic-gif-creator · pptx-ai-slide · agent-demo-video
+> **Build Tracking (7):** velocity-baseline · estimate-tasks · progress-probe · blocker-detect · progress-report · gate-checkpoint · respect-checkpoint
+> **UI/UX Enforcement (5):** respect-brief · hierarchy-rules · motion-language · ui-drift-detect · mobile-check
+> **Scaffolding (3):** harness-design · parallel-team · build-loop
 
 | Skill | What it does | When to use |
 |-------|-------------|-------------|
-| `claude-md` ⭐ | Scan project structure → auto-generate CLAUDE.md → recommend matching hplan plugins | "New project — set up Claude Code context and find the right skills" |
+| `claude-md` ⭐ | Scan project structure → auto-generate CLAUDE.md → recommend matching hplan plugins | "New project — set up Claude Code context" |
 | `instruction` | Define Role/Context/Goal/Tools/Memory/Output/Failure with least-privilege tool access | "What goes in (and out of) the system prompt?" |
-| `prd` | **Unified 14-section PRD** — People/Problem/Decisions (1-6) + Agent/Execution Spec (7-11) + Metrics/Hypotheses/Failure (12-14). Single source of truth for products and the agents inside them. | "1인 변호사 한국 판례 RAG PRD 작성해줘" |
-| `prompt` | CRISP framework (Context/Role/Instruction/Scope/Parameters) + Why-First principle + 7 failure pattern avoidance | "Longer prompts make my agent behave worse" |
+| `prd` | **Unified 14-section PRD** — People/Problem/Decisions + Agent/Execution Spec + Metrics/Hypotheses/Failure | "1인 변호사 한국 판례 RAG PRD 작성해줘" |
+| `prompt` | CRISP framework + Why-First principle + 7 failure pattern avoidance | "Longer prompts make my agent behave worse" |
 | `ctx-budget` | Estimate per-file token usage → classify Essential/Conditional/Excluded → 70% threshold alerts | "How do I fit 5 RAG docs + chat history into 128K?" |
 | `okr` | Dual-axis OKRs: Business Impact + Operational Health with mandatory cost KR | "Is 95% accuracy enough, or do I need cost metrics too?" |
-| `stakeholder-map` | Power-Interest matrix + blocker response strategies + internal champion cultivation | "Legal is blocking the agent rollout — how do I get buy-in?" |
+| `stakeholder-map` | Power-Interest matrix + blocker response strategies + internal champion cultivation | "Legal is blocking the agent rollout" |
 | `agent-plan-review` | 4-axis review + failure mode matrix (5+ types) + Mermaid output | "Find the holes in this design before we start coding" |
 | `gemini-image-flow` | End-to-end Gemini API image pipeline with model tier selection | "Build a sketch→code pipeline" |
 | `infographic-gif-creator` | Convert architecture / workflow into HTML/CSS → GIF/MP4 animations | "Show the multi-agent flow to execs" |
 | `pptx-ai-slide` | Story-driven slide decks (pitch / review / investor variants) | "Board presentation — 10 slides max" |
 | `agent-demo-video` | Screen recordings + animations + narration via Remotion | "Show non-technical stakeholders what the agent does" |
+| `velocity-baseline` | Extract personal velocity from prior projects (git log → complexity × percentile lookup) | "Before estimating, learn how fast I actually code" |
+| `estimate-tasks` | WBS decomposition + complexity classification → loc/tokens/minutes prediction (deterministic) | "Lock predicted scope before starting" |
+| `progress-probe` | PostToolUse Hook → append every tool call to `.track/actual_log.jsonl` | "Telemetry on every prompt cycle" |
+| `blocker-detect` | 50+ deterministic regex/counter signals (self-doubt, retry loops, test failures, stalls) | "Auto-detect when I'm stuck — no LLM, just patterns" |
+| `progress-report` | 7 event-driven triggers force a current-status report | "Status snapshot at phase transition / blocker threshold / context 70%" |
+| `gate-checkpoint` | 6-phase transition gates (requirements → ship) with PreToolUse Hook blocking | "Can't write impl code until design phase passes" |
+| `respect-checkpoint` | AI classifies screen_type × traffic → deterministic α/β/γ gate combination | "Ship-time user-respect gate enforcement" |
+| `respect-brief` | Interview-driven RESPECT.md (5 sections) with forbidden words enforcement | "Before any UI code — capture user-respect intent as YAML constraints" |
+| `hierarchy-rules` | Playwright + DOM saliency + WCAG AA (fold density / type hierarchy / 60-30-10 color) | "Measure what humans actually see — not what tokens promised" |
+| `motion-language` | Regex + framer-motion AST scan → drift report against RESPECT spec | "Hover transitions all 200ms? Page easing consistent?" |
+| `ui-drift-detect` | 5+ screen pHash + KMeans palette + DOM tree edit distance → 5-dimension drift score | "Design system regression — new screen broke the language?" |
+| `mobile-check` | Playwright 375/768/1440px hard gate — no horizontal scroll, 44px touch targets, 14px+ fonts | "DESIGN.md 기준 3뷰포트 통과 전까지 빌드 완료 선언 금지" |
+| `harness-design` | Design the build harness structure (decisions, evidence, gates) | "Set up the harness before coding starts" |
+| `parallel-team` | Spawn + coordinate parallel worktree agents | "Dispatch 3 agents on independent tasks simultaneously" |
+| `build-loop` | Autonomous build-loop orchestration with checkpoint gates | "Run the full build loop unattended" |
 
-**Commands:** `/write-prd` · `/set-okr` · `/sprint`
+**Commands:** `/write-prd` · `/set-okr` · `/sprint` · `/track-init` · `/track-status` · `/track-retro` · `/craft-init` · `/craft-lint`
 </details>
 
 <details>
-<summary><strong>5. measure</strong> — How to measure and improve? <code>(8 skills, 2 commands)</code></summary>
+<summary><strong>5. operate</strong> — How to run and improve agents over time? <code>(15 skills, 5 commands)</code></summary>
+
+> **Portfolio (4):** agent-portfolio · scorecard-5axis · weekly-rollup · cross-team-routing
+> **Measure (8):** kpi · reliability · premortem · burn-rate · north-star · agent-ab-test · cohort · incident
+> **Learn (3):** pm-framework · pm-decision · pm-engine
 
 | Skill | What it does | When to use |
 |-------|-------------|-------------|
+| `agent-portfolio` | T1~T5 tiering by Reach × Reliability × Strategic value | "I run 5+ agents — which one deserves next quarter's investment?" |
+| `scorecard-5axis` | Weighted scoring across Accuracy / Reliability / Cost / Velocity / User Satisfaction | "Head-to-head agent comparison for weekly ops review" |
+| `weekly-rollup` | Cron-driven portfolio rollup (trend + anomaly detection across all agents) | "Monday morning — what changed across my agent fleet?" |
+| `cross-team-routing` | Score capability × load × tier × handoff cost to decide which agent serves a request | "3 different agents could handle this — which should take it?" |
 | `kpi` | Define 5-7 operational + business metrics with leading/lagging split | "What goes on the agent dashboard?" |
 | `reliability` | Quantify P95/P99 worst cases + design safeguards + set SLA tiers | "3 out of 100 responses hallucinate — acceptable?" |
 | `premortem` | Score 10-15 failure modes by Severity × Likelihood × Detection Difficulty | "Give me a 'this must not break' list" |
@@ -347,71 +365,13 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 | `agent-ab-test` | Calculate MDE + concurrent experiments + control for LLM nondeterminism | "Prompt A vs B — real difference or noise?" |
 | `cohort` | Track performance by deployment cohort (4-week minimum, n≥100) | "Did v2.1 actually improve over v2.0?" |
 | `incident` | Detect silent failures + triage + contain blast radius + 5 Whys | "Agent silent for 30 min — no alerts fired" |
-
-**Commands:** `/health-check` · `/cost-review`
-</details>
-
-<details>
-<summary><strong>6. learn</strong> — Turn PM tacit knowledge into agent assets <code>(3 skills, 3 commands)</code></summary>
-
-| Skill | What it does | When to use |
-|-------|-------------|-------------|
 | `pm-framework` | Convert implicit judgment into TK-NNN units with activation/deactivation conditions + knowledge graph linking | "3 years of agent ops experience is stuck in my head" |
 | `pm-decision` | Build a pattern library of recurring PM decisions with context, criteria, and known failures | "I've seen this situation before — why did I decide that way?" |
 | `pm-engine` | Agents dynamically query TK knowledge graph at runtime + auto-extract 1 TK/day + auto-update instructions | "I want my agents to leverage my operational know-how automatically" |
 
-**Commands:** `/extract` · `/decide` · `/tk-to-instruction`
+**Commands:** `/health-check` · `/cost-review` · `/extract` · `/decide` · `/tk-to-instruction`
 
-> Start with the [PM-ENGINE-MEMORY Starter Kit](learn/skills/pm-engine/examples/PM-ENGINE-MEMORY-STARTER.md) — 5 seed TK entries to get going immediately.
-
-> The framework is open-source; your data (PM-ENGINE-MEMORY.md) is your own asset.
-</details>
-
-<details>
-<summary><strong>7. operate</strong> — Run a portfolio of AI agents <code>(4 skills, 0 commands)</code></summary>
-
-| Skill | What it does | When to use |
-|-------|-------------|-------------|
-| `agent-portfolio` | T1~T5 tiering by Reach × Reliability × Strategic value | "I run 5+ agents — which one deserves next quarter's investment?" |
-| `scorecard-5axis` | Weighted scoring across Accuracy / Reliability / Cost / Velocity / User Satisfaction → single comparable number | "Head-to-head agent comparison for weekly ops review" |
-| `weekly-rollup` | Cron-driven portfolio rollup (trend + anomaly detection across all agents) | "Monday morning — what changed across my agent fleet?" |
-| `cross-team-routing` | Score capability × load × tier × handoff cost to decide which agent serves a request | "3 different agents could handle this — which should take it?" |
-
-> Use case: teams running 5+ agents where single-agent KPIs (measure plugin) no longer reveal priorities.
-</details>
-
-<details>
-<summary><strong>8. track</strong> ⭐ v0.8 NEW — Prompt-level progress + event-driven guardrail <code>(7 skills, 3 commands)</code></summary>
-
-| Skill | What it does | When to use |
-|-------|-------------|-------------|
-| `velocity-baseline` | Extract personal velocity from prior projects (git log + token usage → complexity × percentile lookup) | "Before estimating, learn how fast I actually code" |
-| `estimate-tasks` | WBS decomposition + complexity classification (LLM) + loc/tokens/minutes prediction (deterministic lookup, NO LLM hallucination) | "Lock predicted scope before starting — Rule 5 compliant" |
-| `progress-probe` | PostToolUse Hook + shell fallback → append every tool call to `.track/actual_log.jsonl` | "Telemetry on every prompt cycle (defends against issue #17688 silent fail)" |
-| `blocker-detect` | 50+ deterministic regex/counter signals (self-doubt, retry loops, test failures, context pressure, stalls) | "Auto-detect when I'm stuck — no LLM, just patterns + thresholds" |
-| `progress-report` | 7 event-driven triggers force a current-status report (NOT weekly cadence — that's operate/weekly-rollup) | "Status snapshot at phase transition / blocker threshold / context 70%" |
-| `gate-checkpoint` | 6-phase transition gates (requirements → ship) with PreToolUse Hook blocking | "Mechanical enforcement: can't write impl code until design phase passes" |
-| `respect-checkpoint` | AI classifies (screen_type × traffic) → deterministic matrix lookup → α (human 7s) + β (72h analytics) + γ (Playwright saliency) gate combination | "Ship-time user-respect gate — '이 존중은 사람이 넣는 겁니다' enforced" |
-
-**Commands:** `/track-init` · `/track-status` · `/track-retro`
-
-> All 7 skills enforce Rule 5 (LLM classification only; routing/policy/metrics deterministic). Two self-contained regression tests: `python3 evals/skill-uplift.py --test` + `python3 scripts/validate-craft-lint.py --test`.
-</details>
-
-<details>
-<summary><strong>9. craft</strong> ⭐ v0.8 NEW — DESIGN.md + RESPECT.md design-system enforcement <code>(5 skills, 2 commands)</code></summary>
-
-| Skill | What it does | When to use |
-|-------|-------------|-------------|
-| `respect-brief` | Interview-driven RESPECT.md (5 sections: three_second_rule / next_action / social_proof / hierarchy / motion) with forbidden words enforcement | "Before any UI code — capture user-respect intent as YAML constraints" |
-| `hierarchy-rules` | Playwright + DOM saliency + pixel KMeans + WCAG AA at runtime (fold density / type hierarchy / 60-30-10 color / whitespace / CTA count) | "Measure what humans actually see — not what tokens promised" |
-| `motion-language` | Regex + framer-motion AST scan → drift report against RESPECT motion_language spec | "Hover transitions all 200ms? Page easing consistent? Catch drift before ship" |
-| `ui-drift-detect` | 5+ screen pHash + KMeans palette + DOM tree edit distance → 5-dimension drift score | "Design system regression detection — new screen broke the language?" |
-| `mobile-check` ⭐ v0.8.5 NEW | Playwright 375/768/1440px hard gate — no horizontal scroll, 44px touch targets, 14px+ fonts | "DESIGN.md 브레이크포인트 기준 3뷰포트 통과 전까지 빌드 완료 선언 금지" |
-
-**Commands:** `/craft-init` · `/craft-lint`
-
-> Pairs with `scripts/validate-craft-lint.py` (deterministic DESIGN.md + RESPECT.md cross-ref validation). Closes the AI "professionally generic" trap by mechanically enforcing the user-respect layer on top of Google DESIGN.md token spec.
+> Start with the [PM-ENGINE-MEMORY Starter Kit](operate/skills/pm-engine/examples/PM-ENGINE-MEMORY-STARTER.md) — 5 seed TK entries to get going immediately.
 </details>
 
 ---
@@ -422,19 +382,19 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 
 ```bash
 /plugin marketplace add kimsanguine/hplan
-/plugin install hplan@kimsanguine-hplan    # or discover · architect · deliver · measure · learn · operate · track · craft
+/plugin install hplan@kimsanguine-hplan    # or discover · architect · deliver · operate
 ```
 
 ### Option 2: Clone Locally
 
 ```bash
 git clone https://github.com/kimsanguine/hplan.git
-claude --plugin-dir ./hplan/hplan   # pick what you need (hplan, discover, architect, deliver, measure, learn, operate, track, craft)
+claude --plugin-dir ./hplan/hplan   # pick what you need (hplan, discover, architect, deliver, operate)
 ```
 
 **Not sure which AI product to commit to?** → Start with `hplan` — evidence gate first.
 **First time with Claude Code?** → Run `deliver/claude-md` — it scans your project and recommends the right plugins.
-**Already past the gate?** → Pick by lifecycle stage (discover → architect → deliver → measure → learn → operate).
+**Already past the gate?** → Pick by lifecycle stage (discover → architect → deliver → operate).
 
 ### Other AI Tools
 
@@ -496,9 +456,8 @@ hplan/                # repo root
 ├── hplan/            # Gate ⭐ (7 skills, 6 commands) — Product Build Gate
 ├── discover/           # Discovery (7 skills, 2 commands)
 ├── architect/            # Architecture (8 skills, 2 commands)
-├── deliver/            # Execution (12 skills, 3 commands)
-├── measure/            # Monitoring (8 skills, 2 commands)
-├── learn/             # Knowledge (3 skills, 3 commands)
+├── deliver/            # Deliver (27 skills, 8 commands) — spec + track + UI enforcement
+├── operate/            # Operate (15 skills, 5 commands) — measure + learn + portfolio
 ├── evals/            # Quality + trigger evals
 ├── docs/images/      # Diagrams
 ├── validate_plugins.py
@@ -536,7 +495,7 @@ discover/skills/opp-tree/           ← example skill
 | `examples/bad-01.md` | Explicit anti-patterns with explanations | Prevents common failures |
 | `references/test-cases.md` | Edge cases + assertions | Powers eval system (54 assertions) |
 
-This pattern repeats across all 62 skills — **200+ supporting files** that make each skill measurable, testable, and improvable.
+This pattern repeats across all 65 skills — **200+ supporting files** that make each skill measurable, testable, and improvable.
 
 </details>
 
