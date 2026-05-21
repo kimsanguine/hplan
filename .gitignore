@@ -50,3 +50,4 @@ __pycache__/
 
 # Claude Code local state
 .claude/
+tools/intro-video/*.mp4

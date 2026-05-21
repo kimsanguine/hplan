@@ -4,6 +4,86 @@ All notable changes to hplan (renamed from AI_PM_Skills in v0.5) are documented 
 
 ---
 
+## [0.9.1] — 2026-05-21
+
+> **사용자 영향**: Evidence Gate 루브릭이 `generate_report.py` 실제 구현과 이제 일치합니다 — 7개 기준/80점 기준에서 8개 기준/75점 기준으로 통일. `/hplan-doctor` 로 훅·체크포인트·레지스트리 상태를 한 번에 진단 가능. 컨설턴트 워크플로에서 `--profile` 플래그로 클라이언트별 exclusions 격리. README.md 영어 전용 정리.
+
+### Fixed — Evidence Gate 루브릭 불일치 (항목 A)
+
+**[bug] `hplan.md` 인라인 루브릭 ↔ `generate_report.py` 구현 불일치**
+- 원인: `hplan.md` 에 7개 기준(각 15/15/15/15/15/15/10pt), 80/60 임계값이 수동 기술되어 있었고, `generate_report.py` 는 8개 기준(20/15/15/10/15/10/10/5pt)과 75/55/35 임계값으로 실제 구현되어 있었음
+- 영향: 같은 아이디어가 `/hplan` 에서는 80점 필요, `/hplan-evidence` 에서는 55점에서 interview 처리되는 혼란 발생
+- 수정: `hplan.md`, `hplan-evidence.md`, `evidence-rubric/SKILL.md` 를 `generate_report.py` 실제 구현 기준으로 동기화
+  - 기준 7개→8개 (Switching trigger 추가, 점수 배분 재정렬)
+  - 임계값 80/60 → 75/55/35
+  - build 판정 조건에 `interview_lines ≥ 2 AND economic_pain` 필수 명시 (anti-gaming, 이미 스크립트에 구현되어 있었으나 미문서화)
+  - 각 판정별 "다음 3 액션" 블록 추가 (GO / INVESTIGATE / HOLD)
+
+### Added — `/hplan-doctor` 설치 진단 커맨드 (항목 B)
+
+**`hplan/commands/hplan-doctor.md`** — 신규
+- 5개 체크 항목 자동 진단: Hook 등록, Hook 실행(exit=2 = 정상), Checkpoint 상태, Exclusions 레지스트리 유효성, Git pre-commit 훅
+- 출력: `[ PASS/WARN/FAIL ]` 형식 + Summary + Recommended actions
+- 온보딩 시 "훅이 실제로 작동하는지 어떻게 아냐?" 질문에 대한 결정적 답변
+
+### Added — Exclusions Registry `--profile` 지원 (항목 E)
+
+**`hplan/scripts/exclusions_registry.py`**
+- `registry_path()` 에 `profile` 파라미터 추가: `--profile client-acme` → `harness/profiles/client-acme/exclusions.jsonl`
+- `add`, `check`, `list` 서브커맨드 모두 `--profile` 인자 지원
+- backward-compatible: `--profile` 미지정 시 기존 `harness/exclusions.jsonl` 동일
+- `.gitignore` 에 `harness/profiles/` 추가 (클라이언트 kill-decision 데이터 보호)
+
+### Fixed — README.md 영어 전용 정리 (항목 F)
+
+9개 한국어 라인 영어 번역:
+- 원칙 테이블 헤더(`hplan 원칙 | 대립 가정` → `hplan Principle | Opposing Assumption`)
+- 원칙 3행 전체 번역 (conversation↓ docs↑, big tasks step by step, validate first build later)
+- 4개 스킬 "When to use" 셀 번역 (design-reference, design-token, prd, mobile-check)
+
+### Changed — Remotion Lifecycle 영상 v0.9.0 반영 (항목 G)
+
+**`tools/intro-video/src/scenes/v8d-05-Lifecycle.tsx`**
+- STAGES: 9개 → 5개 (hplan/discover/architect/deliver/operate)
+- 타이틀: `"9-stage lifecycle · 62 skills"` → `"5-plugin lifecycle · 65 skills"`
+- 자막: `"v0.9 · hplan → discover → architect → deliver → operate"`
+
+**`tools/intro-video/src/Root.tsx`**
+- `HplanV9Core` composition 추가 (기존 `HplanV8CoreTrack` 유지, backward-compatible)
+
+### Refactored — `evals/` → `operate/evals/` 이동
+
+- 스킬 품질 측정(eval)은 `operate` 레이어에 귀속 — 5-plugin 구조 일관성 확보
+- `README.md`, `README-ko.md`, `CONTRIBUTING.md` 경로 참조 갱신
+- `git mv` 로 blame/log 이력 보존 (~100개 파일)
+
+### Verified
+- `python3 validate_plugins.py hplan`: ✅ 0 errors
+- `python3 hplan/scripts/exclusions_registry.py add "test" --why "test" --reopen "never" --profile demo`: ✅ `harness/profiles/demo/exclusions.jsonl` 생성 확인
+- `python3 hplan/scripts/exclusions_registry.py list`: ✅ 기존 글로벌 레지스트리 영향 없음
+- `grep -n "[가-힣]" README.md | grep -v "한국어"`: ✅ 0건
+
+---
+
+## [0.9.0] — 2026-05-21
+
+> **사용자 영향**: 플러그인 구조가 9단계에서 5플러그인(hplan/discover/architect/deliver/operate)으로 재편. `track` + `craft` 가 `deliver` 로 통합. `measure` + `learn` 이 `operate` 로 통합. 커맨드 네이밍 `hplan-*` 통일. 스킬 수 62개 → 65개.
+
+### Changed — 5-Plugin 구조 전환
+
+- **9-stage 구조 폐기**: `hplan → discover → architect → deliver → measure → learn` 에서 `hplan → discover → architect → deliver → operate` 5플러그인으로 단순화
+- **deliver 통합**: `track` (A/B·실험) + `craft` (UI/디자인) 스킬이 `deliver` 플러그인으로 흡수
+- **operate 신설**: `measure` + `learn` 스킬이 `operate` 플러그인으로 통합
+- **커맨드 네이밍 정비**: 모든 hplan 커맨드 `hplan-*` 접두사 통일
+
+### Added — 신규 스킬 (v0.9.0)
+
+- `deliver/design-reference`, `deliver/design-token`, `deliver/mobile-check` 추가
+- `hplan/pmf-gate` 스킬 추가 (Post-launch PMF 신호 루프)
+- 총 65개 스킬 (v0.8.4 대비 +3)
+
+---
+
 ## [0.8.4] — 2026-05-17
 
 > **사용자 영향**: `/craft-lint` 가 잘못된 형식의 DESIGN.md 를 만나도 안전하게 fail 합니다 (traceback 없이 명확한 한국어 에러 메시지). 자체 regression test 2 종 (`evals/skill-uplift.py --test` + `scripts/validate-craft-lint.py --test`) 으로 미래 회귀 자동 차단. **`/craft-lint` / `/track-status` 같은 명령이 깨진 입력으로 인해 알 수 없는 traceback 으로 종료되는 일이 없어집니다.**

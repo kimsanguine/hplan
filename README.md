@@ -16,9 +16,9 @@
 
 ### 📺 99-second intro
 
-https://github.com/kimsanguine/hplan/releases/download/v0.8.4-video-preview/v8-core-track-16x9.mp4
+https://github.com/kimsanguine/hplan/releases/download/v0.9.0-video-preview/v9-core-16x9.mp4
 
-> _Core narrative + Track guardrail. Other variants (60s Editorial, 90s Demo, 84s Core-only) in [v0.8.4-video-preview release](https://github.com/kimsanguine/hplan/releases/tag/v0.8.4-video-preview)._
+> _5-plugin lifecycle: hplan (gate) → discover → architect → deliver → operate. [v0.9.0-video-preview release](https://github.com/kimsanguine/hplan/releases/tag/v0.9.0-video-preview)._
 
 ## The Problem hplan Solves
 

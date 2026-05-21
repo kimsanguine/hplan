@@ -18,9 +18,9 @@
 
 ### 📺 99초 소개 영상
 
-https://github.com/kimsanguine/hplan/releases/download/v0.8.4-video-preview/v8-core-track-16x9.mp4
+https://github.com/kimsanguine/hplan/releases/download/v0.9.0-video-preview/v9-core-16x9.mp4
 
-> _본질 narrative + Track 가드레일 통합본. 다른 variant (60초 Editorial, 90초 Demo, 84초 Core-only) 는 [v0.8.4-video-preview release](https://github.com/kimsanguine/hplan/releases/tag/v0.8.4-video-preview) 에서 받기._
+> _5-plugin 라이프사이클: hplan (게이트) → discover → architect → deliver → operate. [v0.9.0-video-preview release](https://github.com/kimsanguine/hplan/releases/tag/v0.9.0-video-preview)._
 
 ## 만약 당신이...
 
