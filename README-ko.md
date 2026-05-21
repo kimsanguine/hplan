@@ -84,12 +84,12 @@ https://github.com/kimsanguine/hplan/releases/download/v0.9.0-video-preview/v9-c
 ---
 
 <p align="center">
-  <video src="https://github.com/kimsanguine/hplan/releases/download/v0.6.0-video-preview/intro-16x9.mp4" autoplay loop muted playsinline width="800">
-    <img src="docs/images/demo-terminal.svg" alt="hplan demo — 1인 메이커가 PRD 쓰기 전 evidence 게이트가 자동으로 막아주는 시나리오" width="800"/>
+  <video src="https://github.com/kimsanguine/hplan/releases/download/v0.9.0-video-preview/v9-core-16x9.mp4" autoplay loop muted playsinline width="800">
+    <img src="docs/images/demo-terminal.svg" alt="hplan demo — 5-plugin 라이프사이클: hplan(게이트) → discover → architect → deliver → operate" width="800"/>
   </video>
 </p>
 
-> 🎬 **70초 인트로 영상** — 영상이 재생되지 않으면 [여기서 시청](https://github.com/kimsanguine/hplan/releases/tag/v0.6.0-video-preview).
+> 🎬 **99초 소개 영상** — 5-plugin 라이프사이클 전체 흐름. 영상이 재생되지 않으면 [여기서 시청](https://github.com/kimsanguine/hplan/releases/tag/v0.9.0-video-preview).
 
 ## 하루 동안 hplan은 이렇게 끼어듭니다
 
@@ -294,7 +294,7 @@ Trigger Gate의 핵심은 세 가지입니다:
 - **Route**: "이런 상황이면 다른 스킬에게 넘겨라" (플러그인 간 라우팅)
 - **Boundary**: "이런 상황에서는 절대 나를 부르지 마라" (오발동 방지)
 
-이 패턴 덕분에 168개 테스트 쿼리 (v0.6 124개) 에서 v0.6 기준 **97.9% 트리거 정확도**를 달성했습니다. 65개 스킬이 서로 충돌하지 않고 정확하게 발동됩니다.
+이 패턴 덕분에 168개 테스트 쿼리에서 **97.9% 트리거 정확도**를 달성했습니다 (v0.8 42-스킬 기준). 65개 스킬이 서로 충돌하지 않고 정확하게 발동됩니다. v0.9.1 전체 65 스킬 기준 재측정 진행 중.
 
 ### ③ 데이터 플라이휠 — 쓸수록 쌓이는 PM 암묵지
 
@@ -516,7 +516,7 @@ claude --plugin-dir ./hplan/hplan   # 필요한 것 선택 (hplan, discover, arc
 
 ### 자동 호출 (Auto-Invocation)
 
-스킬을 이름으로 부를 필요가 없습니다. "우리 CS팀 업무 중 에이전트가 맡을 수 있는 건 뭘까?"처럼 자연어로 질문하면, Claude가 각 SKILL.md의 `description` 필드와 매칭하여 가장 적합한 스킬을 자동으로 로드합니다. 168개 테스트 쿼리에서 v0.6 기준 **97.9% 정확도** (v0.8 신규 11 스킬 재평가 예정).
+스킬을 이름으로 부를 필요가 없습니다. "우리 CS팀 업무 중 에이전트가 맡을 수 있는 건 뭘까?"처럼 자연어로 질문하면, Claude가 각 SKILL.md의 `description` 필드와 매칭하여 가장 적합한 스킬을 자동으로 로드합니다. 168개 테스트 쿼리에서 **97.9% 정확도** (v0.8 기준; v0.9.1 65 스킬 전체 기준 재측정 예정).
 
 ### 크로스 플러그인 라우팅
 
