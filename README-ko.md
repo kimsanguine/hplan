@@ -195,6 +195,8 @@ WHETHER는 WHY보다 큽니다. WHY는 이유를 답합니다("왜 사용자가 
 
 ## 빠른 시작 (60초)
 
+> **시스템 요구사항:** Claude Code v1.0+, Python 3.9+ (Evidence Gate 스크립트용), Git (pre-commit hook 선택). 자세한 설치 환경은 [GUIDE-ko.md](GUIDE-ko.md#시스템-요구사항) 참조.
+
 ```bash
 # 1. 마켓플레이스 등록
 /plugin marketplace add kimsanguine/hplan
@@ -306,7 +308,7 @@ PM의 판단/경험 기록 → /extract 명령어 → TK-NNN으로 구조화
 
 "스킬을 설치하면 뭐가 좋아지는데?"라는 질문에 "느낌적으로 좋아집니다"라고 답하지 않습니다.
 
-모든 스킬은 **54개 어설션을 포함한 10개 품질 테스트**로 측정됩니다. 같은 질문을 스킬 있이/없이 Claude에게 던져서, 출력 품질 차이를 정량화합니다.
+모든 스킬은 **54개 어설션을 포함한 10개 품질 테스트**로 측정됩니다. 같은 질문을 스킬 적용/미적용 상태로 Claude에게 던져서, 출력 품질 차이를 정량화합니다.
 
 | | 스킬 적용 | 스킬 미적용 | 차이 |
 |---|-----------|-----------|------|
@@ -366,7 +368,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 | `agent-gtm` | 비치헤드 세그먼트 5기준 점수 + Shadow→Co-pilot→Auto→Delegation 신뢰 시퀀스 설계 | "B2B 고객에게 이 에이전트를 어떤 순서로 내보내지?" |
 | `design-reference` | UI 레퍼런스 수집·구조화 + 디자인 언어 공통 패턴 추출 → 설계 시 참조 가능한 DESIGN-REFERENCE.md 생성 | "경쟁사·레퍼런스 앱에서 패턴을 뽑아 우리 설계에 반영하고 싶어" |
 
-**명령어:** `/discover`(전체 기회 탐색) · `/validate`(가정 검증)
+**커맨드:** `/discover`(전체 기회 탐색) · `/validate`(가정 검증)
 </details>
 
 <details>
@@ -385,7 +387,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 | `growth-loop` | 사용→데이터→개선→재사용 루프 설계 + 콜드스타트 해법 + 역루프(anti-loop) 식별 | "추천 결과가 쓸수록 좋아지게 만들려면?" |
 | `design-token` | 색상·타이포·간격·그림자 디자인 토큰 체계 정의 + DESIGN.md 생성 → 일관된 UI 시스템 강제 | "컴포넌트마다 색이 다르게 들어가 있어, 토큰으로 통일하고 싶어" |
 
-**명령어:** `/architecture`(아키텍처 설계) · `/strategy-review`(전략 리뷰)
+**커맨드:** `/architecture`(아키텍처 설계) · `/strategy-review`(전략 리뷰)
 </details>
 
 <details>
@@ -430,7 +432,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 | `motion-language` | 정규식 + framer-motion AST 스캔 → RESPECT motion_language 명세 대비 drift 보고 | "hover transition 200ms 일관? page easing 일관? ship 전 drift 감지" |
 | `ui-drift-detect` | 5+ 화면 pHash + KMeans palette + DOM tree edit distance → 5 차원 drift score | "디자인 시스템 회귀 감지 — 신규 화면이 design language 깼나?" |
 
-**명령어:** `/write-prd`(PRD 작성) · `/set-okr`(OKR 설정) · `/sprint`(스프린트 계획)
+**커맨드:** `/write-prd`(PRD 작성) · `/set-okr`(OKR 설정) · `/sprint`(스프린트 계획)
 </details>
 
 <details>
@@ -460,7 +462,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 | `weekly-rollup` | Cron 기반 포트폴리오 rollup (trend + 이상 감지) | "월요일 아침 — 지난 주 fleet에 무슨 변화?" |
 | `cross-team-routing` | capability × load × tier × handoff cost 점수화로 요청 라우팅 결정 | "3개 에이전트가 처리 가능 — 어디로 보낼까?" |
 
-**명령어:** `/health-check`(전체 건강 점검) · `/cost-review`(비용 리뷰) · `/extract`(TK 추출) · `/decide`(의사결정 패턴 참조) · `/tk-to-instruction`(TK→인스트럭션 변환)
+**커맨드:** `/health-check`(전체 건강 점검) · `/cost-review`(비용 리뷰) · `/extract`(TK 추출) · `/decide`(의사결정 패턴 참조) · `/tk-to-instruction`(TK→인스트럭션 변환)
 
 > 💡 [PM-ENGINE-MEMORY 스타터 킷](operate/skills/pm-engine/examples/PM-ENGINE-MEMORY-STARTER.md)으로 시작하세요 — 실무에서 검증된 5개 시드 TK가 미리 들어 있어, 빈 파일이 아닌 바로 쓸 수 있는 상태로 시작합니다.
 
