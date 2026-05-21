@@ -6,13 +6,13 @@
 > Like a horse's harness, hplan gives direction to the raw power of AI coding tools (Claude Code, Cursor, Lovable, etc.). The tools that *make* code are already strong enough. What's missing is *where to point them*. hplan is the 7-day discipline that forces you to answer market research, problem definition, and COGS *before* a single PRD line is written.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-62-blue?style=flat-square)](#plugins--full-skill-list)
+[![Skills](https://img.shields.io/badge/skills-65-blue?style=flat-square)](#plugins--full-skill-list)
 [![Plugins](https://img.shields.io/badge/plugins-9-purple?style=flat-square)](#the-agent-pm-journey--9-stages)
-[![Version](https://img.shields.io/badge/version-0.8.4-green?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.8.5-green?style=flat-square)](CHANGELOG.md)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)](CONTRIBUTING.md)
 [![한국어](https://img.shields.io/badge/lang-한국어-blue?style=flat-square)](README-ko.md)
 
-> **v0.8.4** — hplan is the **Product Build Gate** that asks WHETHER before AI tools rush to HOW. v0.8 layers two new plugins on top of the gate: **`track`** (build-time guardrail — prompt-level progress + event-driven blockers + α/β/γ respect-checkpoint) and **`craft`** (design-system enforcement — DESIGN.md + RESPECT.md + Playwright runtime measurement). Together: **Build Gate before you build, Track while you build** — wrong directions blocked at both layers. 3 rounds of adversarial review (4 → 3 → 1 findings, 0 high remaining). See [CHANGELOG.md](CHANGELOG.md).
+> **v0.8.5** — hplan is the **Product Build Gate** that asks WHETHER before AI tools rush to HOW. v0.8 layers two new plugins on top of the gate: **`track`** (build-time guardrail — prompt-level progress + event-driven blockers + α/β/γ respect-checkpoint) and **`craft`** (design-system enforcement — DESIGN.md + RESPECT.md + Playwright runtime measurement). v0.8.5 adds a **3-skill design workflow** spanning all four layers: `discover/design-reference` (100-site curated reference + DESIGN_BRIEF.md) → `architect/design-token` (semantic CSS token generation + DESIGN.md) → `craft/mobile-check` (Playwright 375/768/1440px hard gate). See [CHANGELOG.md](CHANGELOG.md).
 
 ### 📺 99-second intro
 
@@ -118,7 +118,7 @@ General PM skills teach you to **use AI as a tool** — write PRDs faster, gener
 - "How do I orchestrate multiple agents together?"
 - "How do I encode 3 months of operational judgment into the agent's instructions?"
 
-This project turns those questions into **62 production-grade skills** across the full agent lifecycle.
+This project turns those questions into **65 production-grade skills** across the full agent lifecycle.
 
 ---
 
@@ -163,7 +163,7 @@ This isn't a random collection of skills. It's a **complete lifecycle** — the 
 ```
    Gate → Discover → Architect → Deliver → Measure → Learn → Operate → Track → Craft
    hplan   discover    architect    deliver   measure    learn    operate    track     craft
-   7        6           7            15        8          3         4          7         4   skills
+   7        7           8            15        8          3         4          7         5   skills
 
      ↑                                                                                        │
      └──────────────── Accumulated TK feeds back into next agent ────────────────────────────┘
@@ -179,7 +179,7 @@ This isn't a random collection of skills. It's a **complete lifecycle** — the 
 | **Learn** | `learn` | "How to make agents smarter over time?" | pm-framework · pm-decision · pm-engine (+`/pm-tacit-from-retro` auto-promote) |
 | **Operate** | `operate` | "How to run 5+ agents as a portfolio?" | agent-portfolio (T1~T5 tiering) · scorecard-5axis · weekly-rollup · cross-team-routing |
 | **Track** ⭐ v0.8 NEW | `track` | "How to see actual vs predicted prompt-level scope?" | velocity-baseline · estimate-tasks · progress-probe (Hook + shell fallback) · blocker-detect (50 regex/counter signals) · progress-report (7 event-driven triggers) · gate-checkpoint (6-phase PreToolUse) · respect-checkpoint (α/β/γ matrix) |
-| **Craft** ⭐ v0.8 NEW | `craft` | "How to enforce user-respecting UI/UX?" | respect-brief (RESPECT.md 5-section interview) · hierarchy-rules (Playwright + saliency + WCAG AA) · motion-language (CSS/framer-motion drift) · ui-drift-detect (pHash + DOM tree edit distance) |
+| **Craft** ⭐ v0.8 NEW | `craft` | "How to enforce user-respecting UI/UX?" | respect-brief (RESPECT.md 5-section interview) · hierarchy-rules (Playwright + saliency + WCAG AA) · motion-language (CSS/framer-motion drift) · ui-drift-detect (pHash + DOM tree edit distance) · **mobile-check** ⭐ v0.8.5 (375/768/1440px hard gate) |
 
 ### What makes hplan different from the other 8
 
@@ -194,7 +194,7 @@ Each skill **auto-loads from natural language** — describe your task and the r
 
 ### ① Complete Agent Lifecycle, Not Random Tools
 
-62 skills map to 9 stages of agent product development (Gate → Discover → Architect → Deliver → Measure → Learn → Operate → Track → Craft). This isn't "AI tools for PMs" — it's **a structured methodology for building agents as products**, from discovery to self-improving agents and multi-agent portfolio operations.
+65 skills map to 9 stages of agent product development (Gate → Discover → Architect → Deliver → Measure → Learn → Operate → Track → Craft). This isn't "AI tools for PMs" — it's **a structured methodology for building agents as products**, from discovery to self-improving agents and multi-agent portfolio operations.
 
 ### ② Two-Layer Architecture — Platform and Content Separation
 
@@ -277,7 +277,7 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 </details>
 
 <details>
-<summary><strong>2. discover</strong> — What agent to build? <code>(6 skills, 2 commands)</code></summary>
+<summary><strong>2. discover</strong> — What agent to build? <code>(7 skills, 2 commands)</code></summary>
 
 | Skill | What it does | When to use |
 |-------|-------------|-------------|
@@ -287,12 +287,13 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 | `hitl` | Set automation levels (1-5) and escalation triggers via reversibility × error-impact matrix | "Can the agent decide refunds, or must a human approve?" |
 | `cost-sim` | Simulate monthly costs at 1→10→100→1,000 users by model pricing × call patterns | "Sonnet at 500 calls/day — what's the monthly bill?" |
 | `agent-gtm` | Score beachhead segments (5 criteria) + design Shadow→Co-pilot→Auto→Delegation trust sequence | "How do we roll this agent out to B2B customers?" |
+| `design-reference` ⭐ v0.8.5 NEW | Filter 100 curated KR/global reference sites (12 categories) → select 5-7 → generate DESIGN_BRIEF.md | "타겟 확정 후 UI 방향성 결정 — 핀테크? 푸드딜리버리? 레퍼런스 먼저" |
 
 **Commands:** `/discover` · `/validate`
 </details>
 
 <details>
-<summary><strong>3. architect</strong> — How to architect it? <code>(7 skills, 2 commands)</code></summary>
+<summary><strong>3. architect</strong> — How to architect it? <code>(8 skills, 2 commands)</code></summary>
 
 | Skill | What it does | When to use |
 |-------|-------------|-------------|
@@ -303,6 +304,7 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 | `memory-arch` | Design Working/Episodic/Semantic/Procedural memory layers + token-budget-aware retrieval | "How does today's session recall yesterday's context?" |
 | `moat` | Diagnose 6 moat types: data flywheel, workflow lock-in, network effects, switching costs, specialization, brand | "A competitor ships a GPT clone — what's our defense?" |
 | `growth-loop` | Design usage→data→improvement→re-use loops + cold-start solutions + anti-loop identification | "How do we make recommendations improve with every use?" |
+| `design-token` ⭐ v0.8.5 NEW | Read DESIGN_BRIEF.md → generate semantic CSS tokens (tokens.md) + DESIGN.md with breakpoint spec | "BRIEF 기반 --color-brand-primary 등 의미 토큰 생성 — craft/mobile-check 입력" |
 
 **Commands:** `/architecture` · `/strategy-review`
 </details>
@@ -397,7 +399,7 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 </details>
 
 <details>
-<summary><strong>9. craft</strong> ⭐ v0.8 NEW — DESIGN.md + RESPECT.md design-system enforcement <code>(4 skills, 2 commands)</code></summary>
+<summary><strong>9. craft</strong> ⭐ v0.8 NEW — DESIGN.md + RESPECT.md design-system enforcement <code>(5 skills, 2 commands)</code></summary>
 
 | Skill | What it does | When to use |
 |-------|-------------|-------------|
@@ -405,6 +407,7 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 | `hierarchy-rules` | Playwright + DOM saliency + pixel KMeans + WCAG AA at runtime (fold density / type hierarchy / 60-30-10 color / whitespace / CTA count) | "Measure what humans actually see — not what tokens promised" |
 | `motion-language` | Regex + framer-motion AST scan → drift report against RESPECT motion_language spec | "Hover transitions all 200ms? Page easing consistent? Catch drift before ship" |
 | `ui-drift-detect` | 5+ screen pHash + KMeans palette + DOM tree edit distance → 5-dimension drift score | "Design system regression detection — new screen broke the language?" |
+| `mobile-check` ⭐ v0.8.5 NEW | Playwright 375/768/1440px hard gate — no horizontal scroll, 44px touch targets, 14px+ fonts | "DESIGN.md 브레이크포인트 기준 3뷰포트 통과 전까지 빌드 완료 선언 금지" |
 
 **Commands:** `/craft-init` · `/craft-lint`
 
@@ -491,8 +494,8 @@ The Trigger Gate's "Route" field enables routing between plugins:
 ```
 hplan/                # repo root
 ├── hplan/            # Gate ⭐ (7 skills, 6 commands) — Product Build Gate
-├── discover/           # Discovery (6 skills, 2 commands)
-├── architect/            # Architecture (7 skills, 2 commands)
+├── discover/           # Discovery (7 skills, 2 commands)
+├── architect/            # Architecture (8 skills, 2 commands)
 ├── deliver/            # Execution (12 skills, 3 commands)
 ├── measure/            # Monitoring (8 skills, 2 commands)
 ├── learn/             # Knowledge (3 skills, 3 commands)
