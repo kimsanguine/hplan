@@ -72,6 +72,15 @@ export const RemotionRoot: React.FC = () => {
         width={1920}
         height={1080}
       />
+      {/* v0.9 Core — 5-plugin lifecycle */}
+      <Composition
+        id="HplanV9Core"
+        component={HplanV8CoreTrack}
+        durationInFrames={V8CT_TOTAL}
+        fps={FPS}
+        width={1920}
+        height={1080}
+      />
     </>
   );
 };

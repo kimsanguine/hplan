@@ -26,9 +26,24 @@ Invoke `evidence-rubric` skill — runs `scripts/generate_report.py`. Capture sc
 If `interview_notes` is thin or `decision == "interview"`, invoke `interview-synthesis` skill to either ingest AI export OR plan fresh interviews. Audit the 5/3 strong-Push rule.
 
 ### Step 5 — Decide
-- `build` + 2+ interview lines + economic pain → proceed to `/hplan-product`
-- `interview` → run more interviews until 5/3 satisfied
-- `pivot` / `hold` → log via `decision-log` skill and add to `exclusions`
+
+The underlying script (`generate_report.py`) determines the decision mechanically:
+
+| Score | Extra conditions | Decision | Meaning |
+|-------|-----------------|----------|---------|
+| ≥ 75 | interview_lines ≥ 2 AND economic pain present | `build` | Proceed to product gate |
+| ≥ 75 | interview_lines < 2 OR no economic pain | `interview` | Score is strong but evidence is thin |
+| 55–74 | — | `interview` | More interviews needed |
+| 35–54 | — | `pivot` | Problem definition is weak |
+| < 35 | — | `hold` | Stop — insufficient evidence |
+
+**Anti-gaming:** `build` requires at least 2 independent interview lines AND an economic pain keyword. A fabricated or AI-synthesized interview without real human quotes will fail the `interview_lines` threshold.
+
+**Next 3 actions per decision:**
+- `build` → proceed to `/hplan-product` · verify COGS gate with `/hplan-cogs` · log approval via `decision-log` skill
+- `interview` → identify lowest-scoring axis from rubric breakdown · draft 3 targeted interview questions targeting that axis · re-run after 3+ new human interviews
+- `pivot` → revisit ICP — is the pain specific, recent, and economic? · reframe the problem statement · re-run `/hplan-evidence`
+- `hold` → log with `decision-log` skill · add to exclusions registry with `reopen_trigger` defining what evidence would change this · stop all downstream work
 
 ## Output Format
 

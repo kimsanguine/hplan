@@ -68,31 +68,41 @@ python3 hplan/scripts/exclusions_registry.py check "$ARGUMENTS"
 
 ### Step 2 — Evidence Rubric Score
 
-Score the idea against the 7-criterion rubric. Use only information available in the user's message; do not assume details not provided.
+Score the idea against the 8-criterion rubric. Use only information available in the user's message; do not assume details not provided.
 
 | Criterion | Max pts | Score | Notes |
 |-----------|---------|-------|-------|
-| ICP specificity (named segment with behavior, not "SMBs") | 15 | | |
+| ICP specificity (named segment with behavior, not "SMBs") | 20 | | |
 | Recent painful event (within 3 months, user-reported) | 15 | | |
-| Workaround evidence (users already doing something manual) | 15 | | |
-| Repetition evidence (same complaint heard 3+ times) | 15 | | |
-| Economic pain quantified (time × frequency × cost) | 15 | | |
-| MVP narrowness (one workflow, not a platform) | 15 | | |
-| Acquisition path defined (first 10 customers, not "go viral") | 10 | | |
+| Current alternative/workaround (users already doing something manual) | 15 | | |
+| Repetition/frequency (same complaint heard 3+ times) | 10 | | |
+| Economic pain (time × frequency × cost, money/risk/opportunity loss) | 15 | | |
+| Switching trigger (reason to abandon current workaround) | 10 | | |
+| MVP narrowness (one workflow, not a platform; ≤3 features) | 10 | | |
+| Acquisition path to first 5 users (specific channel, not "go viral") | 5 | | |
 
 **Score interpretation:**
-- **80–100**: Strong — proceed to Step 3
-- **60–79**: Conditional — flag the weakest criteria, proceed to Step 3
-- **< 60**: HOLD — insufficient evidence. Output verdict now:
+- **75–100** + 2+ interview lines + economic pain signal → `build` — proceed to Step 3
+- **55–74** → `interview` — flag weakest criteria, gather more evidence before Step 3
+- **35–54** → `pivot` — problem definition is weak; reframe before proceeding
+- **< 35** → `hold` — HOLD — insufficient evidence. Output verdict now:
 
   ```
   VERDICT: HOLD
-  Reason:  Evidence score [X]/100 — below 60 threshold. Weakest: [criterion]
+  Reason:  Evidence score [X]/100 — below 35 threshold. Weakest: [criterion]
   Next:    Run /hplan-evidence for a full rubric + interview synthesis
   Gate:    EVIDENCE
   ```
 
   Stop.
+
+**Anti-gaming note:** The `build` verdict requires interview_lines ≥ 2 AND an economic pain signal. A high score alone is not enough — the underlying script (`generate_report.py`) enforces this mechanically.
+
+**Next 3 actions per verdict:**
+- `build` → run `/hplan-product` · confirm COGS via `/hplan-cogs` · log decision via `decision-log` skill
+- `interview` → identify the weakest axis above · draft 3 targeted interview questions · re-run `/hplan-evidence` after 3+ new interviews
+- `pivot` → revisit ICP and problem statement · reframe around a more economically painful problem · re-run `/hplan-evidence`
+- `hold` → log via `decision-log` skill · add to `exclusions` registry with `reopen_trigger` · stop
 
 ---
 

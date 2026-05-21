@@ -7,6 +7,9 @@ profiles/*
 !profiles/_template/
 !profiles/README.md
 
+# Harness per-client/per-project profile registries (private — do not commit)
+harness/profiles/
+
 # Worktree workspace (parallel-team skill)
 .worktrees/
 

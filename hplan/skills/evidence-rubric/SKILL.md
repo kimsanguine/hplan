@@ -71,7 +71,7 @@ JSON 파일 또는 인라인 입력:
 
 - `harness/evidence/report.md` — markdown diagnosis
 - `harness/evidence/last_input.json` — preserved input
-- Decision: `build` (75+) / `interview` (55–74) / `pivot` (35–54) / `hold` (<34) — but with mandatory `economic_pain` + 2+ interview lines for `build`
+- Decision: `build` (≥75 + interview_lines ≥ 2 + economic pain) / `interview` (≥55, or ≥75 without required conditions) / `pivot` (35–54) / `hold` (<35) — `build` requires mandatory `economic_pain` + 2+ interview lines; score alone is not sufficient
 
 ## Verification
 

@@ -25,6 +25,29 @@ You manage the **hplan exclusions registry** for: **$ARGUMENTS**
 ### list
 `python3 hplan/scripts/exclusions_registry.py list` — dump JSONL.
 
+### Profile Isolation (per-client / per-project)
+
+Use `--profile <name>` to maintain separate exclusion registries for different clients or projects:
+
+```bash
+# Add an exclusion for a specific client
+python3 hplan/scripts/exclusions_registry.py add "AI marketing copy generator" \
+  --why "Established incumbents cover this" \
+  --reopen "3+ enterprise compliance customers request it" \
+  --profile client-acme
+
+# Check only client-acme's registry
+python3 hplan/scripts/exclusions_registry.py check "AI marketing copy" --profile client-acme
+
+# List all entries for a profile
+python3 hplan/scripts/exclusions_registry.py list --profile client-acme
+
+# Global registry (no --profile = default behavior)
+python3 hplan/scripts/exclusions_registry.py check "AI marketing copy"
+```
+
+When `--profile` is omitted, the global registry at `harness/exclusions.jsonl` is used. Profile registries are stored at `harness/profiles/<profile>/exclusions.jsonl`. Add `harness/profiles/` to `.gitignore` to prevent client data from being committed.
+
 ## Output Format
 
 For `add`:

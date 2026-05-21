@@ -3,15 +3,11 @@ import { AbsoluteFill, useCurrentFrame, interpolate, spring } from 'remotion';
 import { colors, fonts, typography, FPS } from '../theme';
 
 const STAGES = [
-  { name: 'Gate', count: 7, c: 'hplanRed' as const },
-  { name: 'Discover', count: 6, c: 'skillTag' as const },
-  { name: 'Architect', count: 7, c: 'skillTag' as const },
-  { name: 'Deliver', count: 15, c: 'skillTag' as const },
-  { name: 'Measure', count: 8, c: 'skillTag' as const },
-  { name: 'Learn', count: 3, c: 'skillTag' as const },
-  { name: 'Operate', count: 4, c: 'skillTag' as const },
-  { name: 'Track', count: 7, c: 'trackBlue' as const, v8: true },
-  { name: 'Craft', count: 4, c: 'craftRose' as const, v8: true },
+  { name: 'hplan', sub: 'gate', count: 8, c: 'hplanRed' as const },
+  { name: 'discover', sub: '', count: 7, c: 'skillTag' as const },
+  { name: 'architect', sub: '', count: 8, c: 'skillTag' as const },
+  { name: 'deliver', sub: '', count: 27, c: 'trackBlue' as const },
+  { name: 'operate', sub: '', count: 15, c: 'skillTag' as const },
 ];
 
 /** v0.8 Demo — Scene 5 — Lifecycle (45-60s, 450 frames). */
@@ -31,7 +27,7 @@ export const V8DLifecycle: React.FC = () => {
       }}
     >
       <div style={{ fontSize: typography.titleSize, fontWeight: 300, color: colors.text, opacity: titleOp, marginBottom: 48, letterSpacing: '-0.02em' }}>
-        9-stage lifecycle · 62 skills
+        5-plugin lifecycle · 65 skills
       </div>
 
       <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center', maxWidth: 1700 }}>
@@ -49,12 +45,17 @@ export const V8DLifecycle: React.FC = () => {
                   borderRadius: 6,
                   textAlign: 'center',
                   minWidth: 110,
-                  backgroundColor: s.v8 ? `${colors[s.c]}1f` : 'transparent',
+                  backgroundColor: 'transparent',
                 }}
               >
                 <div style={{ fontSize: 18, fontWeight: 600, color: colors[s.c] }}>
-                  {s.name}{s.v8 && ' ★'}
+                  {s.name}
                 </div>
+                {s.sub && (
+                  <div style={{ fontSize: 11, color: colors[s.c], fontFamily: fonts.mono, marginTop: 1, opacity: 0.7 }}>
+                    {s.sub}
+                  </div>
+                )}
                 <div style={{ fontSize: 12, color: colors.dim, fontFamily: fonts.mono, marginTop: 2 }}>
                   {s.count} skills
                 </div>
@@ -66,7 +67,7 @@ export const V8DLifecycle: React.FC = () => {
       </div>
 
       <div style={{ marginTop: 48, fontSize: typography.bodySize, color: colors.dim, opacity: interpolate(frame, [320, 360], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }), letterSpacing: '-0.01em' }}>
-        ★ v0.8 추가 — build → ship gap closed
+        v0.9 · hplan → discover → architect → deliver → operate
       </div>
     </AbsoluteFill>
   );

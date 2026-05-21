@@ -36,8 +36,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 
-def registry_path(root: Path) -> Path:
-    return root / "harness" / "exclusions.jsonl"
+def registry_path(root: Path, profile: str | None = None) -> Path:
+    if profile and profile != "default":
+        return root / "harness" / "profiles" / profile / "exclusions.jsonl"
+    return root / "harness" / "exclusions.jsonl"  # backward-compatible default
 
 
 def normalize(text: str) -> str:
@@ -65,8 +67,8 @@ def jaccard_overlap(a: str, b: str) -> float:
     return max(token_jac, bigram_jac)
 
 
-def add(root: Path, exclusion: str, why: str, reopen_trigger: str, competitors: list[str], source: str | None) -> dict:
-    path = registry_path(root)
+def add(root: Path, exclusion: str, why: str, reopen_trigger: str, competitors: list[str], source: str | None, profile: str | None = None) -> dict:
+    path = registry_path(root, profile)
     path.parent.mkdir(parents=True, exist_ok=True)
     now = datetime.now(timezone.utc).isoformat()
     seed = f"{now}{exclusion}".encode("utf-8")
@@ -85,8 +87,8 @@ def add(root: Path, exclusion: str, why: str, reopen_trigger: str, competitors: 
     return entry
 
 
-def read_all(root: Path) -> list[dict]:
-    path = registry_path(root)
+def read_all(root: Path, profile: str | None = None) -> list[dict]:
+    path = registry_path(root, profile)
     if not path.exists():
         return []
     out = []
@@ -101,8 +103,8 @@ def read_all(root: Path) -> list[dict]:
     return out
 
 
-def check(root: Path, idea: str, threshold: float = 0.40) -> dict:
-    entries = read_all(root)
+def check(root: Path, idea: str, threshold: float = 0.40, profile: str | None = None) -> dict:
+    entries = read_all(root, profile)
     matches = []
     for entry in entries:
         overlap = jaccard_overlap(idea, entry.get("exclusion", ""))
@@ -139,14 +141,20 @@ def parse_args():
     p_add.add_argument("--competitor", action="append", default=[])
     p_add.add_argument("--source", default=None)
     p_add.add_argument("--root", default=".")
+    p_add.add_argument("--profile", default=None,
+        help="Profile namespace for client isolation (e.g. client-acme). Default: global registry.")
 
     p_check = sub.add_parser("check", help="Check an idea against the registry")
     p_check.add_argument("idea")
     p_check.add_argument("--threshold", type=float, default=0.40)
     p_check.add_argument("--root", default=".")
+    p_check.add_argument("--profile", default=None,
+        help="Profile namespace to check against. Default: global registry.")
 
     p_list = sub.add_parser("list", help="List all exclusions")
     p_list.add_argument("--root", default=".")
+    p_list.add_argument("--profile", default=None,
+        help="Profile namespace to list. Default: global registry.")
 
     return p.parse_args()
 
@@ -155,12 +163,12 @@ def main():
     args = parse_args()
     root = Path(args.root).resolve()
     if args.cmd == "add":
-        entry = add(root, args.exclusion, args.why, args.reopen_trigger, args.competitor, args.source)
+        entry = add(root, args.exclusion, args.why, args.reopen_trigger, args.competitor, args.source, args.profile)
         print(json.dumps(entry, ensure_ascii=False, indent=2))
     elif args.cmd == "check":
-        print(json.dumps(check(root, args.idea, args.threshold), ensure_ascii=False, indent=2))
+        print(json.dumps(check(root, args.idea, args.threshold, args.profile), ensure_ascii=False, indent=2))
     elif args.cmd == "list":
-        for entry in read_all(root):
+        for entry in read_all(root, args.profile):
             print(json.dumps(entry, ensure_ascii=False))
 
 

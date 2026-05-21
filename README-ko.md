@@ -485,7 +485,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 
 **명령어:** `/track-init` · `/track-status` · `/track-retro`
 
-> 7 스킬 모두 Rule 5 준수 (LLM 분류만; routing/policy/metric 결정론). self-contained regression test 2개: `python3 evals/skill-uplift.py --test` + `python3 scripts/validate-craft-lint.py --test`.
+> 7 스킬 모두 Rule 5 준수 (LLM 분류만; routing/policy/metric 결정론). self-contained regression test 2개: `python3 operate/evals/skill-uplift.py --test` + `python3 scripts/validate-craft-lint.py --test`.
 </details>
 
 <details>
@@ -594,7 +594,7 @@ hplan/                # repo 루트
 ├── deliver/            # 실행 (12 skills, 3 commands)
 ├── measure/            # 운영 (8 skills, 2 commands)
 ├── learn/             # 학습 (3 skills, 3 commands)
-├── evals/            # 품질 + 트리거 평가
+│   └── evals/        # 품질 + 트리거 평가
 ├── docs/images/      # 다이어그램
 ├── validate_plugins.py
 └── CONTRIBUTING.md

@@ -29,13 +29,12 @@ hplan/                         # repo root
 │       └── validate.md
 ├── architect/                     # Strategy — how to architect it (7 skills)
 ├── deliver/                     # Execution — spec and ship (12 skills)
-├── measure/                     # Metrics — measure and improve (8 skills)
-├── learn/                      # PM tacit knowledge management (3 skills)
-├── evals/                     # Trigger eval queries + benchmark data
-│   ├── evals.json             # Quality eval definitions
-│   ├── trigger-evals.json     # Trigger accuracy queries (96 total)
-│   ├── per-skill/             # Per-skill eval files
-│   └── workspace/             # Eval run outputs + benchmark results
+├── operate/                     # Operations — KPI, reliability, PM knowledge (15 skills)
+│   └── evals/                 # Trigger eval queries + benchmark data
+│       ├── evals.json         # Quality eval definitions
+│       ├── trigger-evals.json # Trigger accuracy queries
+│       ├── per-skill/         # Per-skill eval files
+│       └── workspace/         # Eval run outputs + benchmark results
 ├── README.md                  # English
 ├── README-ko.md               # Korean (한국어)
 ├── CHANGELOG.md               # Version history
@@ -185,7 +184,7 @@ Good examples: `prd`, `moat`, `cost-sim`, `premortem`, `hitl`
 1. Choose the right plugin (hplan / discover / architect / deliver / measure / learn)
 2. Create directory: `[plugin]/skills/[skill-name]/SKILL.md`
 3. Follow the SKILL.md format above
-4. Add a trigger eval query to `evals/per-skill/[skill-name].json` (2 positive + 2 negative)
+4. Add a trigger eval query to `operate/evals/per-skill/[skill-name].json` (2 positive + 2 negative)
 5. If the skill chains with others, update or create a Command
 
 ### Improving Existing Skills

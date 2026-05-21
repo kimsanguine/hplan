@@ -40,6 +40,7 @@ hplan is **Stage 0**. The other 5 plugins inherit decisions from hplan's gates.
 | `/hplan-handoff <target>` | Export Build Gate brief to spec-kit / kiro / gstack / claude / all |
 | `/hplan-verify [condition]` | **[Dev]** Verify completion evidence — sync STATE.md condition anchors (❌→✅) |
 | `/hplan-scope-guard <feature>` | **[Dev]** Check new feature against exclusions + CONDITIONAL_GO scope + COGS tier. Returns ALLOW / DEFER / BLOCK |
+| `/hplan-doctor` | Installation health check — verifies hook registration, gate_guard execution, checkpoint state, exclusions registry, and git pre-commit hook |
 
 ## Cross-Cutting Assets
 

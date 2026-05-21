@@ -60,9 +60,7 @@ The pattern: **you don't have to remember to invoke hplan.** Once installed, it 
 
 ## WHETHER — The Question Every Other Tool Skips
 
-> **"AI 코딩 도구가 HOW를 잘하게 됐다면, hplan은 WHETHER를 다룬다. 둘은 같이 쓰는 것이 아니라 순서가 있다 — hplan이 먼저다."**
->
-> *"If AI coding tools have mastered HOW, hplan handles WHETHER. They're not used together — there's an order. hplan goes first."*
+> **"If AI coding tools have mastered HOW, hplan handles WHETHER. They're not used together — there's an order. hplan goes first."**
 
 **HOW** asks: *"In what way should we build this?"*
 **WHETHER** asks: *"Should we build this at all — yes or no?"*
@@ -80,11 +78,11 @@ Other tools handle **HOW** (superpowers → how to work with Claude Code), **WHO
 
 ### hplan's 3 Principles vs Opposing Assumptions
 
-| hplan 원칙 | 대립 가정 |
-|-----------|---------|
-| **대화↓ 고객문서↑** — 고객·시장·경쟁사에 대한 문서가 많을수록 LLM이 더 정확하게 돕는다 | LLM과 대화를 더 많이 할수록 결과가 개선된다 |
-| **큰 작업은 단계별로** — 검증되지 않은 전제를 컨텍스트에 쌓지 않는다 | 한 번에 큰 컨텍스트를 주면 LLM이 더 잘 이해한다 |
-| **검증 먼저·개발 나중** — 증거 없이 PRD를 쓰는 것은 기술적 부채의 시작이다 | 빠른 프로토타입을 만들어보면 검증된다 |
+| hplan Principle | Opposing Assumption |
+|----------------|---------------------|
+| **Less conversation, more customer docs** — the more documentation you have on customers, market, and competitors, the more accurately LLMs assist | Having longer conversations with LLMs improves results |
+| **Big tasks step by step** — don't stack unvalidated premises in context | Giving LLMs a large context at once leads to better understanding |
+| **Validate first, build later** — writing a PRD without evidence is the start of technical debt | A quick prototype is how you validate |
 
 <p align="center">
   <img src="docs/images/demo-terminal.svg" alt="hplan demo — exclusion collision + RED COGS catch a bad idea before any PRD is written" width="800"/>
@@ -279,7 +277,7 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 | `hitl` | Set automation levels (1-5) and escalation triggers via reversibility × error-impact matrix | "Can the agent decide refunds, or must a human approve?" |
 | `cost-sim` | Simulate monthly costs at 1→10→100→1,000 users by model pricing × call patterns | "Sonnet at 500 calls/day — what's the monthly bill?" |
 | `agent-gtm` | Score beachhead segments (5 criteria) + design Shadow→Co-pilot→Auto→Delegation trust sequence | "How do we roll this agent out to B2B customers?" |
-| `design-reference` ⭐ v0.8.5 NEW | Filter 100 curated KR/global reference sites (12 categories) → select 5-7 → generate DESIGN_BRIEF.md | "타겟 확정 후 UI 방향성 결정 — 핀테크? 푸드딜리버리? 레퍼런스 먼저" |
+| `design-reference` ⭐ v0.8.5 NEW | Filter 100 curated KR/global reference sites (12 categories) → select 5-7 → generate DESIGN_BRIEF.md | "After ICP is confirmed, set UI direction — fintech? food delivery? references first" |
 
 **Commands:** `/discover` · `/validate`
 </details>
@@ -296,7 +294,7 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 | `memory-arch` | Design Working/Episodic/Semantic/Procedural memory layers + token-budget-aware retrieval | "How does today's session recall yesterday's context?" |
 | `moat` | Diagnose 6 moat types: data flywheel, workflow lock-in, network effects, switching costs, specialization, brand | "A competitor ships a GPT clone — what's our defense?" |
 | `growth-loop` | Design usage→data→improvement→re-use loops + cold-start solutions + anti-loop identification | "How do we make recommendations improve with every use?" |
-| `design-token` ⭐ v0.8.5 NEW | Read DESIGN_BRIEF.md → generate semantic CSS tokens (tokens.md) + DESIGN.md with breakpoint spec | "BRIEF 기반 --color-brand-primary 등 의미 토큰 생성 — craft/mobile-check 입력" |
+| `design-token` ⭐ v0.8.5 NEW | Read DESIGN_BRIEF.md → generate semantic CSS tokens (tokens.md) + DESIGN.md with breakpoint spec | "From DESIGN_BRIEF.md, generate semantic tokens like --color-brand-primary — feeds into craft/mobile-check" |
 
 **Commands:** `/architecture` · `/strategy-review`
 </details>
@@ -315,7 +313,7 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 |-------|-------------|-------------|
 | `claude-md` ⭐ | Scan project structure → auto-generate CLAUDE.md → recommend matching hplan plugins | "New project — set up Claude Code context" |
 | `instruction` | Define Role/Context/Goal/Tools/Memory/Output/Failure with least-privilege tool access | "What goes in (and out of) the system prompt?" |
-| `prd` | **Unified 14-section PRD** — People/Problem/Decisions + Agent/Execution Spec + Metrics/Hypotheses/Failure | "1인 변호사 한국 판례 RAG PRD 작성해줘" |
+| `prd` | **Unified 14-section PRD** — People/Problem/Decisions + Agent/Execution Spec + Metrics/Hypotheses/Failure | "Write a PRD for a solo-lawyer Korean case-law RAG agent" |
 | `prompt` | CRISP framework + Why-First principle + 7 failure pattern avoidance | "Longer prompts make my agent behave worse" |
 | `ctx-budget` | Estimate per-file token usage → classify Essential/Conditional/Excluded → 70% threshold alerts | "How do I fit 5 RAG docs + chat history into 128K?" |
 | `okr` | Dual-axis OKRs: Business Impact + Operational Health with mandatory cost KR | "Is 95% accuracy enough, or do I need cost metrics too?" |
@@ -336,7 +334,7 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 | `hierarchy-rules` | Playwright + DOM saliency + WCAG AA (fold density / type hierarchy / 60-30-10 color) | "Measure what humans actually see — not what tokens promised" |
 | `motion-language` | Regex + framer-motion AST scan → drift report against RESPECT spec | "Hover transitions all 200ms? Page easing consistent?" |
 | `ui-drift-detect` | 5+ screen pHash + KMeans palette + DOM tree edit distance → 5-dimension drift score | "Design system regression — new screen broke the language?" |
-| `mobile-check` | Playwright 375/768/1440px hard gate — no horizontal scroll, 44px touch targets, 14px+ fonts | "DESIGN.md 기준 3뷰포트 통과 전까지 빌드 완료 선언 금지" |
+| `mobile-check` | Playwright 375/768/1440px hard gate — no horizontal scroll, 44px touch targets, 14px+ fonts | "Do not declare build complete until all 3 viewports pass per DESIGN.md spec" |
 | `harness-design` | Design the build harness structure (decisions, evidence, gates) | "Set up the harness before coding starts" |
 | `parallel-team` | Spawn + coordinate parallel worktree agents | "Dispatch 3 agents on independent tasks simultaneously" |
 | `build-loop` | Autonomous build-loop orchestration with checkpoint gates | "Run the full build loop unattended" |
@@ -458,7 +456,7 @@ hplan/                # repo root
 ├── architect/            # Architecture (8 skills, 2 commands)
 ├── deliver/            # Deliver (27 skills, 8 commands) — spec + track + UI enforcement
 ├── operate/            # Operate (15 skills, 5 commands) — measure + learn + portfolio
-├── evals/            # Quality + trigger evals
+│   └── evals/        # Quality + trigger evals
 ├── docs/images/      # Diagrams
 ├── validate_plugins.py
 └── CONTRIBUTING.md
