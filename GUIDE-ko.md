@@ -25,6 +25,19 @@
 
 ---
 
+## 시스템 요구사항
+
+| 항목 | 최소 버전 | 비고 |
+|-----|---------|------|
+| **Claude Code** | v1.0.0+ | `claude --version`으로 확인 · [설치 가이드](https://docs.anthropic.com/ko/docs/claude-code) |
+| **Python** | 3.9+ | `python3 --version`으로 확인 · Evidence Gate 스크립트 실행 필요 |
+| **Git** | 2.x+ | pre-commit hook 사용 시 필요 (선택) |
+| **OS** | macOS / Linux | Windows는 WSL2 권장 |
+
+> **Python이 없다면?** Evidence Gate(`generate_report.py`, `gate_guard.py`)를 포함한 일부 스킬이 동작하지 않습니다. 나머지 스킬(SKILL.md 기반)은 Python 없이도 사용 가능합니다.
+
+---
+
 ## 설치하기 (5분)
 
 ### 방법 1: 마켓플레이스 설치 (추천)
@@ -232,6 +245,7 @@ TK 유닛을 에이전트가 바로 사용할 수 있는 인스트럭션 형식�
 | `hitl` | Human-in-the-loop 범위 설정 | "어디까지 자동화하고 어디서 사람이 개입?" |
 | `cost-sim` | 토큰 비용 시뮬레이션 | "한 달에 얼마 들어?" |
 | `agent-gtm` | 에이전트 Go-to-Market 전략 | "출시를 어떻게 해야 하지?" |
+| `design-reference` | UI/UX 레퍼런스 수집·구조화 + 공통 패턴 추출 | "경쟁사 레퍼런스에서 패턴을 뽑아 설계에 반영하고 싶어" |
 
 ### architect — 설계 (8개 스킬)
 
@@ -246,7 +260,7 @@ TK 유닛을 에이전트가 바로 사용할 수 있는 인스트럭션 형식�
 | `growth-loop` | 데이터 플라이휠 설계 | "사용할수록 똑똑해지게 만들려면?" |
 | `design-token` | 시맨틱 CSS 토큰 + DESIGN.md 자동 생성 | "디자인 시스템 토큰을 어떻게 정의하지?" |
 
-### deliver — 딜리버리 (27개 스킬)
+### deliver — 딜리버리 (27개 스킬, 핵심 15개 표시 — 전체 목록은 [README-ko.md](README-ko.md) 참조)
 
 | 스킬 | 하는 일 | 이럴 때 쓰세요 |
 |------|--------|-------------|
