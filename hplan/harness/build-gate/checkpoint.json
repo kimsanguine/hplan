@@ -1,0 +1,20 @@
+{
+  "status": "approved",
+  "project": "habix-legal-graph-rag",
+  "gate": "build",
+  "decision": "CONDITIONAL_GO",
+  "score": 87,
+  "decision_ref": "dec-2026-05-15-7425e",
+  "approved_at": "2026-05-15T00:16:43.170442+00:00",
+  "approved_by": "user",
+  "provenance": "Manual build gate review. CONDITIONAL_GO 87/100. gate_guard.py unblocked for PRD/spec edits.",
+  "active_conditions": [
+    "multi-model 강제 (Haiku blended p90 ≤ 89%)",
+    "Free tier 10/day + 500명 cap 유지",
+    "베타 30일 재측정 후 pricing 재검토",
+    "변호사 5명 실섭외 인터뷰 완료",
+    "p95 레이턴시 ≤ 8s 실측 확인",
+    "환각 0건 + 폐기 판례 누락 < 1% 달성"
+  ],
+  "note": "Conditions must be resolved before production handoff. See decisions.jsonl dec-2026-05-15-7425e."
+}
