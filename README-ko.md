@@ -14,6 +14,12 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)](CONTRIBUTING.md)
 [![English](https://img.shields.io/badge/lang-English-blue?style=flat-square)](README.md)
 
+**요구사항:** Claude Code v1.0+ · Python 3.9+ · Git 2.x+ · macOS / Linux (Windows: WSL2)
+
+```bash
+git clone https://github.com/kimsanguine/hplan ~/.claude/plugins/hplan
+```
+
 > **v0.9.1** — hplan 은 AI 도구가 HOW 로 달려가기 전에 **WHETHER 를 묻는 Product Build Gate** 입니다. v0.9 는 9단계 구조를 **5-plugin 라이프사이클**(hplan → discover → architect → deliver → operate)로 단순화합니다. `track` + `craft` 가 `deliver` 로, `measure` + `learn` 이 `operate` 로 통합. v0.9.1 에서 Evidence Gate 루브릭 통일, `/hplan-doctor` 진단 커맨드 신설, exclusions `--profile` 클라이언트 격리 추가. 자세한 변경 내역은 [CHANGELOG.md](CHANGELOG.md).
 
 ### 📺 99초 소개 영상

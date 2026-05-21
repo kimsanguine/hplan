@@ -109,58 +109,64 @@ v0.9부터 `measure` + `learn`이 `operate`로 통합되어 **5-plugin 라이프
 
 ## 시나리오별 따라하기
 
-### 시나리오 1: "고객 문의 자동 응답 에이전트를 만들고 싶어"
+### 시나리오 1: "AI 가계부 앱, 처음부터 끝까지 일관되게 만들고 싶어"
 
-이런 생각이 들었다면, 아래 순서로 진행하세요.
+**배경** — 1인 메이커. "기존 가계부 앱엔 AI 분석이 없다"는 불만을 여러 번 들었다.
+만들어야 할지, 만든다면 어떻게 일관되게 진행할지 모르겠다.
 
-**Step 1 — 기회 탐색** (discover)
+---
 
-```
-/discover 고객 상담 업무
-```
-
-이 커맨드는 내부적으로 `opp-tree` 스킬을 불러서, 어떤 상담 유형이 자동화에 적합한지 기회 트리를 만들어줍니다.
-
-**Step 2 — 가정 검증** (discover)
+**Step 1 — gate: 만들어야 하는가 (WHETHER)**
 
 ```
-/validate 고객 상담 챗봇 에이전트
+/hplan AI 가계부, 지출 패턴 자동 분석
 ```
 
-에이전트를 만들기 전에 검증해야 할 가정 4축(Value, Feasibility, Reliability, Ethics)을 체크합니다. "이 에이전트가 정말 가치가 있는가? 기술적으로 가능한가? 신뢰성은? 윤리 이슈는?"
+Evidence Gate 실행. 인터뷰 3건 결과 **78점 (GO)**. `generate_report.py` 출력에서 전환 트리거·경제적 고통 확인, build 판정. 이 점수와 근거가 이후 모든 결정의 **기준선①**이 된다.
 
-**Step 3 — 비용 시뮬레이션** (discover)
-
-```
-고객 상담 챗봇의 토큰 비용을 시뮬레이션해줘.
-하루 200건 상담, 평균 대화 5턴, GPT-4o와 Claude Sonnet 비교.
-```
-
-`cost-sim` 스킬이 자동으로 불립니다. 월간 비용, 유저 스케일링 시나리오(1→10→100배), 최적화 전략까지 나옵니다.
-
-**Step 4 — 아키텍처 설계** (architect)
+**Step 2 — architect: 기술 결정을 한 번, 끝까지 유지**
 
 ```
-/architecture 고객 상담 챗봇 - 다국어 지원, FAQ 자동응답, 에스컬레이션 포함
+/architecture AI 가계부 앱
+/cost-sim --requests 200/day --model gemini-flash
 ```
 
-단일 에이전트로 충분한지, 멀티에이전트(3-tier)가 필요한지 판단하고 구조를 설계합니다.
+아키텍처 결정: FastAPI + Supabase + Gemini Flash, 월 $8 예상. **이 결정이 PRD·health-check·운영 전 구간에 자동 반영됩니다 (기준선②).** 이후 "Firebase로 바꾸면 어때요?" 같은 요청이 들어오면 architect 결정을 참조해 이탈 경고를 냅니다.
 
-**Step 5 — PRD 작성** (deliver)
-
-```
-/write-prd 고객 상담 자동응답 에이전트
-```
-
-에이전트 전용 PRD가 생성됩니다. 일반 PRD와 다른 점은 Instruction, Tools, Memory, Triggers, Failure Handling, Output Format, Guard Rails 섹션이 포함된다는 것입니다.
-
-**Step 6 — 건강 점검 설정** (operate)
+**Step 3 — discover: 디자인 기준을 한 번, 끝까지 유지**
 
 ```
-/health-check 고객 상담 에이전트
+/design-reference 가계부 앱
+/design-token --palette minimal-fintech
 ```
 
-운영 중인 에이전트의 KPI, 실패율, 비용 추이를 모니터링할 대시보드 기준을 잡아줍니다.
+색상·타이포·간격 토큰 정의 (참고: Toshl, Moze). **이 토큰이 이후 모든 화면 구현의 기준입니다 (기준선③).** "버튼 색 바꿔줘" 요청이 들어오면 design-token을 참조해 토큰 외 값 사용 경고를 냅니다.
+
+**Step 4 — deliver: 일관된 기반 위에서 구현**
+
+```
+/write-prd AI 가계부 v1
+/mobile-check
+```
+
+PRD에 기준선①(PMF 근거)·②(아키텍처)·③(디자인 토큰)이 자동 반영됩니다. 모바일 체크리스트 통과 후 구현 시작. 구현 도중 새 기능 추가 요청이 오면 "Step 1 근거와 연결되는가?"를 먼저 확인합니다.
+
+**Step 5 — operate: 기준선 이탈 없이 운영**
+
+```
+/health-check AI 가계부
+```
+
+아키텍처·디자인·PMF 근거 3개 기준선을 동시에 점검합니다. 이탈 감지 시 경고 → decision-log 기록 → 다음 스프린트에 반영.
+
+| 구간 | hplan의 역할 |
+|------|-------------|
+| 시작 | Evidence Gate → WHETHER 결정 |
+| 설계 | 아키텍처·디자인 토큰 → 기준선 수립 |
+| 구현 | PRD·mobile-check → 기준선 반영 |
+| 운영 | health-check → 기준선 이탈 방지 |
+
+> 1인 메이커가 6개월 후 "이게 처음 의도였나?" 하는 순간을 없앤다.
 
 ---
 
