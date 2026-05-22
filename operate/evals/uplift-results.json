@@ -1,0 +1,74 @@
+{
+  "summary": {
+    "threshold": 0.05,
+    "model": "claude-haiku-4-5-20251001",
+    "runs_per_query": 3,
+    "evaluated": 1,
+    "quarantine_count": 0,
+    "quarantine_skills": [],
+    "elapsed_seconds": 23.2
+  },
+  "results": [
+    {
+      "skill": "pptx-ai-slide",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "AI 에이전트 소개 PPT 만들어줘. 5장 분량으로 이미지도 생성해서 넣어줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "강의자료 PPTX 뽑아줘. 40장짜리 McKinsey 스타일로 딥러닝 개론 내용.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "FastAPI 엔드포인트 코드 리뷰해줘. 인증 로직 보안 이슈 있는지 확인해야 해.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "PostgreSQL 스키마 설계해줘. 사용자·주문·상품 테이블 관계 정의해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "AI 에이전트 소개 PPT 만들어줘. 5장 분량으로 이미지도 생성해서 넣어줘.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "강의자료 PPTX 뽑아줘. 40장짜리 McKinsey 스타일로 딥러닝 개론 내용.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "FastAPI 엔드포인트 코드 리뷰해줘. 인증 로직 보안 이슈 있는지 확인해야 해.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "PostgreSQL 스키마 설계해줘. 사용자·주문·상품 테이블 관계 정의해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    }
+  ]
+}
