@@ -1,0 +1,3980 @@
+{
+  "summary": {
+    "threshold": 0.05,
+    "model": "claude-haiku-4-5-20251001",
+    "runs_per_query": 3,
+    "evaluated": 65,
+    "quarantine_count": 1,
+    "quarantine_skills": [
+      "pptx-ai-slide"
+    ],
+    "elapsed_seconds": 1687.3
+  },
+  "results": [
+    {
+      "skill": "opp-tree",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "우리 CS팀에서 반복적으로 하는 업무가 많은데, 어떤 부분을 에이전트로 자동화하면 좋을지 기회를 체계적으로 분석해줘. 현재 티켓 분류, FAQ 응답, 에스컬레이션 판단을 수동으로 하고 있어.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "I'm a PM at an edtech startup and we want to explore where AI agents could add value in our tutoring platform. Students currently wait 2-3 hours for tutor responses. Help me map out the opportunity space.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "우리 팀 OKR 작성 좀 도와줘. 이번 분기 목표는 MAU 20% 성장이야.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "React로 대시보드 컴포넌트 만들어줘. 차트랑 필터 들어가야 해.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "우리 CS팀에서 반복적으로 하는 업무가 많은데, 어떤 부분을 에이전트로 자동화하면 좋을지 기회를 체계적으로 분석해줘. 현재 티켓 분류, FAQ 응답, 에스컬레이션 판단을 수동으로 하고 있어.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "I'm a PM at an edtech startup and we want to explore where AI agents could add value in our tutoring platform. Students currently wait 2-3 hours for tutor responses. Help me map out the opportunity space.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "우리 팀 OKR 작성 좀 도와줘. 이번 분기 목표는 MAU 20% 성장이야.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "React로 대시보드 컴포넌트 만들어줘. 차트랑 필터 들어가야 해.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "assumptions",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "고객 문의를 자동 분류하는 에이전트를 만들려고 하는데, 이 아이디어의 핵심 가정들을 분석해줘. LLM이 우리 도메인 용어를 이해할 수 있을지, 고객이 자동 응답을 수용할지 확신이 없어.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "We're planning to build an agent that auto-generates marketing copy. Before we invest, help me identify what assumptions we're making about quality, brand consistency, and user acceptance.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 아키텍처를 3-tier로 설계하고 싶어. Prometheus-Atlas-Worker 패턴 적용해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "이번 달 에이전트 토큰 비용 리뷰해줘. 예산 대비 초과된 것 같아.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "고객 문의를 자동 분류하는 에이전트를 만들려고 하는데, 이 아이디어의 핵심 가정들을 분석해줘. LLM이 우리 도메인 용어를 이해할 수 있을지, 고객이 자동 응답을 수용할지 확신이 없어.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "We're planning to build an agent that auto-generates marketing copy. Before we invest, help me identify what assumptions we're making about quality, brand consistency, and user acceptance.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "에이전트 아키텍처를 3-tier로 설계하고 싶어. Prometheus-Atlas-Worker 패턴 적용해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "이번 달 에이전트 토큰 비용 리뷰해줘. 예산 대비 초과된 것 같아.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "build-or-buy",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "문서 요약 에이전트를 만들려는데, 직접 개발할지 Glean 같은 기존 솔루션을 쓸지 고민이야. 우리 팀은 엔지니어 2명이고 3개월 안에 런칭해야 해.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "Should we build our own customer support agent or use Intercom's AI features? We handle about 500 tickets/day and need Korean language support.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 기회를 탐색하고 싶어. 우리 서비스에서 자동화할 수 있는 영역을 찾아줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 PRD 작성해줘. 이미 빌드하기로 결정했고 스펙이 필요해.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "문서 요약 에이전트를 만들려는데, 직접 개발할지 Glean 같은 기존 솔루션을 쓸지 고민이야. 우리 팀은 엔지니어 2명이고 3개월 안에 런칭해야 해.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "Should we build our own customer support agent or use Intercom's AI features? We handle about 500 tickets/day and need Korean language support.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "에이전트 기회를 탐색하고 싶어. 우리 서비스에서 자동화할 수 있는 영역을 찾아줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 PRD 작성해줘. 이미 빌드하기로 결정했고 스펙이 필요해.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "hitl",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "계약서 검토 에이전트를 만드는데, 어디까지 자동으로 하고 어디서 사람이 개입해야 할지 경계를 설계해줘. 법적 리스크가 있어서 완전 자동은 안 돼.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "Our content moderation agent sometimes flags legitimate posts. Help me design the right level of human oversight — when should the agent auto-approve vs escalate to a human reviewer?",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 비즈니스 모델을 설계하고 싶어. 가격 전략이랑 수익 구조를 잡아줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "프롬프트 최적화 좀 해줘. CRISP 프레임워크로 다시 작성해봐.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "계약서 검토 에이전트를 만드는데, 어디까지 자동으로 하고 어디서 사람이 개입해야 할지 경계를 설계해줘. 법적 리스크가 있어서 완전 자동은 안 돼.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "Our content moderation agent sometimes flags legitimate posts. Help me design the right level of human oversight — when should the agent auto-approve vs escalate to a human reviewer?",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "에이전트 비즈니스 모델을 설계하고 싶어. 가격 전략이랑 수익 구조를 잡아줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "프롬프트 최적화 좀 해줘. CRISP 프레임워크로 다시 작성해봐.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "cost-sim",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "고객 응대 에이전트를 GPT-4o로 만들려는데, 하루 1000건 처리 기준으로 월 비용이 얼마나 나올지 시뮬레이션해줘. 평균 대화 턴은 5회 정도야.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "We want to estimate the token costs for our document analysis agent before getting budget approval. Each doc is ~10 pages, we process 200/day, using Claude Sonnet.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 reliability를 개선하고 싶어. 에러율이 높아.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "경쟁사 분석 좀 해줘. 우리 에이전트 제품의 경쟁 우위가 뭔지 알고 싶어.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "고객 응대 에이전트를 GPT-4o로 만들려는데, 하루 1000건 처리 기준으로 월 비용이 얼마나 나올지 시뮬레이션해줘. 평균 대화 턴은 5회 정도야.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "We want to estimate the token costs for our document analysis agent before getting budget approval. Each doc is ~10 pages, we process 200/day, using Claude Sonnet.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "에이전트 reliability를 개선하고 싶어. 에러율이 높아.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "경쟁사 분석 좀 해줘. 우리 에이전트 제품의 경쟁 우위가 뭔지 알고 싶어.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "3-tier",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "복잡한 데이터 파이프라인을 관리하는 멀티에이전트 시스템을 설계하려는데, Prometheus-Atlas-Worker 패턴으로 역할을 나누고 싶어. 전략 계획, 조율, 실행 레이어를 어떻게 구성할지 도와줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "I need to design a multi-agent system where one agent plans research tasks, another coordinates data gathering across sources, and workers execute individual searches. How should I structure the hierarchy?",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 North Star 메트릭을 정의하고 싶어.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "PM 경험에서 배운 의사결정 패턴을 정리해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "복잡한 데이터 파이프라인을 관리하는 멀티에이전트 시스템을 설계하려는데, Prometheus-Atlas-Worker 패턴으로 역할을 나누고 싶어. 전략 계획, 조율, 실행 레이어를 어떻게 구성할지 도와줘.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "I need to design a multi-agent system where one agent plans research tasks, another coordinates data gathering across sources, and workers execute individual searches. How should I structure the hierarchy?",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "에이전트 North Star 메트릭을 정의하고 싶어.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "PM 경험에서 배운 의사결정 패턴을 정리해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "orchestration",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "4개의 에이전트가 협업하는 시스템인데, Sequential로 할지 Parallel로 할지 Router 패턴을 쓸지 고민이야. 각 에이전트는 독립적으로 동작 가능하지만 결과를 합쳐야 해.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "How should I orchestrate agents that handle translation, summarization, and sentiment analysis? They can run independently but I need to combine results. What pattern fits best?",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 토큰 비용을 추적하고 예산을 관리하고 싶어.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "TK 엔트리를 에이전트 인스트럭션으로 변환해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "4개의 에이전트가 협업하는 시스템인데, Sequential로 할지 Parallel로 할지 Router 패턴을 쓸지 고민이야. 각 에이전트는 독립적으로 동작 가능하지만 결과를 합쳐야 해.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "How should I orchestrate agents that handle translation, summarization, and sentiment analysis? They can run independently but I need to combine results. What pattern fits best?",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "에이전트 토큰 비용을 추적하고 예산을 관리하고 싶어.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "TK 엔트리를 에이전트 인스트럭션으로 변환해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "biz-model",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "AI 에이전트 기반 SaaS를 런칭하려는데, per-use로 과금할지 subscription으로 할지, 아니면 성과 기반으로 할지 비즈니스 모델을 설계해줘. 타겟은 중소기업이야.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "We built an AI writing assistant agent. Help me design the pricing strategy — should we charge per generation, monthly subscription, or based on output quality? Our COGS is mainly API costs.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 메모리 시스템을 설계하고 싶어. 대화 기록을 어떻게 저장할지.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 개발 스프린트를 계획해줘. 3일짜리 프로토타입.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "AI 에이전트 기반 SaaS를 런칭하려는데, per-use로 과금할지 subscription으로 할지, 아니면 성과 기반으로 할지 비즈니스 모델을 설계해줘. 타겟은 중소기업이야.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "We built an AI writing assistant agent. Help me design the pricing strategy — should we charge per generation, monthly subscription, or based on output quality? Our COGS is mainly API costs.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "에이전트 메모리 시스템을 설계하고 싶어. 대화 기록을 어떻게 저장할지.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 개발 스프린트를 계획해줘. 3일짜리 프로토타입.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "router",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "우리 에이전트가 간단한 질문은 Haiku로, 복잡한 분석은 Sonnet으로, 코딩은 Opus로 보내고 싶어. 태스크별 모델 라우팅 전략을 설계해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "My agent handles both simple FAQ responses and complex reasoning tasks. How should I route between GPT-4o-mini and GPT-4o to optimize cost without sacrificing quality?",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트의 KPI를 정의하고 모니터링 대시보드를 만들고 싶어.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "이번 에이전트 기회를 OST로 분석해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "우리 에이전트가 간단한 질문은 Haiku로, 복잡한 분석은 Sonnet으로, 코딩은 Opus로 보내고 싶어. 태스크별 모델 라우팅 전략을 설계해줘.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "My agent handles both simple FAQ responses and complex reasoning tasks. How should I route between GPT-4o-mini and GPT-4o to optimize cost without sacrificing quality?",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "에이전트의 KPI를 정의하고 모니터링 대시보드를 만들고 싶어.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "이번 에이전트 기회를 OST로 분석해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "memory-arch",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "우리 상담 에이전트가 이전 대화를 기억하게 만들고 싶어. 단기 컨텍스트, 장기 저장, 검색 전략을 포함한 메모리 아키텍처를 설계해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "How should I design memory for a coding assistant agent that needs to remember project context, user preferences, and past debugging sessions across multiple conversations?",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 Instruction을 7개 요소로 설계해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "이 에이전트의 가정을 4축으로 분석해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "우리 상담 에이전트가 이전 대화를 기억하게 만들고 싶어. 단기 컨텍스트, 장기 저장, 검색 전략을 포함한 메모리 아키텍처를 설계해줘.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "How should I design memory for a coding assistant agent that needs to remember project context, user preferences, and past debugging sessions across multiple conversations?",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "에이전트 Instruction을 7개 요소로 설계해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "이 에이전트의 가정을 4축으로 분석해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "moat",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "우리 AI 에이전트 제품이 경쟁사 대비 어떤 해자를 갖고 있는지 분석해줘. 데이터 플라이휠, 네트워크 효과, 전환 비용 관점에서 봐줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "We're worried competitors can easily replicate our AI agent. Help me analyze what competitive advantages we have and design strategies to build a sustainable moat.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 PRD를 작성해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트의 context window 토큰 예산을 계획해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "우리 AI 에이전트 제품이 경쟁사 대비 어떤 해자를 갖고 있는지 분석해줘. 데이터 플라이휠, 네트워크 효과, 전환 비용 관점에서 봐줘.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "We're worried competitors can easily replicate our AI agent. Help me analyze what competitive advantages we have and design strategies to build a sustainable moat.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "에이전트 PRD를 작성해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트의 context window 토큰 예산을 계획해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "instruction",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "신규 에이전트의 System Prompt를 설계해줘. 역할, 목표, 제약조건, 도구, 메모리, 출력 형식, 폴백을 포함해서. 고객 온보딩 가이드 에이전트야.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "My agent keeps going off-topic and producing inconsistent outputs. Help me redesign its instruction set from scratch — I need a clear role definition, constraints, and output format.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 비용을 시뮬레이션해줘. GPT-4o 기준으로.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트의 reliability를 체계적으로 리뷰해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "신규 에이전트의 System Prompt를 설계해줘. 역할, 목표, 제약조건, 도구, 메모리, 출력 형식, 폴백을 포함해서. 고객 온보딩 가이드 에이전트야.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "My agent keeps going off-topic and producing inconsistent outputs. Help me redesign its instruction set from scratch — I need a clear role definition, constraints, and output format.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "에이전트 비용을 시뮬레이션해줘. GPT-4o 기준으로.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트의 reliability를 체계적으로 리뷰해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "prd",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "데이터 분석 에이전트의 PRD를 작성해줘. Instruction, Tools, Memory, Trigger, Output, Failure handling 전부 포함해서. 기존 BI 대시보드와 연동해야 해.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "I need a formal spec document for our content generation agent before handing it off to engineering. Should cover the agent's capabilities, failure modes, and integration points.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 오케스트레이션 패턴을 선택해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "PM 암묵지를 추출하고 TK 유닛으로 구조화해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "데이터 분석 에이전트의 PRD를 작성해줘. Instruction, Tools, Memory, Trigger, Output, Failure handling 전부 포함해서. 기존 BI 대시보드와 연동해야 해.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "I need a formal spec document for our content generation agent before handing it off to engineering. Should cover the agent's capabilities, failure modes, and integration points.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "에이전트 오케스트레이션 패턴을 선택해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "PM 암묵지를 추출하고 TK 유닛으로 구조화해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "prompt",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "에이전트 System Prompt가 일관성 없는 결과를 내고 있어. CRISP 프레임워크로 다시 작성해줘. Context/Role/Instruction/Scope/Parameters 다 포함해서.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "I wrote this agent instruction but it keeps hallucinating product features. Help me engineer a better prompt — I think the scope and constraints aren't clear enough.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트의 build-or-buy 결정을 내려야 해.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 주간 health check를 실행해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "에이전트 System Prompt가 일관성 없는 결과를 내고 있어. CRISP 프레임워크로 다시 작성해줘. Context/Role/Instruction/Scope/Parameters 다 포함해서.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "I wrote this agent instruction but it keeps hallucinating product features. Help me engineer a better prompt — I think the scope and constraints aren't clear enough.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "에이전트의 build-or-buy 결정을 내려야 해.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 주간 health check를 실행해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "ctx-budget",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "에이전트가 context window를 초과해서 자꾸 잘려. System prompt, 유저 입력, 도구 결과, 메모리 각각에 토큰을 얼마나 할당할지 예산을 짜줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "My agent loads 5 reference files plus conversation history and keeps hitting the 128k token limit. Help me plan which files to prioritize and how to budget the context window.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 North Star 메트릭을 정의해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "경쟁사 에이전트 제품의 해자를 분석해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "에이전트가 context window를 초과해서 자꾸 잘려. System prompt, 유저 입력, 도구 결과, 메모리 각각에 토큰을 얼마나 할당할지 예산을 짜줘.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "My agent loads 5 reference files plus conversation history and keeps hitting the 128k token limit. Help me plan which files to prioritize and how to budget the context window.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "에이전트 North Star 메트릭을 정의해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "경쟁사 에이전트 제품의 해자를 분석해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "okr",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "배포된 고객 서비스 에이전트의 OKR을 설계해줘. 비즈니스 임팩트(응답 시간 단축, CSAT 향상)와 운영 건강도(에러율, 비용 효율) 두 축으로.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "We need quarterly OKRs for our AI agent portfolio. Help me define objectives and key results that balance business impact with operational reliability.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트의 pre-mortem 분석을 해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 메모리 아키텍처를 설계해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "배포된 고객 서비스 에이전트의 OKR을 설계해줘. 비즈니스 임팩트(응답 시간 단축, CSAT 향상)와 운영 건강도(에러율, 비용 효율) 두 축으로.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "We need quarterly OKRs for our AI agent portfolio. Help me define objectives and key results that balance business impact with operational reliability.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "에이전트의 pre-mortem 분석을 해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 메모리 아키텍처를 설계해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "kpi",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "에이전트 모니터링 대시보드를 세팅하려는데, 어떤 KPI를 트래킹해야 할지 정의해줘. 운영 메트릭이랑 비즈니스 메트릭 둘 다.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "What metrics should I track for our deployed translation agent? I need both operational health indicators and business impact measurements.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 Instruction을 설계해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 비즈니스 모델을 설계해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "에이전트 모니터링 대시보드를 세팅하려는데, 어떤 KPI를 트래킹해야 할지 정의해줘. 운영 메트릭이랑 비즈니스 메트릭 둘 다.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "What metrics should I track for our deployed translation agent? I need both operational health indicators and business impact measurements.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "에이전트 Instruction을 설계해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 비즈니스 모델을 설계해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "reliability",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "에이전트가 간헐적으로 이상한 응답을 내고 있어. 체계적으로 reliability를 리뷰하고 개선 방안을 도출해줘. 에러 패턴 분석부터.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "Our agent's success rate dropped from 95% to 87% last week. Help me systematically assess what's failing and design safeguards to prevent similar regressions.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 기회 발굴을 해줘. OST로 분석.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 OKR을 설계해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "에이전트가 간헐적으로 이상한 응답을 내고 있어. 체계적으로 reliability를 리뷰하고 개선 방안을 도출해줘. 에러 패턴 분석부터.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "Our agent's success rate dropped from 95% to 87% last week. Help me systematically assess what's failing and design safeguards to prevent similar regressions.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "에이전트 기회 발굴을 해줘. OST로 분석.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 OKR을 설계해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "premortem",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "다음 주에 에이전트를 프로덕션에 배포하는데, 실패할 수 있는 모든 시나리오를 사전에 분석해줘. FMEA 방법론으로.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "Before we launch this agent to 10,000 users, I want to run a pre-mortem. What could go wrong? Help me identify failure modes, assess severity, and plan mitigations.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 토큰 비용을 추적하고 최적화해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 System Prompt를 CRISP로 리팩토링해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "다음 주에 에이전트를 프로덕션에 배포하는데, 실패할 수 있는 모든 시나리오를 사전에 분석해줘. FMEA 방법론으로.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "Before we launch this agent to 10,000 users, I want to run a pre-mortem. What could go wrong? Help me identify failure modes, assess severity, and plan mitigations.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "에이전트 토큰 비용을 추적하고 최적화해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 System Prompt를 CRISP로 리팩토링해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "burn-rate",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "에이전트 운영 비용이 예산을 초과하고 있어. 모델별, 태스크별, 사용자 세그먼트별로 토큰 비용을 분석하고 최적화 방안을 제시해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "Our agent's API costs went from $2k to $8k this month. Help me break down where the tokens are being spent and identify the biggest cost reduction opportunities.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 아키텍처를 3-tier로 설계해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "HITL 경계를 설계해줘. 어디서 사람이 개입할지.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "에이전트 운영 비용이 예산을 초과하고 있어. 모델별, 태스크별, 사용자 세그먼트별로 토큰 비용을 분석하고 최적화 방안을 제시해줘.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "Our agent's API costs went from $2k to $8k this month. Help me break down where the tokens are being spent and identify the biggest cost reduction opportunities.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "에이전트 아키텍처를 3-tier로 설계해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "HITL 경계를 설계해줘. 어디서 사람이 개입할지.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "north-star",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "에이전트 제품의 North Star 메트릭을 정의해줘. KPI가 너무 많아서 팀이 뭘 집중해야 할지 모르겠어. 하나의 핵심 지표로 정렬하고 싶어.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "We have 15 different metrics for our agent but no clarity on what matters most. Help me define a single North Star metric that connects operational performance to business value.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 PRD를 작성해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "의사결정 패턴을 적용해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "에이전트 제품의 North Star 메트릭을 정의해줘. KPI가 너무 많아서 팀이 뭘 집중해야 할지 모르겠어. 하나의 핵심 지표로 정렬하고 싶어.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "We have 15 different metrics for our agent but no clarity on what matters most. Help me define a single North Star metric that connects operational performance to business value.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "에이전트 PRD를 작성해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "의사결정 패턴을 적용해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "pm-framework",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "오늘 미팅에서 중요한 인사이트가 나왔어. '유저는 기능이 아니라 결과를 산다'는 걸 다시 느꼈는데, 이걸 TK 유닛으로 구조화해서 PM-ENGINE에 저장해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "I just realized that every time we skip user research before building, we end up rebuilding 3 months later. Help me capture this as a structured tacit knowledge unit for my PM knowledge base.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 모델 라우팅 전략을 설계해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 개발 스프린트를 계획해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "오늘 미팅에서 중요한 인사이트가 나왔어. '유저는 기능이 아니라 결과를 산다'는 걸 다시 느꼈는데, 이걸 TK 유닛으로 구조화해서 PM-ENGINE에 저장해줘.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "I just realized that every time we skip user research before building, we end up rebuilding 3 months later. Help me capture this as a structured tacit knowledge unit for my PM knowledge base.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "에이전트 모델 라우팅 전략을 설계해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 개발 스프린트를 계획해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "pm-decision",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "스코프를 줄일지 일정을 늘릴지 결정해야 하는데, 예전에 비슷한 상황에서 어떤 패턴으로 판단했는지 매칭해줘. 인지 편향 체크도.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "I'm stuck choosing between two feature directions — one is safer but incremental, the other is risky but could be a game-changer. Help me apply a structured decision framework from my PM experience.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트의 cost를 시뮬레이션해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 오케스트레이션 패턴을 골라줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "스코프를 줄일지 일정을 늘릴지 결정해야 하는데, 예전에 비슷한 상황에서 어떤 패턴으로 판단했는지 매칭해줘. 인지 편향 체크도.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "I'm stuck choosing between two feature directions — one is safer but incremental, the other is risky but could be a game-changer. Help me apply a structured decision framework from my PM experience.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "에이전트의 cost를 시뮬레이션해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 오케스트레이션 패턴을 골라줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "pm-engine",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "PM-ENGINE-MEMORY에서 '스코프 크리프' 관련 TK를 검색해줘. 예전에 저장한 실패 패턴이 있을 거야.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "I want to convert my tacit knowledge about stakeholder management into an agent instruction that can be embedded in a system prompt. Pull the relevant TK entries from my memory file.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 가정을 4축으로 분석해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 reliability를 리뷰해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "PM-ENGINE-MEMORY에서 '스코프 크리프' 관련 TK를 검색해줘. 예전에 저장한 실패 패턴이 있을 거야.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "I want to convert my tacit knowledge about stakeholder management into an agent instruction that can be embedded in a system prompt. Pull the relevant TK entries from my memory file.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "에이전트 가정을 4축으로 분석해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 reliability를 리뷰해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "harness-design",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "랜딩 페이지 5개 컴포넌트 + 다크모드 + 12 페이지를 ralph loop로 자율 진행하고 싶어. 4명 팀이랑 백업/dry-run까지 표준화해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "We're starting a multi-week refactor with multiple modules. I want an autonomous build harness with at least 4 agents, ralph-loop iteration, backup snapshots, and a pending-inputs batch.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "버튼 한 줄 색상만 바꿔줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트의 메모리 아키텍처를 설계해줘. Working/Episodic/Semantic 3계층.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "랜딩 페이지 5개 컴포넌트 + 다크모드 + 12 페이지를 ralph loop로 자율 진행하고 싶어. 4명 팀이랑 백업/dry-run까지 표준화해줘.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "We're starting a multi-week refactor with multiple modules. I want an autonomous build harness with at least 4 agents, ralph-loop iteration, backup snapshots, and a pending-inputs batch.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "버튼 한 줄 색상만 바꿔줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트의 메모리 아키텍처를 설계해줘. Working/Episodic/Semantic 3계층.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "parallel-team",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "백엔드 API 3개(인증/주문/배송) 동시에 추가하고 싶어. 파일 안 겹치니까 worktree로 격리해서 병렬로 보내줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "I have three independent module additions that touch different file trees. Partition them into worktree-isolated branches and dispatch agents in parallel.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "main.py 하나에서 함수 3개 순차로 리팩토링해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "이 PRD 다이어그램 정합성 검증해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "백엔드 API 3개(인증/주문/배송) 동시에 추가하고 싶어. 파일 안 겹치니까 worktree로 격리해서 병렬로 보내줘.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "I have three independent module additions that touch different file trees. Partition them into worktree-isolated branches and dispatch agents in parallel.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "main.py 하나에서 함수 3개 순차로 리팩토링해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "이 PRD 다이어그램 정합성 검증해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "build-loop",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "/build 데일리 비용 모니터링 에이전트 아이디어부터 구현까지 한 루프로 진행해줘. ralph loop 자율 모드.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "Run a full discover → research → design → PRD → decompose → implement loop for this idea. I want the whole product build pipeline in one orchestrated session.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "이미 PRD는 완성됐어. 구현 작업만 분배해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "이번 분기 OKR 작성해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "/build 데일리 비용 모니터링 에이전트 아이디어부터 구현까지 한 루프로 진행해줘. ralph loop 자율 모드.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "Run a full discover → research → design → PRD → decompose → implement loop for this idea. I want the whole product build pipeline in one orchestrated session.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "이미 PRD는 완성됐어. 구현 작업만 분배해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "이번 분기 OKR 작성해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "agent-portfolio",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "우리 운영 중인 에이전트가 20개 넘었는데 어디부터 손볼지 모르겠어. T1~T5 티어로 나누고 운영 주의력 분배 좀 해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "Our team runs 15+ agents across 3 teams and single-agent KPI views are losing signal. Build me a portfolio tiering dashboard with incident weighting.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "이 에이전트 하나의 KPI 설정해줘. accuracy랑 cost 위주로.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "PRD에 mermaid 다이어그램 두 개 추가하고 정합성 검증해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "우리 운영 중인 에이전트가 20개 넘었는데 어디부터 손볼지 모르겠어. T1~T5 티어로 나누고 운영 주의력 분배 좀 해줘.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "Our team runs 15+ agents across 3 teams and single-agent KPI views are losing signal. Build me a portfolio tiering dashboard with incident weighting.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "이 에이전트 하나의 KPI 설정해줘. accuracy랑 cost 위주로.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "PRD에 mermaid 다이어그램 두 개 추가하고 정합성 검증해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "scorecard-5axis",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "운영 중인 8개 에이전트 이번 주 단일 점수로 비교하고 싶어. 우리는 비용 민감 사업이라 Cost 가중치 35로 올려줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "I need a head-to-head comparison of 10 agents this month with weighted accuracy, reliability, cost, velocity, and satisfaction axes summing to 100.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "이 에이전트의 OKR을 잡아줘. 분기 목표 위주로.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "비용이 급증했는데 burn-rate 분석해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "운영 중인 8개 에이전트 이번 주 단일 점수로 비교하고 싶어. 우리는 비용 민감 사업이라 Cost 가중치 35로 올려줘.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "I need a head-to-head comparison of 10 agents this month with weighted accuracy, reliability, cost, velocity, and satisfaction axes summing to 100.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "이 에이전트의 OKR을 잡아줘. 분기 목표 위주로.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "비용이 급증했는데 burn-rate 분석해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "weekly-rollup",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "2026-W19 주차 롤업 만들어줘. 이번 주랑 지난주 scorecard 다 준비됐어. 티어별 평균이랑 Top 이동자 보여줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "Produce a 5-minute Friday brief for our weekly ops review: tier averages, week-over-week deltas, top movers, anomalies.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "이번 주 인시던트 한 건 회고해줘. 5 Whys 적용.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "신규 에이전트 PRD 작성해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "2026-W19 주차 롤업 만들어줘. 이번 주랑 지난주 scorecard 다 준비됐어. 티어별 평균이랑 Top 이동자 보여줘.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "Produce a 5-minute Friday brief for our weekly ops review: tier averages, week-over-week deltas, top movers, anomalies.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "이번 주 인시던트 한 건 회고해줘. 5 Whys 적용.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "신규 에이전트 PRD 작성해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "cross-team-routing",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "환불 문의가 들어왔는데 응대1차(T1) / 환불전담(T2) / 백오피스(T3) 모두 capability 있어. capability+부하+티어+handoff cost로 점수 매겨서 어디로 보낼지 결정해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "Three agents from different teams can serve this request. Score them on capability fit, current load, tier weight, and handoff cost, then route to one.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 내부에 orchestration 패턴(Sequential/Parallel/Router) 어떤 게 맞을지 골라줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "이번 분기 신규 에이전트 가설 검증해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "환불 문의가 들어왔는데 응대1차(T1) / 환불전담(T2) / 백오피스(T3) 모두 capability 있어. capability+부하+티어+handoff cost로 점수 매겨서 어디로 보낼지 결정해줘.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "Three agents from different teams can serve this request. Score them on capability fit, current load, tier weight, and handoff cost, then route to one.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "에이전트 내부에 orchestration 패턴(Sequential/Parallel/Router) 어떤 게 맞을지 골라줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "이번 분기 신규 에이전트 가설 검증해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "velocity-baseline",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "직전 5개 프로젝트의 git log + token usage로 본인 velocity baseline 추출해줘. complexity 1-5 percentile lookup table 만들어야 해.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "Extract my personal velocity baseline from prior projects so estimate-tasks can lookup loc/tokens/minutes deterministically.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "이 PRD를 task로 분해하고 토큰 예측해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 KPI를 어떻게 측정할지 알려줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "직전 5개 프로젝트의 git log + token usage로 본인 velocity baseline 추출해줘. complexity 1-5 percentile lookup table 만들어야 해.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "Extract my personal velocity baseline from prior projects so estimate-tasks can lookup loc/tokens/minutes deterministically.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "이 PRD를 task로 분해하고 토큰 예측해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 KPI를 어떻게 측정할지 알려줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "estimate-tasks",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "이 PRD를 WBS로 분해하고 각 task의 예측 토큰·시간을 lock 해줘. baseline lookup으로 결정론.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "Decompose this feature into tasks with p50/p90 estimates pulled from velocity baseline — LLM should not hallucinate tokens.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "내 personal velocity baseline 먼저 만들어줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "지금 진행률 알려줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "이 PRD를 WBS로 분해하고 각 task의 예측 토큰·시간을 lock 해줘. baseline lookup으로 결정론.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "Decompose this feature into tasks with p50/p90 estimates pulled from velocity baseline — LLM should not hallucinate tokens.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "내 personal velocity baseline 먼저 만들어줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "지금 진행률 알려줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "progress-probe",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "actual_log.jsonl에 매 tool call 자동 기록되게 PostToolUse Hook 설치해줘. fallback shell도 같이.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "Install Hook + shell fallback so every Claude Code tool call appends to .track/actual_log.jsonl for prompt-level telemetry.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "jsonl에서 막힌 패턴 자동 감지해.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "PRD를 14-section으로 작성해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "actual_log.jsonl에 매 tool call 자동 기록되게 PostToolUse Hook 설치해줘. fallback shell도 같이.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "Install Hook + shell fallback so every Claude Code tool call appends to .track/actual_log.jsonl for prompt-level telemetry.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "jsonl에서 막힌 패턴 자동 감지해.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "PRD를 14-section으로 작성해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "blocker-detect",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "jsonl에서 막힌 지점 결정론 감지해줘 — 같은 파일 재편집 3회, 테스트 실패 반복, context 70% 넘으면.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "Scan actual_log for blocker patterns deterministically — self-doubt regex, retry loops, test failures, context pressure. No LLM.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "Hook 설치 먼저 해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "이번 phase 게이트 통과 조건 확인해.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "jsonl에서 막힌 지점 결정론 감지해줘 — 같은 파일 재편집 3회, 테스트 실패 반복, context 70% 넘으면.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "Scan actual_log for blocker patterns deterministically — self-doubt regex, retry loops, test failures, context pressure. No LLM.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "Hook 설치 먼저 해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "이번 phase 게이트 통과 조건 확인해.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "progress-report",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "지금 상태 알려줘. 진행률, 남은 task, 블로커, ETA 한꺼번에.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "Force a live progress report — event-driven trigger, not weekly cadence. Predicted vs actual deviation.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "이번 주 multi-agent portfolio rollup 작성해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트들 5축 점수 매겨서 비교해.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "지금 상태 알려줘. 진행률, 남은 task, 블로커, ETA 한꺼번에.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "Force a live progress report — event-driven trigger, not weekly cadence. Predicted vs actual deviation.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "이번 주 multi-agent portfolio rollup 작성해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트들 5축 점수 매겨서 비교해.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "gate-checkpoint",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "design phase 통과 조건 확인 후 implementation 진입 차단해줘. PreToolUse Hook으로 mechanical enforcement.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "Enforce 6 phase transition gates (requirements → design → tasks → implementation → verification → ship) with deterministic checklists.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 portfolio 티어링.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "이번 prompt cycle 실측 기록 시작해.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "design phase 통과 조건 확인 후 implementation 진입 차단해줘. PreToolUse Hook으로 mechanical enforcement.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "Enforce 6 phase transition gates (requirements → design → tasks → implementation → verification → ship) with deterministic checklists.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "에이전트 portfolio 티어링.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "이번 prompt cycle 실측 기록 시작해.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "respect-checkpoint",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "이 화면 ship 전 사용자 존중 게이트 통과시켜줘. α(인간 7초) + β(72h 데이터) + γ(Playwright saliency) 매트릭스 적용.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "Pre-ship user-respect gate — classify screen_type and traffic_level, then lookup alpha/beta/gamma gate combination from matrix yaml.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "디자인 토큰 60/30/10 비율 측정해.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "이 화면 처음 RESPECT.md 작성하고 싶어.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "이 화면 ship 전 사용자 존중 게이트 통과시켜줘. α(인간 7초) + β(72h 데이터) + γ(Playwright saliency) 매트릭스 적용.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "Pre-ship user-respect gate — classify screen_type and traffic_level, then lookup alpha/beta/gamma gate combination from matrix yaml.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "디자인 토큰 60/30/10 비율 측정해.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "이 화면 처음 RESPECT.md 작성하고 싶어.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "respect-brief",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "이 화면용 RESPECT.md 작성해줘. 3초 룰, 다음 행동, social proof, hierarchy, motion 5 섹션.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "Generate RESPECT.md before any UI code — three_second_rule with forbidden words enforced and cta_count_above_fold = 1.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "RESPECT와 DESIGN cross-ref 결정론 검증해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "ship 직전 종합 게이트 통과시켜.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "이 화면용 RESPECT.md 작성해줘. 3초 룰, 다음 행동, social proof, hierarchy, motion 5 섹션.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "Generate RESPECT.md before any UI code — three_second_rule with forbidden words enforced and cta_count_above_fold = 1.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "RESPECT와 DESIGN cross-ref 결정론 검증해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "ship 직전 종합 게이트 통과시켜.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "hierarchy-rules",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "이 화면 60/30/10 color ratio, fold density, WCAG AA contrast 런타임 측정해줘. Playwright로.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "Measure visual hierarchy rules at runtime — Playwright + DOM saliency + pixel KMeans + WCAG AA contrast. Outputs gamma-gate data.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "CSS transition 일관성만 검증해.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "RESPECT.md 처음 작성하고 싶어.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "이 화면 60/30/10 color ratio, fold density, WCAG AA contrast 런타임 측정해줘. Playwright로.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "Measure visual hierarchy rules at runtime — Playwright + DOM saliency + pixel KMeans + WCAG AA contrast. Outputs gamma-gate data.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "CSS transition 일관성만 검증해.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "RESPECT.md 처음 작성하고 싶어.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "motion-language",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "프로젝트 전체 hover transition 200ms 일관성 검증해줘. RESPECT motion_language 명세 대비 drift 보고.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "Scan CSS and framer-motion for transition / easing drift against RESPECT motion_language spec — regex + AST, no LLM.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "5+ 화면 시각 일관성 비교해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "fold density 측정만 하면 돼.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "프로젝트 전체 hover transition 200ms 일관성 검증해줘. RESPECT motion_language 명세 대비 drift 보고.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "Scan CSS and framer-motion for transition / easing drift against RESPECT motion_language spec — regex + AST, no LLM.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "5+ 화면 시각 일관성 비교해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "fold density 측정만 하면 돼.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "ui-drift-detect",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "5+ 화면 캡처해서 디자인 시스템 회귀 자동 감지해줘. pHash + DOM tree edit distance.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "Detect visual drift across N screens — perceptual hash + color palette KMeans + DOM tree edit distance. 5 dimension drift score.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "단일 화면 hierarchy 측정만 해.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "motion 일관성 검증.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "5+ 화면 캡처해서 디자인 시스템 회귀 자동 감지해줘. pHash + DOM tree edit distance.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "Detect visual drift across N screens — perceptual hash + color palette KMeans + DOM tree edit distance. 5 dimension drift score.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "단일 화면 hierarchy 측정만 해.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "motion 일관성 검증.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "design-token",
+      "on": {
+        "mode": "on",
+        "pass": 3,
+        "total": 4,
+        "pass_rate": 0.75,
+        "detail": [
+          {
+            "query": "DESIGN_BRIEF.md가 있어. 이걸 바탕으로 tokens.md에 의미 기반 CSS 디자인 토큰을 만들고 DESIGN.md 초안도 작성해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "색상·타이포그래피·스페이싱을 CSS custom property로 정리해줘. DESIGN_BRIEF.md 참고해서 semantic token 구조로.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "우리 앱 색상 팔레트 추천해줘. 브랜드 컬러는 파란색 계열이야.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "Tailwind CSS 설정 파일에 커스텀 폰트 추가하는 방법 알려줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "DESIGN_BRIEF.md가 있어. 이걸 바탕으로 tokens.md에 의미 기반 CSS 디자인 토큰을 만들고 DESIGN.md 초안도 작성해줘.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "색상·타이포그래피·스페이싱을 CSS custom property로 정리해줘. DESIGN_BRIEF.md 참고해서 semantic token 구조로.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "우리 앱 색상 팔레트 추천해줘. 브랜드 컬러는 파란색 계열이야.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "Tailwind CSS 설정 파일에 커스텀 폰트 추가하는 방법 알려줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.25,
+      "verdict": "promote"
+    },
+    {
+      "skill": "growth-loop",
+      "on": {
+        "mode": "on",
+        "pass": 3,
+        "total": 4,
+        "pass_rate": 0.75,
+        "detail": [
+          {
+            "query": "우리 AI 에이전트가 사용될수록 더 좋아지는 데이터 플라이휠 구조를 설계해줘. 사용 데이터→피드백→모델 개선 루프.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "고객 응대 에이전트의 성장 루프를 설계하고 싶어. 에이전트 사용이 증가할수록 학습 데이터가 쌓이고 정확도가 올라가는 구조.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "MAU가 정체됐어. 바이럴 마케팅 전략 짜줘.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "에이전트 성능 지표 대시보드를 만들어줘. accuracy, latency, cost 트래킹.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "우리 AI 에이전트가 사용될수록 더 좋아지는 데이터 플라이휠 구조를 설계해줘. 사용 데이터→피드백→모델 개선 루프.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "고객 응대 에이전트의 성장 루프를 설계하고 싶어. 에이전트 사용이 증가할수록 학습 데이터가 쌓이고 정확도가 올라가는 구조.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "MAU가 정체됐어. 바이럴 마케팅 전략 짜줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 성능 지표 대시보드를 만들어줘. accuracy, latency, cost 트래킹.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.25,
+      "verdict": "promote"
+    },
+    {
+      "skill": "agent-demo-video",
+      "on": {
+        "mode": "on",
+        "pass": 3,
+        "total": 4,
+        "pass_rate": 0.75,
+        "detail": [
+          {
+            "query": "Remotion으로 우리 AI 에이전트 데모 영상 만들어줘. 아키텍처 다이어그램이랑 스크린 녹화를 합성해서 2분 분량으로.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 소개 영상 제작해줘. React 기반 Remotion 사용해서 각 기능별 애니메이션으로 보여주고 싶어.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "제품 소개 유튜브 영상 스크립트 써줘. 1분 30초 분량.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "PPT 발표자료 만들어줘. 에이전트 아키텍처 설명용으로.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "Remotion으로 우리 AI 에이전트 데모 영상 만들어줘. 아키텍처 다이어그램이랑 스크린 녹화를 합성해서 2분 분량으로.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "에이전트 소개 영상 제작해줘. React 기반 Remotion 사용해서 각 기능별 애니메이션으로 보여주고 싶어.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "제품 소개 유튜브 영상 스크립트 써줘. 1분 30초 분량.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "PPT 발표자료 만들어줘. 에이전트 아키텍처 설명용으로.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.25,
+      "verdict": "promote"
+    },
+    {
+      "skill": "agent-plan-review",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "구현 시작 전에 이 PRD랑 아키텍처 문서 검토해줘. scope, 아키텍처 선택, 보안, 비용 4가지 관점으로 리뷰해야 해.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 instructions 파일 짜놨는데 구현 들어가기 전에 문제 없는지 검증해줘. anti-pattern 있는지 확인도.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "이 코드 코드 리뷰 해줘. PR 머지 전에 확인하고 싶어.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "PRD 작성해줘. 고객 문의 자동화 에이전트 기능 정의 필요해.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "구현 시작 전에 이 PRD랑 아키텍처 문서 검토해줘. scope, 아키텍처 선택, 보안, 비용 4가지 관점으로 리뷰해야 해.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "에이전트 instructions 파일 짜놨는데 구현 들어가기 전에 문제 없는지 검증해줘. anti-pattern 있는지 확인도.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "이 코드 코드 리뷰 해줘. PR 머지 전에 확인하고 싶어.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "PRD 작성해줘. 고객 문의 자동화 에이전트 기능 정의 필요해.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "claude-md",
+      "on": {
+        "mode": "on",
+        "pass": 3,
+        "total": 4,
+        "pass_rate": 0.75,
+        "detail": [
+          {
+            "query": "이 프로젝트 구조 분석해서 CLAUDE.md 만들어줘. Claude Code가 이 레포에서 효과적으로 작동할 수 있도록 컨벤션이랑 커맨드 정리해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "새 프로젝트 시작했는데 AI 코딩 어시스턴트용 CLAUDE.md 생성해줘. tech stack이랑 빌드 커맨드 자동으로 탐지해서.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "README.md 업데이트해줘. 설치 방법이랑 사용법 추가해야 해.",
+            "rate": 0.6666666666666666,
+            "pass": true
+          },
+          {
+            "query": "프로젝트 폴더 구조 정리해줘. 지금 너무 뒤죽박죽이야.",
+            "rate": 0.0,
+            "pass": false
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "이 프로젝트 구조 분석해서 CLAUDE.md 만들어줘. Claude Code가 이 레포에서 효과적으로 작동할 수 있도록 컨벤션이랑 커맨드 정리해줘.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "새 프로젝트 시작했는데 AI 코딩 어시스턴트용 CLAUDE.md 생성해줘. tech stack이랑 빌드 커맨드 자동으로 탐지해서.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "README.md 업데이트해줘. 설치 방법이랑 사용법 추가해야 해.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "프로젝트 폴더 구조 정리해줘. 지금 너무 뒤죽박죽이야.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.25,
+      "verdict": "promote"
+    },
+    {
+      "skill": "gemini-image-flow",
+      "on": {
+        "mode": "on",
+        "pass": 3,
+        "total": 4,
+        "pass_rate": 0.75,
+        "detail": [
+          {
+            "query": "Gemini API로 이미지 생성 파이프라인 만들어줘. 사용자 의도 수집 → 프롬프트 생성 → Gemini로 이미지 생성 → 한국어 텍스트 오버레이 단계로.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "Gemini 기반 이미지 생성 CLI 도구 만들고 싶어. 인터랙티브하게 스타일/분위기 선택하고 이미지 뽑는 워크플로우.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "DALL-E 3로 마케팅 이미지 생성하는 방법 알려줘.",
+            "rate": 0.3333333333333333,
+            "pass": false
+          },
+          {
+            "query": "이미지 분류 모델 파이프라인 설계해줘. CNN 기반으로.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "Gemini API로 이미지 생성 파이프라인 만들어줘. 사용자 의도 수집 → 프롬프트 생성 → Gemini로 이미지 생성 → 한국어 텍스트 오버레이 단계로.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "Gemini 기반 이미지 생성 CLI 도구 만들고 싶어. 인터랙티브하게 스타일/분위기 선택하고 이미지 뽑는 워크플로우.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "DALL-E 3로 마케팅 이미지 생성하는 방법 알려줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "이미지 분류 모델 파이프라인 설계해줘. CNN 기반으로.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.25,
+      "verdict": "promote"
+    },
+    {
+      "skill": "infographic-gif-creator",
+      "on": {
+        "mode": "on",
+        "pass": 3,
+        "total": 4,
+        "pass_rate": 0.75,
+        "detail": [
+          {
+            "query": "AI 에이전트 아키텍처를 GIF 인포그래픽으로 만들어줘. HTML/CSS로 애니메이션 구성하고 mp4로 출력해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "데이터 플로우 다이어그램을 애니메이션 MP4로 제작해줘. 에이전트 워크플로우 단계별로 순차적으로 나타나게.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "Mermaid로 시퀀스 다이어그램 그려줘. 에이전트 호출 흐름 보여주는 정적 이미지로.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "영상 편집 자동화 스크립트 짜줘. FFmpeg 써서.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "AI 에이전트 아키텍처를 GIF 인포그래픽으로 만들어줘. HTML/CSS로 애니메이션 구성하고 mp4로 출력해줘.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "데이터 플로우 다이어그램을 애니메이션 MP4로 제작해줘. 에이전트 워크플로우 단계별로 순차적으로 나타나게.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "Mermaid로 시퀀스 다이어그램 그려줘. 에이전트 호출 흐름 보여주는 정적 이미지로.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "영상 편집 자동화 스크립트 짜줘. FFmpeg 써서.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.25,
+      "verdict": "promote"
+    },
+    {
+      "skill": "mobile-check",
+      "on": {
+        "mode": "on",
+        "pass": 3,
+        "total": 4,
+        "pass_rate": 0.75,
+        "detail": [
+          {
+            "query": "DESIGN.md 기준으로 375px·768px·1440px 세 뷰포트에서 레이아웃 깨지는 곳 없는지 Playwright로 검증해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "반응형 디자인 스펙대로 모바일·태블릿·데스크탑 화면이 제대로 나오는지 브레이크포인트별로 체크해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "Lighthouse로 모바일 성능 점수 측정해줘. Core Web Vitals 기준으로.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "E2E 테스트 작성해줘. 로그인 플로우 자동화 테스트.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "DESIGN.md 기준으로 375px·768px·1440px 세 뷰포트에서 레이아웃 깨지는 곳 없는지 Playwright로 검증해줘.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "반응형 디자인 스펙대로 모바일·태블릿·데스크탑 화면이 제대로 나오는지 브레이크포인트별로 체크해줘.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "Lighthouse로 모바일 성능 점수 측정해줘. Core Web Vitals 기준으로.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "E2E 테스트 작성해줘. 로그인 플로우 자동화 테스트.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.25,
+      "verdict": "promote"
+    },
+    {
+      "skill": "pptx-ai-slide",
+      "on": {
+        "mode": "on",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "AI 에이전트 소개 PPT 만들어줘. 5장 분량으로 이미지도 생성해서 넣어줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "강의자료 PPTX 뽑아줘. 40장짜리 McKinsey 스타일로 딥러닝 개론 내용.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "발표 스크립트 작성해줘. 10분 분량 제품 소개.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "Google Slides 템플릿 추천해줘. 스타트업 투자 발표용.",
+            "rate": 0.0,
+            "pass": false
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "AI 에이전트 소개 PPT 만들어줘. 5장 분량으로 이미지도 생성해서 넣어줘.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "강의자료 PPTX 뽑아줘. 40장짜리 McKinsey 스타일로 딥러닝 개론 내용.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "발표 스크립트 작성해줘. 10분 분량 제품 소개.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "Google Slides 템플릿 추천해줘. 스타트업 투자 발표용.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.0,
+      "verdict": "quarantine"
+    },
+    {
+      "skill": "stakeholder-map",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "AI 에이전트 도입 프로젝트에서 이해관계자 맵 작성해줘. 의사결정자, 저항 세력, 챔피언 역할 분류해서.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "엔지니어링·CS·경영진에 AI 에이전트 채택을 설득해야 해. 각 이해관계자별 우려사항이랑 접근 전략 정리해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "조직 차트 그려줘. 우리 팀 구조를 표로 정리하고 싶어.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "프로젝트 킥오프 미팅 아젠다 만들어줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "AI 에이전트 도입 프로젝트에서 이해관계자 맵 작성해줘. 의사결정자, 저항 세력, 챔피언 역할 분류해서.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "엔지니어링·CS·경영진에 AI 에이전트 채택을 설득해야 해. 각 이해관계자별 우려사항이랑 접근 전략 정리해줘.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "조직 차트 그려줘. 우리 팀 구조를 표로 정리하고 싶어.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "프로젝트 킥오프 미팅 아젠다 만들어줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "agent-gtm",
+      "on": {
+        "mode": "on",
+        "pass": 3,
+        "total": 4,
+        "pass_rate": 0.75,
+        "detail": [
+          {
+            "query": "AI 에이전트 제품 Go-To-Market 전략 설계해줘. 초기 집중 세그먼트 선정부터 런치 시퀀스까지.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "우리 에이전트 첫 100 고객 어디서 어떻게 확보해야 해? GTM 로드맵 짜줘. 비치헤드 세그먼트부터.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "마케팅 채널 믹스 짜줘. 소셜미디어·콘텐츠·광고 비율 어떻게 가져가야 해?",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "SaaS 가격 책정 전략 알려줘. 프리미엄이 나을까 유료 구독이 나을까.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "AI 에이전트 제품 Go-To-Market 전략 설계해줘. 초기 집중 세그먼트 선정부터 런치 시퀀스까지.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "우리 에이전트 첫 100 고객 어디서 어떻게 확보해야 해? GTM 로드맵 짜줘. 비치헤드 세그먼트부터.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "마케팅 채널 믹스 짜줘. 소셜미디어·콘텐츠·광고 비율 어떻게 가져가야 해?",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "SaaS 가격 책정 전략 알려줘. 프리미엄이 나을까 유료 구독이 나을까.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.25,
+      "verdict": "promote"
+    },
+    {
+      "skill": "design-reference",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "30대 1인 메이커 타겟 모바일 앱 디자인 레퍼런스 찾아줘. 큐레이션된 레퍼런스 중 5-7개 골라서 DESIGN_BRIEF.md 만들어줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "B2B SaaS 대시보드 디자인 방향 잡아야 해. 글로벌·한국 레퍼런스 카테고리 필터링해서 브리프 문서로 정리해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "우리 앱 UI 색상 개선해줘. 현재 파란색 기반인데 더 모던하게.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "Figma에서 컴포넌트 라이브러리 만드는 법 알려줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "30대 1인 메이커 타겟 모바일 앱 디자인 레퍼런스 찾아줘. 큐레이션된 레퍼런스 중 5-7개 골라서 DESIGN_BRIEF.md 만들어줘.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "B2B SaaS 대시보드 디자인 방향 잡아야 해. 글로벌·한국 레퍼런스 카테고리 필터링해서 브리프 문서로 정리해줘.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "우리 앱 UI 색상 개선해줘. 현재 파란색 기반인데 더 모던하게.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "Figma에서 컴포넌트 라이브러리 만드는 법 알려줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "cogs-sentinel",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "우리 AI 에이전트 COGS 계산해줘. 토큰 비용 분포 시뮬레이션해서 Unit Economics가 성립하는지 검증해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "고객당 토큰 사용량으로 비용 시뮬레이션 돌려줘. lognormal 분포 가정하고 95th percentile 케이스도 봐야 해.",
+            "rate": 0.6666666666666666,
+            "pass": true
+          },
+          {
+            "query": "이번 달 OpenAI API 비용 왜 이렇게 많이 나왔어? 분석해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "SaaS 구독 가격 $29/$99/$299 세 티어로 설정하면 마진 얼마나 나와?",
+            "rate": 0.6666666666666666,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "우리 AI 에이전트 COGS 계산해줘. 토큰 비용 분포 시뮬레이션해서 Unit Economics가 성립하는지 검증해줘.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "고객당 토큰 사용량으로 비용 시뮬레이션 돌려줘. lognormal 분포 가정하고 95th percentile 케이스도 봐야 해.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "이번 달 OpenAI API 비용 왜 이렇게 많이 나왔어? 분석해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "SaaS 구독 가격 $29/$99/$299 세 티어로 설정하면 마진 얼마나 나와?",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "decision-log",
+      "on": {
+        "mode": "on",
+        "pass": 3,
+        "total": 4,
+        "pass_rate": 0.75,
+        "detail": [
+          {
+            "query": "Evidence Gate 점수 79점 나왔어. GO 결정 내렸고 decision-log에 기록해줘. 오늘 날짜로 근거도 같이.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "이 아이디어 HOLD 결정 내렸어. decision-log에 추가해줘. 이유는 ICP가 너무 광범위하고 경쟁사 Notion이 이미 커버하고 있어서.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "지금까지 검토한 아이디어 목록 보여줘. 어떤 걸 진행하고 어떤 걸 보류했어?",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "다음 제품 방향 결정하는 데 도와줘. 세 가지 옵션 중 뭐가 제일 나아?",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "Evidence Gate 점수 79점 나왔어. GO 결정 내렸고 decision-log에 기록해줘. 오늘 날짜로 근거도 같이.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "이 아이디어 HOLD 결정 내렸어. decision-log에 추가해줘. 이유는 ICP가 너무 광범위하고 경쟁사 Notion이 이미 커버하고 있어서.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "지금까지 검토한 아이디어 목록 보여줘. 어떤 걸 진행하고 어떤 걸 보류했어?",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "다음 제품 방향 결정하는 데 도와줘. 세 가지 옵션 중 뭐가 제일 나아?",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.25,
+      "verdict": "promote"
+    },
+    {
+      "skill": "evidence-rubric",
+      "on": {
+        "mode": "on",
+        "pass": 3,
+        "total": 4,
+        "pass_rate": 0.75,
+        "detail": [
+          {
+            "query": "AI 가계부 앱 아이디어 Evidence Gate 100점 루브릭으로 점수 매겨줘. ICP·pain·경쟁사·전환 트리거 8개 축으로.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "이 아이디어 PRD 들어가기 전에 증거 루브릭 채점해줘. 어떤 축이 취약한지 알고 싶어.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "제품 아이디어 괜찮은지 피드백 줘. 시장이 있을까?",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "린 캔버스 작성해줘. 우리 에이전트 비즈니스 모델 정리하고 싶어.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "AI 가계부 앱 아이디어 Evidence Gate 100점 루브릭으로 점수 매겨줘. ICP·pain·경쟁사·전환 트리거 8개 축으로.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "이 아이디어 PRD 들어가기 전에 증거 루브릭 채점해줘. 어떤 축이 취약한지 알고 싶어.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "제품 아이디어 괜찮은지 피드백 줘. 시장이 있을까?",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "린 캔버스 작성해줘. 우리 에이전트 비즈니스 모델 정리하고 싶어.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.25,
+      "verdict": "promote"
+    },
+    {
+      "skill": "exclusions",
+      "on": {
+        "mode": "on",
+        "pass": 3,
+        "total": 4,
+        "pass_rate": 0.75,
+        "detail": [
+          {
+            "query": "이 아이디어 Do-Not-Build 리스트에 추가해줘. 이유는 Notion이 이미 하고 있고 우리가 이길 수 없어. 재오픈 트리거는 Notion이 이 기능 deprecated할 때.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "검토했는데 빌드 안 하기로 한 기능들 registry에 기록해줘. 나중에 같은 논의 반복 안 하게.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "과거에 reject한 아이디어 중에 지금 다시 볼 만한 게 있어?",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "제품 백로그 우선순위 정리해줘. 뭐부터 만들어야 해?",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "이 아이디어 Do-Not-Build 리스트에 추가해줘. 이유는 Notion이 이미 하고 있고 우리가 이길 수 없어. 재오픈 트리거는 Notion이 이 기능 deprecated할 때.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "검토했는데 빌드 안 하기로 한 기능들 registry에 기록해줘. 나중에 같은 논의 반복 안 하게.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "과거에 reject한 아이디어 중에 지금 다시 볼 만한 게 있어?",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "제품 백로그 우선순위 정리해줘. 뭐부터 만들어야 해?",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.25,
+      "verdict": "promote"
+    },
+    {
+      "skill": "handoff",
+      "on": {
+        "mode": "on",
+        "pass": 3,
+        "total": 4,
+        "pass_rate": 0.75,
+        "detail": [
+          {
+            "query": "Build Gate 통과했어. 지금 쓰는 코딩 환경(Cursor + Claude Code)에 맞게 Spec-Kit 형식으로 핸드오프 브리프 내보내줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "게이트 승인됐어. 다운스트림 개발팀한테 넘길 수 있도록 아키텍처 결정·ICP·핵심 가정을 코딩 컨텍스트 파일로 export해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "PRD 작성 시작할게. 어떤 구조로 써야 해?",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "개발팀에 요구사항 정리해서 보내줘. Jira 티켓 형식으로.",
+            "rate": 0.0,
+            "pass": false
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "Build Gate 통과했어. 지금 쓰는 코딩 환경(Cursor + Claude Code)에 맞게 Spec-Kit 형식으로 핸드오프 브리프 내보내줘.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "게이트 승인됐어. 다운스트림 개발팀한테 넘길 수 있도록 아키텍처 결정·ICP·핵심 가정을 코딩 컨텍스트 파일로 export해줘.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "PRD 작성 시작할게. 어떤 구조로 써야 해?",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "개발팀에 요구사항 정리해서 보내줘. Jira 티켓 형식으로.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.25,
+      "verdict": "promote"
+    },
+    {
+      "skill": "interview-synthesis",
+      "on": {
+        "mode": "on",
+        "pass": 3,
+        "total": 4,
+        "pass_rate": 0.75,
+        "detail": [
+          {
+            "query": "BuildBetter에서 고객 인터뷰 synthesis 결과 가져왔어. hplan에 임포트하고 인사이트 검증해줘. 에이전트 판단만 믿지 말고 인간 검토 단계 거쳐야 해.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "Perspective AI synthesis 결과 있어. 이걸 Evidence Gate 루브릭에 매핑해줘. AI가 놓친 게 있는지 human-in-the-loop으로 확인하고 싶어.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "고객 인터뷰 30개 했어. 공통 불만 패턴 분석해줘.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "사용자 인터뷰 가이드 만들어줘. 어떤 질문 해야 해?",
+            "rate": 0.6666666666666666,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "BuildBetter에서 고객 인터뷰 synthesis 결과 가져왔어. hplan에 임포트하고 인사이트 검증해줘. 에이전트 판단만 믿지 말고 인간 검토 단계 거쳐야 해.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "Perspective AI synthesis 결과 있어. 이걸 Evidence Gate 루브릭에 매핑해줘. AI가 놓친 게 있는지 human-in-the-loop으로 확인하고 싶어.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "고객 인터뷰 30개 했어. 공통 불만 패턴 분석해줘.",
+            "rate": 0.6666666666666666,
+            "pass": true
+          },
+          {
+            "query": "사용자 인터뷰 가이드 만들어줘. 어떤 질문 해야 해?",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.25,
+      "verdict": "promote"
+    },
+    {
+      "skill": "ost",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "Teresa Torres 방식으로 Opportunity Solution Tree 만들어줘. docs/OPPORTUNITY_TREE.md에 Mermaid 다이어그램으로 저장해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "우리 프로덕트의 목표·기회·솔루션 트리 구조화해줘. OST 형식으로 가정과 실험까지 연결해서.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "사용자 여정 지도 그려줘. 페르소나별로 터치포인트 정리해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "Jobs-to-be-Done 프레임워크로 고객 니즈 분석해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "Teresa Torres 방식으로 Opportunity Solution Tree 만들어줘. docs/OPPORTUNITY_TREE.md에 Mermaid 다이어그램으로 저장해줘.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "우리 프로덕트의 목표·기회·솔루션 트리 구조화해줘. OST 형식으로 가정과 실험까지 연결해서.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "사용자 여정 지도 그려줘. 페르소나별로 터치포인트 정리해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "Jobs-to-be-Done 프레임워크로 고객 니즈 분석해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "pmf-gate",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "런치 3개월 됐어. 운영 데이터로 PMF 달성했는지 측정해줘. retention·NPS·usage frequency 기반으로.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "COGS sentinel 결과랑 행동 지표 합쳐서 PMF Gate 실행해줘. Scale/Pause/Pivot 판정해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "MAU 1000명 됐어. 이제 어떻게 성장 가속화해?",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "출시 전 마지막 Evidence Gate 체크해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "런치 3개월 됐어. 운영 데이터로 PMF 달성했는지 측정해줘. retention·NPS·usage frequency 기반으로.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "COGS sentinel 결과랑 행동 지표 합쳐서 PMF Gate 실행해줘. Scale/Pause/Pivot 판정해줘.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "MAU 1000명 됐어. 이제 어떻게 성장 가속화해?",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "출시 전 마지막 Evidence Gate 체크해줘.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    },
+    {
+      "skill": "agent-ab-test",
+      "on": {
+        "mode": "on",
+        "pass": 3,
+        "total": 4,
+        "pass_rate": 0.75,
+        "detail": [
+          {
+            "query": "프롬프트 v1이랑 v2 성능 차이 A/B 테스트 설계해줘. 통계적으로 유의미한지 판단하는 기준도 세워줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 모델 GPT-4o vs Claude 3.5 성능 비교 실험 어떻게 설계해야 해? 샘플 크기랑 metric 정의부터 해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "A/B 테스트 결과 왔어. 전환율 3.2% vs 4.1%인데 유의미해?",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "에이전트 여러 버전 배포할 때 트래픽 분배 어떻게 해?",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "프롬프트 v1이랑 v2 성능 차이 A/B 테스트 설계해줘. 통계적으로 유의미한지 판단하는 기준도 세워줘.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "에이전트 모델 GPT-4o vs Claude 3.5 성능 비교 실험 어떻게 설계해야 해? 샘플 크기랑 metric 정의부터 해줘.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "A/B 테스트 결과 왔어. 전환율 3.2% vs 4.1%인데 유의미해?",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 여러 버전 배포할 때 트래픽 분배 어떻게 해?",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.25,
+      "verdict": "promote"
+    },
+    {
+      "skill": "cohort",
+      "on": {
+        "mode": "on",
+        "pass": 3,
+        "total": 4,
+        "pass_rate": 0.75,
+        "detail": [
+          {
+            "query": "에이전트 v1.0·v1.1·v1.2 코호트별 성능 비교해줘. 버전 업데이트로 degradation 있는지 추적해줘.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "배포 코호트 분석 해줘. 어느 버전 에이전트가 retention 제일 좋고 오류율 낮아?",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "사용자 코호트 분석해줘. 가입 월별로 retention 얼마나 달라?",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "에이전트 성능 모니터링 대시보드 어떻게 만들어?",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "에이전트 v1.0·v1.1·v1.2 코호트별 성능 비교해줘. 버전 업데이트로 degradation 있는지 추적해줘.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "배포 코호트 분석 해줘. 어느 버전 에이전트가 retention 제일 좋고 오류율 낮아?",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "사용자 코호트 분석해줘. 가입 월별로 retention 얼마나 달라?",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 성능 모니터링 대시보드 어떻게 만들어?",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.25,
+      "verdict": "promote"
+    },
+    {
+      "skill": "incident",
+      "on": {
+        "mode": "on",
+        "pass": 4,
+        "total": 4,
+        "pass_rate": 1.0,
+        "detail": [
+          {
+            "query": "에이전트가 PII를 외부에 노출했어. 인시던트 triage해줘. 심각도 판단하고 blast radius 억제 방법이랑 post-mortem 작성까지.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트 장애 발생했어. 즉각 대응 체크리스트랑 고객 커뮤니케이션 템플릿 필요해. 사후 학습까지 연결되게.",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에러 로그 분석해줘. 어디서 exception이 제일 많이 나?",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트에 재시도 로직 추가해줘. 일시적 오류 대비해서.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "off": {
+        "mode": "off",
+        "pass": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "detail": [
+          {
+            "query": "에이전트가 PII를 외부에 노출했어. 인시던트 triage해줘. 심각도 판단하고 blast radius 억제 방법이랑 post-mortem 작성까지.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "에이전트 장애 발생했어. 즉각 대응 체크리스트랑 고객 커뮤니케이션 템플릿 필요해. 사후 학습까지 연결되게.",
+            "rate": 0.0,
+            "pass": false
+          },
+          {
+            "query": "에러 로그 분석해줘. 어디서 exception이 제일 많이 나?",
+            "rate": 1.0,
+            "pass": true
+          },
+          {
+            "query": "에이전트에 재시도 로직 추가해줘. 일시적 오류 대비해서.",
+            "rate": 1.0,
+            "pass": true
+          }
+        ]
+      },
+      "uplift": 0.5,
+      "verdict": "promote"
+    }
+  ]
+}

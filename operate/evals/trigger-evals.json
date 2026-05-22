@@ -880,5 +880,488 @@
         "should_trigger": false
       }
     ]
+  },
+  {
+    "skill": "design-token",
+    "queries": [
+      {
+        "query": "DESIGN_BRIEF.md가 있어. 이걸 바탕으로 tokens.md에 의미 기반 CSS 디자인 토큰을 만들고 DESIGN.md 초안도 작성해줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "색상·타이포그래피·스페이싱을 CSS custom property로 정리해줘. DESIGN_BRIEF.md 참고해서 semantic token 구조로.",
+        "should_trigger": true
+      },
+      {
+        "query": "우리 앱 색상 팔레트 추천해줘. 브랜드 컬러는 파란색 계열이야.",
+        "should_trigger": false
+      },
+      {
+        "query": "Tailwind CSS 설정 파일에 커스텀 폰트 추가하는 방법 알려줘.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "growth-loop",
+    "queries": [
+      {
+        "query": "우리 AI 에이전트가 사용될수록 더 좋아지는 데이터 플라이휠 구조를 설계해줘. 사용 데이터→피드백→모델 개선 루프.",
+        "should_trigger": true
+      },
+      {
+        "query": "고객 응대 에이전트의 성장 루프를 설계하고 싶어. 에이전트 사용이 증가할수록 학습 데이터가 쌓이고 정확도가 올라가는 구조.",
+        "should_trigger": true
+      },
+      {
+        "query": "MAU가 정체됐어. 바이럴 마케팅 전략 짜줘.",
+        "should_trigger": false
+      },
+      {
+        "query": "에이전트 성능 지표 대시보드를 만들어줘. accuracy, latency, cost 트래킹.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "agent-demo-video",
+    "queries": [
+      {
+        "query": "Remotion으로 우리 AI 에이전트 데모 영상 만들어줘. 아키텍처 다이어그램이랑 스크린 녹화를 합성해서 2분 분량으로.",
+        "should_trigger": true
+      },
+      {
+        "query": "에이전트 소개 영상 제작해줘. React 기반 Remotion 사용해서 각 기능별 애니메이션으로 보여주고 싶어.",
+        "should_trigger": true
+      },
+      {
+        "query": "제품 소개 유튜브 영상 스크립트 써줘. 1분 30초 분량.",
+        "should_trigger": false
+      },
+      {
+        "query": "PPT 발표자료 만들어줘. 에이전트 아키텍처 설명용으로.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "agent-plan-review",
+    "queries": [
+      {
+        "query": "구현 시작 전에 이 PRD랑 아키텍처 문서 검토해줘. scope, 아키텍처 선택, 보안, 비용 4가지 관점으로 리뷰해야 해.",
+        "should_trigger": true
+      },
+      {
+        "query": "에이전트 instructions 파일 짜놨는데 구현 들어가기 전에 문제 없는지 검증해줘. anti-pattern 있는지 확인도.",
+        "should_trigger": true
+      },
+      {
+        "query": "이 코드 코드 리뷰 해줘. PR 머지 전에 확인하고 싶어.",
+        "should_trigger": false
+      },
+      {
+        "query": "PRD 작성해줘. 고객 문의 자동화 에이전트 기능 정의 필요해.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "claude-md",
+    "queries": [
+      {
+        "query": "이 프로젝트 구조 분석해서 CLAUDE.md 만들어줘. Claude Code가 이 레포에서 효과적으로 작동할 수 있도록 컨벤션이랑 커맨드 정리해줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "새 프로젝트 시작했는데 AI 코딩 어시스턴트용 CLAUDE.md 생성해줘. tech stack이랑 빌드 커맨드 자동으로 탐지해서.",
+        "should_trigger": true
+      },
+      {
+        "query": "README.md 업데이트해줘. 설치 방법이랑 사용법 추가해야 해.",
+        "should_trigger": false
+      },
+      {
+        "query": "프로젝트 폴더 구조 정리해줘. 지금 너무 뒤죽박죽이야.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "gemini-image-flow",
+    "queries": [
+      {
+        "query": "Gemini API로 이미지 생성 파이프라인 만들어줘. 사용자 의도 수집 → 프롬프트 생성 → Gemini로 이미지 생성 → 한국어 텍스트 오버레이 단계로.",
+        "should_trigger": true
+      },
+      {
+        "query": "Gemini 기반 이미지 생성 CLI 도구 만들고 싶어. 인터랙티브하게 스타일/분위기 선택하고 이미지 뽑는 워크플로우.",
+        "should_trigger": true
+      },
+      {
+        "query": "DALL-E 3로 마케팅 이미지 생성하는 방법 알려줘.",
+        "should_trigger": false
+      },
+      {
+        "query": "이미지 분류 모델 파이프라인 설계해줘. CNN 기반으로.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "infographic-gif-creator",
+    "queries": [
+      {
+        "query": "AI 에이전트 아키텍처를 GIF 인포그래픽으로 만들어줘. HTML/CSS로 애니메이션 구성하고 mp4로 출력해줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "데이터 플로우 다이어그램을 애니메이션 MP4로 제작해줘. 에이전트 워크플로우 단계별로 순차적으로 나타나게.",
+        "should_trigger": true
+      },
+      {
+        "query": "Mermaid로 시퀀스 다이어그램 그려줘. 에이전트 호출 흐름 보여주는 정적 이미지로.",
+        "should_trigger": false
+      },
+      {
+        "query": "영상 편집 자동화 스크립트 짜줘. FFmpeg 써서.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "mobile-check",
+    "queries": [
+      {
+        "query": "DESIGN.md 기준으로 375px·768px·1440px 세 뷰포트에서 레이아웃 깨지는 곳 없는지 Playwright로 검증해줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "반응형 디자인 스펙대로 모바일·태블릿·데스크탑 화면이 제대로 나오는지 브레이크포인트별로 체크해줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "Lighthouse로 모바일 성능 점수 측정해줘. Core Web Vitals 기준으로.",
+        "should_trigger": false
+      },
+      {
+        "query": "E2E 테스트 작성해줘. 로그인 플로우 자동화 테스트.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "pptx-ai-slide",
+    "queries": [
+      {
+        "query": "AI 에이전트 소개 PPT 만들어줘. 5장 분량으로 이미지도 생성해서 넣어줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "강의자료 PPTX 뽑아줘. 40장짜리 McKinsey 스타일로 딥러닝 개론 내용.",
+        "should_trigger": true
+      },
+      {
+        "query": "FastAPI 엔드포인트 코드 리뷰해줘. 인증 로직 보안 이슈 있는지 확인해야 해.",
+        "should_trigger": false
+      },
+      {
+        "query": "PostgreSQL 스키마 설계해줘. 사용자·주문·상품 테이블 관계 정의해줘.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "stakeholder-map",
+    "queries": [
+      {
+        "query": "AI 에이전트 도입 프로젝트에서 이해관계자 맵 작성해줘. 의사결정자, 저항 세력, 챔피언 역할 분류해서.",
+        "should_trigger": true
+      },
+      {
+        "query": "엔지니어링·CS·경영진에 AI 에이전트 채택을 설득해야 해. 각 이해관계자별 우려사항이랑 접근 전략 정리해줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "조직 차트 그려줘. 우리 팀 구조를 표로 정리하고 싶어.",
+        "should_trigger": false
+      },
+      {
+        "query": "프로젝트 킥오프 미팅 아젠다 만들어줘.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "agent-gtm",
+    "queries": [
+      {
+        "query": "AI 에이전트 제품 Go-To-Market 전략 설계해줘. 초기 집중 세그먼트 선정부터 런치 시퀀스까지.",
+        "should_trigger": true
+      },
+      {
+        "query": "우리 에이전트 첫 100 고객 어디서 어떻게 확보해야 해? GTM 로드맵 짜줘. 비치헤드 세그먼트부터.",
+        "should_trigger": true
+      },
+      {
+        "query": "마케팅 채널 믹스 짜줘. 소셜미디어·콘텐츠·광고 비율 어떻게 가져가야 해?",
+        "should_trigger": false
+      },
+      {
+        "query": "SaaS 가격 책정 전략 알려줘. 프리미엄이 나을까 유료 구독이 나을까.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "design-reference",
+    "queries": [
+      {
+        "query": "30대 1인 메이커 타겟 모바일 앱 디자인 레퍼런스 찾아줘. 큐레이션된 레퍼런스 중 5-7개 골라서 DESIGN_BRIEF.md 만들어줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "B2B SaaS 대시보드 디자인 방향 잡아야 해. 글로벌·한국 레퍼런스 카테고리 필터링해서 브리프 문서로 정리해줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "우리 앱 UI 색상 개선해줘. 현재 파란색 기반인데 더 모던하게.",
+        "should_trigger": false
+      },
+      {
+        "query": "Figma에서 컴포넌트 라이브러리 만드는 법 알려줘.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "cogs-sentinel",
+    "queries": [
+      {
+        "query": "우리 AI 에이전트 COGS 계산해줘. 토큰 비용 분포 시뮬레이션해서 Unit Economics가 성립하는지 검증해줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "고객당 토큰 사용량으로 비용 시뮬레이션 돌려줘. lognormal 분포 가정하고 95th percentile 케이스도 봐야 해.",
+        "should_trigger": true
+      },
+      {
+        "query": "이번 달 OpenAI API 비용 왜 이렇게 많이 나왔어? 분석해줘.",
+        "should_trigger": false
+      },
+      {
+        "query": "SaaS 구독 가격 $29/$99/$299 세 티어로 설정하면 마진 얼마나 나와?",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "decision-log",
+    "queries": [
+      {
+        "query": "Evidence Gate 점수 79점 나왔어. GO 결정 내렸고 decision-log에 기록해줘. 오늘 날짜로 근거도 같이.",
+        "should_trigger": true
+      },
+      {
+        "query": "이 아이디어 HOLD 결정 내렸어. decision-log에 추가해줘. 이유는 ICP가 너무 광범위하고 경쟁사 Notion이 이미 커버하고 있어서.",
+        "should_trigger": true
+      },
+      {
+        "query": "지금까지 검토한 아이디어 목록 보여줘. 어떤 걸 진행하고 어떤 걸 보류했어?",
+        "should_trigger": false
+      },
+      {
+        "query": "다음 제품 방향 결정하는 데 도와줘. 세 가지 옵션 중 뭐가 제일 나아?",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "evidence-rubric",
+    "queries": [
+      {
+        "query": "AI 가계부 앱 아이디어 Evidence Gate 100점 루브릭으로 점수 매겨줘. ICP·pain·경쟁사·전환 트리거 8개 축으로.",
+        "should_trigger": true
+      },
+      {
+        "query": "이 아이디어 PRD 들어가기 전에 증거 루브릭 채점해줘. 어떤 축이 취약한지 알고 싶어.",
+        "should_trigger": true
+      },
+      {
+        "query": "제품 아이디어 괜찮은지 피드백 줘. 시장이 있을까?",
+        "should_trigger": false
+      },
+      {
+        "query": "린 캔버스 작성해줘. 우리 에이전트 비즈니스 모델 정리하고 싶어.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "exclusions",
+    "queries": [
+      {
+        "query": "이 아이디어 Do-Not-Build 리스트에 추가해줘. 이유는 Notion이 이미 하고 있고 우리가 이길 수 없어. 재오픈 트리거는 Notion이 이 기능 deprecated할 때.",
+        "should_trigger": true
+      },
+      {
+        "query": "검토했는데 빌드 안 하기로 한 기능들 registry에 기록해줘. 나중에 같은 논의 반복 안 하게.",
+        "should_trigger": true
+      },
+      {
+        "query": "과거에 reject한 아이디어 중에 지금 다시 볼 만한 게 있어?",
+        "should_trigger": false
+      },
+      {
+        "query": "제품 백로그 우선순위 정리해줘. 뭐부터 만들어야 해?",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "handoff",
+    "queries": [
+      {
+        "query": "Build Gate 통과했어. 지금 쓰는 코딩 환경(Cursor + Claude Code)에 맞게 Spec-Kit 형식으로 핸드오프 브리프 내보내줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "게이트 승인됐어. 다운스트림 개발팀한테 넘길 수 있도록 아키텍처 결정·ICP·핵심 가정을 코딩 컨텍스트 파일로 export해줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "PRD 작성 시작할게. 어떤 구조로 써야 해?",
+        "should_trigger": false
+      },
+      {
+        "query": "개발팀에 요구사항 정리해서 보내줘. Jira 티켓 형식으로.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "interview-synthesis",
+    "queries": [
+      {
+        "query": "BuildBetter에서 고객 인터뷰 synthesis 결과 가져왔어. hplan에 임포트하고 인사이트 검증해줘. 에이전트 판단만 믿지 말고 인간 검토 단계 거쳐야 해.",
+        "should_trigger": true
+      },
+      {
+        "query": "Perspective AI synthesis 결과 있어. 이걸 Evidence Gate 루브릭에 매핑해줘. AI가 놓친 게 있는지 human-in-the-loop으로 확인하고 싶어.",
+        "should_trigger": true
+      },
+      {
+        "query": "고객 인터뷰 30개 했어. 공통 불만 패턴 분석해줘.",
+        "should_trigger": false
+      },
+      {
+        "query": "사용자 인터뷰 가이드 만들어줘. 어떤 질문 해야 해?",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "ost",
+    "queries": [
+      {
+        "query": "Teresa Torres 방식으로 Opportunity Solution Tree 만들어줘. docs/OPPORTUNITY_TREE.md에 Mermaid 다이어그램으로 저장해줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "우리 프로덕트의 목표·기회·솔루션 트리 구조화해줘. OST 형식으로 가정과 실험까지 연결해서.",
+        "should_trigger": true
+      },
+      {
+        "query": "사용자 여정 지도 그려줘. 페르소나별로 터치포인트 정리해줘.",
+        "should_trigger": false
+      },
+      {
+        "query": "Jobs-to-be-Done 프레임워크로 고객 니즈 분석해줘.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "pmf-gate",
+    "queries": [
+      {
+        "query": "런치 3개월 됐어. 운영 데이터로 PMF 달성했는지 측정해줘. retention·NPS·usage frequency 기반으로.",
+        "should_trigger": true
+      },
+      {
+        "query": "COGS sentinel 결과랑 행동 지표 합쳐서 PMF Gate 실행해줘. Scale/Pause/Pivot 판정해줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "MAU 1000명 됐어. 이제 어떻게 성장 가속화해?",
+        "should_trigger": false
+      },
+      {
+        "query": "출시 전 마지막 Evidence Gate 체크해줘.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "agent-ab-test",
+    "queries": [
+      {
+        "query": "프롬프트 v1이랑 v2 성능 차이 A/B 테스트 설계해줘. 통계적으로 유의미한지 판단하는 기준도 세워줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "에이전트 모델 GPT-4o vs Claude 3.5 성능 비교 실험 어떻게 설계해야 해? 샘플 크기랑 metric 정의부터 해줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "A/B 테스트 결과 왔어. 전환율 3.2% vs 4.1%인데 유의미해?",
+        "should_trigger": false
+      },
+      {
+        "query": "에이전트 여러 버전 배포할 때 트래픽 분배 어떻게 해?",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "cohort",
+    "queries": [
+      {
+        "query": "에이전트 v1.0·v1.1·v1.2 코호트별 성능 비교해줘. 버전 업데이트로 degradation 있는지 추적해줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "배포 코호트 분석 해줘. 어느 버전 에이전트가 retention 제일 좋고 오류율 낮아?",
+        "should_trigger": true
+      },
+      {
+        "query": "사용자 코호트 분석해줘. 가입 월별로 retention 얼마나 달라?",
+        "should_trigger": false
+      },
+      {
+        "query": "에이전트 성능 모니터링 대시보드 어떻게 만들어?",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "incident",
+    "queries": [
+      {
+        "query": "에이전트가 PII를 외부에 노출했어. 인시던트 triage해줘. 심각도 판단하고 blast radius 억제 방법이랑 post-mortem 작성까지.",
+        "should_trigger": true
+      },
+      {
+        "query": "에이전트 장애 발생했어. 즉각 대응 체크리스트랑 고객 커뮤니케이션 템플릿 필요해. 사후 학습까지 연결되게.",
+        "should_trigger": true
+      },
+      {
+        "query": "에러 로그 분석해줘. 어디서 exception이 제일 많이 나?",
+        "should_trigger": false
+      },
+      {
+        "query": "에이전트에 재시도 로직 추가해줘. 일시적 오류 대비해서.",
+        "should_trigger": false
+      }
+    ]
   }
 ]

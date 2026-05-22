@@ -35,22 +35,24 @@ import sys
 import time
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
-PLUGINS = ["hplan", "discover", "architect", "deliver", "measure", "learn", "operate", "track", "craft"]
+REPO_ROOT = Path(__file__).resolve().parent.parent   # operate/
+PROJECT_ROOT = REPO_ROOT.parent                       # 260514_hplan_unified/
+PLUGINS = ["hplan", "discover", "architect", "deliver", "operate"]
 
 
 def load_skill_catalog() -> dict[str, str]:
     catalog: dict[str, str] = {}
     for plugin in PLUGINS:
-        skills_dir = REPO_ROOT / plugin / "skills"
+        skills_dir = PROJECT_ROOT / plugin / "skills"
         if not skills_dir.exists():
             continue
         for skill_md in skills_dir.glob("*/SKILL.md"):
             text = skill_md.read_text(encoding="utf-8")
             name_m = re.search(r"^name:\s*(\S+)", text, re.MULTILINE)
-            desc_m = re.search(r"^description:\s*\"(.+?)\"\s*$", text, re.MULTILINE | re.DOTALL)
+            # 따옴표 유무·멀티라인 모두 지원: description 이후 첫 비어있지 않은 텍스트 한 줄
+            desc_m = re.search(r"^description:\s*[\"']?(.*?)[\"']?\s*$", text, re.MULTILINE)
             if name_m and desc_m:
-                catalog[name_m.group(1)] = desc_m.group(1).replace("\n", " ").strip()
+                catalog[name_m.group(1)] = desc_m.group(1).strip()
     return catalog
 
 
