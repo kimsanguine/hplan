@@ -39,7 +39,7 @@ Gate:    SIGNAL
 
 Stop. Do not proceed to Step 1.
 
-**Evidence Source 요건 (v0.9.7)**
+**Evidence Source 요건 (Signal Gate v2)**
 
 각 Signal Gate 문서에 아래 섹션 키워드 중 하나 이상이 포함되어야 한다:
 
@@ -65,8 +65,6 @@ Also check for competitor blockers:
 ls harness/competitor-context.md 2>/dev/null && echo "FOUND" || echo "MISSING"
 ```
 If FOUND, read it and extract `blockers` fields. Any `blocker == true` → immediate HOLD before Step 1.
-
----
 
 ---
 

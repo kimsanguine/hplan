@@ -74,7 +74,7 @@ WHETHER is bigger than WHY. WHY answers the reason ("why would users pay?"). WHE
 | COGS Sentinel | Why would this pricing work at scale? | Can the economics support a real business? |
 | **All 3 combined** | — | **GO / HOLD / INVESTIGATE** |
 
-Other tools handle **HOW** (superpowers → how to work with Claude Code), **WHO** (gstack → who the agents are), **WHERE** (GSD → where in the workflow). hplan handles **WHETHER** — the decision that comes before all other decisions.
+Other tools handle **HOW** (Claude Code plugins → how to work with Claude Code), **WHO** (gstack → who the agents are), **WHERE** (GSD → where in the workflow). hplan handles **WHETHER** — the decision that comes before all other decisions.
 
 ### hplan's 3 Principles vs Opposing Assumptions
 
@@ -163,7 +163,7 @@ This isn't a random collection of skills. It's a **complete lifecycle** — the 
 ```
    Gate  →  Discover  →  Architect  →  Deliver  →  Operate
    hplan    discover      architect     deliver      operate
-   8 skills  7 skills     8 skills     27 skills    15 skills
+   8 skills  7 skills     8 skills     32 skills    17 skills
 
      ↑                                                   │
      └──── Operational insights feed back into gate ─────┘
@@ -190,7 +190,7 @@ Each skill **auto-loads from natural language** — describe your task and the r
 
 ### ① Complete Agent Lifecycle, Not Random Tools
 
-65 skills across 5 plugins cover the full agent product lifecycle (Gate → Discover → Architect → Deliver → Operate). This isn't "AI tools for PMs" — it's **a structured methodology for building agents as products**, from discovery to production operations.
+72 skills across 5 plugins cover the full agent product lifecycle (Gate → Discover → Architect → Deliver → Operate). This isn't "AI tools for PMs" — it's **a structured methodology for building agents as products**, from discovery to production operations.
 
 ### ② Two-Layer Architecture — Platform and Content Separation
 
@@ -253,7 +253,7 @@ A perfect prompt with bad customer data produces confidently wrong conclusions. 
 ## Plugins — Full Skill List
 
 <details>
-<summary><strong>1. hplan ⭐</strong> — Should we build this at all? <code>(7 skills, 6 commands)</code></summary>
+<summary><strong>1. hplan ⭐</strong> — Should we build this at all? <code>(8 skills, 9 commands)</code></summary>
 
 The gate that runs *before* discovery. Deterministic measurement (Python scripts, not LLM estimates), append-only memory (exclusions + decisions across runs), and a hook that blocks PRD/spec writes until a human approves.
 
@@ -273,7 +273,7 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 </details>
 
 <details>
-<summary><strong>2. discover</strong> — What agent to build? <code>(7 skills, 2 commands)</code></summary>
+<summary><strong>2. discover</strong> — What agent to build? <code>(7 skills)</code></summary>
 
 | Skill | What it does | When to use |
 |-------|-------------|-------------|
@@ -289,7 +289,7 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 </details>
 
 <details>
-<summary><strong>3. architect</strong> — How to architect it? <code>(8 skills, 2 commands)</code></summary>
+<summary><strong>3. architect</strong> — How to architect it? <code>(8 skills)</code></summary>
 
 | Skill | What it does | When to use |
 |-------|-------------|-------------|
@@ -306,7 +306,7 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 </details>
 
 <details>
-<summary><strong>4. deliver</strong> — How to spec, build, and ship it? <code>(27 skills, 8 commands)</code></summary>
+<summary><strong>4. deliver</strong> — How to spec, build, and ship it? <code>(32 skills)</code></summary>
 
 > **Onboarding (1):** claude-md
 > **Core Spec (7):** instruction · prd · prompt · ctx-budget · okr · stakeholder-map · agent-plan-review
@@ -349,7 +349,7 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 </details>
 
 <details>
-<summary><strong>5. operate</strong> — How to run and improve agents over time? <code>(15 skills, 5 commands)</code></summary>
+<summary><strong>5. operate</strong> — How to run and improve agents over time? <code>(17 skills)</code></summary>
 
 > **Portfolio (4):** agent-portfolio · scorecard-5axis · weekly-rollup · cross-team-routing
 > **Measure (8):** kpi · reliability · premortem · burn-rate · north-star · agent-ab-test · cohort · incident
@@ -461,11 +461,10 @@ The Trigger Gate's "Route" field enables routing between plugins:
 | Command | Chained Skills | Plugin |
 |---------|---------------|--------|
 | `/hplan` ⭐ | exclusions → evidence-rubric → cogs-sentinel → verdict | hplan |
-| `/discover` | opp-tree → assumptions → build-or-buy | discover |
-| `/architecture` | orchestration → 3-tier → memory-arch | architect |
-| `/write-prd` | prd → instruction → ctx-budget | deliver |
-| `/health-check` | kpi → reliability → burn-rate | measure |
-| `/tk-to-instruction` | pm-engine → instruction | learn+deliver |
+| `/harness-discover` | opp-tree → assumptions → build-or-buy | discover |
+| `/harness-plan` | orchestration → 3-tier → memory-arch | architect |
+| `/harness-build` | prd → instruction → ctx-budget | deliver |
+| `/harness-operate` | kpi → reliability → burn-rate · pm-engine → instruction | operate |
 
 ### Skills 1.0 vs Skills 2.0
 
@@ -484,11 +483,11 @@ The Trigger Gate's "Route" field enables routing between plugins:
 
 ```
 hplan/                # repo root
-├── hplan/            # Gate ⭐ (7 skills, 6 commands) — Product Build Gate
-├── discover/           # Discovery (7 skills, 2 commands)
-├── architect/            # Architecture (8 skills, 2 commands)
-├── deliver/            # Deliver (27 skills, 8 commands) — spec + track + UI enforcement
-├── operate/            # Operate (15 skills, 5 commands) — measure + learn + portfolio
+├── hplan/            # Gate ⭐ (8 skills, 9 commands) — Product Build Gate
+├── discover/           # Discovery (7 skills)
+├── architect/            # Architecture (8 skills)
+├── deliver/            # Deliver (32 skills) — spec + track + UI enforcement
+├── operate/            # Operate (17 skills) — KPI, reliability, PM knowledge, portfolio
 │   └── evals/        # Quality + trigger evals
 ├── docs/images/      # Diagrams
 ├── validate_plugins.py
@@ -526,7 +525,7 @@ discover/skills/opp-tree/           ← example skill
 | `examples/bad-01.md` | Explicit anti-patterns with explanations | Prevents common failures |
 | `references/test-cases.md` | Edge cases + assertions | Powers eval system (54 assertions) |
 
-This pattern repeats across all 65 skills — **200+ supporting files** that make each skill measurable, testable, and improvable.
+This pattern repeats across all 72 skills — **200+ supporting files** that make each skill measurable, testable, and improvable.
 
 </details>
 

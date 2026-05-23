@@ -117,7 +117,7 @@ def score_diagnosis(data, interview_notes):
     return {"score": total, "decision": decision, "missing": missing, "breakdown": breakdown}
 
 
-def generate(data):
+def generate(data, root: Path = None):
     idea = first_sentence(str(data.get("idea", "")), "새로운 SaaS 아이디어")
     target = first_sentence(str(data.get("target", "")), "1인 빌더 또는 작은 팀")
     hypothesis = first_sentence(str(data.get("hypothesis", "")), "반복 업무가 너무 많아 더 나은 방법을 찾고 있다")
@@ -133,7 +133,7 @@ def generate(data):
     score = scoring["score"]
     label, reason = DECISIONS[decision]
 
-    return {
+    report = {
         "input": data,
         "decision": decision,
         "decision_label": label,
@@ -180,6 +180,14 @@ def generate(data):
             "If approval is missing: WAITING_FOR_HUMAN 상태로 멈추고 다음 gate 산출물은 초안으로만 둔다.",
         ],
     }
+
+    if root is not None:
+        penalty = evidence_source_penalty(root)
+        if penalty > 0:
+            report["score"] = max(0, report["score"] - penalty)
+            report["evidence_source_penalty"] = penalty
+
+    return report
 
 
 def markdown(report):
@@ -292,13 +300,9 @@ def main():
     parser.add_argument("--json", action="store_true", help="Print JSON instead of markdown")
     args = parser.parse_args()
 
-    data = json.loads(Path(args.input).read_text(encoding="utf-8"))
-    report = generate(data)
     root = Path(args.input).parent
-    penalty = evidence_source_penalty(root)
-    if penalty > 0:
-        report["score"] = max(0, report["score"] - penalty)
-        report["evidence_source_penalty"] = penalty
+    data = json.loads(Path(args.input).read_text(encoding="utf-8"))
+    report = generate(data, root=root)
     if args.json:
         print(json.dumps(report, ensure_ascii=False, indent=2))
     else:
