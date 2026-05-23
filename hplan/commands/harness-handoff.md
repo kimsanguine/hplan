@@ -4,7 +4,7 @@ argument-hint: "[brief.json] [--target spec-kit|kiro|gstack|claude|all]"
 allowed-tools: ["Read", "Write", "Bash"]
 ---
 
-# /hplan-handoff
+# /harness-handoff
 
 
 ## Instructions

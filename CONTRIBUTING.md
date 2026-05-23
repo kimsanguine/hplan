@@ -6,18 +6,18 @@ Thank you for your interest in contributing!
 
 ```
 hplan/                         # repo root
-├── hplan/                     # Gate ⭐ — should we build this? (7 skills, 6 commands)
+├── hplan/                     # Gate ⭐ — should we build this? (8 skills, 9 commands)
 │   ├── .claude-plugin/
 │   │   └── plugin.json
 │   ├── skills/                # evidence-rubric, interview-synthesis, exclusions,
 │   │   └── ...                # cogs-sentinel, ost, decision-log, handoff
-│   ├── commands/              # hplan-evidence, -product, -build, -cogs, -exclude, -handoff
+│   ├── commands/              # hplan · harness-discover · harness-plan · harness-build · harness-operate · harness-doctor · harness-exclude · harness-handoff · harness-verify
 │   ├── scripts/               # 9 deterministic Python modules
 │   ├── hplan_mcp/             # MCP server for Cursor/Windsurf/Kiro/Codex/Goose
 │   ├── hooks/                 # PreToolUse gate_guard.py
 │   ├── agents/                # 4 role-locked reviewer agents
 │   └── references/            # 14 playbooks + provider_pricing.json
-├── discover/                    # Discovery — what agent to build (6 skills)
+├── discover/                    # Discovery — what agent to build (7 skills)
 │   ├── .claude-plugin/
 │   │   └── plugin.json        # Plugin manifest (required)
 │   ├── skills/
@@ -25,11 +25,10 @@ hplan/                         # repo root
 │   │   ├── assumptions/SKILL.md
 │   │   └── ...
 │   └── commands/
-│       ├── discover.md
-│       └── validate.md
-├── architect/                     # Strategy — how to architect it (7 skills)
-├── deliver/                     # Execution — spec and ship (12 skills)
-├── operate/                     # Operations — KPI, reliability, PM knowledge (15 skills)
+│       └── harness-discover.md
+├── architect/                     # Strategy — how to architect it (8 skills)
+├── deliver/                     # Execution — spec and ship (32 skills)
+├── operate/                     # Operations — KPI, reliability, PM knowledge (17 skills)
 │   └── evals/                 # Trigger eval queries + benchmark data
 │       ├── evals.json         # Quality eval definitions
 │       ├── trigger-evals.json # Trigger accuracy queries
@@ -166,8 +165,7 @@ Each plugin is named after a Greek mythological figure whose archetype maps to a
 | **discover** | Oracle of Delphi (the seer) | Discovery | Reveals which agent to build |
 | **architect** | Atlas (the titan) | Architecture | Bears the structural weight of design |
 | **deliver** | Hephaestus's Forge | Execution | Crafts raw ideas into specs |
-| **measure** | Argus Panoptes (100-eyed) | Monitoring | Watches every metric and failure |
-| **learn** | The Muses | Knowledge | Transforms experience into wisdom |
+| **operate** | Argus Panoptes (100-eyed) | Operations | Watches every metric, distills knowledge |
 
 Rules for new plugin names: (1) the metaphor must be instantly intuitive, (2) must work as a single-word CLI namespace.
 
@@ -181,7 +179,7 @@ Good examples: `prd`, `moat`, `cost-sim`, `premortem`, `hitl`
 
 ### Adding a New Skill
 
-1. Choose the right plugin (hplan / discover / architect / deliver / measure / learn)
+1. Choose the right plugin (hplan / discover / architect / deliver / operate)
 2. Create directory: `[plugin]/skills/[skill-name]/SKILL.md`
 3. Follow the SKILL.md format above
 4. Add a trigger eval query to `operate/evals/per-skill/[skill-name].json` (2 positive + 2 negative)
@@ -196,8 +194,8 @@ Good examples: `prd`, `moat`, `cost-sim`, `premortem`, `hitl`
 
 ## PM-Framework Note
 
-The `learn` plugin provides frameworks for managing PM tacit knowledge. **Frameworks** (TK structure, decision patterns) are open source. **Data** (your personal TK entries in `PM-ENGINE-MEMORY.md`) is yours and should never be committed.
+The `operate` plugin provides frameworks for managing PM tacit knowledge. **Frameworks** (TK structure, decision patterns) are open source. **Data** (your personal TK entries in `PM-ENGINE-MEMORY.md`) is yours and should never be committed.
 
 ## Questions?
 
-Open an issue or reach out to [@your-github-username](https://github.com/your-github-username).
+Open an issue or reach out to [@kimsanguine](https://github.com/kimsanguine).

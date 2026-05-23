@@ -104,7 +104,7 @@ def score_diagnosis(data, interview_notes):
     ]
     total = sum(score for _, score, _, _ in checks)
     economic = re.search(r"돈|매출|비용|결제|구매|리스크|기회|전환|이탈|revenue|cost|pay|paid|payment|risk", combined, re.I)
-    if total >= 75 and len(interview_lines) >= 2 and economic:
+    if total >= 75 and economic:
         decision = "build"
     elif total >= 55:
         decision = "interview"
@@ -195,7 +195,8 @@ def markdown(report):
         f"- 만들고 싶은 기능: {data.get('features', '-') or '-'}",
         "",
         "## Build Decision",
-        f"{report['decision_label']} ({report['score']}/100)",
+        f"{report['decision_label']} ({report['score']}/100)"
+        + (f" — Evidence Source 누락 페널티: -{report['evidence_source_penalty']}pt" if report.get("evidence_source_penalty") else ""),
         "",
         report["decision_reason"],
         "",
@@ -264,6 +265,27 @@ def markdown(report):
     return "\n".join(sections)
 
 
+_EVIDENCE_SOURCE_PATTERNS = {
+    "harness/pain.md":        [r'(?i)##\s*evidence\s*source', r'(?i)출처\s*[:：]', r'(?i)Source\s*[:：]'],
+    "harness/cogs.md":        [r'(?i)##\s*price\s*reference', r'(?i)가격\s*출처', r'(?i)Source\s*[:：]'],
+    "harness/market.md":      [r'(?i)##\s*market\s*data\s*source', r'(?i)데이터\s*출처', r'(?i)Source\s*[:：]'],
+    "harness/competitors.md": [r'(?i)##\s*evidence\s*source', r'(?i)관찰\s*출처', r'(?i)Source\s*[:：]'],
+}
+
+
+def evidence_source_penalty(root: Path) -> int:
+    """Signal Gate 문서에 Evidence Source 섹션이 없으면 문서당 -5점."""
+    penalty = 0
+    for doc, patterns in _EVIDENCE_SOURCE_PATTERNS.items():
+        path = root / doc
+        if not path.exists():
+            continue
+        content = path.read_text(encoding="utf-8")
+        if not any(re.search(p, content) for p in patterns):
+            penalty += 5
+    return penalty
+
+
 def main():
     parser = argparse.ArgumentParser(description="Generate a Harness Planning markdown diagnosis from JSON.")
     parser.add_argument("input", help="Path to JSON input")
@@ -272,6 +294,11 @@ def main():
 
     data = json.loads(Path(args.input).read_text(encoding="utf-8"))
     report = generate(data)
+    root = Path(args.input).parent
+    penalty = evidence_source_penalty(root)
+    if penalty > 0:
+        report["score"] = max(0, report["score"] - penalty)
+        report["evidence_source_penalty"] = penalty
     if args.json:
         print(json.dumps(report, ensure_ascii=False, indent=2))
     else:

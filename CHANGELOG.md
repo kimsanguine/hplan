@@ -4,6 +4,338 @@ All notable changes to hplan (renamed from AI_PM_Skills in v0.5) are documented 
 
 ---
 
+## [0.10.1] — 2026-05-23
+
+> **사용자 영향**: 2차 Codex adversarial review 수정 + 5 페르소나 피드백 반영. `audit()`·`list --phase` KeyError 수정, Signal Gate pre-commit staged index 기준 강화, Evidence Source 페널티 자동 적용, Phase 5·6 빌드 리뷰 추가, PM 용어 설명 추가.
+
+### Fixed — `hplan/scripts/decision_log.py`
+
+HITL 레코드(`type: "hitl"`)와 gate 레코드 스키마 불일치 두 건 수정:
+
+**[HIGH] `audit()` KeyError 방지**
+- `audit()` 진입 전 `type != "hitl"` 필터 추가
+- HITL 레코드에는 `decision` 필드가 없어 `Counter(e["decision"] ...)` 호출 시 KeyError 발생하던 문제 제거
+
+**[HIGH] `list --phase` 필터링 정합성**
+- HITL 레코드: `phase` 필드 기준으로 필터
+- gate 레코드: `gate` 필드 기준으로 필터
+- 이전: 혼재된 레코드에서 특정 타입만 누락되거나 빈 결과 반환하던 버그 제거
+
+### Fixed — `scripts/install-hooks.sh`
+
+**[HIGH] Signal Gate pre-commit — staged index 기준으로 변경**
+
+- 이전: `[ -f "$sdoc" ]` — working tree 파일 존재 여부 확인 (bypass 가능)
+- 변경: `git cat-file -e ":$sdoc" 2>/dev/null` — staged index 기준 확인
+- 효과: `git add` 없이 harness 문서를 파일 시스템에만 두고 commit하는 bypass 차단
+- 에러 메시지도 "staged index" 반영
+
+### Fixed — `README.md`
+
+**[MEDIUM] 삭제된 per-plugin 커맨드 4개 섹션 참조 제거**
+
+| 이전 (삭제됨) | 현재 |
+|---|---|
+| `/discover` · `/validate` | `/harness-discover` |
+| `/architecture` · `/strategy-review` | `/harness-plan` |
+| `/write-prd` · `/set-okr` · ... | `/harness-build` |
+| `/health-check` · `/cost-review` · ... | `/harness-operate` |
+
+---
+
+### Added — Signal Gate v2: Evidence Source 페널티
+
+**`hplan/scripts/generate_report.py`**
+
+- `_EVIDENCE_SOURCE_PATTERNS` 딕셔너리 추가: 4개 Signal Gate 문서별 출처 섹션 패턴 정의
+- `evidence_source_penalty(root)` 함수: 출처 섹션 없는 문서당 -5점 자동 적용 (최저 0점)
+- 스코어 계산에 페널티 반영, 결과에 "Evidence Source 누락 페널티: -Npt" 표시
+
+**`hplan/commands/hplan.md`**
+
+- Step 2 앞 "Signal Gate v2 — Evidence Source 요건" 블록 추가
+- 4개 문서별 필요 출처 형식 명시: 날짜 인터뷰, 가격 링크, 리포트 DOI/URL, 직접 테스트 노트
+
+### Added — `hplan/commands/harness-build.md`
+
+**Phase 5 — Spec Compliance Review**
+
+- PRD Section 3 ICP 정합성 체크: 실제 사용자가 PRD ICP에 해당하는지 확인
+- PRD Section 9 비기능 요건 vs 실측값 비교표 생성
+- PRD Section 14 실패 모드 fallback 커버 확인
+- `--step spec-review` 플래그 지원
+
+**Phase 6 — Quality Gate**
+
+- 테스트 커버리지 기준: happy path + 주요 실패 시나리오 최소 1개
+- 기술 부채 마커 임계값: ≤5 통과 / 6-15 경고 / ≥16 차단
+- 보안 기본 점검: 하드코딩 시크릿, 미검증 외부 입력
+- `--step quality-gate` 플래그 지원
+
+### Added — `hplan/hooks/gate_guard.py`
+
+**PLACEHOLDER_PATTERNS 확장 (+7개)**
+
+기존 TBD/미정/추후/나중에 외에 vague ICP 표현 탐지 패턴 추가:
+- `여러 고객`, `많은 사람`, `일반 사용자`, `target user` (비구체적 타겟)
+- `TODO`, `미기입`, `검토 예정` (미완료 마커)
+
+### Added — Interview Discipline
+
+**`hplan/commands/harness-discover.md`**
+
+Signal Gate 이전 "Interview Discipline" 섹션 신설:
+
+| 규칙 | 내용 |
+|---|---|
+| 1 | 질문 1개씩 — 멀티 질문 금지 |
+| 2 | Multiple choice 우선 — open-ended는 필요할 때만 |
+| 3 | AI 생성 페르소나 ≠ 인터뷰 증거 — 실제 인터뷰가 없으면 interview_lines = 0 |
+| 4 | Source/Date/Quote 3필드 필수 — Phase 5 전 최소 3건 |
+
+### Added — PM 용어 설명 (4개 커맨드 파일)
+
+`harness-discover.md` · `harness-plan.md` · `harness-build.md` · `harness-operate.md`
+
+각 파일에 2가지 방식으로 PM 용어 접근성 개선:
+1. **"왜" 블록**: 각 Phase 앞 1-2문장으로 이 단계가 왜 필요한지 설명
+2. **Inline 용어 설명**: Signal Gate, ICP, CONDITIONAL_GO, COGS, Orchestration, 3-Tier, Moat, Execution Handoff, KPI, North Star, P95/P99, Burn Rate 등 첫 등장 시 blockquote 설명
+
+---
+
+## [0.10.0] — 2026-05-23
+
+> **사용자 영향**: ADK (Agent Development Kit) 5-Layer 구조 완성. `git clone` + `bash scripts/install-hooks.sh` 한 번으로 모든 레이어가 활성화됩니다.
+
+### Added — ADK L1 Memory: Root `CLAUDE.md`
+
+`CLAUDE.md` (repo root 신규)
+
+- **9개 행동 원칙** 내장: Think Before Coding · Simplicity First · Surgical Changes · Goal-Driven Execution · 모델은 판단 작업에만 · Tests Verify Intent · Checkpoint · Fail Loud · Agent Scope Declaration
+- **hplan Gate Rules** 섹션: Signal Gate 4문서 작성 기준, No-Placeholder 규칙, Decision Log 필수성
+- **ADK Layer 표** 포함: L1~L5 어떤 파일이 어느 레이어인지 한눈에 확인
+- 사용자는 이 파일을 clone 후 hplan Context 섹션만 프로젝트에 맞게 수정하면 바로 적용
+
+### Added — ADK L3 Guardrail: `hooks/` 디렉토리
+
+세 개의 Claude Code hook shell 래퍼 신설:
+
+| 파일 | 이벤트 | 동작 |
+|------|--------|------|
+| `hooks/SessionStart.sh` | 세션 시작 | Build Gate checkpoint 상태 + Signal Gate 문서 인벤토리 출력 |
+| `hooks/PreToolUse.sh` | Write/Edit 전 | `hplan/hooks/gate_guard.py` 위임 — checkpoint 없으면 차단 |
+| `hooks/PostToolUse.sh` | Write/Edit 후 | API 키 / secret 패턴 스캔 → 경고 출력 (차단 안 함) |
+
+`hooks/README.md` 포함: 수동 테스트 명령, 등록 방법, 제거 방법 문서화.
+
+### Updated — `scripts/install-hooks.sh`: Claude Code 훅 등록 추가
+
+기존: git pre-commit hook만 설치  
+변경 후:
+
+1. git pre-commit hook (기존 유지)
+2. Claude Code hook 등록 — `.claude/settings.json`에 SessionStart · PreToolUse · PostToolUse 3개 항목 자동 추가
+3. `--remove` 옵션도 양쪽 모두 제거하도록 업데이트
+
+### Updated — `README.md` + `hplan/PLUGIN.md`
+
+- README: "Option 2: Clone Locally (Full ADK Stack)" — ADK 5-layer 테이블 추가
+- README: 버전 배지 `0.9.9` → `0.10.0`
+- PLUGIN.md: Cross-Cutting Assets에 CLAUDE.md(L1) · hooks/(L3) 항목 추가
+
+---
+
+## [0.9.9] — 2026-05-23
+
+> **사용자 영향**: Release Polish — 배지·버전 설명·Quick Start·커맨드 목록 업데이트. 8역할 병렬 팀 공식 등록.
+
+### Added — 8-Role Parallel Team (`deliver/skills/parallel-team`)
+
+**`deliver/skills/parallel-team/SKILL.md`** 전면 재작성
+
+기존 generic parallel dispatch → 역할 기반 기본 팀 정의:
+
+| 역할 | 담당 |
+|---|---|
+| 디자이너 | 화면 레이아웃, 컴포넌트 디자인, 디자인 시스템 설계 |
+| 개발자 | 코드 구현, 버그 수정, 기능 추가, 리팩토링 |
+| 품질담당자 | 테스트 코드 작성, 엣지 케이스 발굴, 회귀 방지 |
+| 마케터 | 랜딩 카피, SEO, 출시 메시지, 채널별 콘텐츠 |
+| 리서처 | 경쟁사 분석, 시장 조사, 기술·라이브러리 비교 |
+| 배포 담당자 | 인프라 셋업, 환경 변수 관리, 도메인 연결, CI/CD |
+| 까칠이 | 팀원 결과물 약점 발굴·반박 (adversarial reviewer, 항상 마지막) |
+| 보안 담당자 | 시크릿 노출 검사, 권한·취약점 점검 (머지 전 블로킹 게이트) |
+
+Role Selection Guide(키워드 기반 자동 선택) + 최소 팀 4인 규칙 + 까칠이 Protocol + 보안 게이트 체크리스트(7항목) 추가.
+
+### Changed — README / README-ko 업데이트
+
+- 배지: `skills-65` → `skills-72`, `version-0.9.2` → `version-0.9.9`
+- 버전 설명: v0.9.4–v0.9.9 변경 요약 반영
+- Quick Start: `/harness-doctor` 설치 검증 단계 + `/harness-*` 라이프사이클 예시 추가
+- 커맨드 목록: 9개 실제 커맨드로 정정 (`harness-*` 명명 반영)
+
+### Verified
+
+- `python3 validate_plugins.py`: ✅ 5 plugins, 55 active + 17 alias = 72 skills, 9 commands, 0 errors
+
+---
+
+## [0.9.8] — 2026-05-23
+
+> **사용자 영향**: 큰 태스크를 자동으로 2주 단위로 분할하는 Scope Decomposition 체크리스트 추가. PRD v0.1→v0.2→v0.3 버전 체인이 harness-build Phase 4 도입부에 명시되어 "지금 어디까지 왔나"를 한눈에 파악 가능.
+
+### Added — Scope Decomposition Check (`harness-plan`)
+
+`harness/ARCHITECTURE.md` 생성 직후, Execution Handoff 진입 전에 **Scope Decomposition Check** 단계 삽입:
+
+- 각 태스크에 3가지 질문: 2주 내 완료 가능? / 독립 검증 가능? / 산출물 파일명 명확?
+- 2주 초과 태스크 → Wave A(핵심 happy path) / Wave B(에러 처리) / Wave C(최적화) 분할
+- 분할 완료 후 `harness/ARCHITECTURE.md` 업데이트 → Execution Handoff 진행
+
+### Added — PRD Living Document 안내 (`harness-build`)
+
+Phase 4 도입부에 PRD 버전 체인 시각화 블록 삽입:
+
+```
+v0.1 — Signal Gate + harness-build: 사용자·문제·범위·에이전트 사양 초안
+v0.2 — harness-plan 완료 후: 오케스트레이션·Tier·메모리·라우팅 결정 반영
+v0.3 — harness-operate 피드백 후: KPI·실패 모드·개선 계획 반영
+```
+
+---
+
+## [0.9.7] — 2026-05-23
+
+> **사용자 영향**: Signal Gate 문서에 증거 출처가 없으면 경고 또는 차단. "잘 쓰인 문서"와 "진짜 증거 기반 문서"를 구분하기 시작.
+
+### Added — Evidence Source Check (`hplan.md` + `gate_guard.py`)
+
+**문제**: Signal Gate = 문서 완성도 측정, NOT 시장 가설 검증. 의견(Opinion)을 증거(Evidence)처럼 쓰는 경로 존재.
+
+**수정**:
+
+1. **`hplan/commands/hplan.md`** — Signal Gate 섹션에 `Evidence Source 요건 (v0.9.7)` 테이블 추가:
+   - pain.md: 인터뷰 날짜(`YYYY-MM-DD`) 또는 `## Evidence` 섹션 필수
+   - cogs.md: 가격 출처(provider pricing) 또는 `## Evidence` 섹션 필수
+   - market.md: 시장 규모 출처(산업 리포트, TAM source) 또는 `## Evidence` 섹션 필수
+   - competitors.md: 직접 테스트 또는 사용자 발화 인용 필수
+
+2. **`hplan/hooks/gate_guard.py`** — `evidence_source_check()` 함수 추가:
+   - `EVIDENCE_PATTERNS` 상수: 4개 문서 × 문서별 3개 패턴
+   - 4개 모두 미충족 → **차단(exit 2)**
+   - 일부 미충족 → **경고** 출력 후 계속 진행
+
+---
+
+## [0.9.6] — 2026-05-23
+
+> **사용자 영향**: PM이라면 누구나 써야 할 4개 계획 규율이 명령어에 내장됨. "기준 없이 기능부터" 패턴을 구조적으로 차단.
+
+### Added — 4 Planning Disciplines
+
+**G1 — Criteria First** (`harness-build.md` Pre-Step 4-0):
+- PRD 섹션 작성 전 North Star Metric + Business KR 1–2개 + Anti-Metric 1개 먼저 정의
+- 이 기준이 Section 4 결정 매트릭스와 Section 5 Out-of-Scope의 필터로 작동
+- 근거: "기능을 먼저 쓰면 기능이 목표를 정의한다"
+
+**G2 — Named Artifacts** (`harness-plan.md` Planning Disciplines):
+- Phase 시작 직후 산출물 파일명·섹션명 먼저 선언 의무
+- 5 Phase 산출물 테이블 (Orchestration → 3-Tier → Memory → Routing → Architecture Doc)
+
+**G3 — Decision Commit** (`harness-plan.md` Planning Disciplines):
+- 모든 HITL 결정 지점: 옵션 3개 이상 → 정확히 1개 커밋
+- "A 또는 B 방향으로 갈 수 있습니다" 같은 미결 처리 금지
+- `decision_log.py hitl` 기록 필수
+
+**G4 — Phase Context Budget** (`harness-plan.md` Planning Disciplines):
+- 각 Phase 최대 3개 파일 로드 원칙
+- Phase 시작 전 전체 프로젝트 파일 일괄 Read 금지
+
+---
+
+## [0.9.5] — 2026-05-22
+
+> **사용자 영향**: 8개 라이프사이클·유틸리티 커맨드가 `harness-*`로 통일. `/hplan` 게이트 브랜드 진입점은 유지.
+
+### Changed — `harness-*` 커맨드 명명 통일
+
+8개 커맨드 파일 rename + 66개 크로스 레퍼런스 업데이트:
+
+| 이전 | 이후 |
+|---|---|
+| `/hplan-discover` | `/harness-discover` |
+| `/hplan-plan` | `/harness-plan` |
+| `/hplan-build` | `/harness-build` |
+| `/hplan-operate` | `/harness-operate` |
+| `/hplan-exclude` | `/harness-exclude` |
+| `/hplan-handoff` | `/harness-handoff` |
+| `/hplan-verify` | `/harness-verify` |
+| `/hplan-doctor` | `/harness-doctor` |
+
+`/hplan` (Evidence + Product + COGS 3-gate) 브랜드 진입점은 그대로 유지.
+
+### Added — Execution Handoff (항목 E, `harness-plan`)
+
+ARCHITECTURE.md 작성 완료 후 3가지 실행 전략 HITL:
+- A) 단독 실행 → `/harness-build`
+- B) 병렬 팀 구성 → `/deliver:parallel-team`
+- C) 단계적 실행 → `/harness-build --step`
+
+---
+
+## [0.9.4] — 2026-05-22
+
+> **사용자 영향**: Signal Gate 문서에 TBD/미정/추후/다양한 사용자 같은 모호 표현이 있으면 빌드 차단. 인터뷰 질문을 한 번에 하나씩 도출하도록 강제.
+
+### Added — No-Placeholder Gate (항목 B, `gate_guard.py`)
+
+**문제**: Signal Gate가 존재 여부만 확인하고, 내용이 모호해도 통과시켰음.
+
+**수정**: `PLACEHOLDER_PATTERNS` + `placeholder_gate_check()` 추가 (`gate_guard.py`):
+- 6개 패턴: TBD · 미정 · 추후 · 나중에 · 다양한 사용자 · 여러 ...층
+- 감지 시 exit 2 (빌드 차단), 구체적인 내용 교체 안내
+
+### Added — Interview Discipline (항목 G6, `harness-discover`)
+
+Phase 2 가정 분석에 **Interview Discipline** 블록 삽입:
+- 가정 검증 질문을 한 번에 하나씩 도출
+- yes/no 또는 객관식 형태로 설계 권장
+- 이전 답변 기반으로 다음 질문 조정 (대화형 탐색)
+
+---
+
+## [0.9.2] — 2026-05-22
+
+> **사용자 영향**: 30개 커맨드 → 9개로 통합. 4개 라이프사이클 커맨드(`/hplan-discover`, `/hplan-plan`, `/hplan-build`, `/hplan-operate`)에 `--mode`/`--step` 파라미터 라우팅이 내장되어, 이전에는 별도 커맨드를 설치해야 했던 세밀한 제어가 파라미터 한 줄로 가능합니다.
+
+### Changed — 30 commands → 9 commands 통합
+
+**파라미터 라우팅 패턴**: 각 라이프사이클 커맨드에 `$ARGUMENTS`에서 `--mode`/`--step` 플래그를 파싱하는 Routing 테이블 내장.
+
+| 커맨드 | 흡수된 커맨드 | 파라미터 |
+|--------|-------------|---------|
+| `/hplan-discover` | `discover.md`, `validate.md` | `--mode opp\|assumptions\|cost\|build-or-buy\|validate` |
+| `/hplan-plan` | `architecture.md`, `strategy-review.md` | `--mode orchestration\|3-tier\|memory\|routing\|review` |
+| `/hplan-build` | `hplan-evidence.md`, `hplan-product.md`, `hplan-cogs.md`, `hplan-scope-guard.md`, `write-prd.md`, `set-okr.md`, `sprint.md`, `craft-init.md`, `craft-lint.md`, `track-init.md`, `track-status.md`, `track-retro.md` | `--step evidence\|product\|cogs\|prd\|okr\|sprint\|craft-init\|craft-lint\|track-init\|track-status\|track-retro\|scope` |
+| `/hplan-operate` | `health-check.md`, `cost-review.md`, `decide.md`, `extract.md`, `tk-to-instruction.md` | `--mode kpi\|reliability\|cost\|improve\|extract\|decide\|tk` |
+
+### Removed — 21 개별 커맨드 파일 삭제
+
+discover, architect, deliver, operate 플러그인의 개별 커맨드 `.md` 파일 21개가 라이프사이클 커맨드에 흡수되어 삭제됨. `hplan` 플러그인 utility 5개(`/hplan`, `/hplan-exclude`, `/hplan-handoff`, `/hplan-doctor`, `/hplan-verify`)는 유지.
+
+### Design — 파라미터 없으면 전체 플로우, 있으면 해당 Phase만
+
+- 플래그 없음: 대부분의 Phase를 순서대로 실행하며 Checkpoint에서 사용자 확인 대기
+- `--mode`/`--step` 지정 시: 해당 Phase만 실행하고 종료 (세밀한 제어 및 재실행 지원)
+- 스킬 참조 포함하되 instructions 인라인 — 다른 플러그인 미설치 상태에서도 동작
+
+### Verified
+
+- `python3 validate_plugins.py`: ✅ 5 plugins, 55 active + 17 alias = 72 skills, **9 commands**, 0 errors, 3 warnings(pre-existing)
+
+---
+
 ## [0.9.1] — 2026-05-21
 
 > **사용자 영향**: Evidence Gate 루브릭이 `generate_report.py` 실제 구현과 이제 일치합니다 — 7개 기준/80점 기준에서 8개 기준/75점 기준으로 통일. `/hplan-doctor` 로 훅·체크포인트·레지스트리 상태를 한 번에 진단 가능. 컨설턴트 워크플로에서 `--profile` 플래그로 클라이언트별 exclusions 격리. README.md 영어 전용 정리.

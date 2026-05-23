@@ -8,9 +8,9 @@
 > 말의 고삐(harness)처럼, Claude Code · Cursor · Lovable 같은 AI 코딩 도구의 거친 동력에 **방향을 부여하는 사전 계획**입니다. 코드를 만드는 도구는 이미 충분히 강합니다. 부족한 건 *"어디로 향할지"*. hplan은 코드를 쓰기 전 7일 동안 시장조사·문제정의·COGS를 강제로 묻습니다.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-65-blue?style=flat-square)](#플러그인별-전체-스킬-목록)
+[![Skills](https://img.shields.io/badge/skills-72-blue?style=flat-square)](#플러그인별-전체-스킬-목록)
 [![Plugins](https://img.shields.io/badge/plugins-5-purple?style=flat-square)](#에이전트-pm-여정--5-plugin)
-[![Version](https://img.shields.io/badge/version-0.9.1-green?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.10.1-green?style=flat-square)](CHANGELOG.md)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)](CONTRIBUTING.md)
 [![English](https://img.shields.io/badge/lang-English-blue?style=flat-square)](README.md)
 
@@ -20,7 +20,7 @@
 git clone https://github.com/kimsanguine/hplan ~/.claude/plugins/hplan
 ```
 
-> **v0.9.1** — hplan 은 AI 도구가 HOW 로 달려가기 전에 **WHETHER 를 묻는 Product Build Gate** 입니다. v0.9 는 9단계 구조를 **5-plugin 라이프사이클**(hplan → discover → architect → deliver → operate)로 단순화합니다. `track` + `craft` 가 `deliver` 로, `measure` + `learn` 이 `operate` 로 통합. v0.9.1 에서 Evidence Gate 루브릭 통일, `/hplan-doctor` 진단 커맨드 신설, exclusions `--profile` 클라이언트 격리 추가. 자세한 변경 내역은 [CHANGELOG.md](CHANGELOG.md).
+> **v0.10.1** — hplan 은 AI 도구가 HOW 로 달려가기 전에 **WHETHER 를 묻는 Product Build Gate** 입니다. ADK 5-Layer 완성: L1 Memory (CLAUDE.md) · L2 Skills (72개 PM 규율) · L3 Hooks (SessionStart · PreToolUse · PostToolUse) · L4 Subagents (8역할 병렬 팀) · L5 Plugins (마켓플레이스). `git clone` + `bash scripts/install-hooks.sh` 한 번으로 5개 레이어 전체 활성화. 자세한 변경 내역은 [CHANGELOG.md](CHANGELOG.md).
 
 ### 📺 99초 소개 영상
 
@@ -199,37 +199,67 @@ WHETHER는 WHY보다 큽니다. WHY는 이유를 답합니다("왜 사용자가 
 
 ---
 
+## 30초 데모 셋업 (로컬 클론)
+
+> CLI 사용자 전용. 데스크탑 앱은 아래 **빠른 시작** 의 마켓플레이스 경로를 사용하세요.
+
+```bash
+# 한 번만 실행 — 클론 + alias 자동 등록
+bash <(curl -fsSL https://raw.githubusercontent.com/kimsanguine/hplan/main/scripts/setup.sh)
+source ~/.zshrc   # 또는 ~/.bashrc
+
+# 이후 바로 사용
+claude-hplan       # 5-plugin 전체 (gate + discover + architect + deliver + operate)
+claude-hplan-gate  # 게이트만 (WHETHER 판단 전용)
+```
+
+---
+
 ## 빠른 시작 (60초)
 
 > **시스템 요구사항:** Claude Code v1.0+, Python 3.9+ (Evidence Gate 스크립트용), Git (pre-commit hook 선택). 자세한 설치 환경은 [GUIDE-ko.md](GUIDE-ko.md#시스템-요구사항) 참조.
 
+### 방법 A — 라이프사이클 커맨드 (권장, hplan 1개만 설치)
+
 ```bash
-# 1. 마켓플레이스 등록
+# Claude 세션에서 실행
 /plugin marketplace add kimsanguine/hplan
 /plugin install hplan@kimsanguine-hplan
 
-# 2. 3개 게이트를 한 번에 — exclusions + evidence + COGS → 판정
+# 전체 라이프사이클을 4개 커맨드로
+/harness-discover "AI 마케팅 카피 생성기"   # 기회 매핑 + 가정 분석 + 비용 추정
+/hplan "AI 마케팅 카피 생성기"            # WHETHER gate — GO / HOLD / INVESTIGATE
+/harness-plan "마케팅 카피 에이전트"        # 아키텍처 설계 + W1 Done Criteria
+/harness-build "마케팅 카피 에이전트"       # COGS gate → PRD 자동 작성 → W1 스프린트
+/harness-operate "마케팅 카피 에이전트"     # 주간 KPI · 비용 · 개선 계획
+```
+
+### 방법 B — 게이트 세밀 제어 (전체 플러그인 설치 시)
+
+```bash
+# 3개 게이트를 한 번에 — exclusions + evidence + COGS → 판정
 /hplan "AI 마케팅 카피 생성기"
 # → [exclusions] COLLISION with ex-2026-04-17 (해당 영역 이미 점유 중)
 # → reopen_trigger UNMET → HOLD
 
-# 또는 개별 게이트로 깊은 분석:
+# 개별 게이트로 깊은 분석:
 /hplan-evidence "AI 마케팅 카피 생성기"   # 100점 루브릭 전체 + 인터뷰 합성
 /hplan-cogs --provider anthropic --model claude-sonnet-4-6 \
             --tokens-in 3000 --calls 40 --arpu 29
 # → p50 마진 95%, p90 90%, blended 49% → GREEN
 ```
 
-**Gate 통과 후** — 4개 lifecycle plugin 중 필요한 것 설치:
+**Gate 통과 후** — VERDICT: GO가 나오면 추가 플러그인을 설치해 더 깊은 스킬을 활용할 수 있습니다:
 
 ```bash
+# Claude 세션에서 복붙 (필요한 것만 선택해도 됩니다)
 /plugin install discover@kimsanguine-hplan   # 발견 — opportunity tree, assumptions, cost sim
 /plugin install architect@kimsanguine-hplan  # 설계 — orchestration, memory, moat
 /plugin install deliver@kimsanguine-hplan    # 실행 — agent PRD, instruction, prompt, harness, design
 /plugin install operate@kimsanguine-hplan    # 측정·학습·운영 — KPI, burn rate, PM 암묵지, 포트폴리오
 ```
 
-스킬 이름을 외울 필요는 없습니다. 자연어로 질문하면 65개 스킬 중 맞는 게 auto-load 됩니다.
+스킬 이름을 외울 필요는 없습니다. 자연어로 질문하면 55개 스킬 중 맞는 게 auto-load 됩니다.
 
 ---
 
@@ -354,7 +384,16 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 | `pmf-gate` | generate_report.py 결정론 Python 측정 — 8축 루브릭 점수화 + interview_lines·economic_pain anti-gaming 내장, 75/55/35 임계값으로 build/interview/hold 판정 | "루브릭 점수가 나왔는데 — 정말 build로 가도 되는지 확인" |
 | `handoff` | Build Gate brief → Spec-Kit / Kiro / GStack / Claude Code 4개 ecosystem 동시 export | "이제 코딩 에이전트로 넘어가자 — spec 자동 생성" |
 
-**커맨드:** `/hplan-evidence` · `/hplan-product` · `/hplan-build` · `/hplan-cogs` · `/hplan-exclude` · `/hplan-handoff` · `/hplan-doctor`
+**라이프사이클 커맨드 (hplan 1개만 설치해도 전체 커버):**
+
+| 커맨드 | 단계 | 기능 |
+|--------|------|------|
+| `/harness-discover <idea>` | Discover | 기회 매핑 → 가정 분석 → 비용 시뮬 → 빌드/바이 결정 |
+| `/harness-plan <system>` | Plan | 오케스트레이션 → 3-tier → 메모리 → 모델 라우팅 |
+| `/harness-build <brief>` | Build | COGS gate + PRD 8-section 자동 작성 + W1 스프린트 |
+| `/harness-operate <agent>` | Operate | KPI · 신뢰성 · 비용 · 개선 계획 + 지식 추출 |
+
+**게이트 세밀 제어:** `/hplan` · `/harness-exclude` · `/harness-handoff` · `/harness-doctor`
 
 **Cross-cutting 자산:** MCP 서버 (`hplan_mcp/`) — Cursor / Windsurf / Kiro / Codex / Goose 호환 · PreToolUse hook (`hooks/gate_guard.py`) · 4개 role-locked reviewer agents (`agents/`)
 </details>
@@ -374,7 +413,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 | `agent-gtm` | 비치헤드 세그먼트 5기준 점수 + Shadow→Co-pilot→Auto→Delegation 신뢰 시퀀스 설계 | "B2B 고객에게 이 에이전트를 어떤 순서로 내보내지?" |
 | `design-reference` | UI 레퍼런스 수집·구조화 + 디자인 언어 공통 패턴 추출 → 설계 시 참조 가능한 DESIGN-REFERENCE.md 생성 | "경쟁사·레퍼런스 앱에서 패턴을 뽑아 우리 설계에 반영하고 싶어" |
 
-**커맨드:** `/discover`(전체 기회 탐색) · `/validate`(가정 검증)
+**커맨드:** `/harness-discover`
 </details>
 
 <details>
@@ -393,7 +432,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 | `growth-loop` | 사용→데이터→개선→재사용 루프 설계 + 콜드스타트 해법 + 역루프(anti-loop) 식별 | "추천 결과가 쓸수록 좋아지게 만들려면?" |
 | `design-token` | 색상·타이포·간격·그림자 디자인 토큰 체계 정의 + DESIGN.md 생성 → 일관된 UI 시스템 강제 | "컴포넌트마다 색이 다르게 들어가 있어, 토큰으로 통일하고 싶어" |
 
-**커맨드:** `/architecture`(아키텍처 설계) · `/strategy-review`(전략 리뷰)
+**커맨드:** `/harness-plan`
 </details>
 
 <details>
@@ -438,7 +477,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 | `motion-language` | 정규식 + framer-motion AST 스캔 → RESPECT motion_language 명세 대비 drift 보고 | "hover transition 200ms 일관? page easing 일관? ship 전 drift 감지" |
 | `ui-drift-detect` | 5+ 화면 pHash + KMeans palette + DOM tree edit distance → 5 차원 drift score | "디자인 시스템 회귀 감지 — 신규 화면이 design language 깼나?" |
 
-**커맨드:** `/write-prd`(PRD 작성) · `/set-okr`(OKR 설정) · `/sprint`(스프린트 계획)
+**커맨드:** `/harness-build`
 </details>
 
 <details>
@@ -468,7 +507,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 | `weekly-rollup` | Cron 기반 포트폴리오 rollup (trend + 이상 감지) | "월요일 아침 — 지난 주 fleet에 무슨 변화?" |
 | `cross-team-routing` | capability × load × tier × handoff cost 점수화로 요청 라우팅 결정 | "3개 에이전트가 처리 가능 — 어디로 보낼까?" |
 
-**커맨드:** `/health-check`(전체 건강 점검) · `/cost-review`(비용 리뷰) · `/extract`(TK 추출) · `/decide`(의사결정 패턴 참조) · `/tk-to-instruction`(TK→인스트럭션 변환)
+**커맨드:** `/harness-operate`
 
 > 💡 [PM-ENGINE-MEMORY 스타터 킷](operate/skills/pm-engine/examples/PM-ENGINE-MEMORY-STARTER.md)으로 시작하세요 — 실무에서 검증된 5개 시드 TK가 미리 들어 있어, 빈 파일이 아닌 바로 쓸 수 있는 상태로 시작합니다.
 
@@ -479,19 +518,57 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 
 ## 설치
 
-### 방법 1: GitHub Marketplace (권장)
+### 방법 1: 자동 설치 스크립트 (CLI 권장)
 
 ```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/kimsanguine/hplan/main/scripts/setup.sh)
+source ~/.zshrc
+```
+
+`setup.sh` 가 수행하는 작업: 저장소 클론 → `claude-hplan` / `claude-hplan-gate` alias 등록 → git hook 설치 (선택).
+
+> ⚠️ **`--plugin-dir` 플래그는 CLI 전용입니다.** 데스크탑 앱에서는 방법 2(마켓플레이스)를 사용하세요.
+
+---
+
+### 방법 2: GitHub Marketplace (데스크탑 앱 + CLI)
+
+아래 명령을 **Claude 세션 안에서** 실행하세요 (`/` 로 시작하는 슬래시 커맨드는 터미널 bash가 아닌 Claude 세션에서만 동작합니다):
+
+```
+# 마켓플레이스 등록 (1회)
 /plugin marketplace add kimsanguine/hplan
-/plugin install hplan@kimsanguine-hplan    # 또는 discover · architect · deliver · operate
+
+# 필요한 플러그인만 선택해서 설치
+/plugin install hplan@kimsanguine-hplan
+/plugin install discover@kimsanguine-hplan
+/plugin install architect@kimsanguine-hplan
+/plugin install deliver@kimsanguine-hplan
+/plugin install operate@kimsanguine-hplan
 ```
 
-### 방법 2: 로컬 클론
+> **Private repo 환경**: 마켓플레이스 설치가 "not found"로 실패하면, 방법 1(로컬 클론)을 사용하세요. 로컬 클론은 repo 공개 여부와 무관하게 동작합니다.
+
+---
+
+### 방법 3: 수동 로컬 클론
 
 ```bash
-git clone https://github.com/kimsanguine/hplan.git
-claude --plugin-dir ./hplan/hplan   # 필요한 것 선택 (hplan, discover, architect, deliver, operate)
+git clone https://github.com/kimsanguine/hplan.git ~/hplan
+
+# 개별 플러그인 로드
+claude --plugin-dir ~/hplan/hplan
+
+# 전체 로드 (5-plugin)
+claude \
+  --plugin-dir ~/hplan/hplan \
+  --plugin-dir ~/hplan/discover \
+  --plugin-dir ~/hplan/architect \
+  --plugin-dir ~/hplan/deliver \
+  --plugin-dir ~/hplan/operate
 ```
+
+---
 
 **어디서부터 시작할지 모르겠다면?**
 **어떤 AI 제품을 만들지 결정 못 하셨다면** → `hplan`으로 시작 — evidence 게이트가 먼저.

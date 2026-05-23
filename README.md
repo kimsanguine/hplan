@@ -6,13 +6,13 @@
 > Like a horse's harness, hplan gives direction to the raw power of AI coding tools (Claude Code, Cursor, Lovable, etc.). The tools that *make* code are already strong enough. What's missing is *where to point them*. hplan is the 7-day discipline that forces you to answer market research, problem definition, and COGS *before* a single PRD line is written.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-65-blue?style=flat-square)](#plugins--full-skill-list)
+[![Skills](https://img.shields.io/badge/skills-72-blue?style=flat-square)](#plugins--full-skill-list)
 [![Plugins](https://img.shields.io/badge/plugins-5-purple?style=flat-square)](#the-agent-pm-journey--5-plugins)
-[![Version](https://img.shields.io/badge/version-0.8.5-green?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.10.1-green?style=flat-square)](CHANGELOG.md)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)](CONTRIBUTING.md)
 [![한국어](https://img.shields.io/badge/lang-한국어-blue?style=flat-square)](README-ko.md)
 
-> **v0.9.0** — hplan is the **Product Build Gate** that asks WHETHER before AI tools rush to HOW. v0.9 consolidates from 9 loose plugins into a clean **5-plugin lifecycle**: `hplan` (gate) → `discover` → `architect` → `deliver` → `operate`. Track + Craft are now absorbed into `deliver`; Measure + Learn are now absorbed into `operate`. v0.9 also adds a **3-skill design workflow**: `discover/design-reference` (100-site curated reference + DESIGN_BRIEF.md) → `architect/design-token` (semantic CSS tokens + DESIGN.md) → `deliver/mobile-check` (Playwright 375/768/1440px hard gate). See [CHANGELOG.md](CHANGELOG.md).
+> **v0.10.1** — hplan now ships as a complete **ADK (Agent Development Kit)**: **L1 Memory** (`CLAUDE.md` — 9 behavioral rules auto-loaded every session) · **L2 Skills** (72 PM disciplines, auto-invoked) · **L3 Hooks** (`hooks/` — SessionStart gate status · PreToolUse gate enforcement · PostToolUse secret scanner) · **L4 Subagents** (8-role parallel team) · **L5 Plugins** (marketplace). One `git clone` + `bash scripts/install-hooks.sh` activates all 5 layers. v0.9.4–v0.9.9 history: see [CHANGELOG.md](CHANGELOG.md).
 
 ### 📺 99-second intro
 
@@ -127,16 +127,22 @@ This project turns those questions into **65 production-grade skills** across th
 /plugin marketplace add kimsanguine/hplan
 /plugin install hplan@kimsanguine-hplan
 
-# 2. Run all 3 gates in one command — exclusions + evidence + COGS → verdict
+# 2. Verify your install (hooks, gate_guard, exclusions registry)
+/harness-doctor
+# → [ PASS ] Hook 등록      gate_guard.py — PreToolUse에 등록됨
+# → [ PASS ] Hook 실행      exit=2 (PRD.md 차단 정상 동작)
+# → [ PASS ] Exclusions     유효, 0건
+
+# 3. Run all 3 gates in one command — exclusions + evidence + COGS → verdict
 /hplan "AI marketing copy generator"
 # → [exclusions] COLLISION with ex-2026-04-17 (established incumbents)
 # → reopen_trigger UNMET → HOLD
 
-# Or run individual gates for deeper analysis:
-/hplan-evidence "AI marketing copy generator"   # full 100-point evidence rubric
-/hplan-cogs --provider anthropic --model claude-sonnet-4-6 \
-            --tokens-in 3000 --calls 40 --arpu 29
-# → p50 margin 95%, p90 90%, blended 49% → GREEN
+# 4. After the gate passes — run the lifecycle
+/harness-discover "AI marketing copy generator"  # opportunity mapping → assumptions
+/harness-plan "AI marketing copy generator"      # architecture → 3-tier → memory → routing
+/harness-build                                   # PRD → sprint → design → tracking
+/harness-operate                                 # KPI → reliability → cost review
 ```
 
 **Already past the gate?** Install by lifecycle stage:
@@ -261,7 +267,7 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 | `decision-log` | Append-only build/interview/pivot/hold log + 3–6 month self-eval audit (hit_rate, false_holds, missed_builds) | "Were my product decisions 6 months ago actually right?" |
 | `handoff` | Multi-target Build Gate brief → Spec-Kit / Kiro / GStack / Claude Code in one command | "Ready to start building — export the spec to my coding agent" |
 
-**Commands:** `/hplan` ⭐ · `/hplan-evidence` · `/hplan-product` · `/hplan-build` · `/hplan-cogs` · `/hplan-exclude` · `/hplan-handoff`
+**Commands (9):** `/hplan` ⭐ · `/harness-discover` · `/harness-plan` · `/harness-build` · `/harness-operate` · `/harness-exclude` · `/harness-handoff` · `/harness-verify` · `/harness-doctor`
 
 **Cross-cutting assets:** MCP server (`hplan_mcp/`) for Cursor / Windsurf / Kiro / Codex / Goose · PreToolUse hook (`hooks/gate_guard.py`) · 4 role-locked reviewer agents (`agents/`)
 </details>
@@ -279,7 +285,7 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 | `agent-gtm` | Score beachhead segments (5 criteria) + design Shadow→Co-pilot→Auto→Delegation trust sequence | "How do we roll this agent out to B2B customers?" |
 | `design-reference` ⭐ v0.8.5 NEW | Filter 100 curated KR/global reference sites (12 categories) → select 5-7 → generate DESIGN_BRIEF.md | "After ICP is confirmed, set UI direction — fintech? food delivery? references first" |
 
-**Commands:** `/discover` · `/validate`
+**Commands:** `/harness-discover`
 </details>
 
 <details>
@@ -296,7 +302,7 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 | `growth-loop` | Design usage→data→improvement→re-use loops + cold-start solutions + anti-loop identification | "How do we make recommendations improve with every use?" |
 | `design-token` ⭐ v0.8.5 NEW | Read DESIGN_BRIEF.md → generate semantic CSS tokens (tokens.md) + DESIGN.md with breakpoint spec | "From DESIGN_BRIEF.md, generate semantic tokens like --color-brand-primary — feeds into craft/mobile-check" |
 
-**Commands:** `/architecture` · `/strategy-review`
+**Commands:** `/harness-plan`
 </details>
 
 <details>
@@ -339,7 +345,7 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 | `parallel-team` | Spawn + coordinate parallel worktree agents | "Dispatch 3 agents on independent tasks simultaneously" |
 | `build-loop` | Autonomous build-loop orchestration with checkpoint gates | "Run the full build loop unattended" |
 
-**Commands:** `/write-prd` · `/set-okr` · `/sprint` · `/track-init` · `/track-status` · `/track-retro` · `/craft-init` · `/craft-lint`
+**Commands:** `/harness-build`
 </details>
 
 <details>
@@ -367,7 +373,7 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 | `pm-decision` | Build a pattern library of recurring PM decisions with context, criteria, and known failures | "I've seen this situation before — why did I decide that way?" |
 | `pm-engine` | Agents dynamically query TK knowledge graph at runtime + auto-extract 1 TK/day + auto-update instructions | "I want my agents to leverage my operational know-how automatically" |
 
-**Commands:** `/health-check` · `/cost-review` · `/extract` · `/decide` · `/tk-to-instruction`
+**Commands:** `/harness-operate`
 
 > Start with the [PM-ENGINE-MEMORY Starter Kit](operate/skills/pm-engine/examples/PM-ENGINE-MEMORY-STARTER.md) — 5 seed TK entries to get going immediately.
 </details>
@@ -383,16 +389,43 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 /plugin install hplan@kimsanguine-hplan    # or discover · architect · deliver · operate
 ```
 
-### Option 2: Clone Locally
+### Option 2: Clone Locally (Full ADK Stack)
 
 ```bash
 git clone https://github.com/kimsanguine/hplan.git
-claude --plugin-dir ./hplan/hplan   # pick what you need (hplan, discover, architect, deliver, operate)
+cd hplan
+
+# Install all 5 ADK layers at once:
+bash scripts/install-hooks.sh   # L3 hooks + git pre-commit
+
+claude --plugin-dir ./hplan     # L2 Skills — pick what you need (hplan, discover, architect, deliver, operate)
 ```
 
 **Not sure which AI product to commit to?** → Start with `hplan` — evidence gate first.
 **First time with Claude Code?** → Run `deliver/claude-md` — it scans your project and recommends the right plugins.
 **Already past the gate?** → Pick by lifecycle stage (discover → architect → deliver → operate).
+
+### ADK 5-Layer Architecture
+
+hplan ships as a complete **Agent Development Kit** — five reinforcing layers that activate automatically:
+
+| Layer | What | How it activates |
+|-------|------|-----------------|
+| **L1 Memory** | `CLAUDE.md` — 9 behavioral rules + hplan gate policy | Loaded by Claude Code at session start, every time |
+| **L2 Skills** | 72 PM discipline skills across 5 plugins | Auto-invoked when you describe a task in natural language |
+| **L3 Hooks** | `hooks/` — PreToolUse · PostToolUse · SessionStart | `scripts/install-hooks.sh` registers to `.claude/settings.json` |
+| **L4 Subagents** | 8-role parallel team (designer · engineer · critic · security…) | Dispatched by `deliver/skills/parallel-team` |
+| **L5 Plugins** | Marketplace distribution (`/plugin install`) | Claude Code plugin registry |
+
+**What each hook does:**
+
+| Hook | Trigger | Action |
+|------|---------|--------|
+| `SessionStart.sh` | Every new Claude session | Displays Build Gate status + Signal Gate doc inventory |
+| `PreToolUse.sh` | Before every Write / Edit | Blocks PRD/ARCHITECTURE writes without approved checkpoint |
+| `PostToolUse.sh` | After every Write / Edit | Warns if API keys / secrets appear in written content |
+
+**After `scripts/install-hooks.sh`**, run `/harness-doctor` to verify all 5 layers are wired correctly.
 
 ### Other AI Tools
 

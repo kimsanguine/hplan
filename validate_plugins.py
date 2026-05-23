@@ -12,7 +12,7 @@ import re
 import sys
 from pathlib import Path
 
-PLUGINS = ["hplan", "discover", "architect", "deliver", "measure", "learn", "operate", "track", "craft"]
+PLUGINS = ["hplan", "discover", "architect", "deliver", "operate"]
 REQUIRED_SKILL_FIELDS = ["name", "description"]
 SKILL_WORD_RANGE = (50, 5000)
 DESC_MIN_LENGTH = 40
@@ -83,16 +83,16 @@ def validate_plugin_json(plugin_dir):
 
 
 def validate_skill(skill_dir):
-    """Validate a single SKILL.md file."""
+    """Validate a single SKILL.md file. Returns (is_valid, is_alias)."""
     skill_file = skill_dir / "SKILL.md"
     if not skill_file.exists():
         error(f"{skill_dir}: Missing SKILL.md")
-        return False
+        return False, False
 
     fm, content = parse_frontmatter(skill_file)
     if fm is None:
         error(f"{skill_dir.name}: No frontmatter in SKILL.md")
-        return False
+        return False, False
 
     for field in REQUIRED_SKILL_FIELDS:
         if field not in fm:
@@ -105,18 +105,26 @@ def validate_skill(skill_dir):
     if len(desc) < DESC_MIN_LENGTH:
         warn(f"{skill_dir.name}: description too short ({len(desc)} chars)")
 
+    is_alias = bool(fm.get("alias_for", "").strip())
+
     wc = count_words(content)
     lo, hi = SKILL_WORD_RANGE
     if wc < lo:
-        warn(f"{skill_dir.name}: Only {wc} words (min {lo})")
+        if is_alias:
+            # 의도적 alias wrapper — 단어 수 제한 면제
+            pass
+        else:
+            # alias_for 없는 stub은 실행 불가 → error
+            error(f"{skill_dir.name}: Only {wc} words (min {lo}) and no alias_for metadata — stub is non-executable")
     elif wc > hi:
         warn(f"{skill_dir.name}: {wc} words exceeds {hi} word soft limit")
 
     if "$ARGUMENTS" not in content:
         warn(f"{skill_dir.name}: No $ARGUMENTS variable found")
 
-    ok(f"{skill_dir.name}/SKILL.md valid ({wc} words)")
-    return True
+    alias_tag = f" [alias→{fm.get('alias_for')}]" if is_alias else ""
+    ok(f"{skill_dir.name}/SKILL.md valid ({wc} words){alias_tag}")
+    return True, is_alias
 
 
 def validate_command(cmd_file):
@@ -176,7 +184,10 @@ def main():
     validate_marketplace(root)
 
     total_skills = 0
+    total_aliases = 0
     total_commands = 0
+    EXPECTED_ACTIVE_SKILLS = 55
+    EXPECTED_ALIASES = 17
 
     for plugin_name in targets:
         plugin_dir = root / plugin_name
@@ -194,8 +205,10 @@ def main():
         if skills_dir.is_dir():
             for skill_dir in sorted(skills_dir.iterdir()):
                 if skill_dir.is_dir():
-                    validate_skill(skill_dir)
+                    _, is_alias = validate_skill(skill_dir)
                     total_skills += 1
+                    if is_alias:
+                        total_aliases += 1
 
         # Commands
         cmds_dir = plugin_dir / "commands"
@@ -204,9 +217,21 @@ def main():
                 validate_command(cmd_file)
                 total_commands += 1
 
+    # Skill count validation (full scan only)
+    active_skills = total_skills - total_aliases
+    if len(targets) == len(PLUGINS):  # full scan
+        if active_skills != EXPECTED_ACTIVE_SKILLS:
+            error(f"Active skill count mismatch: {active_skills} active (expected {EXPECTED_ACTIVE_SKILLS})")
+        else:
+            ok(f"Active skill count: {active_skills} ✓")
+        if total_aliases != EXPECTED_ALIASES:
+            error(f"Alias count mismatch: {total_aliases} aliases (expected {EXPECTED_ALIASES})")
+        else:
+            ok(f"Alias count: {total_aliases} ✓")
+
     # Summary
     print("\n" + "=" * 60)
-    print(f"Scanned: {len(targets)} plugins, {total_skills} skills, {total_commands} commands")
+    print(f"Scanned: {len(targets)} plugins, {active_skills} active + {total_aliases} alias = {total_skills} skills, {total_commands} commands")
     print(f"Errors:   {len(ERRORS)}")
     print(f"Warnings: {len(WARNINGS)}")
     print("=" * 60)

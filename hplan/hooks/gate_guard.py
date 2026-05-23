@@ -110,6 +110,110 @@ def check_freshness(project_dir: Path) -> tuple[str, list[str], list[str]]:
     return "ok", [], []
 
 
+def signal_gate_check(project_dir: Path) -> tuple[str, list[str]]:
+    """Check that all 4 Signal Gate documents exist.
+
+    Returns ('ok', []) or ('block', [missing_relative_paths]).
+    """
+    required = [
+        "harness/pain.md",
+        "harness/cogs.md",
+        "harness/market.md",
+        "harness/competitors.md",
+    ]
+    missing = [doc for doc in required if not (project_dir / doc).exists()]
+    if missing:
+        return "block", missing
+    return "ok", []
+
+
+PLACEHOLDER_PATTERNS = [
+    (r'\bTBD\b', 'TBD'),
+    (r'\b미정\b', '미정'),
+    (r'\b추후\b', '추후'),
+    (r'\b나중에\b', '나중에'),
+    (r'다양한\s+사용자', '다양한 사용자'),
+    (r'여러\s+\w*층', '여러 ...층'),
+    # 비구체적 타겟 표현
+    (r'여러\s+고객', '여러 고객'),
+    (r'많은\s+사람', '많은 사람'),
+    (r'일반\s+사용자', '일반 사용자'),
+    (r'(?i)\btarget\s+user\b', 'target user (비구체적)'),
+    # 미완료 마커
+    (r'(?i)\bTODO\b', 'TODO'),
+    (r'\b미기입\b', '미기입'),
+    (r'\b검토\s*예정\b', '검토 예정'),
+]
+
+
+def placeholder_gate_check(project_dir: Path) -> tuple[str, list[str]]:
+    """Check Signal Gate documents for placeholder expressions.
+
+    Returns ('ok', []) or ('block', [flagged_messages]).
+    Only the first match per document is reported.
+    """
+    docs = [
+        "harness/pain.md",
+        "harness/cogs.md",
+        "harness/market.md",
+        "harness/competitors.md",
+    ]
+    flagged = []
+    for doc in docs:
+        path = project_dir / doc
+        if not path.exists():
+            continue
+        content = path.read_text(encoding="utf-8")
+        for pattern, label in PLACEHOLDER_PATTERNS:
+            if re.search(pattern, content):
+                flagged.append(f"  ❌ {doc}: '{label}' 감지 — 구체적인 내용으로 교체 필요")
+                break  # 문서당 첫 번째 매치만 보고
+    if flagged:
+        return "block", flagged
+    return "ok", []
+
+
+EVIDENCE_PATTERNS = {
+    "harness/pain.md": [
+        r'\d{4}-\d{2}-\d{2}',           # 날짜 패턴 (인터뷰 날짜)
+        r'(?i)##\s*evidence',            # Evidence 섹션
+        r'(?i)인터뷰|interview|observed|관찰',
+    ],
+    "harness/cogs.md": [
+        r'(?i)pricing|price|가격|출처',
+        r'(?i)##\s*evidence',
+        r'(?i)API.*cost|비용.*출처',
+    ],
+    "harness/market.md": [
+        r'(?i)report|리포트|출처|source|TAM|SAM',
+        r'(?i)##\s*evidence',
+        r'\d{4}.*리포트|\d{4}.*report',
+    ],
+    "harness/competitors.md": [
+        r'(?i)테스트|test|tried|직접|사용자.*말|user.*said',
+        r'(?i)##\s*evidence',
+        r'(?i)인용|quote|".*"',
+    ],
+}
+
+
+def evidence_source_check(project_dir: Path) -> tuple[str, list[str]]:
+    missing = []
+    for doc_path, patterns in EVIDENCE_PATTERNS.items():
+        path = project_dir / doc_path
+        if not path.exists():
+            continue
+        content = path.read_text(encoding="utf-8")
+        if not any(re.search(p, content) for p in patterns):
+            doc_name = doc_path.split("/")[-1]
+            missing.append(f"  ⚠️  {doc_name}: evidence source 선언 없음 — 출처·날짜·인용 중 하나 추가 필요")
+    if len(missing) >= 4:  # 4개 모두 미충족 시 차단
+        return "block", missing
+    if missing:
+        return "warn", missing
+    return "ok", []
+
+
 def gate_approved(project_dir: Path) -> tuple[bool, str, dict]:
     """Return (approved, reason, data). data is the full checkpoint dict."""
     cp = project_dir / "harness" / "build-gate" / "checkpoint.json"
@@ -190,6 +294,48 @@ def main():
     if bypass:
         print("hplan gate guard: bypass via CLAUDE_HPLAN_BYPASS=1", file=sys.stderr)
         return 0
+
+    # --- Signal Gate check ---
+    _SIGNAL_DOCS_HINT: dict[str, str] = {
+        "harness/pain.md":        "누가, 어떤 상황에서, 뭘 못하는가",
+        "harness/cogs.md":        "p50/p90 단위 경제성 시뮬레이션",
+        "harness/market.md":      "시장 규모 + 진입 시점 근거",
+        "harness/competitors.md": "직접 경쟁사 2개 + 대체재 1개",
+    }
+    sg_verdict, sg_missing = signal_gate_check(project_dir)
+    if sg_verdict == "block":
+        lines = ["hplan gate guard BLOCKED: Signal Gate documents missing."]
+        for doc in sg_missing:
+            lines.append(f"  ❌ {doc} — {_SIGNAL_DOCS_HINT.get(doc, '')}")
+        lines.append(
+            "Create the missing document(s) and re-run /hplan before writing Build Gate artifacts."
+        )
+        print("\n".join(lines), file=sys.stderr)
+        return 2
+
+    # --- Placeholder check ---
+    pg_verdict, pg_flagged = placeholder_gate_check(project_dir)
+    if pg_verdict == "block":
+        lines = ["hplan gate guard BLOCKED: Signal Gate 문서에 모호한 표현 감지."]
+        lines.extend(pg_flagged)
+        lines.append("위 표현을 측정 가능한 구체적 내용으로 교체 후 다시 실행하세요.")
+        print("\n".join(lines), file=sys.stderr)
+        return 2
+
+    # --- Evidence Source check ---
+    es_status, es_issues = evidence_source_check(project_dir)
+    if es_status == "block":
+        print("hplan Signal Gate — Evidence Source 미선언", file=sys.stderr)
+        for issue in es_issues:
+            print(issue, file=sys.stderr)
+        print("", file=sys.stderr)
+        print("4개 Signal Gate 문서 모두 증거 출처가 없습니다.", file=sys.stderr)
+        print("각 문서에 인터뷰 날짜, 출처 링크, 또는 ## Evidence 섹션을 추가하세요.", file=sys.stderr)
+        return 2
+    elif es_status == "warn":
+        for issue in es_issues:
+            print(issue, file=sys.stderr)
+        # warn은 차단하지 않고 계속 진행
 
     # --- Freshness check ---
     freshness_verdict, fresh_warns, fresh_blocks = check_freshness(project_dir)

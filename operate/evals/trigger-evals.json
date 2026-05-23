@@ -231,27 +231,6 @@
     ]
   },
   {
-    "skill": "instruction",
-    "queries": [
-      {
-        "query": "신규 에이전트의 System Prompt를 설계해줘. 역할, 목표, 제약조건, 도구, 메모리, 출력 형식, 폴백을 포함해서. 고객 온보딩 가이드 에이전트야.",
-        "should_trigger": true
-      },
-      {
-        "query": "My agent keeps going off-topic and producing inconsistent outputs. Help me redesign its instruction set from scratch — I need a clear role definition, constraints, and output format.",
-        "should_trigger": true
-      },
-      {
-        "query": "에이전트 비용을 시뮬레이션해줘. GPT-4o 기준으로.",
-        "should_trigger": false
-      },
-      {
-        "query": "에이전트의 reliability를 체계적으로 리뷰해줘.",
-        "should_trigger": false
-      }
-    ]
-  },
-  {
     "skill": "prd",
     "queries": [
       {
@@ -268,27 +247,6 @@
       },
       {
         "query": "PM 암묵지를 추출하고 TK 유닛으로 구조화해줘.",
-        "should_trigger": false
-      }
-    ]
-  },
-  {
-    "skill": "prompt",
-    "queries": [
-      {
-        "query": "에이전트 System Prompt가 일관성 없는 결과를 내고 있어. CRISP 프레임워크로 다시 작성해줘. Context/Role/Instruction/Scope/Parameters 다 포함해서.",
-        "should_trigger": true
-      },
-      {
-        "query": "I wrote this agent instruction but it keeps hallucinating product features. Help me engineer a better prompt — I think the scope and constraints aren't clear enough.",
-        "should_trigger": true
-      },
-      {
-        "query": "에이전트의 build-or-buy 결정을 내려야 해.",
-        "should_trigger": false
-      },
-      {
-        "query": "에이전트 주간 health check를 실행해줘.",
         "should_trigger": false
       }
     ]
@@ -331,27 +289,6 @@
       },
       {
         "query": "에이전트 메모리 아키텍처를 설계해줘.",
-        "should_trigger": false
-      }
-    ]
-  },
-  {
-    "skill": "kpi",
-    "queries": [
-      {
-        "query": "에이전트 모니터링 대시보드를 세팅하려는데, 어떤 KPI를 트래킹해야 할지 정의해줘. 운영 메트릭이랑 비즈니스 메트릭 둘 다.",
-        "should_trigger": true
-      },
-      {
-        "query": "What metrics should I track for our deployed translation agent? I need both operational health indicators and business impact measurements.",
-        "should_trigger": true
-      },
-      {
-        "query": "에이전트 Instruction을 설계해줘.",
-        "should_trigger": false
-      },
-      {
-        "query": "에이전트 비즈니스 모델을 설계해줘.",
         "should_trigger": false
       }
     ]
@@ -415,27 +352,6 @@
       },
       {
         "query": "HITL 경계를 설계해줘. 어디서 사람이 개입할지.",
-        "should_trigger": false
-      }
-    ]
-  },
-  {
-    "skill": "north-star",
-    "queries": [
-      {
-        "query": "에이전트 제품의 North Star 메트릭을 정의해줘. KPI가 너무 많아서 팀이 뭘 집중해야 할지 모르겠어. 하나의 핵심 지표로 정렬하고 싶어.",
-        "should_trigger": true
-      },
-      {
-        "query": "We have 15 different metrics for our agent but no clarity on what matters most. Help me define a single North Star metric that connects operational performance to business value.",
-        "should_trigger": true
-      },
-      {
-        "query": "에이전트 PRD를 작성해줘.",
-        "should_trigger": false
-      },
-      {
-        "query": "의사결정 패턴을 적용해줘.",
         "should_trigger": false
       }
     ]
@@ -588,48 +504,6 @@
     ]
   },
   {
-    "skill": "scorecard-5axis",
-    "queries": [
-      {
-        "query": "운영 중인 8개 에이전트 이번 주 단일 점수로 비교하고 싶어. 우리는 비용 민감 사업이라 Cost 가중치 35로 올려줘.",
-        "should_trigger": true
-      },
-      {
-        "query": "I need a head-to-head comparison of 10 agents this month with weighted accuracy, reliability, cost, velocity, and satisfaction axes summing to 100.",
-        "should_trigger": true
-      },
-      {
-        "query": "이 에이전트의 OKR을 잡아줘. 분기 목표 위주로.",
-        "should_trigger": false
-      },
-      {
-        "query": "비용이 급증했는데 burn-rate 분석해줘.",
-        "should_trigger": false
-      }
-    ]
-  },
-  {
-    "skill": "weekly-rollup",
-    "queries": [
-      {
-        "query": "2026-W19 주차 롤업 만들어줘. 이번 주랑 지난주 scorecard 다 준비됐어. 티어별 평균이랑 Top 이동자 보여줘.",
-        "should_trigger": true
-      },
-      {
-        "query": "Produce a 5-minute Friday brief for our weekly ops review: tier averages, week-over-week deltas, top movers, anomalies.",
-        "should_trigger": true
-      },
-      {
-        "query": "이번 주 인시던트 한 건 회고해줘. 5 Whys 적용.",
-        "should_trigger": false
-      },
-      {
-        "query": "신규 에이전트 PRD 작성해줘.",
-        "should_trigger": false
-      }
-    ]
-  },
-  {
     "skill": "cross-team-routing",
     "queries": [
       {
@@ -646,111 +520,6 @@
       },
       {
         "query": "이번 분기 신규 에이전트 가설 검증해줘.",
-        "should_trigger": false
-      }
-    ]
-  },
-  {
-    "skill": "velocity-baseline",
-    "queries": [
-      {
-        "query": "직전 5개 프로젝트의 git log + token usage로 본인 velocity baseline 추출해줘. complexity 1-5 percentile lookup table 만들어야 해.",
-        "should_trigger": true
-      },
-      {
-        "query": "Extract my personal velocity baseline from prior projects so estimate-tasks can lookup loc/tokens/minutes deterministically.",
-        "should_trigger": true
-      },
-      {
-        "query": "이 PRD를 task로 분해하고 토큰 예측해줘.",
-        "should_trigger": false
-      },
-      {
-        "query": "에이전트 KPI를 어떻게 측정할지 알려줘.",
-        "should_trigger": false
-      }
-    ]
-  },
-  {
-    "skill": "estimate-tasks",
-    "queries": [
-      {
-        "query": "이 PRD를 WBS로 분해하고 각 task의 예측 토큰·시간을 lock 해줘. baseline lookup으로 결정론.",
-        "should_trigger": true
-      },
-      {
-        "query": "Decompose this feature into tasks with p50/p90 estimates pulled from velocity baseline — LLM should not hallucinate tokens.",
-        "should_trigger": true
-      },
-      {
-        "query": "내 personal velocity baseline 먼저 만들어줘.",
-        "should_trigger": false
-      },
-      {
-        "query": "지금 진행률 알려줘.",
-        "should_trigger": false
-      }
-    ]
-  },
-  {
-    "skill": "progress-probe",
-    "queries": [
-      {
-        "query": "actual_log.jsonl에 매 tool call 자동 기록되게 PostToolUse Hook 설치해줘. fallback shell도 같이.",
-        "should_trigger": true
-      },
-      {
-        "query": "Install Hook + shell fallback so every Claude Code tool call appends to .track/actual_log.jsonl for prompt-level telemetry.",
-        "should_trigger": true
-      },
-      {
-        "query": "jsonl에서 막힌 패턴 자동 감지해.",
-        "should_trigger": false
-      },
-      {
-        "query": "PRD를 14-section으로 작성해줘.",
-        "should_trigger": false
-      }
-    ]
-  },
-  {
-    "skill": "blocker-detect",
-    "queries": [
-      {
-        "query": "jsonl에서 막힌 지점 결정론 감지해줘 — 같은 파일 재편집 3회, 테스트 실패 반복, context 70% 넘으면.",
-        "should_trigger": true
-      },
-      {
-        "query": "Scan actual_log for blocker patterns deterministically — self-doubt regex, retry loops, test failures, context pressure. No LLM.",
-        "should_trigger": true
-      },
-      {
-        "query": "Hook 설치 먼저 해줘.",
-        "should_trigger": false
-      },
-      {
-        "query": "이번 phase 게이트 통과 조건 확인해.",
-        "should_trigger": false
-      }
-    ]
-  },
-  {
-    "skill": "progress-report",
-    "queries": [
-      {
-        "query": "지금 상태 알려줘. 진행률, 남은 task, 블로커, ETA 한꺼번에.",
-        "should_trigger": true
-      },
-      {
-        "query": "Force a live progress report — event-driven trigger, not weekly cadence. Predicted vs actual deviation.",
-        "should_trigger": true
-      },
-      {
-        "query": "이번 주 multi-agent portfolio rollup 작성해줘.",
-        "should_trigger": false
-      },
-      {
-        "query": "에이전트들 5축 점수 매겨서 비교해.",
         "should_trigger": false
       }
     ]
@@ -819,69 +588,6 @@
     ]
   },
   {
-    "skill": "hierarchy-rules",
-    "queries": [
-      {
-        "query": "이 화면 60/30/10 color ratio, fold density, WCAG AA contrast 런타임 측정해줘. Playwright로.",
-        "should_trigger": true
-      },
-      {
-        "query": "Measure visual hierarchy rules at runtime — Playwright + DOM saliency + pixel KMeans + WCAG AA contrast. Outputs gamma-gate data.",
-        "should_trigger": true
-      },
-      {
-        "query": "CSS transition 일관성만 검증해.",
-        "should_trigger": false
-      },
-      {
-        "query": "RESPECT.md 처음 작성하고 싶어.",
-        "should_trigger": false
-      }
-    ]
-  },
-  {
-    "skill": "motion-language",
-    "queries": [
-      {
-        "query": "프로젝트 전체 hover transition 200ms 일관성 검증해줘. RESPECT motion_language 명세 대비 drift 보고.",
-        "should_trigger": true
-      },
-      {
-        "query": "Scan CSS and framer-motion for transition / easing drift against RESPECT motion_language spec — regex + AST, no LLM.",
-        "should_trigger": true
-      },
-      {
-        "query": "5+ 화면 시각 일관성 비교해줘.",
-        "should_trigger": false
-      },
-      {
-        "query": "fold density 측정만 하면 돼.",
-        "should_trigger": false
-      }
-    ]
-  },
-  {
-    "skill": "ui-drift-detect",
-    "queries": [
-      {
-        "query": "5+ 화면 캡처해서 디자인 시스템 회귀 자동 감지해줘. pHash + DOM tree edit distance.",
-        "should_trigger": true
-      },
-      {
-        "query": "Detect visual drift across N screens — perceptual hash + color palette KMeans + DOM tree edit distance. 5 dimension drift score.",
-        "should_trigger": true
-      },
-      {
-        "query": "단일 화면 hierarchy 측정만 해.",
-        "should_trigger": false
-      },
-      {
-        "query": "motion 일관성 검증.",
-        "should_trigger": false
-      }
-    ]
-  },
-  {
     "skill": "design-token",
     "queries": [
       {
@@ -919,27 +625,6 @@
       },
       {
         "query": "에이전트 성능 지표 대시보드를 만들어줘. accuracy, latency, cost 트래킹.",
-        "should_trigger": false
-      }
-    ]
-  },
-  {
-    "skill": "agent-demo-video",
-    "queries": [
-      {
-        "query": "Remotion으로 우리 AI 에이전트 데모 영상 만들어줘. 아키텍처 다이어그램이랑 스크린 녹화를 합성해서 2분 분량으로.",
-        "should_trigger": true
-      },
-      {
-        "query": "에이전트 소개 영상 제작해줘. React 기반 Remotion 사용해서 각 기능별 애니메이션으로 보여주고 싶어.",
-        "should_trigger": true
-      },
-      {
-        "query": "제품 소개 유튜브 영상 스크립트 써줘. 1분 30초 분량.",
-        "should_trigger": false
-      },
-      {
-        "query": "PPT 발표자료 만들어줘. 에이전트 아키텍처 설명용으로.",
         "should_trigger": false
       }
     ]
@@ -1003,48 +688,6 @@
       },
       {
         "query": "이미지 분류 모델 파이프라인 설계해줘. CNN 기반으로.",
-        "should_trigger": false
-      }
-    ]
-  },
-  {
-    "skill": "infographic-gif-creator",
-    "queries": [
-      {
-        "query": "AI 에이전트 아키텍처를 GIF 인포그래픽으로 만들어줘. HTML/CSS로 애니메이션 구성하고 mp4로 출력해줘.",
-        "should_trigger": true
-      },
-      {
-        "query": "데이터 플로우 다이어그램을 애니메이션 MP4로 제작해줘. 에이전트 워크플로우 단계별로 순차적으로 나타나게.",
-        "should_trigger": true
-      },
-      {
-        "query": "Mermaid로 시퀀스 다이어그램 그려줘. 에이전트 호출 흐름 보여주는 정적 이미지로.",
-        "should_trigger": false
-      },
-      {
-        "query": "영상 편집 자동화 스크립트 짜줘. FFmpeg 써서.",
-        "should_trigger": false
-      }
-    ]
-  },
-  {
-    "skill": "mobile-check",
-    "queries": [
-      {
-        "query": "DESIGN.md 기준으로 375px·768px·1440px 세 뷰포트에서 레이아웃 깨지는 곳 없는지 Playwright로 검증해줘.",
-        "should_trigger": true
-      },
-      {
-        "query": "반응형 디자인 스펙대로 모바일·태블릿·데스크탑 화면이 제대로 나오는지 브레이크포인트별로 체크해줘.",
-        "should_trigger": true
-      },
-      {
-        "query": "Lighthouse로 모바일 성능 점수 측정해줘. Core Web Vitals 기준으로.",
-        "should_trigger": false
-      },
-      {
-        "query": "E2E 테스트 작성해줘. 로그인 플로우 자동화 테스트.",
         "should_trigger": false
       }
     ]
@@ -1360,6 +1003,510 @@
       },
       {
         "query": "에이전트에 재시도 로직 추가해줘. 일시적 오류 대비해서.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "track",
+    "queries": [
+      {
+        "query": "에이전트 작업 진행 상황을 실시간으로 추적하고 싶어. PostToolUse 훅으로 actual_log에 기록해줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "빌드 중에 블로커가 생겼는지 자동으로 감지해서 알려줘. 로그 스캔해서 패턴 찾아줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "UI 컴포넌트 시각적 계층 구조 점검해줘. DOM saliency 체크 필요해.",
+        "should_trigger": false
+      },
+      {
+        "query": "에이전트 KPI 정의해줘. 응답 정확도랑 처리 속도 기준으로 잡고 싶어.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "ui-validate",
+    "queries": [
+      {
+        "query": "배포 전에 UI 시각 품질 검증 해줘. 모바일 브레이크포인트 375/768/1440px 체크 필요해.",
+        "should_trigger": true
+      },
+      {
+        "query": "RESPECT.md 기준으로 CSS 트랜지션 일관성 점검해줘. motion-language 위반 여부 확인.",
+        "should_trigger": true
+      },
+      {
+        "query": "진행 상황 보고서 만들어줘. 이번 주 완료된 태스크 정리해줘.",
+        "should_trigger": false
+      },
+      {
+        "query": "에이전트 스프린트 속도 기준선 계산해줘. 과거 프로젝트 5개 기반으로.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "media-asset",
+    "queries": [
+      {
+        "query": "에이전트 데모 영상 만들어줘. Remotion으로 에이전트 워크플로우 시각화하고 싶어.",
+        "should_trigger": true
+      },
+      {
+        "query": "인포그래픽 GIF 만들어줘. HTML/CSS 기반으로 에이전트 성과 데이터 시각화.",
+        "should_trigger": true
+      },
+      {
+        "query": "에이전트 PRD 작성해줘. 문서 자동 분류 에이전트 스펙 필요해.",
+        "should_trigger": false
+      },
+      {
+        "query": "North Star 메트릭 정의해줘. 에이전트 단일 성과 지표 잡아줘.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "delivery-plan",
+    "queries": [
+      {
+        "query": "PRD 기반으로 태스크 분해해줘. WBS 만들고 각 태스크 복잡도 1-5로 평가해줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "과거 프로젝트 5개 보고 내 개발 속도 기준선 추출해줘. 다음 예측에 쓸 거야.",
+        "should_trigger": true
+      },
+      {
+        "query": "에이전트 데모 영상 제작해줘. 주요 기능 3개 보여주는 60초 영상 필요해.",
+        "should_trigger": false
+      },
+      {
+        "query": "UI drift 감지해줘. 스크린샷 pHash 비교해서 변경된 곳 찾아줘.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "agent-instructions",
+    "queries": [
+      {
+        "query": "에이전트 System Prompt 완전 명세 작성해줘. tool list, memory_config 포함해서 풀 스펙으로.",
+        "should_trigger": true
+      },
+      {
+        "query": "PM 관점으로 프롬프트 설계해줘. 의도와 기대 결과 중심으로 초안 작성 필요해.",
+        "should_trigger": true
+      },
+      {
+        "query": "에이전트 포트폴리오 주간 집계 보고서 만들어줘. T1~T5 에이전트 성과 요약.",
+        "should_trigger": false
+      },
+      {
+        "query": "모바일 반응형 UI 체크해줘. 375px에서 레이아웃 깨지는 곳 찾아줘.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "metrics-design",
+    "queries": [
+      {
+        "query": "에이전트 단일 North Star 메트릭 정의해줘. 성공을 하나의 숫자로 표현해야 해.",
+        "should_trigger": true
+      },
+      {
+        "query": "AI 에이전트 KPI 세트 설계해줘. 응답 정확도, 처리 속도, 사용자 만족도 기준.",
+        "should_trigger": true
+      },
+      {
+        "query": "태스크 복잡도 분해해줘. PRD에서 WBS 만들고 예상 시간 산출해줘.",
+        "should_trigger": false
+      },
+      {
+        "query": "에이전트 System Prompt 작성해줘. 고객센터 FAQ 자동 응답 에이전트 명세.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "portfolio-report",
+    "queries": [
+      {
+        "query": "이번 주 에이전트 포트폴리오 집계해줘. T1~T5 티어별 성과 비교 rollup 필요해.",
+        "should_trigger": true
+      },
+      {
+        "query": "5축 가중 루브릭으로 에이전트 팀 채점해줘. 정확도, 속도, 비용, 신뢰도, 사용자 만족 기준.",
+        "should_trigger": true
+      },
+      {
+        "query": "에이전트 빌드 속도 기준선 잡아줘. 과거 3개 프로젝트 완료 데이터 분석.",
+        "should_trigger": false
+      },
+      {
+        "query": "CSS 모션 언어 일관성 점검해줘. RESPECT.md 기준 위반 여부 확인.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "progress-probe",
+    "queries": [
+      {
+        "query": "progress-probe로 현재 작업 상태 기록해줘. actual_log에 이벤트 남겨야 해.",
+        "should_trigger": true
+      },
+      {
+        "query": "progress-probe 실행해서 PostToolUse 이벤트 추적해줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "UI 계층 구조 점검해줘. DOM 분석으로 시각 위계 확인 필요해.",
+        "should_trigger": false
+      },
+      {
+        "query": "에이전트 KPI 설계해줘. 성과 측정 기준 잡아줘.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "blocker-detect",
+    "queries": [
+      {
+        "query": "blocker-detect 실행해서 진행 중 블로커 찾아줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "blocker-detect로 actual_log 스캔해서 블로킹 패턴 감지해줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "에이전트 데모 영상 만들어줘. Remotion으로 주요 기능 시연.",
+        "should_trigger": false
+      },
+      {
+        "query": "모바일 375px 브레이크포인트 UI 점검해줘.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "progress-report",
+    "queries": [
+      {
+        "query": "progress-report 실행해서 현재 상태 강제 보고해줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "progress-report로 스냅샷 기반 진행 상황 보고서 만들어줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "North Star 메트릭 정의해줘. 단일 성과 지표 잡아야 해.",
+        "should_trigger": false
+      },
+      {
+        "query": "PRD 태스크 WBS로 분해해줘.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "hierarchy-rules",
+    "queries": [
+      {
+        "query": "hierarchy-rules 체크해줘. DOM 시각 계층 구조 검증 필요해.",
+        "should_trigger": true
+      },
+      {
+        "query": "hierarchy-rules 실행해서 WCAG AA 기준 헤딩 레벨 점검해줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "에이전트 진행 상황 실시간 추적해줘. PostToolUse 훅 필요해.",
+        "should_trigger": false
+      },
+      {
+        "query": "주간 포트폴리오 집계 보고서 만들어줘.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "motion-language",
+    "queries": [
+      {
+        "query": "motion-language 점검해줘. CSS 트랜지션이 RESPECT.md와 일치하는지 확인해줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "motion-language 실행해서 애니메이션 easing 일관성 체크해줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "에이전트 인포그래픽 GIF 만들어줘. 성과 데이터 시각화.",
+        "should_trigger": false
+      },
+      {
+        "query": "과거 프로젝트 기반으로 속도 기준선 잡아줘.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "ui-drift-detect",
+    "queries": [
+      {
+        "query": "ui-drift-detect 실행해서 스크린샷 간 시각 drift 찾아줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "ui-drift-detect로 pHash 비교해서 UI 변경 감지해줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "에이전트 System Prompt 완전 명세 작성해줘.",
+        "should_trigger": false
+      },
+      {
+        "query": "5축 스코어카드로 에이전트 팀 채점해줘.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "mobile-check",
+    "queries": [
+      {
+        "query": "mobile-check 실행해줘. 375px 모바일에서 레이아웃 확인해야 해.",
+        "should_trigger": true
+      },
+      {
+        "query": "mobile-check로 DESIGN.md 브레이크포인트 768px 체크해줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "블로커 감지해줘. 빌드 중 막히는 것 찾아줘.",
+        "should_trigger": false
+      },
+      {
+        "query": "PM 관점 프롬프트 초안 설계해줘.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "agent-demo-video",
+    "queries": [
+      {
+        "query": "agent-demo-video 만들어줘. 에이전트 워크플로우 시연 영상 필요해.",
+        "should_trigger": true
+      },
+      {
+        "query": "agent-demo-video로 Remotion 기반 데모 영상 제작해줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "KPI 세트 설계해줘. 응답 정확도·처리 속도 기준.",
+        "should_trigger": false
+      },
+      {
+        "query": "UI 계층 구조 시각 품질 점검해줘.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "infographic-gif-creator",
+    "queries": [
+      {
+        "query": "infographic-gif-creator 실행해줘. 성과 데이터를 GIF로 시각화해야 해.",
+        "should_trigger": true
+      },
+      {
+        "query": "infographic-gif-creator로 HTML/CSS 기반 인포그래픽 MP4 만들어줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "PRD 태스크 분해하고 복잡도 평가해줘.",
+        "should_trigger": false
+      },
+      {
+        "query": "progress-report로 현재 빌드 상태 강제 보고해줘.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "estimate-tasks",
+    "queries": [
+      {
+        "query": "estimate-tasks 실행해줘. PRD 받아서 WBS로 분해하고 복잡도 평가해야 해.",
+        "should_trigger": true
+      },
+      {
+        "query": "estimate-tasks로 태스크별 1-5 복잡도 스코어 산출해줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "CSS 트랜지션 RESPECT.md 일관성 점검해줘.",
+        "should_trigger": false
+      },
+      {
+        "query": "에이전트 데모 영상 Remotion으로 만들어줘.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "velocity-baseline",
+    "queries": [
+      {
+        "query": "velocity-baseline 추출해줘. 과거 프로젝트 5개로 개인 속도 기준선 잡아야 해.",
+        "should_trigger": true
+      },
+      {
+        "query": "velocity-baseline 실행해서 sprint 예측에 쓸 속도 데이터 뽑아줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "DOM saliency 분석으로 시각 계층 검증해줘.",
+        "should_trigger": false
+      },
+      {
+        "query": "주간 에이전트 포트폴리오 rollup 만들어줘.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "prompt",
+    "queries": [
+      {
+        "query": "prompt 설계해줘. PM 관점으로 의도와 결과 중심 프롬프트 초안 필요해.",
+        "should_trigger": true
+      },
+      {
+        "query": "CRISP 프레임워크로 프롬프트 작성해줘. 에이전트 목표 명확히 해야 해.",
+        "should_trigger": true
+      },
+      {
+        "query": "mobile-check로 모바일 레이아웃 체크해줘.",
+        "should_trigger": false
+      },
+      {
+        "query": "인포그래픽 GIF 만들어줘. HTML 기반으로.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "instruction",
+    "queries": [
+      {
+        "query": "instruction 작성해줘. System Prompt + tool list + memory_config 완전 명세 필요해.",
+        "should_trigger": true
+      },
+      {
+        "query": "에이전트 instruction 풀 스펙으로 만들어줘. 7요소 instruction set 포함.",
+        "should_trigger": true
+      },
+      {
+        "query": "velocity-baseline으로 개인 속도 기준선 추출해줘.",
+        "should_trigger": false
+      },
+      {
+        "query": "pHash 비교해서 UI drift 감지해줘.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "north-star",
+    "queries": [
+      {
+        "query": "north-star 메트릭 정의해줘. 에이전트 성공을 하나의 숫자로 표현해야 해.",
+        "should_trigger": true
+      },
+      {
+        "query": "north-star 실행해서 단일 핵심 성과 지표 잡아줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "에이전트 System Prompt 작성해줘. tool list 포함해서.",
+        "should_trigger": false
+      },
+      {
+        "query": "estimate-tasks로 PRD 태스크 WBS 분해해줘.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "kpi",
+    "queries": [
+      {
+        "query": "kpi 설계해줘. AI 에이전트 핵심 성과 지표 정의·추적 체계 필요해.",
+        "should_trigger": true
+      },
+      {
+        "query": "kpi 실행해서 응답 정확도·처리 속도·비용 효율 기준 KPI 세트 만들어줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "blocker-detect로 빌드 블로커 스캔해줘.",
+        "should_trigger": false
+      },
+      {
+        "query": "에이전트 데모 영상 만들어줘.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "scorecard-5axis",
+    "queries": [
+      {
+        "query": "scorecard-5axis로 에이전트 팀 채점해줘. 5축 가중 루브릭 적용해줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "scorecard-5axis 실행해서 정확도·속도·비용·신뢰도·만족 기준으로 점수 매겨줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "progress-probe로 작업 이벤트 actual_log에 기록해줘.",
+        "should_trigger": false
+      },
+      {
+        "query": "DESIGN.md 모바일 브레이크포인트 체크해줘.",
+        "should_trigger": false
+      }
+    ]
+  },
+  {
+    "skill": "weekly-rollup",
+    "queries": [
+      {
+        "query": "weekly-rollup 만들어줘. 이번 주 에이전트 포트폴리오 집계 필요해.",
+        "should_trigger": true
+      },
+      {
+        "query": "weekly-rollup으로 T1~T5 티어별 성과 비교 보고서 생성해줘.",
+        "should_trigger": true
+      },
+      {
+        "query": "RESPECT.md 기준 motion language 점검해줘.",
+        "should_trigger": false
+      },
+      {
+        "query": "PRD 기반 WBS 분해해서 태스크 복잡도 평가해줘.",
         "should_trigger": false
       }
     ]

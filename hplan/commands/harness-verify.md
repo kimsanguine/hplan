@@ -4,14 +4,14 @@ argument-hint: "[task description or condition name to verify]"
 allowed-tools: ["Read", "Write", "Bash"]
 ---
 
-# /hplan-verify
+# /harness-verify
 
 개발 중 완료 선언 전에 실행하는 증거 게이트.
 `harness/STATE.md`의 `verified_by` 파일 존재를 확인하고 조건 상태를 갱신합니다.
 
 ## Instructions
 
-You are running `/hplan-verify` for: **$ARGUMENTS**
+You are running `/harness-verify` for: **$ARGUMENTS**
 
 ### Step 1 — STATE.md 로드
 
@@ -19,7 +19,7 @@ You are running `/hplan-verify` for: **$ARGUMENTS**
 cat harness/STATE.md 2>/dev/null || echo "STATE_MISSING"
 ```
 
-`STATE_MISSING` → Stop. "harness/STATE.md 없음 — `/hplan-build` 실행 후 CONDITIONAL_GO 출력이 필요합니다." 출력.
+`STATE_MISSING` → Stop. "harness/STATE.md 없음 — `/harness-build` 실행 후 CONDITIONAL_GO 출력이 필요합니다." 출력.
 
 ### Step 2 — 조건 anchor 검사
 

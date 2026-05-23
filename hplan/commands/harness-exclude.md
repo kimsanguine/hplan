@@ -4,7 +4,7 @@ argument-hint: "[add|check|list] <idea or phrase>"
 allowed-tools: ["Read", "Write", "Bash"]
 ---
 
-# /hplan-exclude
+# /harness-exclude
 
 
 ## Instructions

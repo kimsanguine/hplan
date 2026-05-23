@@ -20,9 +20,15 @@ Schema (one JSON object per line in `harness/decisions.jsonl`):
   }
 
 Subcommands:
-- log:     append a new decision
-- update:  back-fill outcome on an existing decision (id-keyed)
+- log:     append a gate decision (build/interview/pivot/hold)
+- hitl:    append a HITL decision (options → chosen, any phase)
+- list:    print decisions (optionally filtered by --phase or --project)
+- update:  back-fill outcome on an existing gate decision (id-keyed)
 - audit:   print hit/miss/false-hold counts and reopen suggestions
+
+HITL schema (type=hitl):
+  {"id": ..., "ts": ..., "type": "hitl", "phase": "discover|architect|build|operate",
+   "project": ..., "q": "결정 질문", "options": ["A", "B", "C"], "chosen": "A", "why": "..."}
 """
 
 from __future__ import annotations
@@ -67,6 +73,29 @@ def append(root: Path, entry: dict) -> dict:
     return payload
 
 
+def append_hitl(root: Path, entry: dict) -> dict:
+    path = log_path(root)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    now = datetime.now(timezone.utc).isoformat()
+    seed = f"{now}{entry.get('phase','')}{entry.get('q','')}".encode("utf-8")
+    payload: dict = {
+        "id": f"hitl-{now[:10]}-{hashlib.sha1(seed).hexdigest()[:5]}",
+        "ts": now,
+        "type": "hitl",
+        "phase": entry["phase"],
+        "project": entry.get("project", ""),
+        "q": entry["q"],
+        "options": entry.get("options", []),
+        "chosen": entry["chosen"],
+        "why": entry.get("why", ""),
+    }
+    if entry.get("prd_version"):
+        payload["prd_version"] = entry["prd_version"]
+    with path.open("a", encoding="utf-8") as f:
+        f.write(json.dumps(payload, ensure_ascii=False) + "\n")
+    return payload
+
+
 def read_all(root: Path) -> list[dict]:
     path = log_path(root)
     if not path.exists():
@@ -104,7 +133,8 @@ def update_outcome(root: Path, entry_id: str, outcome: str) -> dict:
 
 
 def audit(root: Path) -> dict:
-    entries = read_all(root)
+    all_entries = read_all(root)
+    entries = [e for e in all_entries if e.get("type") != "hitl"]
     by_decision = Counter(e["decision"] for e in entries)
     resolved = [e for e in entries if e.get("outcome")]
     by_decision_outcome = Counter(
@@ -201,6 +231,24 @@ def parse_args():
     )
     p_up.add_argument("--root", default=".")
 
+    p_hitl = sub.add_parser("hitl", help="Log a HITL decision (options → chosen)")
+    p_hitl.add_argument("--phase", required=True,
+                        choices=["signal", "discover", "architect", "build", "operate"])
+    p_hitl.add_argument("--q", required=True, help="Decision question")
+    p_hitl.add_argument("--options", required=True,
+                        help="Options separated by | (e.g. 'A: desc|B: desc|C: desc')")
+    p_hitl.add_argument("--chosen", required=True, help="Chosen option")
+    p_hitl.add_argument("--why", default="", help="Reason for choosing")
+    p_hitl.add_argument("--project", default="")
+    p_hitl.add_argument("--prd-version", default="", dest="prd_version",
+                        help="PRD version this decision belongs to (e.g. v0.1)")
+    p_hitl.add_argument("--root", default=".")
+
+    p_list = sub.add_parser("list", help="List decisions")
+    p_list.add_argument("--phase", default=None, help="Filter by gate (evidence|product|build)")
+    p_list.add_argument("--project", default=None, help="Filter by project name")
+    p_list.add_argument("--root", default=".")
+
     p_audit = sub.add_parser("audit", help="Calibration audit")
     p_audit.add_argument("--root", default=".")
 
@@ -210,7 +258,18 @@ def parse_args():
 def main():
     args = parse_args()
     root = Path(args.root).resolve()
-    if args.cmd == "log":
+    if args.cmd == "hitl":
+        entry = append_hitl(root, {
+            "phase": args.phase,
+            "q": args.q,
+            "options": [o.strip() for o in args.options.split("|")],
+            "chosen": args.chosen,
+            "why": args.why,
+            "project": args.project,
+            "prd_version": args.prd_version,
+        })
+        print(json.dumps(entry, ensure_ascii=False, indent=2))
+    elif args.cmd == "log":
         entry = append(root, {
             "project": args.project,
             "gate": args.gate,
@@ -222,6 +281,17 @@ def main():
     elif args.cmd == "update":
         entry = update_outcome(root, args.entry_id, args.outcome)
         print(json.dumps(entry, ensure_ascii=False, indent=2))
+    elif args.cmd == "list":
+        entries = read_all(root)
+        if args.phase:
+            entries = [
+                e for e in entries
+                if (e.get("type") == "hitl" and e.get("phase") == args.phase)
+                or (e.get("type") != "hitl" and e.get("gate") == args.phase)
+            ]
+        if args.project:
+            entries = [e for e in entries if e.get("project") == args.project]
+        print(json.dumps(entries, ensure_ascii=False, indent=2))
     elif args.cmd == "audit":
         print(json.dumps(audit(root), ensure_ascii=False, indent=2))
 

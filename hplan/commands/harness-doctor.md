@@ -4,7 +4,7 @@ argument-hint: ""
 allowed-tools: ["Read", "Bash"]
 ---
 
-# /hplan-doctor
+# /harness-doctor
 
 Runs 5 deterministic checks and reports `[ PASS ]`, `[ WARN ]`, or `[ FAIL ]` per item.
 
@@ -64,9 +64,9 @@ except Exception as e:
 ```
 
 - **PASS (approved)**: Project has passed the Build Gate — writes to PRD/spec files are unblocked
-- **PASS (MISSING)**: No checkpoint yet — normal for a project that hasn't run `/hplan-build` yet
+- **PASS (MISSING)**: No checkpoint yet — normal for a project that hasn't run `/harness-build` yet
 - **WARN (CONDITIONAL_GO / other status)**: Gate was run but not fully approved
-- **FAIL (PARSE_ERROR)**: `checkpoint.json` is malformed — delete it and re-run `/hplan-build`
+- **FAIL (PARSE_ERROR)**: `checkpoint.json` is malformed — delete it and re-run `/harness-build`
 
 ---
 
@@ -80,7 +80,7 @@ echo "exit=$?"
 - **PASS**: Valid JSON output or empty output with `exit=0` (empty registry is normal)
 - **FAIL**: JSON parse error or `exit != 0`
 
-Remedy if FAIL: delete `harness/exclusions.jsonl` and re-add exclusions via `/hplan-exclude`.
+Remedy if FAIL: delete `harness/exclusions.jsonl` and re-add exclusions via `/harness-exclude`.
 
 ---
 

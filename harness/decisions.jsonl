@@ -1,0 +1,1 @@
+{"id": "hitl-2026-05-22-e36c8", "ts": "2026-05-22T14:49:13.262993+00:00", "type": "hitl", "phase": "operate", "project": "", "q": "PRD 버전 업데이트 smoke test", "options": ["PRD 수정 반영"], "chosen": "PRD 수정 반영", "why": "4단계 완료 검증", "prd_version": "v0.3"}

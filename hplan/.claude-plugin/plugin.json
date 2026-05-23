@@ -1,6 +1,6 @@
 {
   "name": "hplan",
-  "version": "0.8.4",
+  "version": "0.9.2",
   "description": "Evidence + COGS + Decision gate that runs BEFORE you commit to building. Mandatory competitor and interview evidence, executable COGS sentinel (p50/p90 margin with abuse blend), append-only Do-Not-Build exclusions registry, self-eval decision log, and multi-target handoff to Spec-Kit / Kiro / GStack / Claude Code. Use when an idea reaches PRD or implementation pressure before evidence is credible.",
   "author": {
     "name": "AI PM Skills Contributors",

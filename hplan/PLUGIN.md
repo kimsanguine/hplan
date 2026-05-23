@@ -2,18 +2,18 @@
 
 > Evidence + COGS + Decision gate that runs **BEFORE** you build.
 
-While [`discover`](../discover/), [`architect`](../architect/), [`deliver`](../deliver/), [`measure`](../measure/), and [`learn`](../learn/) help you build, ship, and operate AI agents — **hplan decides whether the thing deserves to be built at all**.
+While [`discover`](../discover/), [`architect`](../architect/), [`deliver`](../deliver/), and [`operate`](../operate/) help you build, ship, and operate AI agents — **hplan decides whether the thing deserves to be built at all**.
 
 The wedge: mandatory competitor research, user interview evidence, **executable** COGS sentinel, append-only Do-Not-Build exclusions registry, self-eval decision log, and multi-target handoff. None of which other spec-driven coding agents (Spec-Kit, Kiro, GStack, Superpowers) enforce.
 
 ## Lifecycle Position
 
 ```text
-hplan  →  discover  →  architect  →  deliver  →  measure  →  learn
-(Gate)    (Discover)  (Architect)  (Build)  (Measure)  (Knowledge)
+hplan  →  discover  →  architect  →  deliver  →  operate
+(Gate)    (Discover)  (Architect)  (Build)   (Operate)
 ```
 
-hplan is **Stage 0**. The other 5 plugins inherit decisions from hplan's gates.
+hplan is **Stage 0**. The other 4 plugins inherit decisions from hplan's gates.
 
 ## Skills
 
@@ -28,26 +28,33 @@ hplan is **Stage 0**. The other 5 plugins inherit decisions from hplan's gates.
 | [`handoff`](./skills/handoff/) | Build Gate brief → Spec-Kit `specs/NNN-slug/`, Kiro `.kiro/specs/`, GStack `/office-hours` brief, Claude Code `AGENTS.md` + `CLAUDE.md` | Build (terminal) |
 | [`pmf-gate`](./skills/pmf-gate/) | **[Sketch]** Post-launch loop — COGS realtime + behavior metrics → next Evidence Gate inputs. Closes the hplan cycle. | Post-launch |
 
-## Commands
+## Lifecycle Commands (단일 플러그인 설치로 전체 라이프사이클 커버)
+
+| Command | Phase | Function |
+|---|---|---|
+| `/harness-discover <idea>` | **Discover** | 기회 매핑 → 가정 분석 → 비용 시뮬레이션 → 빌드/바이 결정 |
+| `/harness-plan <system>` | **Plan** | 오케스트레이션 패턴 → 3-tier 설계 → 메모리 아키텍처 → 모델 라우팅 |
+| `/harness-build <brief>` | **Build** | COGS gate + PRD 8-section 자동 작성 + W1 스프린트 플랜 |
+| `/harness-operate <agent>` | **Operate** | KPI 대시보드 → 신뢰성 스캔 → 비용 리뷰 → 개선 계획 + 지식 추출 |
+
+## Gate Commands (단계별 세밀 제어)
 
 | Command | Function |
 |---|---|
-| `/hplan-evidence <idea>` | Run Evidence Gate (rubric → interview synthesis → exclusions check) |
-| `/hplan-product` | Run Product Gate (OST + journey + sitemap + design pointers) |
-| `/hplan-build` | Run Build Gate (cogs-sentinel + decision-log + handoff + STATE.md + PROGRESS.md) |
-| `/hplan-cogs <provider> <model>` | Run COGS sentinel only |
-| `/hplan-exclude <idea>` | Add or check an exclusion |
-| `/hplan-handoff <target>` | Export Build Gate brief to spec-kit / kiro / gstack / claude / all |
-| `/hplan-verify [condition]` | **[Dev]** Verify completion evidence — sync STATE.md condition anchors (❌→✅) |
-| `/hplan-scope-guard <feature>` | **[Dev]** Check new feature against exclusions + CONDITIONAL_GO scope + COGS tier. Returns ALLOW / DEFER / BLOCK |
-| `/hplan-doctor` | Installation health check — verifies hook registration, gate_guard execution, checkpoint state, exclusions registry, and git pre-commit hook |
+| `/hplan <idea>` | Evidence + Product + COGS 3-gate 한 번에 실행 (WHETHER 판단) |
+| `/harness-exclude <idea>` | Add or check an exclusion |
+| `/harness-handoff <target>` | Export Build Gate brief to spec-kit / kiro / gstack / claude / all |
+| `/harness-verify [condition]` | **[Dev]** Verify completion evidence — sync STATE.md condition anchors (❌→✅) |
+| `/harness-doctor` | Installation health check — verifies hook registration, gate_guard execution, checkpoint state, exclusions registry, and git pre-commit hook |
 
 ## Cross-Cutting Assets
 
 | Asset | Purpose |
 |---|---|
+| [`../CLAUDE.md`](../CLAUDE.md) | **ADK L1 Memory** — 9 behavioral rules + hplan gate policy. Loaded by Claude Code at every session start |
+| [`../hooks/`](../hooks/) | **ADK L3 Guardrail** — SessionStart · PreToolUse · PostToolUse shell hooks. Registered via `scripts/install-hooks.sh` |
 | [`hplan_mcp/`](./hplan_mcp/) | MCP server exposing 6 tools so Cursor / Windsurf / Kiro / Codex / Goose can call hplan primitives |
-| [`hooks/gate_guard.py`](./hooks/) | Claude Code PreToolUse hook that blocks writes to PRD.md / AGENTS.md / `specs/` / `.kiro/specs/` until `harness/build-gate/checkpoint.json` reports `status: "approved"` |
+| [`hooks/gate_guard.py`](./hooks/) | Core gate logic called by `../hooks/PreToolUse.sh` — blocks writes to PRD.md / AGENTS.md / `specs/` until checkpoint approved |
 | [`agents/`](./agents/) | 4 role-locked reviewer agents: evidence / product / economics / build |
 | [`references/`](./references/) | 14 playbooks (market research, ICP/interview, product planning, design gate, unit economics, performance benchmark, implementation readiness, project scaffold, HITL, competitive landscape, source integration notes, diagnosis rubric, metrics/launch, provider_pricing.json snapshot) |
 | [`scripts/`](./scripts/) | 9 executable Python scripts backing each skill |
@@ -62,7 +69,7 @@ hplan is **Stage 0**. The other 5 plugins inherit decisions from hplan's gates.
 | `discover/assumptions` (V/F/R/E) | `hplan/evidence-rubric` (100-pt) | Same intent, different axes — complement |
 | `discover/build-or-buy` (vendor) | `hplan/exclusions` (do-not-build) | Vendor decision vs permanent exclusion memory |
 | `deliver/prd` (agent PRD shape) | `hplan/handoff` (multi-target export) | deliver canonicalizes shape, hplan exports across 4 ecosystems |
-| `measure/burn-rate` (post-deploy) | `hplan/cogs-sentinel` (pre-deploy) | Sequential — predict → track |
+| `operate/burn-rate` (post-deploy) | `hplan/cogs-sentinel` (pre-deploy) | Sequential — predict → track |
 
 ## Install
 
@@ -90,14 +97,14 @@ Three layers that keep "good decision" guarantees from degrading after the gate 
 
 ### HARD-GATE (command-level enforcement)
 
-`/hplan-product` and `/hplan-build` carry `<HARD-GATE>` blocks at their tops:
+`/hplan` and `/harness-build` carry `<HARD-GATE>` blocks at their tops:
 
-- **`<HARD-GATE name="evidence">`** in `/hplan-product`: blocks entry unless `decision_log` shows a passed Evidence Gate. Allows research inputs as exception — competitor analysis, customer profiling, AI persona drafts, market research may run *before* the gate as inputs, not as gate-passing substitutes. Persona drafts without interview or behavior evidence do not satisfy Evidence Gate.
-- **`<HARD-GATE name="product">`** in `/hplan-build`: blocks entry unless `decision_log` shows a passed Product Gate with Journey map + Sitemap.
+- **`<HARD-GATE name="evidence">`** in `/hplan`: blocks entry unless `decision_log` shows a passed Evidence Gate. Allows research inputs as exception — competitor analysis, customer profiling, AI persona drafts, market research may run *before* the gate as inputs, not as gate-passing substitutes. Persona drafts without interview or behavior evidence do not satisfy Evidence Gate.
+- **`<HARD-GATE name="product">`** in `/harness-build`: blocks entry unless `decision_log` shows a passed Product Gate with Journey map + Sitemap.
 
 ### STATE.md + SessionStart hook (session continuity)
 
-When `/hplan-build` outputs `CONDITIONAL_GO`, it automatically writes `harness/STATE.md` with the current gate, active conditions, verification anchors, and blockers. The `.claude/settings.json` `SessionStart` hook prints this file at the start of every new Claude Code session.
+When `/harness-build` outputs `CONDITIONAL_GO`, it automatically writes `harness/STATE.md` with the current gate, active conditions, verification anchors, and blockers. The `.claude/settings.json` `SessionStart` hook prints this file at the start of every new Claude Code session.
 
 To activate for a project using hplan:
 

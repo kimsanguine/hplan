@@ -6,8 +6,8 @@ const STAGES = [
   { name: 'hplan', sub: 'gate', count: 8, c: 'hplanRed' as const },
   { name: 'discover', sub: '', count: 7, c: 'skillTag' as const },
   { name: 'architect', sub: '', count: 8, c: 'skillTag' as const },
-  { name: 'deliver', sub: '', count: 27, c: 'trackBlue' as const },
-  { name: 'operate', sub: '', count: 15, c: 'skillTag' as const },
+  { name: 'deliver', sub: '', count: 32, c: 'trackBlue' as const },
+  { name: 'operate', sub: '', count: 17, c: 'skillTag' as const },
 ];
 
 /** v0.8 Demo — Scene 5 — Lifecycle (45-60s, 450 frames). */
@@ -27,7 +27,7 @@ export const V8DLifecycle: React.FC = () => {
       }}
     >
       <div style={{ fontSize: typography.titleSize, fontWeight: 300, color: colors.text, opacity: titleOp, marginBottom: 48, letterSpacing: '-0.02em' }}>
-        5-plugin lifecycle · 65 skills
+        5-plugin lifecycle · 72 skills
       </div>
 
       <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center', maxWidth: 1700 }}>

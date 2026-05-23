@@ -1,31 +1,66 @@
 #!/usr/bin/env bash
-# install-hooks.sh — Install hplan git pre-commit hook (dual-defense layer).
+# install-hooks.sh — Install hplan hooks (ADK L3 Guardrail Layer + git enforcement).
 #
-# Why: Claude Code PreToolUse hook (#17688) is intermittently unreliable.
-# Git pre-commit is deterministic — no model behavior dependency.
-# Role split:
-#   gate_guard.py  → soft warning when Claude attempts the write (UX layer)
-#   pre-commit     → hard block before the commit lands (enforcement layer)
+# ADK Layer 3 = Three Claude Code hooks + git pre-commit:
+#   SessionStart.sh  → display gate status at session start
+#   PreToolUse.sh    → block writes without approved checkpoint (soft, UX layer)
+#   PostToolUse.sh   → scan for accidental secret exposure (warn only)
+#   git pre-commit   → hard block before the commit lands (enforcement layer)
+#
+# Why two layers?
+#   Claude Code hooks (#17688) are intermittently unreliable.
+#   Git pre-commit is deterministic — no model behavior dependency.
+#   Both layers together = complete defense.
 #
 # Usage:
-#   bash scripts/install-hooks.sh          # install
-#   bash scripts/install-hooks.sh --remove # uninstall
+#   bash scripts/install-hooks.sh          # install all hooks
+#   bash scripts/install-hooks.sh --remove # uninstall all hooks
 
 set -euo pipefail
 
 HOOK_PATH=".git/hooks/pre-commit"
 MARKER="# hplan-gate-guard"
+SETTINGS_FILE=".claude/settings.json"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+HOOKS_DIR="$SCRIPT_DIR/../hooks"
+
+# ─── Remove ─────────────────────────────────────────────────────────────────
 
 remove_hook() {
-  if [ ! -f "$HOOK_PATH" ]; then
-    echo "hplan: no pre-commit hook found — nothing to remove."
-    exit 0
-  fi
-  if grep -q "$MARKER" "$HOOK_PATH" 2>/dev/null; then
+  # Remove git pre-commit
+  if [ -f "$HOOK_PATH" ] && grep -q "$MARKER" "$HOOK_PATH" 2>/dev/null; then
     rm "$HOOK_PATH"
-    echo "hplan: pre-commit hook removed."
+    echo "hplan: git pre-commit hook removed."
   else
-    echo "hplan: pre-commit hook exists but was not installed by hplan — leaving it."
+    echo "hplan: no hplan git pre-commit hook found — skipping."
+  fi
+
+  # Remove Claude Code hook entries from settings.json
+  if [ -f "$SETTINGS_FILE" ] && command -v python3 &>/dev/null; then
+    python3 - "$SETTINGS_FILE" << 'PYEOF'
+import json, sys
+
+path = sys.argv[1]
+try:
+    d = json.load(open(path))
+    hooks = d.get("hooks", {})
+    for event in ["PreToolUse", "PostToolUse", "SessionStart"]:
+        if event in hooks:
+            hooks[event] = [
+                entry for entry in hooks[event]
+                if not any("hplan" in str(h.get("command","")) for h in entry.get("hooks", []))
+            ]
+            if not hooks[event]:
+                del hooks[event]
+    if hooks:
+        d["hooks"] = hooks
+    elif "hooks" in d:
+        del d["hooks"]
+    json.dump(d, open(path, "w"), indent=2)
+    print(f"hplan: Claude Code hooks removed from {path}")
+except Exception as e:
+    print(f"hplan: could not update {path}: {e}", file=sys.stderr)
+PYEOF
   fi
   exit 0
 }
@@ -87,7 +122,10 @@ fi
 
 # Parse status, context_dates, and CONDITIONAL_GO fields from staged blob.
 if command -v python3 &>/dev/null; then
-  read -r STATUS FRESHNESS_VERDICT SCOPE_VERDICT <<< "$(python3 -c "
+  _TMP_JSON=$(mktemp)
+  _TMP_PY=$(mktemp)
+  printf '%s' "$STAGED_CHECKPOINT" > "$_TMP_JSON"
+  cat > "$_TMP_PY" << 'PYEOF'
 import json, sys, os
 from datetime import date
 
@@ -99,7 +137,7 @@ THRESHOLDS = {
 }
 
 try:
-    d = json.loads('''$STAGED_CHECKPOINT''')
+    d = json.load(open(sys.argv[1]))
     status = d.get('status', '')
     today = date.today()
 
@@ -120,7 +158,6 @@ try:
     decision = d.get('decision', 'GO')
     scope = 'ok'
     if decision == 'CONDITIONAL_GO':
-        # Expiry
         expires_at = (d.get('expires_at') or '').strip()
         if expires_at:
             try:
@@ -128,7 +165,6 @@ try:
                     scope = f'expired:{expires_at}'
             except ValueError:
                 pass
-        # Required tests must exist on disk
         if scope == 'ok':
             missing = [
                 t for t in (d.get('required_tests') or [])
@@ -140,8 +176,9 @@ try:
     print(status, freshness, scope)
 except Exception:
     print('', 'ok', 'ok')
-" 2>/dev/null)"
-  )"
+PYEOF
+  read -r STATUS FRESHNESS_VERDICT SCOPE_VERDICT <<< "$(python3 "$_TMP_PY" "$_TMP_JSON" 2>/dev/null)"
+  rm -f "$_TMP_JSON" "$_TMP_PY"
 else
   STATUS=$(echo "$STAGED_CHECKPOINT" | awk -F'"' '/"status"/{print $4; exit}')
   FRESHNESS_VERDICT="ok"
@@ -193,6 +230,44 @@ if [[ "$SCOPE_VERDICT" == missing_tests:* ]]; then
   exit 1
 fi
 
+# ─── Signal Gate: 4 evidence docs must exist in the staged index ────────────
+SIGNAL_DOCS="harness/pain.md harness/cogs.md harness/market.md harness/competitors.md"
+MISSING_SIGNAL=""
+for sdoc in $SIGNAL_DOCS; do
+  if ! git cat-file -e ":$sdoc" 2>/dev/null; then
+    MISSING_SIGNAL="${MISSING_SIGNAL}    ${sdoc}
+"
+  fi
+done
+if [ -n "$MISSING_SIGNAL" ]; then
+  echo "" >&2
+  echo "hplan pre-commit BLOCKED ──────────────────────────" >&2
+  echo "  Signal Gate documents missing from staged index:" >&2
+  printf "%s" "$MISSING_SIGNAL" >&2
+  echo "  Stage them (git add harness/*.md) and ensure /hplan \"<idea>\" completed." >&2
+  echo "────────────────────────────────────────────────────" >&2
+  exit 1
+fi
+
+# ─── Signal Gate: Staged docs must not contain placeholders ─────────────────
+PLACEHOLDER_DOCS=""
+for sdoc in $SIGNAL_DOCS; do
+  STAGED_BLOB=$(git show ":$sdoc" 2>/dev/null || true)
+  if [ -n "$STAGED_BLOB" ] && echo "$STAGED_BLOB" | grep -qiE '(TBD|미정|추후|나중에)'; then
+    PLACEHOLDER_DOCS="${PLACEHOLDER_DOCS}    ${sdoc}
+"
+  fi
+done
+if [ -n "$PLACEHOLDER_DOCS" ]; then
+  echo "" >&2
+  echo "hplan pre-commit BLOCKED ──────────────────────────" >&2
+  echo "  Signal Gate docs contain placeholders (TBD/미정/추후/나중에):" >&2
+  printf "%s" "$PLACEHOLDER_DOCS" >&2
+  echo "  Fill all evidence sources before committing." >&2
+  echo "────────────────────────────────────────────────────" >&2
+  exit 1
+fi
+
 # STATE.md 조건 anchor 소프트 경고
 # 파일 없으면 스킵. 있으면 "추후 기입" 항목 수를 카운트해서 경고만 출력 (exit 0 유지).
 if [ -f "harness/STATE.md" ] && command -v python3 &>/dev/null; then
@@ -220,5 +295,77 @@ exit 0
 HOOK
 
 chmod +x "$HOOK_PATH"
-echo "hplan: pre-commit hook installed at $HOOK_PATH"
+echo "hplan: git pre-commit hook installed at $HOOK_PATH"
+
+# ─── Claude Code Hooks (ADK L3) ─────────────────────────────────────────────
+
+if [ ! -d "$HOOKS_DIR" ]; then
+  echo "hplan: hooks/ directory not found — skipping Claude Code hook registration."
+  echo "       (Run from the repo root that contains hooks/)"
+  echo "       To remove: bash scripts/install-hooks.sh --remove"
+  exit 0
+fi
+
+if ! command -v python3 &>/dev/null; then
+  echo "hplan: python3 not found — skipping Claude Code settings.json update."
+  echo "       Add hooks manually. See hooks/README.md."
+  echo "       To remove: bash scripts/install-hooks.sh --remove"
+  exit 0
+fi
+
+mkdir -p "$(dirname "$SETTINGS_FILE")"
+
+python3 - "$SETTINGS_FILE" "$HOOKS_DIR" << 'PYEOF'
+import json, sys, os
+from pathlib import Path
+
+settings_path = sys.argv[1]
+hooks_dir     = sys.argv[2]
+
+HOOK_ENTRIES = {
+    "PreToolUse": {
+        "matcher": "Write|Edit|NotebookEdit",
+        "command": f"bash {hooks_dir}/PreToolUse.sh",
+    },
+    "PostToolUse": {
+        "matcher": "Write|Edit",
+        "command": f"bash {hooks_dir}/PostToolUse.sh",
+    },
+    "SessionStart": {
+        "matcher": ".*",
+        "command": f"bash {hooks_dir}/SessionStart.sh",
+    },
+}
+
+# Load or create settings.json
+if os.path.exists(settings_path):
+    try:
+        d = json.load(open(settings_path))
+    except Exception:
+        d = {}
+else:
+    d = {}
+
+hooks = d.setdefault("hooks", {})
+
+for event, cfg in HOOK_ENTRIES.items():
+    event_list = hooks.setdefault(event, [])
+    # Remove any existing hplan entry for this event
+    event_list[:] = [
+        e for e in event_list
+        if not any("hplan" in str(h.get("command","")) for h in e.get("hooks", []))
+    ]
+    # Add fresh entry
+    event_list.append({
+        "matcher": cfg["matcher"],
+        "hooks": [{"type": "command", "command": cfg["command"]}],
+    })
+
+json.dump(d, open(settings_path, "w"), indent=2)
+print(f"hplan: Claude Code hooks registered in {settings_path}")
+print(f"       · PreToolUse  → hooks/PreToolUse.sh  (gate enforcement)")
+print(f"       · PostToolUse → hooks/PostToolUse.sh (secret scanner)")
+print(f"       · SessionStart→ hooks/SessionStart.sh (gate status display)")
+PYEOF
+
 echo "       To remove: bash scripts/install-hooks.sh --remove"

@@ -1,8 +1,8 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "hplan",
-  "version": "0.8.4",
-  "description": "62 skills and 26 commands across 9 plugins for PMs who decide what, why, and how to build AI agents — from evidence gate (hplan) through PM lifecycle (discover → architect → deliver → measure → learn → operate → track → craft). v0.8 adds track (prompt-level progress + event-driven gates + respect-checkpoint α/β/γ matrix) and craft (DESIGN.md + RESPECT.md two-file design system + hierarchy-rules runtime measurement + motion-language + ui-drift-detect — '이 존중은 사람이 넣는 겁니다' 영상 5번 통찰 mechanical enforcement). All new skills enforce Rule 5 (LLM 분류만 허용, routing/policy/metric은 결정론).",
+  "version": "0.9.2",
+  "description": "55 skills and 27 commands across 5 plugins for PMs who decide what, why, and how to build AI agents — evidence gate (hplan) → discovery → architecture → delivery → operations. v0.9.2 consolidates 65 skills into 55 via mode/check/type/step routing (track, ui-validate, media-asset, delivery-plan, agent-instructions, metrics-design, portfolio-report). All new unified skills enforce trust-boundary separation and deprecated alias parity.",
   "owner": {
     "name": "AI PM Skills Contributors",
     "url": "https://github.com/kimsanguine"
@@ -33,33 +33,9 @@
       "category": "product-management"
     },
     {
-      "name": "measure",
-      "description": "Measure and optimize AI agent performance — KPIs, reliability, failure analysis, cost tracking, and North Star metrics.",
-      "source": "./measure",
-      "category": "product-management"
-    },
-    {
-      "name": "learn",
-      "description": "Turn PM tacit knowledge into reusable agent assets — structured knowledge units, decision patterns, and memory management.",
-      "source": "./learn",
-      "category": "product-management"
-    },
-    {
       "name": "operate",
-      "description": "Operate a portfolio of AI agents — multi-agent tiering (T1~T5), weighted 5-axis scorecards, weekly rollups, cross-team routing decisions. For teams running 5+ agents where single-agent KPIs no longer reveal priorities.",
+      "description": "Operate a portfolio of AI agents — portfolio tiering, scorecards, weekly rollups, cross-team routing, KPI design, reliability measurement, cost monitoring, cohort analysis, incident response, and PM knowledge capture.",
       "source": "./operate",
-      "category": "product-management"
-    },
-    {
-      "name": "track",
-      "description": "Track AI coding agent progress at prompt-level granularity — deterministic velocity baseline, lookup-based task estimation, event-driven progress reports, gate checkpoints, and respect-checkpoint matrix. For 5+ prompt cycles per feature where operate's weekly cadence is too coarse.",
-      "source": "./track",
-      "category": "product-management"
-    },
-    {
-      "name": "craft",
-      "description": "Craft user-respecting UI/UX — DESIGN.md + RESPECT.md two-file design system, three-second rule enforcement, 60/30/10 color ratio, motion language, ui-drift detection. Closes the AI-generic-aesthetic gap by mechanically enforcing user-respect (영상 5번 통찰).",
-      "source": "./craft",
       "category": "product-management"
     }
   ]
