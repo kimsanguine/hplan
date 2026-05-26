@@ -80,7 +80,7 @@
     // 취약 축 경고
     const weakEl = document.getElementById('weak-axes');
     (DATA.weak_axes || []).forEach(a => {
-      weakEl.innerHTML += `<div class="bg-amber-500/10 border border-amber-500/30 rounded-xl px-4 py-2 text-sm text-amber-300">⚠ ${a.name}: ${a.score}/15 — 다음 인터뷰에서 보완 필요</div>`;
+      weakEl.innerHTML += `<div class="bg-amber-500/10 border border-amber-500/30 rounded-xl px-4 py-2 text-sm text-amber-300">⚠ ${a.name}: ${a.score}/${a.max} — 다음 인터뷰에서 보완 필요</div>`;
     });
   </script>
 </body>

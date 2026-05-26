@@ -1,10 +1,15 @@
 import re
 from .generic import parse_generic
 
-_AXIS_NAMES = [
-    "ICP", "Recent Painful Event", "Workaround",
-    "Repetition", "Economic Pain", "Switching Trigger",
-    "MVP Narrowness", "Acquisition Path",
+_AXES = [
+    {"name": "ICP",                  "max": 15},
+    {"name": "Recent Painful Event", "max": 15},
+    {"name": "Workaround",           "max": 10},
+    {"name": "Repetition",           "max": 10},
+    {"name": "Economic Pain",        "max": 15},
+    {"name": "Switching Trigger",    "max": 15},
+    {"name": "MVP Narrowness",       "max": 10},
+    {"name": "Acquisition Path",     "max": 10},
 ]
 
 
@@ -13,7 +18,7 @@ def parse_evidence_gate(md: str) -> dict:
     score = _extract_score(md)
     decision = _extract_decision(md)
     axes = _extract_axes(md)
-    weak_axes = [a for a in axes if a["score"] < 10]
+    weak_axes = [a for a in axes if a["score"] < a["max"] * 0.7]
     return {
         **base,
         "template": "evidence-gate",
@@ -38,11 +43,12 @@ def _extract_decision(md: str) -> str:
 
 def _extract_axes(md: str) -> list[dict]:
     axes = []
-    for name in _AXIS_NAMES:
-        pattern = rf"##\s+{re.escape(name)}.*?\n점수:\s*(\d+)"
-        m = re.search(pattern, md, re.IGNORECASE | re.DOTALL)
+    for ax in _AXES:
+        name = ax["name"]
+        pattern = rf"##\s+{re.escape(name)}[^#]*?\n점수:\s*(\d+)"
+        m = re.search(pattern, md, re.IGNORECASE)
         score = int(m.group(1)) if m else 0
-        axes.append({"name": name, "score": score})
+        axes.append({"name": name, "score": score, "max": ax["max"]})
     return axes
 
 

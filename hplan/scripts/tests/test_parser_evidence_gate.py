@@ -47,3 +47,11 @@ class TestEvidenceGateParser:
         data = parse_evidence_gate(FIXTURE)
         html = render("evidence-gate", data)
         assert "BUILD" in html or "build" in html.lower()
+
+    def test_missing_axis_score_returns_zero_not_adjacent(self):
+        """ICP 섹션 점수 없으면 0 반환, 인접 섹션 점수 도용 없음."""
+        md = FIXTURE.replace("## ICP\n점수: 12/15", "## ICP\n설명만 있고 점수 없음")
+        data = parse_evidence_gate(md)
+        axes = {a["name"]: a["score"] for a in data["axes"]}
+        assert axes["ICP"] == 0
+        assert axes["Recent Painful Event"] == 13  # 인접 섹션 점수 유지
