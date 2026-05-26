@@ -34,16 +34,10 @@ def _field(md: str, key: str) -> str | None:
 def _extract_conditions(md: str) -> list[dict]:
     conditions = []
     for m in re.finditer(r"\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|\s*([✅❌][^|]*?)\s*\|", md):
-        name = m.group(1).strip()
-        verified_by = m.group(2).strip()
-        status_raw = m.group(3).strip()
-        # 헤더 행 및 구분 행 건너뜀
-        if name in ("조건", "---", ":---", "---:") or set(name) <= set("-:"):
-            continue
         conditions.append({
-            "name": name,
-            "verified_by": verified_by,
-            "status": "✅" in status_raw,
+            "name": m.group(1).strip(),
+            "verified_by": m.group(2).strip(),
+            "status": "✅" in m.group(3),
         })
     return conditions
 
