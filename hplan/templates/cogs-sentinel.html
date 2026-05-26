@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>COGS Sentinel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+  <style>body{background:#0f1117}</style>
+</head>
+<body class="min-h-screen text-slate-100 font-sans">
+  <div id="verdict-banner" class="w-full px-8 py-5 text-center text-3xl font-black tracking-widest"></div>
+
+  <div class="max-w-5xl mx-auto p-6 grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div class="bg-slate-800/60 border border-slate-700/50 rounded-2xl p-4 text-center">
+      <p class="text-xs text-slate-400 mb-1">Gross Margin</p>
+      <p id="gross-margin" class="text-3xl font-bold text-white"></p>
+    </div>
+    <div class="bg-slate-800/60 border border-slate-700/50 rounded-2xl p-4 text-center">
+      <p class="text-xs text-slate-400 mb-1">p50 Margin</p>
+      <p id="p50-margin" class="text-3xl font-bold text-white"></p>
+    </div>
+    <div class="bg-slate-800/60 border border-slate-700/50 rounded-2xl p-4 text-center">
+      <p class="text-xs text-slate-400 mb-1">p90 Margin</p>
+      <p id="p90-margin" class="text-3xl font-bold text-white"></p>
+    </div>
+    <div class="bg-slate-800/60 border border-slate-700/50 rounded-2xl p-4 text-center">
+      <p class="text-xs text-slate-400 mb-1">Break-even</p>
+      <p id="break-even" class="text-3xl font-bold text-white"></p>
+      <p class="text-xs text-slate-500">users</p>
+    </div>
+  </div>
+
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="bg-slate-800/60 border border-slate-700/50 rounded-2xl p-6">
+      <p class="text-xs text-slate-400 uppercase tracking-widest mb-4">시나리오별 마진 (free:paid)</p>
+      <canvas id="scenarioChart" height="120"></canvas>
+    </div>
+  </div>
+
+  <script>
+    const DATA = __DATA_JSON__;
+    const colorMap = { green:'#059669', amber:'#d97706', red:'#dc2626' };
+
+    const banner = document.getElementById('verdict-banner');
+    banner.style.background = colorMap[DATA.verdict_color] || '#4f46e5';
+    banner.textContent = DATA.verdict || 'UNKNOWN';
+
+    document.getElementById('gross-margin').textContent = (DATA.gross_margin || 0) + '%';
+    document.getElementById('p50-margin').textContent = (DATA.p50_margin || 0) + '%';
+    document.getElementById('p90-margin').textContent = (DATA.p90_margin || 0) + '%';
+    document.getElementById('break-even').textContent = DATA.break_even_users || '-';
+
+    if (DATA.scenarios && DATA.scenarios.length) {
+      new Chart(document.getElementById('scenarioChart'), {
+        type: 'bar',
+        data: {
+          labels: DATA.scenarios.map(s => s.label),
+          datasets: [{
+            data: DATA.scenarios.map(s => s.margin),
+            backgroundColor: 'rgba(99,102,241,0.7)',
+            borderRadius: 4
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          plugins: { legend: { display: false } },
+          scales: {
+            x: {
+              max: 100,
+              ticks: { color: '#94a3b8', callback: v => v + '%' },
+              grid: { color: 'rgba(255,255,255,0.05)' }
+            },
+            y: { ticks: { color: '#94a3b8' }, grid: { display: false } }
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>
