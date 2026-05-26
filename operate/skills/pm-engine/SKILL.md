@@ -1,7 +1,7 @@
 ---
 name: pm-engine
-description: "Interface with the PM-ENGINE-MEMORY file — the operator's accumulated PM tacit knowledge database. Enables agents to reference, search, and apply TK (Tacit Knowledge) entries, and supports TK extraction from experience (--mode extract), TK querying and referencing (--mode query), and TK-to-instruction conversion (--mode build). The core of the pm-engine competitive moat. --mode decide for pattern-matching against stored PM decision patterns."
-argument-hint: "[TK query or operation] [--mode extract|query|build|save|decide]"
+description: "Interface with the PM-ENGINE-MEMORY file — the operator's accumulated PM tacit knowledge database. Enables agents to reference, search, and apply TK (Tacit Knowledge) entries, and supports TK extraction from experience (--mode extract), TK querying and referencing (--mode query), and TK-to-instruction conversion (--mode build). The core of the pm-engine competitive moat. --mode decide for pattern-matching against stored PM decision patterns. --mode save-decision for PRD-linked tech decision logging (harness/tech-decisions/TD-NNN.yaml). --mode index-codebase for scanning project files and surfacing unrecorded decision candidates."
+argument-hint: "[TK query or operation] [--mode extract|query|build|save|decide|save-decision|index-codebase]"
 allowed-tools: ["Read", "Write"]
 model: sonnet
 ---
@@ -25,6 +25,8 @@ model: sonnet
 - "이 경험을 TK로 구조화하고 싶어" → `--mode extract`
 - "PM 판단 패턴을 암묵지로 기록하고 싶어" → `--mode extract`
 - "세션에서 발견한 인사이트를 빠르게 저장하고 싶어" → `--mode save "인사이트"` 사용
+- "기술 결정 이유를 PRD와 함께 기록하고 싶어" → `--mode save-decision`
+- "프로젝트의 주요 기술 결정 중 미기록된 것을 찾고 싶어" → `--mode index-codebase`
 
 ### Route to Other Skills When
 
@@ -72,6 +74,97 @@ model: sonnet
 1. `PM-ENGINE-MEMORY.md` 없으면 자동 생성 후 저장
 2. 같은 내용 중복 감지 (첫 20자 매칭) → 중복 경고 후 저장 여부 확인
 3. 저장 후 "TK-QUICK-[ID] 저장됨 — `/pm-engine --mode extract`로 정식 등록 가능" 출력
+
+---
+
+## `--mode save-decision` — 기술 결정 + PRD 링크 저장
+
+세션 중 내린 기술 결정을 PRD 섹션 링크와 함께 `harness/tech-decisions/` 에 저장한다.
+
+### 사용법
+```
+/pm-engine --mode save-decision "Redis 선택 — §13 H2 100ms 가설"
+/pm-engine --mode save-decision "Sequential orchestration 선택 — §7 Anti-Goal: 병렬 디버깅 복잡도 회피"
+```
+
+인자 형식: `"[결정 내용] — [PRD 링크 (선택)]"`
+
+### TD 파일 형식
+
+`harness/tech-decisions/TD-NNN.yaml`:
+
+```yaml
+id: TD-NNN
+date: YYYY-MM-DD
+decision: "[결정 내용]"
+alternatives: []          # 저장 후 사용자가 직접 채울 수 있음
+prd_link: "[PRD 섹션 + 가설 텍스트]"
+evidence: ""              # 관련 harness 파일 경로 (선택)
+outcome: null             # operate/ops-review --mode post-retro 에서 업데이트
+```
+
+### TD-NNN 번호 부여 (결정론)
+```bash
+ls harness/tech-decisions/TD-*.yaml 2>/dev/null | wc -l
+```
+결과 + 1 → zero-padding 3자리 (TD-001, TD-002 …)
+
+### 동작 규칙
+1. `harness/tech-decisions/` 없으면 `mkdir -p` 후 진행
+2. `"결정 내용 — PRD 링크"` 파싱: `—` 기준 split. PRD 링크 없으면 prd_link: "" 로 저장
+3. 저장 후 출력:
+```
+✅ TD-NNN 저장 완료 → harness/tech-decisions/TD-NNN.yaml
+   결정: [내용]
+   PRD 링크: [링크 (없으면 "미지정 — 나중에 추가 가능")]
+   → alternatives·evidence는 파일 직접 편집으로 추가 가능
+```
+
+---
+
+## `--mode index-codebase` — 기술 결정 후보 탐색
+
+프로젝트 주요 파일을 스캔하여 기술 스택을 파악하고, 기존 TD 파일과 대조해 **미기록 결정 후보**를 제안한다.
+
+### 동작
+
+**Step 1 — 기술 스택 파일 스캔 (결정론)**
+```bash
+# 의존성 파일
+cat package.json 2>/dev/null | python3 -c "import json,sys; d=json.load(sys.stdin); print(json.dumps(list(d.get('dependencies',{}).keys())[:20]))" 2>/dev/null || true
+cat pyproject.toml 2>/dev/null | grep -A30 "\[project\]" | grep "dependencies" || true
+cat requirements.txt 2>/dev/null | head -30 || true
+
+# 아키텍처 힌트
+find . -name "ARCHITECTURE.md" -o -name "README.md" | head -3 | xargs cat 2>/dev/null | head -100 || true
+```
+
+**Step 2 — 기존 TD 목록 로드 (결정론)**
+```bash
+ls harness/tech-decisions/TD-*.yaml 2>/dev/null || echo "TD_NONE"
+```
+
+**Step 3 — 미기록 후보 도출 (LLM)**
+스캔된 기술 스택과 기존 TD 목록을 비교하여:
+- 이미 TD로 기록된 결정: ✅ 기록됨
+- 주요 기술(DB, 언어, 프레임워크, 오케스트레이션 패턴)이 TD로 없으면: 후보 제안
+
+**Step 4 — 출력**
+```
+📋 기술 스택 탐지:
+  - [감지된 주요 기술 목록]
+
+📂 기존 TD: N개
+  - TD-001: [결정 요약]
+
+💡 미기록 결정 후보 (M개):
+  1. [기술 X] — `/pm-engine --mode save-decision "X 선택 — [PRD 링크]"` 로 기록 가능
+  2. [기술 Y] — ...
+```
+
+### Boundary Checks
+- `harness/tech-decisions/` 없으면 TD 0개로 간주 (에러 아님)
+- 기술 스택 파일이 하나도 없으면 fail loud: "package.json / pyproject.toml / requirements.txt 중 하나가 필요합니다"
 
 ---
 
@@ -431,6 +524,9 @@ Step 5 — 승인된 TK만 PM-ENGINE-MEMORY.md append, 거부된 것은 `deviati
 | 로드한 TK의 활성화 조건이 현재 상황과 불일치 | 에이전트가 TK를 적용했으나 맥락상 맞지 않음 | TK 구조를 리뷰하고 비활성화 조건을 더 명확히. 필요시 새 TK로 분리 |
 | TK 간 연관 관계가 부족하여 관련 지식을 못 찾음 | "연관 TK"를 참조했는데 진짜 필요한 TK를 못 찾음 | 주간 memory-distill 크론에서 🔗 연관 TK를 재점검하고 링크 추가 |
 | Instruction 변환 후 에이전트의 판단이 여전히 낮음 | TK → Instruction 변환은 했는데 실행 품질이 개선 안 됨 | TK는 맞는데 Instruction 문장이 애매한 것. 더 구체적인 지시 문장으로 재작성 |
+| `harness/tech-decisions/` 부재 (`save-decision`) | `ls` 실패 | `mkdir -p harness/tech-decisions/` 후 진행 |
+| 인자 파싱 실패 (`save-decision`) | `—` 구분자 없음 | 결정 내용 전체를 decision: 필드에, prd_link: "" 로 저장 후 경고 |
+| 기술 스택 파일 없음 (`index-codebase`) | 모두 not found | fail loud + "package.json / pyproject.toml / requirements.txt 필요" |
 
 ---
 
@@ -441,6 +537,9 @@ Step 5 — 승인된 TK만 PM-ENGINE-MEMORY.md append, 거부된 것은 `deviati
 - TK → Instruction 변환 후, 에이전트가 따를 수 있는 구체적인 행동 지시가 되었는가? (Yes/No)
 - TK가 다른 관련 TK들과 연결되어 있어서, 검색했을 때 관련 지식 네트워크를 띄울 수 있는가? (Yes/No/Partial)
 - 이 TK를 적용했을 때의 기대 효과(의사결정 속도 향상, 품질 개선, 비용 절감 등)가 명시되어 있는가? (Yes/No)
+- TD-NNN 번호가 기존 최대값+1로 결정론 부여되었는가? (Yes/No)
+- `save-decision` 저장 후 `harness/tech-decisions/TD-NNN.yaml` 파일이 생성되었는가? (Yes/No)
+- `index-codebase` 출력에 미기록 후보가 명시되었는가 (0개면 "미기록 없음" 출력)? (Yes/No)
 
 ---
 
