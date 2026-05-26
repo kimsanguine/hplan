@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sprint Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>body{background:#0f1117}</style>
+</head>
+<body class="min-h-screen text-slate-100 font-sans">
+
+  <!-- COGS 상태 배너 -->
+  <div id="cogs-banner" class="w-full px-8 py-3 text-center text-sm font-semibold tracking-wide"></div>
+
+  <div class="max-w-4xl mx-auto p-6 space-y-6">
+
+    <!-- 제목 + 전체 진행률 -->
+    <div class="space-y-2">
+      <h1 id="doc-title" class="text-2xl font-black text-white"></h1>
+      <div class="flex items-center gap-4">
+        <div class="flex-1 bg-slate-700/60 rounded-full h-4 overflow-hidden">
+          <div id="overall-bar" class="h-full bg-indigo-500 rounded-full transition-all duration-500"></div>
+        </div>
+        <span id="overall-label" class="text-sm font-bold text-slate-300 whitespace-nowrap"></span>
+      </div>
+    </div>
+
+    <!-- COGS 지표 카드 -->
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-slate-800/60 border border-slate-700/50 rounded-2xl p-5 text-center">
+        <p class="text-xs text-slate-400 uppercase tracking-widest mb-1">COGS p90 Ceiling</p>
+        <p id="cogs-ceiling" class="text-3xl font-black text-white"></p>
+      </div>
+      <div id="cogs-current-card" class="bg-slate-800/60 border rounded-2xl p-5 text-center">
+        <p class="text-xs text-slate-400 uppercase tracking-widest mb-1">COGS p90 Current</p>
+        <p id="cogs-current" class="text-3xl font-black text-white"></p>
+      </div>
+    </div>
+
+    <!-- 마일스톤 목록 -->
+    <div id="milestone-list" class="space-y-4"></div>
+
+  </div>
+
+  <script>
+    const DATA = __DATA_JSON__;
+
+    // COGS 배너
+    const banner = document.getElementById('cogs-banner');
+    if (DATA.cogs_ok) {
+      banner.textContent = '✅ COGS OK — ' + DATA.cogs_current + '% (ceiling: ' + DATA.cogs_ceiling + '%)';
+      banner.style.background = '#059669';
+    } else {
+      banner.textContent = '🚨 COGS Over Ceiling — ' + DATA.cogs_current + '% > ' + DATA.cogs_ceiling + '%';
+      banner.style.background = '#dc2626';
+    }
+
+    // COGS 카드 색상
+    const currentCard = document.getElementById('cogs-current-card');
+    if (DATA.cogs_ok) {
+      currentCard.classList.add('border-emerald-500/40');
+    } else {
+      currentCard.classList.add('border-rose-500/40');
+    }
+
+    // 제목
+    document.getElementById('doc-title').textContent = DATA.title || 'Sprint Progress';
+
+    // 전체 진행률
+    const overallPct = DATA.total_items > 0
+      ? Math.round(DATA.total_done / DATA.total_items * 100)
+      : 0;
+    document.getElementById('overall-bar').style.width = overallPct + '%';
+    document.getElementById('overall-label').textContent =
+      DATA.total_done + ' / ' + DATA.total_items + ' (' + overallPct + '%)';
+
+    // COGS 수치
+    document.getElementById('cogs-ceiling').textContent = DATA.cogs_ceiling + '%';
+    document.getElementById('cogs-current').textContent = DATA.cogs_current + '%';
+
+    // 마일스톤
+    const milestoneList = document.getElementById('milestone-list');
+    (DATA.milestones || []).forEach(function(m) {
+      const section = document.createElement('div');
+      section.className = 'bg-slate-800/60 border border-slate-700/50 rounded-2xl p-5 space-y-3';
+
+      // 헤딩 + 진행률 숫자
+      const header = document.createElement('div');
+      header.className = 'flex items-center justify-between';
+
+      const nameEl = document.createElement('h2');
+      nameEl.className = 'text-base font-bold text-white';
+      nameEl.textContent = m.name;
+
+      const pctEl = document.createElement('span');
+      pctEl.className = 'text-sm font-semibold ' + (m.pct === 100 ? 'text-emerald-400' : 'text-slate-400');
+      pctEl.textContent = m.done + '/' + m.total + ' (' + m.pct + '%)';
+
+      header.appendChild(nameEl);
+      header.appendChild(pctEl);
+      section.appendChild(header);
+
+      // 진행 바
+      const barWrap = document.createElement('div');
+      barWrap.className = 'bg-slate-700/60 rounded-full h-2 overflow-hidden';
+      const bar = document.createElement('div');
+      bar.className = 'h-full rounded-full transition-all duration-500 ' +
+        (m.pct === 100 ? 'bg-emerald-500' : 'bg-indigo-500');
+      bar.style.width = m.pct + '%';
+      barWrap.appendChild(bar);
+      section.appendChild(barWrap);
+
+      // 아이템 목록
+      const ul = document.createElement('ul');
+      ul.className = 'space-y-1';
+      (m.items || []).forEach(function(item) {
+        const li = document.createElement('li');
+        li.className = 'flex items-start gap-2 text-sm';
+
+        const icon = document.createElement('span');
+        icon.className = 'mt-0.5 flex-shrink-0 text-base';
+        icon.textContent = item.done ? '✅' : '⬜';
+
+        const textEl = document.createElement('span');
+        if (item.is_blocker) {
+          textEl.className = 'text-rose-400 font-semibold';
+        } else if (item.done) {
+          textEl.className = 'text-slate-400 line-through';
+        } else {
+          textEl.className = 'text-slate-300';
+        }
+        textEl.textContent = item.text;
+
+        li.appendChild(icon);
+        li.appendChild(textEl);
+        ul.appendChild(li);
+      });
+      section.appendChild(ul);
+
+      milestoneList.appendChild(section);
+    });
+  </script>
+</body>
+</html>
