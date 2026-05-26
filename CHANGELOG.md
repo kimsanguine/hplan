@@ -4,6 +4,56 @@ All notable changes to hplan (renamed from AI_PM_Skills in v0.5) are documented 
 
 ---
 
+## [0.10.2] — 2026-05-26
+
+> **사용자 영향**: PostToolUse 훅에 MD→HTML 자동 렌더러 추가. hplan 커맨드가 `.md`를 Write하면 같은 위치에 `.html`이 자동 생성되어 브라우저에서 즉시 열 수 있다.
+
+### Added — MD→HTML Auto-Renderer (`hplan/scripts/`, `hplan/templates/`, `hooks/PostToolUse.sh`)
+
+**L3 Hooks 확장 — PostToolUse MD→HTML 렌더링**
+
+`hooks/PostToolUse.sh`에 `.md` Write 이벤트 감지 블록 추가. `hplan/scripts/md_renderer.py`를 호출해 MD 파일을 파싱하고 `.html`을 자동 생성한다. 훅은 항상 `exit 0`으로 비차단 실행된다.
+
+**`hplan/scripts/md_renderer.py`** — 핵심 변환 엔진
+- 경로 패턴 기반 템플릿 선택 (`_TEMPLATE_MAP`, 11개 규칙)
+- `__DATA_JSON__` 플레이스홀더 치환으로 Python → 브라우저 JS 데이터 전달
+- 9개 제외 경로 패턴 (`CHANGELOG`, `CONTRIBUTING`, `README` 등)
+- Python stdlib only (re, json, pathlib)
+
+**`hplan/scripts/parsers/`** — 11개 MD 파서 (generic + 10개 전용)
+
+| 파서 | 대상 파일 | 주요 추출 필드 |
+|---|---|---|
+| `generic` | 모든 `.md` | title, headings, has_mermaid, body_md |
+| `evidence_gate` | `harness/evidence/*.md` | score, decision, axes(8축), weak_axes |
+| `cogs_sentinel` | `harness/cogs.md` | scenarios(margin/label), cogs_ceiling, cogs_ok |
+| `gate_state` | `harness/build-gate/*.md` | conditions(status ✅/❌), passed_count, total |
+| `pain_board` | `harness/pain.md` | cards(tag/quote), interview_count, signal_gate_met |
+| `ost_viewer` | `harness/ost.md` | mermaid_code, solutions |
+| `market_intel` | `harness/market.md` | table(headers/rows) |
+| `architecture` | `harness/ARCHITECTURE.md` | memory_items, routing_table |
+| `sprint_tracker` | `harness/sprint.md` | items(done/blocker), pct, cogs_ok |
+| `prd_reader` | `docs/PRD.md` | evidence_score, cogs_verdict, state, sections |
+| `design_system` | `.design/design-system.md` | colors(hex/rgb), typography, tailwind_tokens |
+
+**`hplan/templates/`** — 11개 HTML 템플릿
+- Tailwind CSS CDN + Chart.js 4.4.2 + Mermaid 11 + marked.js 9
+- `createElement`/`textContent` 전면 적용 (XSS 안전)
+- 동적 차트 max 값 (`Math.max(fallback, ...data)` 패턴)
+- `__DATA_JSON__` → JSON.parse로 Python 파싱 결과 수신
+
+**`.gitignore`** — 자동 생성 HTML 제외 패턴 추가
+```
+harness/**/*.html
+docs/*.html
+.design/*.html
+specs/**/*.html
+```
+
+**테스트**: 143 passed, 0 failed
+
+---
+
 ## [0.10.1] — 2026-05-23
 
 > **사용자 영향**: 2차 Codex adversarial review 수정 + 5 페르소나 피드백 반영. `audit()`·`list --phase` KeyError 수정, Signal Gate pre-commit staged index 기준 강화, Evidence Source 페널티 자동 적용, Phase 5·6 빌드 리뷰 추가, PM 용어 설명 추가.
