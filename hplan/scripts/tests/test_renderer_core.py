@@ -30,6 +30,18 @@ class TestExcludePatterns:
     def test_docs_md_not_excluded(self):
         assert should_exclude("docs/PRD.md") is False
 
+    def test_changelog_excluded(self):
+        assert should_exclude("CHANGELOG.md") is True
+
+    def test_contributing_excluded(self):
+        assert should_exclude("CONTRIBUTING.md") is True
+
+    def test_guide_excluded(self):
+        assert should_exclude("GUIDE.md") is True
+
+    def test_guide_prefixed_excluded(self):
+        assert should_exclude("GUIDE-ko.md") is True
+
 
 class TestTemplateSelection:
     def test_evidence_report(self):
