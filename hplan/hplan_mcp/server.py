@@ -73,13 +73,30 @@ def evidence_check(brief: dict) -> dict:
 
 @mcp.tool()
 def product_gate(brief: dict) -> dict:
-    """Check Product Gate artifacts. Brief must include keys:
-    problem_brief, journey_map, sitemap, design_direction, hypothesis_tree.
+    """Check Product Gate readiness. Requires all artifact fields AND upstream
+    Build Gate approval (checkpoint.json status=approved, COGS GREEN/CONDITIONAL_GO).
 
-    Each value should be a non-empty string or list. Returns missing artifacts.
+    Brief must include: problem_brief, journey_map, sitemap, design_direction,
+    hypothesis_tree. Each must be a non-empty string (>=12 chars) or non-empty list.
+    Returns decision ('ready' | 'WAITING_FOR_HUMAN') and all missing items.
     """
     required = ["problem_brief", "journey_map", "sitemap", "design_direction", "hypothesis_tree"]
     missing = [k for k in required if not _filled(brief.get(k))]
+
+    # Gate check: Build Gate checkpoint must be explicitly approved
+    if not _checkpoint_approved(DATA_ROOT / "build-gate" / "checkpoint.json"):
+        missing.append(
+            "build-gate/checkpoint.json: status must be 'approved' "
+            "(run /harness-build to complete the Build Gate)"
+        )
+
+    # Gate check: COGS result must not be RED or absent
+    if not _cogs_cleared(DATA_ROOT / "build-gate" / "cogs_result.json"):
+        missing.append(
+            "build-gate/cogs_result.json: decision must be GREEN or CONDITIONAL_GO "
+            "(run cogs_sentinel.py to produce the COGS report)"
+        )
+
     decision = "ready" if not missing else "WAITING_FOR_HUMAN"
     return {"gate": "product", "decision": decision, "missing": missing}
 
@@ -108,8 +125,29 @@ def exclusion_check(idea: str, root: str = ".") -> dict:
 
 @mcp.tool()
 def handoff(brief: dict, target: str = "all", root: str = ".", force: bool = False) -> dict:
-    """Export Build Gate brief to spec-kit/kiro/gstack/claude/all."""
-    return export_handoff.export(brief, Path(root).resolve(), [target], force)
+    """Export Build Gate brief to spec-kit/kiro/gstack/claude/all.
+
+    Blocked unless product_gate() returns 'ready'. Pass force=True only for
+    deliberate overrides — the response will include a force_override flag for
+    audit purposes.
+    """
+    if not force:
+        gate = product_gate(brief)
+        if gate["decision"] != "ready":
+            return {
+                "error": "handoff blocked — Product Gate not cleared",
+                "gate": gate,
+                "hint": (
+                    "Resolve all missing items in the gate check, or pass "
+                    "force=True to override (adds force_override=True to the "
+                    "response for audit purposes)."
+                ),
+            }
+    result = export_handoff.export(brief, Path(root).resolve(), [target], force)
+    if force:
+        result["force_override"] = True
+        result["override_note"] = "handoff called with force=True — human approval required before downstream use"
+    return result
 
 
 def _filled(value) -> bool:
@@ -120,6 +158,28 @@ def _filled(value) -> bool:
     if isinstance(value, (list, dict)):
         return len(value) > 0
     return True
+
+
+def _checkpoint_approved(path: Path) -> bool:
+    """Return True iff harness/build-gate/checkpoint.json exists and status == 'approved'."""
+    if not path.exists():
+        return False
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        return data.get("status") == "approved"
+    except (json.JSONDecodeError, OSError):
+        return False
+
+
+def _cogs_cleared(path: Path) -> bool:
+    """Return True iff harness/build-gate/cogs_result.json exists and decision is not RED."""
+    if not path.exists():
+        return False
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        return data.get("decision") in ("GREEN", "CONDITIONAL_GO")
+    except (json.JSONDecodeError, OSError):
+        return False
 
 
 if __name__ == "__main__":

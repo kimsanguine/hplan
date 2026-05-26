@@ -83,6 +83,51 @@ def lognormal_samples(median: float, p90: float, n: int = 1000, seed: int = 7) -
     return [math.exp(rng.gauss(mu, sigma)) for _ in range(n)]
 
 
+def _validate_params(params: dict) -> None:
+    """Fail loud on inputs that would produce nonsense COGS decisions.
+
+    Any invalid param raises SystemExit with a clear message — consistent with
+    the existing 'unknown provider/model' error pattern. The gate must refuse
+    to emit GREEN/CONDITIONAL_GO/RED for corrupted or nonsensical inputs.
+    """
+    errors: list[str] = []
+
+    tokens_in = int(params.get("tokens_in", 4000))
+    tokens_out = int(params.get("tokens_out", 1000))
+    calls = float(params.get("calls_per_user_month", 60))
+    arpu = float(params.get("arpu", 19))
+    paid_conversion = float(params.get("paid_conversion", 0.05))
+    payment_fee_pct = float(params.get("payment_fee_pct", 0.03))
+    free_abuse_mult = float(params.get("free_abuse_multiplier", 5))
+    target_margin = float(params.get("target_gross_margin", 0.70))
+
+    if tokens_in < 0:
+        errors.append(f"tokens_in={tokens_in} must be >= 0")
+    if tokens_out < 0:
+        errors.append(f"tokens_out={tokens_out} must be >= 0")
+    if tokens_in == 0 and tokens_out == 0:
+        errors.append("tokens_in and tokens_out are both 0 — no meaningful COGS calculation possible")
+    if calls <= 0:
+        errors.append(f"calls_per_user_month={calls} must be > 0")
+    if arpu <= 0:
+        errors.append(f"arpu={arpu} must be > 0")
+    if not (0 < paid_conversion <= 1):
+        errors.append(f"paid_conversion={paid_conversion} must be in (0, 1]")
+    if not (0 <= payment_fee_pct < 1):
+        errors.append(f"payment_fee_pct={payment_fee_pct} must be in [0, 1)")
+    if free_abuse_mult < 1:
+        errors.append(f"free_abuse_multiplier={free_abuse_mult} must be >= 1")
+    if not (0 < target_margin <= 1):
+        errors.append(f"target_gross_margin={target_margin} must be in (0, 1]")
+
+    if errors:
+        msg = (
+            "COGS Sentinel: invalid parameters — refusing to produce economic verdict:\n"
+            + "\n".join(f"  - {e}" for e in errors)
+        )
+        raise SystemExit(msg)
+
+
 def run_realtime(params: dict, baseline_path: Path | None = None) -> dict:
     """Compare actual operational data against the Build Gate prediction.
 
@@ -139,6 +184,7 @@ def run_realtime(params: dict, baseline_path: Path | None = None) -> dict:
 
 
 def run(params: dict) -> dict:
+    _validate_params(params)
     pricing = params.get("pricing") or load_pricing()
     provider = params.get("provider", "anthropic")
     model = params.get("model", "claude-sonnet-4-6")
