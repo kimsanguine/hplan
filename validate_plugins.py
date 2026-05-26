@@ -186,8 +186,14 @@ def main():
     total_skills = 0
     total_aliases = 0
     total_commands = 0
-    EXPECTED_ACTIVE_SKILLS = 55
-    EXPECTED_ALIASES = 17
+    EXPECTED_ACTIVE_SKILLS = 46
+    EXPECTED_ALIASES = 0
+    # v0.10.1 migration note: 17 deprecated aliases removed intentionally.
+    # Removed aliases: mobile-check, hierarchy-rules, motion-language, ui-drift-detect,
+    #   estimate-tasks, progress-probe, blocker-detect, progress-report, gate-checkpoint,
+    #   velocity-baseline, respect-brief, respect-checkpoint, scorecard-5axis, weekly-rollup,
+    #   north-star, kpi, pm-framework.
+    # Replacements: see README.md "Plugins — Full Skill List" for --mode / --step routes.
 
     for plugin_name in targets:
         plugin_dir = root / plugin_name

@@ -13,6 +13,7 @@
     "build:v8-core": "remotion render HplanV8Core out/v8-core-16x9.mp4 --concurrency=4",
     "build:v8-editorial": "remotion render HplanV8Editorial out/v8-editorial-16x9.mp4 --concurrency=4",
     "build:v8-demo": "remotion render HplanV8Demo out/v8-demo-16x9.mp4 --concurrency=4",
+    "build:v10-core": "remotion render HplanV9Core out/v10-core-16x9.mp4 --concurrency=4",
     "build:v8-all": "npm run build:v8-core-track && npm run build:v8-core && npm run build:v8-editorial && npm run build:v8-demo",
     "build:gif": "remotion render HplanIntro16x9 out/intro.gif --image-format=jpeg --gif --width=1280",
     "narration": "python3 scripts/generate_narration.py"

@@ -1,7 +1,7 @@
 ---
 name: pm-engine
-description: "Interface with the PM-ENGINE-MEMORY file — the operator's accumulated PM tacit knowledge database. Enables agents to reference, search, and apply TK (Tacit Knowledge) entries, and supports the conversion pipeline from TK units to agent instructions. The core of the pm-engine competitive moat."
-argument-hint: "[TK query or operation]"
+description: "Interface with the PM-ENGINE-MEMORY file — the operator's accumulated PM tacit knowledge database. Enables agents to reference, search, and apply TK (Tacit Knowledge) entries, and supports TK extraction from experience (--mode extract), TK querying and referencing (--mode query), and TK-to-instruction conversion (--mode build). The core of the pm-engine competitive moat."
+argument-hint: "[TK query or operation] [--mode extract|query|build]"
 allowed-tools: ["Read", "Write"]
 model: sonnet
 ---
@@ -22,10 +22,12 @@ model: sonnet
 - TK를 에이전트 Instruction으로 변환하여 실제 동작에 반영하고 싶을 때
 - PM의 경험 기록(TK-001~TK-010 같은 시드)을 기반으로 새로운 TK를 추출하고 저장할 때
 - 기존 TK들이 서로 어떻게 연결되는지 확인하거나, 새 TK의 연관성을 매핑할 때
+- "이 경험을 TK로 구조화하고 싶어" → `--mode extract`
+- "PM 판단 패턴을 암묵지로 기록하고 싶어" → `--mode extract`
 
 ### Route to Other Skills When
 
-- "TK를 구조화해서 라이브러리에 저장하고 싶어" → pm-framework의 TK 추출/분류 기능 사용
+- "TK를 구조화해서 라이브러리에 저장하고 싶어" → pm-engine --mode extract 사용
 - "이 TK가 의사결정에 어떻게 쓰이는지 실제 사례를 보고 싶어" → pm-decision의 패턴 라이브러리 참조
 - "에이전트 Instruction을 새 TK를 기반으로 업데이트하고 싶어" → deliver의 instruction, prd 스킬 사용
 - "TK를 기반으로 비용 시뮬레이션이나 시나리오 분석을 하고 싶어" → discover의 cost-sim, opp-tree 사용
@@ -478,3 +480,109 @@ Step 5 — 승인된 TK만 PM-ENGINE-MEMORY.md append, 거부된 것은 `deviati
 
 ### Troubleshooting
 !`cat references/troubleshooting.md 2>/dev/null || echo ""`
+
+---
+
+## Mode: extract (구 pm-framework)
+
+pm-framework의 TK 추출/구조화 로직 전체.
+경험에서 TK-NNN 단위를 추출하고 PM-ENGINE-MEMORY에 저장합니다.
+
+### Core Goal (extract mode)
+
+- PM의 암묵적 판단 기준을 명시적인 TK-NNN 구조로 변환하여 에이전트가 학습하고 재현 가능하게 만들기
+- 경험에서 추출된 TK를 활성화/비활성화 조건과 함께 저장하여, Contextual Retrieval(CR) 패턴을 통해 필요할 때만 로드되도록 체계화
+- 누적된 TK들이 서로 연결된 지식 그래프를 형성하여, 의사결정 시 관련 판단 기준들을 자동으로 참조하게 하기
+
+### TK 단위 구조
+
+모든 암묵지는 **TK-NNN** 형태로 구조화합니다:
+
+```
+TK-NNN: [암묵지 제목]
+
+📌 패턴:
+[이 암묵지의 핵심 판단 패턴 — 1~3문장]
+
+🟢 활성화 조건:
+[이 암묵지를 적용해야 하는 상황 1~2줄]
+
+🔴 비활성화 조건:
+[적용하면 안 되는 상황 1줄]
+
+💡 Why:
+[이 판단이 왜 중요한가 — 근거와 경험]
+
+🔗 연관 TK: [TK-XXX, TK-YYY]
+```
+
+### TK 분류 체계 (5가지 유형)
+
+- **Type 1 — Decision Pattern (의사결정 패턴)**: 반복적인 의사결정에서 사용하는 판단 기준
+- **Type 2 — Failure Pattern (실패 패턴)**: "이렇게 하면 망한다" — 직접 겪거나 목격한 실패 패턴
+- **Type 3 — Heuristic (경험칙)**: "보통은 이렇게 하면 된다" — 빠른 판단을 위한 경험칙
+- **Type 4 — Anti-Pattern (반대 패턴)**: "이것만큼은 하지 마라" — 강한 금지 원칙
+- **Type 5 — Insight (인사이트)**: "이것을 알고 나서 세상이 달라 보였다" — 패러다임 전환 학습
+
+> **Type 2 vs Type 4 구분이 모호할 때** → `context/domain.md` Section 8-2의 리트머스 테스트 3개 질문 사용:
+> 1. "다시는 틀릴 일이 없는가?" → Yes면 Type 4 (Anti-Pattern)
+> 2. "어기는 경우가 정당화될 수 있는가?" → No면 Type 4
+> 3. "미래 변화로 역전될 가능성이 있는가?" → Yes면 Type 2 (Failure Pattern)
+
+### Instructions (extract mode)
+
+You are helping extract and structure PM tacit knowledge from: **$ARGUMENTS**
+
+**Step 1** — 상황/경험 청취: 무슨 일이 있었는지, 어떤 판단을 내렸는지 파악
+
+**Step 2** — 암묵지 패턴 포착: "당신은 왜 그런 판단을 내렸나요?" 반복 질문, 명시되지 않은 전제와 기준 발굴
+
+**Step 3** — TK 유형 분류: Decision/Failure/Heuristic/Anti-Pattern/Insight 중 선택
+
+**Step 4** — TK 구조화: TK-NNN 형식으로 작성, 활성화/비활성화 조건 포함 (Contextual Retrieval 패턴)
+
+**TK 번호 생성 규칙**:
+```
+TK-[도메인접두사][시계열번호]
+예: TK-AGT045 (Agent 도메인, 45번째)
+    TK-PRI001 (Prioritization 도메인, 1번째)
+도메인접두사: AGT(Agent), PRI(Priority), SCO(Scope), QUA(Quality), COM(Communication)
+시계열번호: 001부터 시작, 생성 순서대로 증가
+```
+
+**CR 메타데이터 필수 필드** (모든 TK에 추가):
+```
+📊 CR 메타데이터:
+- 활성화 키워드: [임베딩 검색용 키워드 3-5개]
+- CR Score 임계값: 0.7 이상 시 자동 로드
+- 저장 위치: PM-ENGINE-MEMORY.md
+```
+
+**중복 검사**: 신규 TK 작성 전, 기존 TK의 활성화 키워드와 유사도 비교. 0.85 이상이면 기존 TK와 병합 검토.
+
+**Step 5** — 연관 TK 연결 & 품질 평가: 기존 TK 중 연관된 것 파악하여 양방향 링크
+
+**Step 6** — PM-ENGINE-MEMORY 저장: 작성된 TK를 PM-ENGINE-MEMORY.md에 append
+
+### Boundary Checks (extract mode)
+
+- TK 추출 시 "내가 맞다고 생각하는 것"과 "검증된 사실"을 구분해야 함 → 가설이면 비활성화 조건에 "데이터 검증 필요" 명시
+- 극도로 특수한 상황의 판단 기준은 TK화하지 말 것 → 일반화 가능한 패턴만 저장
+- 이미 업계 표준이나 모범 사례가 있는 영역이면, TK가 아니라 Best Practice 레퍼런스로 처리
+
+### Failure Handling (extract mode)
+
+| 실패 상황 | 감지 | 대응 |
+|---------|------|------|
+| 추출한 TK가 너무 일반적이어서 실제로는 쓸모가 없음 | "이건 누구나 아는 것 같은데?" 느낌 | TK를 특수화하기. "항상 그렇다"가 아니라 "이런 상황에는 이렇게"로 맥락화 |
+| TK의 활성화 조건을 잘못 정의했음 | 에이전트가 TK를 잘못 상황에 적용함 | Contextual Retrieval 패턴 리뷰: 활성화 조건을 더 명확하게 재작성 |
+| 같은 내용의 TK를 중복으로 만들어버림 | "어? 이건 TK-015랑 똑같은데?" | 기존 TK와 새 TK를 병합하되, 더 정확한 버전으로 통합 |
+| 추출한 TK가 시간이 지나면서 틀렸다는 걸 깨달음 | 6개월 뒤, 시장 변화로 이 판단이 더 이상 유효하지 않음 | TK 자체를 삭제하지 말고, "활성화 조건"을 축소 또는 시간 범위를 명시 |
+
+### Quality Gate (extract mode)
+
+- 추출한 TK가 개인의 선호도가 아니라, 실전에서 반복적으로 검증된 판단인가? (Yes/No/Hypothesis)
+- TK의 활성화 조건이 구체적이고 측정 가능한가? ("언제"를 에이전트가 판단할 수 있는가?) (Yes/No)
+- 이 TK가 기존 TK와 다른가? 중복 검사(유사도 0.85 미만) 통과? (Yes/No/Merged)
+- TK의 분류(Decision/Failure/Heuristic/Anti-Pattern/Insight)가 올바르게 되었는가? (Yes/No)
+- CR 메타데이터 포함? (활성화 키워드, CR Score 임계값, 저장 위치) (Yes/No)

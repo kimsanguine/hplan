@@ -44,7 +44,7 @@ model: sonnet
 
 ### Route to Other Skills When
 - 비용 시뮬레이션 (lognormal) → `discover/cost-sim`
-- phase gate 정의 → `track/gate-checkpoint`
+- phase gate 정의 → `track --mode checkpoint`
 - WBS 30 task 초과 → `deliver/parallel-team`으로 분할 위임
 - 팀 단위 velocity → `operate/scorecard-5axis`
 

@@ -32,7 +32,7 @@ model: sonnet
 - 프롬프트 최적화/디버깅 필요 → `deliver/prompt` (CRISP 프레임워크)
 - 컨텍스트 윈도우 토큰 예산 계획 → `deliver/ctx-budget`
 - PRD 문서화 필요 → `deliver/prd`
-- 에이전트 아키텍처 설계 → `architect/3-tier` 또는 `architect/orchestration`
+- 에이전트 아키텍처 설계 → `architect/orchestration` (Hierarchical pattern 포함)
 
 ### Boundary Checks
 

@@ -19,7 +19,7 @@ model: sonnet
 ```
 1. Discover  (discover/opp-tree, assumptions, build-or-buy)
 2. Research  (web/internal research, competitor 분석)
-3. Design    (architect/3-tier, memory-arch, orchestration)
+3. Design    (architect/orchestration (Hierarchical pattern 포함), memory-arch)
 4. PRD       (deliver/prd + mermaid 정합성 게이트)
 5. Decompose (deliver/parallel-team — 작업 분해 + worktree)
 6. Implement (deliver/harness-design — 자율 모드 + 검증)
@@ -62,9 +62,8 @@ You are running build-loop for: **$ARGUMENTS**
 - 산출물: `research/<idea>.md`
 
 **Step 3 — Design**
-- `architect/3-tier`로 역할 설계
+- `architect/orchestration` (Hierarchical pattern 포함)으로 역할 설계 및 조율 패턴
 - `architect/memory-arch`로 메모리 계층
-- `architect/orchestration`으로 조율 패턴
 
 **Step 4 — PRD**
 - `deliver/prd`로 7섹션 PRD
@@ -111,7 +110,7 @@ You are running build-loop for: **$ARGUMENTS**
 **기대 흐름:**
 1. Discover: 비용 추적 OST → opp 1개 선정
 2. Research: 기존 burn-rate 스킬 + GCP/Anthropic billing API 조사
-3. Design: 3-tier(트리거→집계→리포트), Cron 트리거, Telegram 출력
+3. Design: orchestration Hierarchical(트리거→집계→리포트), Cron 트리거, Telegram 출력
 4. PRD: workflow + userflow 다이어그램 정합성 통과
 5. Decompose: API 어댑터 / 집계 / 리포트 3개 worktree
 6. Implement: 자율 모드, Ralph Loop, 백업, pending_inputs 누적 후 종료 시 일괄 전달

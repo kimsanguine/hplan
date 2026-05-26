@@ -1,7 +1,7 @@
 ---
 name: metrics-design
-description: "Design the metrics hierarchy for an AI agent — define the single North Star metric and derive KPIs from it. Supports --step north-star (North Star only), --step kpi (KPI only), or --step both (default, full hierarchy)."
-argument-hint: "[agent or product] [--step north-star|kpi|both]"
+description: "Design the metrics hierarchy and OKRs for an AI agent — North Star, KPI derivation, and OKR setting. Supports --step north-star | kpi | okr | all (default)."
+argument-hint: "[agent or product] [--step north-star|kpi|okr|all]"
 allowed-tools: ["Read", "Write"]
 model: sonnet
 ---
@@ -56,7 +56,8 @@ You are designing metrics for: **$ARGUMENTS**
 Parse `--step` from the arguments:
 - `--step north-star` → Run Phase A only
 - `--step kpi` → Run Phase B only
-- `--step both` or no `--step` flag → Run Phase A then Phase B (default)
+- `--step okr` → Run Phase C only (OKR 설계)
+- `--step all` or no `--step` flag → Run Phase A then Phase B then Phase C (default)
 
 ---
 
@@ -293,3 +294,86 @@ Guardrails: Accuracy > 90% / CPE < $0.15
 
 ### Domain Context
 !`cat context/domain.md 2>/dev/null || echo ""`
+
+---
+
+## Phase C — OKR 설계 (`--step okr` or `--step all`)
+
+### Core Goal
+
+- 에이전트 고유의 성과 측정을 위해 비즈니스 임팩트(시간/비용/오류 절감)와 운영 건강성(정확도/비용/신뢰성)의 2축 OKR 설계
+- 측정 가능한 Key Result로 에이전트의 가치를 정량화하고, 주간/월간/분기 리뷰 사이클 수립으로 지속적 개선 추진
+- 비용 KR을 항상 포함하여 스케일 시에도 운영 비용이 통제 가능한 범위 내에서 증가하도록 제약
+
+### Trigger Gate (okr only)
+
+- 새로운 에이전트가 배포될 때 초기 성과 목표 설정
+- 배포된 에이전트의 분기별 성과 검토 및 다음 분기 OKR 재설정
+- 에이전트 포트폴리오의 우선순위 결정이 필요할 때 (KR 달성률로 비교)
+- 에이전트 개선 기회 식별 (비용 KR 초과, 정확도 KR 미달 등)
+
+### Instructions (Phase C)
+
+**C1 — 에이전트 Objective 작성**
+비즈니스 임팩트 중심의 야심차고 질적인 목표 1개
+
+**C2 — Business Impact KR 2개**
+측정 가능한 비즈니스 아웃컴 지표
+현재값 → 목표값 → 달성 기한
+
+측정 지표 유형:
+- 시간 절감: "PM이 뉴스 수집에 쓰는 시간 주 5시간 → 0시간"
+- 비용 절감: "반복 작업 자동화로 월 N시간 × 시급 절감"
+- 매출 기여: "리드 발굴 에이전트 → 월 N건 추가 파이프라인"
+- 오류 감소: "수동 데이터 입력 오류율 X% → Y%"
+
+**C3 — Operational Health KR 2개**
+정확도 / 비용 / 신뢰성 / 레이턴시 중 가장 중요한 2개
+현재값 베이스라인 추정 또는 수집 계획
+
+**C4 — 측정 방법 정의**
+각 KR을 어떻게 측정할 것인가 (자동/수동, 도구)
+
+**C5 — 리뷰 사이클 설정**
+- 주간: 실행 로그 확인 (성공/실패 건수)
+- 월간: KR 달성률 리뷰 + 비용 확인
+- 분기: Objective 재검토 + 다음 분기 OKR 설정
+
+**OKR 템플릿**
+
+```
+O: [에이전트 이름]이 [사용자]의 [문제]를 [방식]으로 해결하는
+   신뢰할 수 있는 파트너가 된다.
+
+KR1 (Business Impact):
+   [측정 지표] [현재값] → [목표값] by [날짜]
+
+KR2 (Business Impact):
+   [측정 지표] [현재값] → [목표값] by [날짜]
+
+KR3 (Operational Health):
+   [측정 지표] [현재값] → [목표값] by [날짜]
+
+KR4 (Operational Health):
+   [측정 지표] [현재값] → [목표값] by [날짜]
+```
+
+### Failure Handling (Phase C)
+
+| 실패 상황 | 감지 | 대응 |
+|----------|------|------|
+| 비즈니스 임팩트 KR이 측정 불가능 | KR을 읽었을 때 정량화 방법이 불명확 | 프록시 지표로 변경 (예: "사용자 만족도" → "재사용률 80% 이상") |
+| 월간 리뷰 시 데이터 부재로 KR 달성률 계산 불가 | 주간 로그가 없거나 측정 도구 설정 안 됨 | 다음 달부터 자동 로깅 설정, 현재 달은 추정값으로 임시 평가 |
+| KR이 너무 높게 설정되어 달성 불가능 확실 | 주간 검토 시 KR 달성 가능성 1% 미만 | 즉시 KR 재협상 (낮게 재설정하되, 이유 문서화) |
+| 비용 KR 초과 | 비용 모니터링 중 임계값 초과 감지 | 원인 분석 + 즉시 수정 액션 (프롬프트 최적화/도구 호출 감소) |
+
+### Quality Gate (Phase C)
+
+- [ ] Objective: 야심차고 질적인 1개 명시 (Yes/No)
+- [ ] Business Impact KR 2개: 시간/비용/오류 절감 중 2개 선택 (Yes/No)
+- [ ] Operational Health KR 2개: 정확도/비용/신뢰성/레이턴시 중 2개 선택 (Yes/No)
+- [ ] 각 KR: 현재값 → 목표값 → 달성 기한 명시 (Yes/No)
+- [ ] 비용 KR 포함 여부 (항상 포함) (Yes/No)
+- [ ] 베이스라인 데이터 수집 계획 (처음 2주 이상) (Yes/No)
+- [ ] 측정 방법 정의 (자동/수동, 사용 도구) (Yes/No)
+- [ ] 리뷰 사이클 설정 (주간/월간/분기) (Yes/No)

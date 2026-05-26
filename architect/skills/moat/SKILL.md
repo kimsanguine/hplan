@@ -27,7 +27,7 @@ model: sonnet
 ### Route to Other Skills When
 
 - Data Flywheel moat를 구현하려면 → growth-loop (플라이휠 설계)
-- Workflow Lock-in을 위한 기술 설계 → 3-tier 또는 orchestration (아키텍처)
+- Workflow Lock-in을 위한 기술 설계 → orchestration (Hierarchical pattern 포함, 아키텍처)
 - Moat 구축을 위한 비용 계산 → biz-model (단위 경제), burn-rate (투자 기간)
 - 현재 시장 포지셔닝 평가 → discover의 competitor (경쟁사 분석)
 

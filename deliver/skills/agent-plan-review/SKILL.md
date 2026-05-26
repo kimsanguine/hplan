@@ -440,7 +440,7 @@ Step 0 분석 후 사용자에게 3가지 옵션을 제시하라:
 
 | 리뷰 축 | 참조 스킬 | 용도 |
 |---------|----------|------|
-| 아키텍처 | `architect/orchestration`, `architect/3-tier`, `architect/router` | 패턴 선택 기준 |
+| 아키텍처 | `architect/orchestration` (Hierarchical pattern 포함), `architect/router` | 패턴 선택 기준 |
 | 인스트럭션 | `deliver/instruction`, `deliver/ctx-budget` | 7요소 체크, 토큰 예산 |
 | 신뢰성 | `measure/premortem`, `measure/reliability` | 장애 모드, SLO |
 | 비용 | `discover/cost-sim`, `measure/burn-rate` | 비용 추정, 추적 |

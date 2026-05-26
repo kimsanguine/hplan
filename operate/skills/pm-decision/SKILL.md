@@ -27,7 +27,7 @@ model: sonnet
 
 - "이 판단을 에이전트 Instruction에 어떻게 반영하지?" → pm-engine의 `/tk-to-instruction` 사용
 - "지금의 의사결정이 맞는지 데이터로 검증하고 싶어" → discover의 cost-sim, assumptions 스킬 사용
-- "여러 선택지 중 최적을 고르는 판단 프레임이 필요해" → pm-framework로 새 TK 추출
+- "여러 선택지 중 최적을 고르는 판단 프레임이 필요해" → pm-engine --mode extract로 새 TK 추출
 
 ### Boundary Checks
 

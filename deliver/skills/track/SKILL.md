@@ -1,7 +1,7 @@
 ---
 name: track
-description: "Unified progress tracking skill — probe (append-only PostToolUse hook), detect (deterministic blocker pattern scan), and report (event-driven status report). Consolidates progress-probe, blocker-detect, and progress-report into a single --mode interface. LLM 호출은 report 모드의 자연어 렌더링에만 허용(Rule 5 준수). 공유 파일 .track/actual_log.jsonl에 동시 쓰기 금지 — detect/report는 read-only."
-argument-hint: "[--mode probe|detect|report] [probe: install|status|replay <id>] [detect: since <ISO>|task <id>|live] [report: live|trigger <name>|after <task-id>]"
+description: "Unified progress tracking skill — probe (append-only PostToolUse hook), detect (deterministic blocker pattern scan), and report (event-driven status report). Consolidates progress-probe, blocker-detect, and progress-report into a single --mode interface. LLM 호출은 report 모드의 자연어 렌더링에만 허용(Rule 5 준수). 공유 파일 .track/actual_log.jsonl에 동시 쓰기 금지 — detect/report는 read-only. · checkpoint (6-phase mechanical gate enforcement, deterministic checklist)"
+argument-hint: "[--mode probe|detect|report|checkpoint] [probe: install|status|replay <id>] [detect: since <ISO>|task <id>|live] [report: live|trigger <name>|after <task-id>] [checkpoint: check <phase>|install|unlock <phase> --force]"
 allowed-tools: ["Read", "Write", "Bash"]
 model: sonnet
 ---
@@ -15,6 +15,7 @@ model: sonnet
 | `--mode probe` | `.track/actual_log.jsonl` append-only 기록 | 쓰기 (atomic append) | ❌ |
 | `--mode detect` | jsonl 블로커 패턴 결정론 스캔 | 읽기 전용 | ❌ |
 | `--mode report` | 이벤트 트리거 시 진행 상태 강제 보고 | 읽기 전용 | ✅ (자연어 렌더링만) |
+| `--mode checkpoint` | 6-phase 전환 결정론 게이트 실행 | 읽기+쓰기 (.track/current-phase.txt) | ❌ |
 
 > ⚠️ **동시 실행 금지**: probe만 `.track/actual_log.jsonl`에 쓴다. detect·report는 동 파일을 read-only로 읽는다. 두 모드를 동시에 실행하면 jsonl 손상 위험.
 
@@ -40,6 +41,8 @@ model: sonnet
 - estimate-tasks가 `.track/predicted.json`을 lock한 직후 → `--mode probe install`
 - context 70% 임박 알림 → `--mode detect`
 - gate-checkpoint 통과 직후 → `--mode report trigger phase_transition`
+- "phase gate 체크해줘" → `--mode checkpoint check <phase>`
+- "gate install 해줘" → `--mode checkpoint install`
 
 ### Route to Other Skills When
 - 코드 리뷰 요청 → 이 스킬 범위 밖
@@ -343,3 +346,103 @@ Next gate: <name> — <human approval required | auto>
 
 ### Report Tone Guide
 !`cat references/report-tone.md 2>/dev/null || echo ""`
+
+---
+
+## Mode: checkpoint
+
+6-phase 전환 결정론 게이트 mechanical enforcement. PreToolUse Hook으로 미통과 phase의 다음 작업을 차단. LLM 호출 0 — 모든 게이트 조건이 파일 존재·정규식·exit code.
+
+### 6 Phase 정의 (default — 사용자 override 가능)
+
+| # | Phase | 통과 조건 (결정론) | 차단 대상 |
+|---|---|---|---|
+| 1 | **requirements** | PRD 파일 존재 + Section 1-3 비어 있지 않음 (정규식) | 다음 phase의 design 파일 작성 |
+| 2 | **design** | PRD Section 7-11 작성 + workflow mermaid 다이어그램 1개 (정규식) | implementation tool_call |
+| 3 | **tasks** | `.track/predicted.json` 존재 + tasks 배열 ≥ 1 + 의존성 cycle 없음 (DFS) | implementation 직전 검증 |
+| 4 | **implementation** | 모든 task의 actual_log complete event 수 == predicted total_tasks | verification tool_call |
+| 5 | **verification** | `python3 validate_plugins.py` exit 0 + 테스트 스위트 exit 0 + craft-lint exit 0 (UI 있으면) | ship phase |
+| 6 | **ship** | git tag <version> + push origin + GitHub release 메타데이터 | (마지막 — 차단 없음) |
+
+> 각 phase의 통과 조건 yaml은 `references/gate-conditions.yaml`에 정의. 사용자가 phase 추가/제거 가능.
+
+### Inputs (checkpoint)
+
+| 입력 | 출처 | 처리 |
+|---|---|---|
+| 현재 phase | `.track/current-phase.txt` (checkpoint 자체 관리) | text read |
+| phase 정의 | `references/gate-conditions.yaml` 또는 default | yaml parse |
+| tool_call event | PreToolUse Hook callback | 결정론 분기 |
+| validate exit code | `bash python3 validate_plugins.py` | exit code |
+
+### Instructions (checkpoint mode)
+
+You are operating track --mode checkpoint with sub-arguments: **$ARGUMENTS**
+
+#### Sub-mode: check <phase>
+
+**Step 1 — phase 정의 로드**
+- `references/gate-conditions.yaml` 또는 default 6 phase
+
+**Step 2 — 통과 조건 결정론 검증**
+```python
+def check(phase):
+    cond = gate_conditions[phase]
+    results = []
+    for c in cond:
+        if c.type == "file_exists":
+            results.append(Path(c.path).exists())
+        elif c.type == "regex_in_file":
+            results.append(bool(re.search(c.pattern, Path(c.path).read_text())))
+        elif c.type == "bash_exit":
+            results.append(subprocess.run(c.cmd, shell=True).returncode == 0)
+        elif c.type == "json_path":
+            results.append(jq_eval(c.path, c.query))
+    return all(results), results
+```
+
+**Step 3 — 결과 보고**
+- 통과: "✅ <phase> gate 통과" + 다음 phase 안내 + progress-report trigger
+- 실패: "❌ <phase> gate 실패: <조건 X 미충족>" + fix 권유
+
+#### Sub-mode: install
+
+**Step 1 — `.track/current-phase.txt` 초기화**
+- `requirements`로 시작
+
+**Step 2 — PreToolUse Hook 등록**
+- `.claude/settings.json`의 hooks.PreToolUse에 `scripts/gate-block.sh` 명령 추가
+- gate-block.sh: 현재 phase의 통과 조건 검증 → exit 1 시 tool_call 차단
+
+**Step 3 — gate-block.sh 작성 + chmod +x**
+
+**Step 4 — smoke test**
+- 임의 tool_call 발생 시 Hook이 호출되는지 확인
+
+#### Sub-mode: unlock <phase> --force
+
+**Step 1 — audit log 작성**
+- `.track/gate-unlock.log` append (ts, phase, reason)
+
+**Step 2 — current-phase.txt 다음 phase로 갱신**
+
+**Step 3 — 사용자 경고**
+- "<phase>의 통과 조건 X가 충족 안 됐는데 force unlock 됐음. 회귀 위험 ↑"
+
+### Failure Handling (checkpoint)
+
+| 실패 상황 | 감지 | 대응 |
+|---|---|---|
+| Hook이 silent fail (issue #17688) | `gate-block.sh` 호출 안 됨 | shell fallback: 사용자가 `--mode checkpoint check <phase>` 수동 호출 |
+| gate-conditions.yaml 손상 | yaml parse error | default 6 phase fallback + warning |
+| `--force` 남용 (3회 이상) | audit log 카운터 | "gate-conditions 자체 재검토 권유" |
+| current-phase.txt 누락 | file not found | `requirements`로 자동 초기화 + warning |
+| 검증 cmd가 무한 실행 | timeout 30s | subprocess kill + 실패 처리 |
+
+### Quality Gate (checkpoint)
+
+- [ ] 6 phase 모두 통과 조건 정의됨 (default 또는 사용자 override)
+- [ ] 각 조건이 결정론 (LLM 호출 0)
+- [ ] PreToolUse Hook 등록 후 smoke test 통과
+- [ ] unlock --force 시 audit log 작성
+- [ ] gate 통과 시 progress-report trigger 1 발화

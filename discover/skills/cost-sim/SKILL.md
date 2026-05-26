@@ -173,7 +173,7 @@ API 소계: $C/월
 ```
 월간 비용 상한: $N
 초과 시: 에이전트 일시 중지 + 알림
-→ agent-okr의 비용 KR과 연결
+→ metrics-design --step okr의 비용 KR과 연결
 ```
 
 ---
@@ -221,7 +221,7 @@ You are helping simulate the operating cost for: **$ARGUMENTS**
 
 **Step 7 — 비용 KPI 제안**
 - 월간 비용 상한 권장값
-- `/agent-okr`의 Operational Health KR로 연결
+- `operate/metrics-design --step okr`의 Operational Health KR로 연결
 
 **Step 8 — 다음 단계**
 - 비용이 수용 가능 → `/agent-instruction-design`으로 설계
@@ -245,7 +245,7 @@ You are helping simulate the operating cost for: **$ARGUMENTS**
 - [ ] 스케일 시나리오 3단계(1/10/100명)가 모두 포함되었는가 (3/3)
 - [ ] 최적화 전략이 최소 2개 이상 제안되었는가 (Yes/No)
 - [ ] 모든 단가에 기준일이 명시되었는가 (Yes/No)
-- [ ] 다음 단계 연결(okr/instruction/build-or-buy)이 제안되었는가 (Yes/No)
+- [ ] 다음 단계 연결(metrics-design --step okr/instruction/build-or-buy)이 제안되었는가 (Yes/No)
 
 ---
 

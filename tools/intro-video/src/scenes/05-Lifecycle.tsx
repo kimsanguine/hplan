@@ -84,9 +84,9 @@ export const SceneLifecycle: React.FC = () => {
           alignItems: 'flex-end',
         }}
       >
-        <BigStat appearAt={statsAppearAt} target={7} label="plugins" fontSize={80} />
-        <BigStat appearAt={statsAppearAt + 12} target={50} label="skills" fontSize={80} color={colors.skillTag} />
-        <BigStat appearAt={statsAppearAt + 24} target={18} label="commands" fontSize={80} color={colors.arrow} />
+        <BigStat appearAt={statsAppearAt} target={5} label="plugins" fontSize={80} />
+        <BigStat appearAt={statsAppearAt + 12} target={46} label="skills" fontSize={80} color={colors.skillTag} />
+        <BigStat appearAt={statsAppearAt + 24} target={9} label="commands" fontSize={80} color={colors.arrow} />
       </div>
     </AbsoluteFill>
   );

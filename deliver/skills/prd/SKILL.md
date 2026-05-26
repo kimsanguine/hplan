@@ -48,11 +48,11 @@ hooks:
 - **제외사항 자동 인용** → `hplan/exclusions` 레지스트리 fuzzy match → Section 5
 - **MVP 비용 시뮬레이션** → `discover/cost-sim` (lognormal p50/p90) → Section 6
 - **Instruction 7요소 상세 설계** → `deliver/instruction` → Section 7 보강
-- **OKR 정의** → `measure/north-star` + `deliver/okr` (dual-axis) → Section 12
+- **OKR 정의** → `operate/metrics-design --step okr` (dual-axis) → Section 12
 - **가설 분해** → `discover/assumptions` (4축) → Section 13
 - **신뢰성·SLO** → `measure/reliability` → Section 14
 - **Multi-ecosystem export** → `hplan/handoff` (Spec-Kit / Kiro / GStack / Claude Code)
-- **사용자 인터페이스가 있는 LLM 에이전트 (UI/UX 강제)** → `craft/respect-brief` (RESPECT.md 디자인 시그니처) → Section 11 출력 사양 보강
+- **사용자 인터페이스가 있는 LLM 에이전트 (UI/UX 강제)** → `deliver/respect --mode brief` (RESPECT.md 디자인 시그니처) → Section 11 출력 사양 보강
 
 ### Boundary Checks
 
@@ -76,7 +76,7 @@ hooks:
 | Tools 호출 제한 없음 | Section 8 일부 행에 "호출 제한" 컬럼 빈 칸 | `deliver/instruction` 라우팅으로 도구별 상세 조건 정의 |
 | Trigger 모호 ("필요 시") | Section 10 트리거 유형 미지정 | Cron/Event/Manual/Pipeline 중 명시적 선택 |
 | Output 예시 없음 | Section 11 출력 샘플 칸 빈 칸 | 실제 출력 1개 작성 강제 (Markdown / JSON / Plain text) |
-| 성공 지표가 추정·동기 부재 | Section 12에 측정·기한 없음 | `measure/north-star` + `deliver/okr` 라우팅으로 Dual-axis 재작성 |
+| 성공 지표가 추정·동기 부재 | Section 12에 측정·기한 없음 | `operate/metrics-design --step okr` 라우팅으로 Dual-axis 재작성 |
 | 검증 가능 가설 없음 | Section 13에 가설 0개 | `discover/assumptions`로 top-3 + 2-day experiment 강제 |
 | HITL 트리거 모호 | Section 14에 "사용자 확인" 같이 추상 | 구체적 임계값·이벤트로 재정의 (예: 충실성 < 0.7) |
 
@@ -98,7 +98,7 @@ hooks:
 - [ ] Section 12: OKR + North Star + Anti-Metric + Cost KR mandatory (Yes/No)
 - [ ] Section 13: Top-3 가설 + 2-day experiment 링크 (Yes/No)
 - [ ] Section 14: 실패 시나리오 (4개 이상) + HITL 트리거 (Yes/No)
-- [ ] 디자인 시그니처 commit: UI/UX 있으면 `craft/respect-brief` 호출 + RESPECT.md 참조, 없으면 "N/A — 백엔드만" 명시 (Yes/No/N/A)
+- [ ] 디자인 시그니처 commit: UI/UX 있으면 `deliver/respect --mode brief` 호출 + RESPECT.md 참조, 없으면 "N/A — 백엔드만" 명시 (Yes/No/N/A)
 - [ ] 전체 일관성: 섹션 간 충돌·누락 없음 (Yes/No)
 - [ ] TK 인용: `learn/pm-engine` 쿼리로 관련 TK-NNN 3~5개 (Yes/No)
 
@@ -341,7 +341,7 @@ Anti-Metric (이 지표가 오르면 위험):
 [예: 평균 세션 시간이 30분 넘으면 사용자가 길을 잃은 것]
 ```
 
-> 자동 호출: `measure/north-star` + `deliver/okr` (dual-axis)
+> 자동 호출: `operate/metrics-design --step all` (dual-axis)
 
 ---
 
@@ -412,13 +412,13 @@ You are helping write a complete **Unified PRD** for: **$ARGUMENTS**
 - Section 9: 3-tier Memory (Working / Long-term / Procedural)
 - Section 10: Trigger & Execution Flow Step-by-Step
 - Section 11: Output Specification + 실제 예시 1개
-- Section 11 보강 (UI 있으면): `craft/respect-brief` 호출 → RESPECT.md 디자인 시그니처 commit (3초 룰 / 다음 행동 / social proof)
+- Section 11 보강 (UI 있으면): `deliver/respect --mode brief` 호출 → RESPECT.md 디자인 시그니처 commit (3초 룰 / 다음 행동 / social proof)
 
 > 일반 SaaS (LLM 에이전트 없음) 이면 Section 7-11에 "N/A — 일반 SaaS" 간단 표기 가능
 > 사용자 인터페이스가 없는 백엔드 에이전트면 디자인 시그니처는 "N/A — 백엔드만" 명시
 
 **Phase 4** — Section 12-14 (지표·가설·실패)
-- Section 12: Dual-axis OKR — `measure/north-star` + `deliver/okr` (cost KR mandatory)
+- Section 12: Dual-axis OKR — `operate/metrics-design --step okr` (cost KR mandatory)
 - Section 13: Top-3 가설 — `discover/assumptions` + 2-day experiment
 - Section 14: 실패 모드 (4개 이상) + HITL 트리거
 

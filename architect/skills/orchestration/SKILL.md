@@ -26,7 +26,7 @@ model: sonnet
 
 ### Route to Other Skills When
 
-- 선택한 패턴의 세부 구현 (3-tier 위계 구조) → 3-tier (통신 프로토콜 정의)
+- 선택한 패턴의 세부 구현 (3-tier 위계 구조) → orchestration (Hierarchical pattern 상세 섹션 참조)
 - 입력 분류를 통한 agent 라우팅 로직 구현 → router (모델 선택 확장)
 - 멀티 에이전트 간 메모리 공유 → memory-arch (저장소 전략)
 - 패턴의 경제성 분석 → biz-model (비용 모델)
@@ -102,6 +102,34 @@ Orchestrator → Sub-orchestrator A → Workers
 - Best for: complex, multi-phase projects
 - Risk: over-engineering, communication overhead
 - PM Example: Full product launch planning
+
+##### Hierarchical 패턴 상세 — Prometheus-Atlas-Worker
+
+3-tier 구조의 표준 구현. 각 계층의 역할:
+
+| Tier | Role | Decision Type | Example |
+|------|------|---------------|---------|
+| Prometheus | Strategic direction | What & Why | "Q2 경쟁 분석 필요" |
+| Atlas | Task orchestration | How & When | "5개 경쟁사 분배, 워커 할당, 결과 통합" |
+| Workers | Task execution | Do | "경쟁사 X 가격 페이지 수집" |
+
+**Atlas 레이어 설계 (핵심)**:
+1. Task Decomposition — 목표를 워커 단위로 분해
+2. Worker Selection — 작업 유형에 최적 워커 매칭
+3. Dependency Management — 작업 순서 관리
+4. Result Aggregation — 워커 출력 통합
+5. Quality Gate — 상위로 전달 전 검증
+6. Error Recovery — 재시도 또는 에스컬레이션
+
+**워커 설계 4원칙**: 단일 책임 · Stateless 실행 · 구조화된 출력 · 명확한 실패 반환
+
+**안티패턴**:
+| 패턴 | 문제 | 해결 |
+|------|------|------|
+| God Atlas | Atlas가 실행 작업도 직접 수행 | Atlas + Workers 분리 |
+| Worker Chaining | 워커가 다른 워커 직접 호출 | Atlas를 통해 라우팅 |
+| Missing Prometheus | 전략 계층 없이 Workers만 동작 | 항상 전략 계층 유지 |
+| Over-orchestration | 단순 태스크에 3-tier 적용 | 단일 에이전트 먼저 검토 |
 
 ### Step 4 — Design the Selected Pattern
 

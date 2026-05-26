@@ -30,7 +30,7 @@ export const V8CStage0: React.FC = () => {
         }}
       >
         hplan ={' '}
-        <span style={{ color: colors.hplanRed }}>Stage 0</span>
+        <span style={{ color: colors.hplanRed }}>WHETHER Gate</span>
       </div>
 
       <div
@@ -54,7 +54,7 @@ export const V8CStage0: React.FC = () => {
           opacity: repoOp,
         }}
       >
-        github.com/kimsanguine/hplan
+        habix.ai/products/hplan
       </div>
     </AbsoluteFill>
   );

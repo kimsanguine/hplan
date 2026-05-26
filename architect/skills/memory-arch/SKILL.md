@@ -28,7 +28,7 @@ model: sonnet
 
 - 메모리가 플라이휠(사용 → 개선)의 일부인 경우 → growth-loop (데이터 구조 설계)
 - 멀티 에이전트 간 메모리 공유 필요 → orchestration (에이전트 간 데이터 흐름)
-- 3-tier 시스템에서 workers 간 컨텍스트 전달 → 3-tier (통신 프로토콜)
+- 3-tier 시스템에서 workers 간 컨텍스트 전달 → orchestration (Hierarchical pattern 통신 프로토콜)
 - 메모리 저장소의 비용 구조 최적화 → biz-model (인프라 비용 계산)
 
 ### Boundary Checks

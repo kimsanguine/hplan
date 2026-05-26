@@ -40,7 +40,7 @@ model: sonnet
 - **각 check는 독립 실패 가능** — 한 check 실패가 다른 check를 막지 않음
 - **baseline 없으면 SKIP** (FAIL 아님) — baseline 부재는 데이터 미비이지 위반이 아님
 - **타임아웃**: 30초/check — 초과 시 해당 check SKIP + warning
-- **respect-checkpoint·respect-brief**는 이 스킬에 통합하지 않음
+- **respect (--mode checkpoint·--mode brief)**는 이 스킬에 통합하지 않음
 
 ---
 
@@ -53,14 +53,14 @@ model: sonnet
 - ship 직전 모바일 브레이크포인트 검증 → `--check mobile`
 
 ### Route to Other Skills When
-- RESPECT.md 갱신 → `craft/respect-brief`
-- ship 직전 종합 게이트 → `craft/respect-checkpoint`
+- RESPECT.md 갱신 → `deliver/respect --mode brief`
+- ship 직전 종합 게이트 → `deliver/respect --mode checkpoint`
 - 디자인 토큰 갱신 → 프로젝트 DESIGN.md
 
 ### Boundary Checks
 - `--check` 미명시 → 즉시 에러 + 사용 가능한 check 목록 출력 (auto-run 금지)
 - Playwright 미설치 → fail loud + 설치 안내
-- RESPECT.md 부재 시 hierarchy/motion → fail loud + "respect-brief 먼저"
+- RESPECT.md 부재 시 hierarchy/motion → fail loud + "respect --mode brief 먼저"
 - DESIGN.md 부재 시 mobile → fail loud + "design-token 먼저"
 
 ---
@@ -269,7 +269,7 @@ TARGET_URL=${target:-http://localhost:3000} \
 |---|---|---|
 | --check 미명시 | 파싱 결과 None | 에러 출력 + check 목록 안내, 실행 중단 |
 | Playwright 미설치 | which playwright 실패 | `npm install playwright && npx playwright install` 권유 |
-| RESPECT.md 부재 (hierarchy/motion) | file not found | "craft/respect-brief 먼저" fail loud |
+| RESPECT.md 부재 (hierarchy/motion) | file not found | "deliver/respect --mode brief 먼저" fail loud |
 | DESIGN.md 부재 (mobile) | file not found | "design-token 먼저" fail loud |
 | baseline 없음 (drift) | 화면 수 < 2 | SKIP (FAIL 아님) + warning |
 | 타임아웃 30초 초과 | per-check timeout | 해당 check SKIP + warning, 나머지 계속 |
@@ -321,7 +321,7 @@ TARGET_URL=${target:-http://localhost:3000} \
 ### Bad Example
 **입력:** `--check hierarchy` (RESPECT.md 없음)
 
-**기대 동작:** "RESPECT.md 부재 — craft/respect-brief 먼저" fail loud
+**기대 동작:** "RESPECT.md 부재 — deliver/respect --mode brief 먼저" fail loud
 
 ---
 
