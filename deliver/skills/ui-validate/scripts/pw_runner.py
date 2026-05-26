@@ -11,7 +11,6 @@ Requires: pip install playwright && playwright install chromium
 
 import argparse
 import json
-import re
 import sys
 from datetime import date
 from pathlib import Path
@@ -20,8 +19,11 @@ from pathlib import Path
 def parse_checklist(checklist_path: str) -> list[dict]:
     """
     Parse harness/QA_CHECKLIST.md and return TC entries.
-    Expected table row format (7 columns):
+    Table row format (7 columns, last column = severity):
     | TC-001 | 시나리오 | 환경 | 전제조건 | 기대결과 | PRD출처 | critical |
+
+    Uses split-based parser (not regex) so pipe chars inside cells don't break parsing.
+    TC-ID is always column 0 (starts with TC-), severity is always last column.
     """
     tcs = []
     path = Path(checklist_path)
@@ -29,25 +31,39 @@ def parse_checklist(checklist_path: str) -> list[dict]:
         print(f"ERROR: {checklist_path} not found", file=sys.stderr)
         sys.exit(1)
 
-    row_pattern = re.compile(
-        r"^\|\s*(TC-\d+)\s*\|([^|]+)\|([^|]+)\|([^|]+)\|([^|]+)\|([^|]+)\|\s*(critical|major|minor)\s*\|",
-        re.IGNORECASE,
-    )
-
     with open(path, encoding="utf-8") as f:
         for line in f:
-            m = row_pattern.match(line)
-            if m:
-                tcs.append(
-                    {
-                        "id": m.group(1).strip(),
-                        "scenario": m.group(2).strip(),
-                        "environment": m.group(3).strip(),
-                        "severity": m.group(7).strip().lower(),
-                    }
-                )
+            line = line.strip()
+            if not line.startswith("|"):
+                continue
+            # Split on | and strip each cell; filter empty strings (leading/trailing |)
+            parts = [p.strip() for p in line.split("|") if p.strip()]
+            if len(parts) < 7:
+                continue
+            tc_id = parts[0]
+            severity = parts[-1].lower()  # severity is always the last column
+            if not tc_id.startswith("TC-"):
+                continue
+            if severity not in ("critical", "major", "minor"):
+                continue
+            tcs.append(
+                {
+                    "id": tc_id,
+                    "scenario": parts[1],
+                    "environment": parts[2],
+                    "severity": severity,
+                }
+            )
 
-    # Sort: critical → major → minor
+    if not tcs:
+        print(
+            f"ERROR: No valid TC rows found in {checklist_path}.\n"
+            "  Expected format: | TC-NNN | 시나리오 | 환경 | 전제조건 | 기대결과 | PRD출처 | critical/major/minor |\n"
+            "  Run /qa-checklist to regenerate.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
     severity_order = {"critical": 0, "major": 1, "minor": 2}
     tcs.sort(key=lambda t: severity_order.get(t["severity"], 3))
     return tcs
@@ -65,14 +81,12 @@ def run_tc_gate(url: str, checklist_path: str, output_dir: str) -> None:
         sys.exit(1)
 
     tcs = parse_checklist(checklist_path)
-    if not tcs:
-        print(f"WARNING: No TC rows found in {checklist_path}", file=sys.stderr)
 
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
 
     results = []
-    counts = {s: {"total": 0, "captured": 0} for s in ("critical", "major", "minor")}
+    counts = {s: {"total": 0, "screenshots": 0} for s in ("critical", "major", "minor")}
 
     for tc in tcs:
         sev = tc["severity"]
@@ -93,7 +107,7 @@ def run_tc_gate(url: str, checklist_path: str, output_dir: str) -> None:
                 page.goto(url, timeout=30000, wait_until="networkidle")
                 page.screenshot(path=str(screenshot_path), full_page=True)
                 if sev in counts:
-                    counts[sev]["captured"] += 1
+                    counts[sev]["screenshots"] += 1
                 results.append(
                     {
                         "id": tc_id,
@@ -119,13 +133,14 @@ def run_tc_gate(url: str, checklist_path: str, output_dir: str) -> None:
 
     summary = {
         "generated": str(date.today()),
+        "evidence_type": "screenshot_only",
         "url": url,
         "total": len(tcs),
-        "critical_captured": counts["critical"]["captured"],
+        "critical_screenshots": counts["critical"]["screenshots"],
         "critical_total": counts["critical"]["total"],
-        "major_captured": counts["major"]["captured"],
+        "major_screenshots": counts["major"]["screenshots"],
         "major_total": counts["major"]["total"],
-        "minor_captured": counts["minor"]["captured"],
+        "minor_screenshots": counts["minor"]["screenshots"],
         "minor_total": counts["minor"]["total"],
         "tc_results": results,
     }
@@ -133,12 +148,12 @@ def run_tc_gate(url: str, checklist_path: str, output_dir: str) -> None:
     summary_path = output_path / "summary.json"
     summary_path.write_text(json.dumps(summary, ensure_ascii=False, indent=2))
 
-    print(f"\n✅ harness/ui-evidence/ 생성 완료")
+    print(f"\n✅ harness/ui-evidence/ 시각 증거 수집 완료 (자동 assertion 없음 — 스크린샷은 PM/QA 육안 검토용)")
     print(
         f"   Total: {summary['total']} | "
-        f"Critical: {summary['critical_captured']}/{summary['critical_total']} | "
-        f"Major: {summary['major_captured']}/{summary['major_total']} | "
-        f"Minor: {summary['minor_captured']}/{summary['minor_total']}"
+        f"Critical: {summary['critical_screenshots']}/{summary['critical_total']} | "
+        f"Major: {summary['major_screenshots']}/{summary['major_total']} | "
+        f"Minor: {summary['minor_screenshots']}/{summary['minor_total']}"
     )
 
     errors = [r for r in results if r["status"] == "error"]

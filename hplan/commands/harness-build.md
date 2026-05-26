@@ -537,22 +537,39 @@ python3 hplan/scripts/decision_log.py hitl \
 **③ 보안 기본 점검** — 하드코딩 시크릿·미검증 외부 입력 여부
 - 발견 즉시 차단, 수정 후 재실행
 
-**④ UI Evidence Gate (UI 있는 제품에만)** — `harness/ui-evidence/summary.json` 존재 여부:
+**④ UI Evidence Gate** — `harness/QA_CHECKLIST.md` 존재 여부로 UI 제품 판정:
 
 ```bash
-cat harness/ui-evidence/summary.json 2>/dev/null | python3 -c "
-import json,sys
-d=json.load(sys.stdin)
-if d['critical_total']>0 and d['critical_captured']<d['critical_total']:
-    print('BLOCK')
-else:
-    print('PASS')
-" 2>/dev/null || echo "SKIP"
+# UI 제품 여부 결정론 판정 (QA_CHECKLIST.md 존재 = UI 제품)
+if [ -f harness/QA_CHECKLIST.md ]; then
+  python3 -c "
+import json, sys
+try:
+    d = json.load(open('harness/ui-evidence/summary.json'))
+    total = d.get('total', 0)
+    ct = d.get('critical_total', 0)
+    cs = d.get('critical_screenshots', 0)
+    if total == 0:
+        print('BLOCK_EMPTY')
+    elif ct > 0 and cs < ct:
+        print('BLOCK_INCOMPLETE')
+    else:
+        print('PASS')
+except Exception:
+    print('BLOCK_MISSING')
+  " 2>/dev/null
+else
+  echo "SKIP"
+fi
 ```
 
-- `SKIP` (파일 없음) → 백엔드 전용 제품으로 간주, 통과
-- `PASS` → ✅ UI Evidence Gate 통과
-- `BLOCK` → 차단: "Critical TC 스크린샷 미완. `ui-validate --check tc-gate [URL]` 재실행"
+- `SKIP` → `harness/QA_CHECKLIST.md` 없음 (백엔드 전용 제품), 통과
+- `PASS` → ✅ UI Evidence Gate 통과 (시각 증거 수집 완료)
+- `BLOCK_MISSING` → 차단: "`ui-validate --check tc-gate [URL]` 먼저 실행하세요."
+- `BLOCK_EMPTY` → 차단: "TC 0개 — QA_CHECKLIST 파싱 오류. `/qa-checklist` 재실행 후 tc-gate 재시도"
+- `BLOCK_INCOMPLETE` → 차단: "Critical TC 스크린샷 미완. `ui-validate --check tc-gate [URL]` 재실행"
+
+> ℹ️ tc-gate는 **시각 증거 수집** 도구입니다. 스크린샷은 PM/QA 육안 검토용이며 자동 assertion이 아닙니다.
 
 **출력:** 3~4개 항목 판정 + 발견된 이슈 목록 + 다음 단계 태스크
 
