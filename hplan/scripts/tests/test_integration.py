@@ -1,3 +1,4 @@
+import os
 import subprocess
 from pathlib import Path
 import sys
@@ -15,7 +16,7 @@ class TestRendererIntegration:
         result = subprocess.run(
             [sys.executable, str(RENDERER), str(md_file)],
             capture_output=True,
-            env={**__import__("os").environ, "PYTHONPATH": str(SCRIPTS_DIR)},
+            env={**os.environ, "PYTHONPATH": str(SCRIPTS_DIR)},
         )
         assert result.returncode == 0
         html_file = md_file.with_suffix(".html")
@@ -28,11 +29,12 @@ class TestRendererIntegration:
         md_file = tmp_path / "CLAUDE.md"
         md_file.write_text("# Claude instructions", encoding="utf-8")
 
-        subprocess.run(
+        result = subprocess.run(
             [sys.executable, str(RENDERER), str(md_file)],
             capture_output=True,
-            env={**__import__("os").environ, "PYTHONPATH": str(SCRIPTS_DIR)},
+            env={**os.environ, "PYTHONPATH": str(SCRIPTS_DIR)},
         )
+        assert result.returncode == 0
         html_file = md_file.with_suffix(".html")
         assert not html_file.exists()
 
@@ -40,7 +42,7 @@ class TestRendererIntegration:
         result = subprocess.run(
             [sys.executable, str(RENDERER), "/nonexistent/path/file.md"],
             capture_output=True,
-            env={**__import__("os").environ, "PYTHONPATH": str(SCRIPTS_DIR)},
+            env={**os.environ, "PYTHONPATH": str(SCRIPTS_DIR)},
         )
         assert result.returncode == 0
 
@@ -48,7 +50,7 @@ class TestRendererIntegration:
         result = subprocess.run(
             [sys.executable, str(RENDERER)],
             capture_output=True,
-            env={**__import__("os").environ, "PYTHONPATH": str(SCRIPTS_DIR)},
+            env={**os.environ, "PYTHONPATH": str(SCRIPTS_DIR)},
         )
         assert result.returncode == 0
 
@@ -58,10 +60,11 @@ class TestRendererIntegration:
         md_file.parent.mkdir(parents=True)
         md_file.write_text("# Utils\n\nSome content.", encoding="utf-8")
 
-        subprocess.run(
+        result = subprocess.run(
             [sys.executable, str(RENDERER), str(md_file)],
             capture_output=True,
-            env={**__import__("os").environ, "PYTHONPATH": str(SCRIPTS_DIR)},
+            env={**os.environ, "PYTHONPATH": str(SCRIPTS_DIR)},
         )
+        assert result.returncode == 0
         html_file = md_file.with_suffix(".html")
         assert not html_file.exists()
