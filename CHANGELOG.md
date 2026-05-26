@@ -4,6 +4,43 @@ All notable changes to hplan (renamed from AI_PM_Skills in v0.5) are documented 
 
 ---
 
+## [0.13.0] — 2026-05-27
+
+> **사용자 영향**: conductor 자동 파이프라인 연결 강화(Phase 0 PRD→플랜 자동생성·COGS 3단계·sprint 모드). tc-gate에 PRD 링크 assertion 추가(3타입). COGS gate/MCP gate 핵심 경로 버그 수정. 스킬 수 31 유지.
+
+### Changed — 스킬 기능 강화
+
+**`deliver/conductor`** — 3가지 강화:
+- **Phase 0 신설**: `harness/PRD.md` 존재 확인 후 `harness/implementation-plan.md` 자동 생성. PRD §7·§11 읽어 태스크 단위 플랜 생성 + `depends_on` 의존 관계 명시. 파이프라인 brainstorm → prd → conductor 자동 연결.
+- **Step E (COGS 영향 검토)**: 태스크 완료 후 `harness/build-gate/cogs_result.json` 기반 LLM 호출 패턴 검토. 예측 범위 초과 시 `CONDITIONAL_PASS` — superpowers가 구조적으로 수행 불가한 단계.
+- **`--mode sprint`**: `depends_on: []` 독립 태스크는 병렬 서브에이전트 동시 디스패치, 의존 태스크는 순차 유지. Spec/Quality 리뷰 생략 대신 COGS 검토는 마지막에 유지.
+
+**`deliver/conductor/prompts/spec-reviewer.md`** — PRD 로드 필수화: `docs/PRD.md 존재 시` 선택 → `harness/PRD.md` 필수 로드. 없으면 FAIL. §3·§11·§14·§7 4항목 전수 확인.
+
+**`deliver/ui-validate`** — `--check tc-gate` assertion 엔진 추가:
+- QA_CHECKLIST TC 행에 `Expected State` 8번째 컬럼 추가 (선택). 없거나 `—`이면 기존 스크린샷 전용 동작.
+- 지원 assertion 3타입: `url_contains:<path>` / `element_exists:<selector>` / `element_text:<selector>:<text>`
+- `summary.json`에 `critical_assertion_fails` 필드 추가.
+- gstack /browse 대비 차별점: assertion이 TC-ID → PRD §11/§14까지 추적 가능.
+
+**`hplan/commands/harness-build`** — Phase 8 ④ UI Evidence Gate에 `BLOCK_ASSERTION_FAILED` 상태 추가. Critical TC assertion 실패 시 차단.
+
+### Fixed
+
+- `cogs_sentinel.py`: `_validate_params()` 추가 — 음수/0/범위 초과 입력 시 `SystemExit`. GREEN 오판정 경로 차단.
+- `hplan_mcp/server.py`: `product_gate()` — `checkpoint.json` 승인 + `cogs_result.json` GREEN/CONDITIONAL_GO 실제 검사. `handoff()` — Product Gate 미통과 시 블록, `force=True`는 `force_override` audit 플래그.
+
+### superpowers / gstack 대비 달성 포인트
+
+| 영역 | 이전 | v0.13.0 |
+|---|---|---|
+| Superpowers #1 구현 품질 | spec-reviewer PRD 선택 로드 | PRD §3·§11·§14 필수 + COGS 3단계 |
+| Superpowers #3 파이프라인 | brainstorm→conductor 갭 | Phase 0 자동 연결 (gated artifact 체인) |
+| gstack #1 브라우저 QA | 스크린샷만 | PRD-링크 assertion 3타입 |
+| gstack #3 병렬 실행 | 순차만 | `--mode sprint` depends_on 기반 병렬 |
+
+---
+
 ## [0.12.0] — 2026-05-27
 
 > **사용자 영향**: brainstorm 스킬 신설(31개). conductor 지속 실행 강화. ui-validate TC 스크린샷 증거 수집(tc-gate). pm-engine 기술 결정 기록(save-decision)·코드베이스 인덱싱(index-codebase). prd 설계 시각화(design-shotgun). gstack 대비 차별화 3점 완성.
