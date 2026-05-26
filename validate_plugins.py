@@ -186,8 +186,15 @@ def main():
     total_skills = 0
     total_aliases = 0
     total_commands = 0
-    EXPECTED_ACTIVE_SKILLS = 46
+    EXPECTED_ACTIVE_SKILLS = 30
     EXPECTED_ALIASES = 0
+    # v0.11.0 migration note: 18 skills consolidated (48→30).
+    # Removed/merged: pmf-gate, agent-gtm, build-or-buy, biz-model, moat, growth-loop,
+    #   burn-rate, weekly-rollup, agent-portfolio, portfolio-report, pm-decision,
+    #   agent-ab-test, cohort, cross-team-routing, premortem, scorecard-5axis,
+    #   agent-instructions, claude-md, delivery-plan, track, agent-plan-review,
+    #   ctx-budget, stakeholder-map, harness-design, parallel-team.
+    # Added: conductor, qa-checklist, ops-review, portfolio, strategy, agent-setup, sprint.
     # v0.10.1 migration note: 17 deprecated aliases removed intentionally.
     # Removed aliases: mobile-check, hierarchy-rules, motion-language, ui-drift-detect,
     #   estimate-tasks, progress-probe, blocker-detect, progress-report, gate-checkpoint,

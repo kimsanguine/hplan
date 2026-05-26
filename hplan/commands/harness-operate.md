@@ -1,6 +1,6 @@
 ---
-description: "Full production operations workflow — KPI dashboard, reliability scan, cost review, improvement planning, knowledge extraction, decision pattern matching, and TK-to-instruction conversion. Use when an agent is live and needs a weekly/monthly operational review, or when running any individual operations step."
-argument-hint: "[agent] [--mode kpi|reliability|cost|improve|extract|decide|tk]"
+description: "Full production operations workflow — KPI dashboard, reliability scan, cost review, improvement planning, knowledge extraction, decision pattern matching, and TK-to-instruction conversion. Use when an agent is live and needs a weekly/monthly operational review, or when running any individual operations step. Use --mode post-retro for closed-loop retrospective: original Evidence Gate hypothesis vs actual metrics."
+argument-hint: "[agent] [--mode kpi|reliability|cost|improve|extract|decide|tk|post-retro]"
 allowed-tools: ["Read", "Write", "Bash"]
 ---
 
@@ -21,6 +21,7 @@ allowed-tools: ["Read", "Write", "Bash"]
 | `--mode extract` | PM 암묵지 추출만 실행 |
 | `--mode decide` | 의사결정 패턴 매칭만 실행 |
 | `--mode tk` | TK→Instruction 변환만 실행 |
+| `--mode post-retro` | 배포 후 가설 vs 실측 대조 회고만 실행 |
 | 플래그 없음 | Phase 1(kpi) → 2(reliability) → 3(cost) → Checkpoint → 4(improve) → 5(extract) 전체 실행 |
 
 플래그 뒤의 나머지 텍스트가 대상 에이전트/시스템입니다.
@@ -358,3 +359,110 @@ Rationale: [Why this matters]
 7. **Decision log** — `continue | pivot | deprecate` + 근거
 
 **개별 --mode**: 해당 Phase의 출력 형식으로만 응답.
+
+---
+
+### Phase P — 배포 후 가설 검증 회고 (`--mode post-retro`)
+
+> **왜**: 빌드 전에 Evidence Gate에서 예측한 점수(Switching Trigger, Economic Pain 등)가
+> 실제 사용자 행동과 일치했는가를 확인해야 합니다.
+> 일치하면 Gate 기준이 유효하다는 증거, 불일치하면 다음 빌드의 Gate 기준을 보정해야 합니다.
+
+4단계로 실행한다.
+
+#### Step 1 — 원래 가설 로드
+
+```bash
+# Evidence Gate 판정 기록 확인
+cat harness/decisions.jsonl 2>/dev/null | tail -20
+cat harness/evidence/report.md 2>/dev/null | head -40
+cat harness/build-gate/checkpoint.json 2>/dev/null
+```
+
+추출 목표:
+- Evidence Gate 점수 (총점 + 8개 축별)
+- CONDITIONAL_GO 조건들 (있으면)
+- COGS 예측 (p50/p90 margin, monthly cost)
+- 빌드 결정 날짜
+
+#### Step 2 — 실제 지표 수집 (대화형)
+
+사용자에게 다음 항목 입력 요청:
+
+```
+📊 배포 후 실제 지표를 입력해 주세요:
+
+1. 배포 후 기간: [   ] 주
+2. 실제 사용 지표:
+   - DAU/MAU: [   ]
+   - D7 Retention: [   ]%
+   - 핵심 기능 완료율: [   ]%
+3. 전환 지표 (해당하면):
+   - 무료→유료 전환율: [   ]%
+   - 평균 결제 금액: [   ]
+4. 실제 비용:
+   - 월 LLM 비용 (USD): [   ]
+   - 사용자당 비용 (USD): [   ]
+5. 가장 놀라운 사용자 행동 (자유 텍스트):
+```
+
+입력 없이 넘기면 "N/A"로 기록하고 계속 진행.
+
+#### Step 3 — 가설 vs 실측 대조
+
+8개 Evidence 축 각각에 대해 예측이 맞았는지 평가:
+
+| 축 | Gate 예측 | 실제 관찰 | 정확도 | 비고 |
+|---|---|---|---|---|
+| ICP 명확도 | N점 | [입력값 기반] | 🟢/🟡/🔴 | |
+| 최근 고통 사건 | N점 | | | |
+| 대안 행동 | N점 | | | |
+| 반복성 | N점 | | | |
+| 경제적 손실 | N점 | | | |
+| Switching Trigger | N점 | 실제 전환율 [X]% | 🟢/🟡/🔴 | |
+| MVP 범위 | N점 | | | |
+| 획득 경로 | N점 | | | |
+
+COGS 정확도:
+
+| 항목 | 예측 | 실제 | 오차율 |
+|---|---|---|---|
+| p50 margin | X% | Y% | Z% |
+| 월 비용 | $X | $Y | Z% |
+
+#### Step 4 — 판정 + 결정 기록
+
+**판정 기준**:
+- 🟢 **HYPOTHESIS_CONFIRMED**: 8축 중 6개 이상 예측 방향 일치
+- 🟡 **PARTIAL_MATCH**: 4-5개 일치. 약한 축 재인터뷰 권고
+- 🔴 **HYPOTHESIS_WRONG**: 3개 이하 일치. Evidence Gate 기준 재보정 필요. PIVOT 검토
+
+COGS 오차 >50%이면 별도 🔴 표시 + "COGS 예측 모델 재검토" 권고
+
+**자동 기록**:
+```bash
+python3 hplan/scripts/decision_log.py post-retro \
+  --gate "post-deploy" \
+  --verdict "[HYPOTHESIS_CONFIRMED|PARTIAL_MATCH|HYPOTHESIS_WRONG]" \
+  --axes_matched "[N]/8" \
+  --cogs_error "[N]%" \
+  --summary "[한 줄 요약]" \
+  --date "$(date +%Y-%m-%d)"
+```
+
+보고서 저장:
+```bash
+# harness/operate/ 디렉토리 생성 (없으면)
+mkdir -p harness/operate
+# 보고서 작성
+cat > harness/operate/post-retro-$(date +%Y-%m-%d).md << 'EOF'
+[판정 결과 전체 내용]
+EOF
+```
+
+**후속 행동 제안**:
+- HYPOTHESIS_CONFIRMED: "다음 아이디어 Evidence Gate에 이 프로덕트 패턴을 참조 케이스로 추가"
+- PARTIAL_MATCH: "약한 축: [목록] — 보완 인터뷰 3건 계획"
+- HYPOTHESIS_WRONG: "PIVOT 시나리오 검토 → `/hplan` 재실행 권고"
+
+*`--mode post-retro` 선택 시 여기서 종료.*

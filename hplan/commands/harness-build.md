@@ -1,6 +1,6 @@
 ---
-description: "Full build pipeline — evidence gate, product gate, COGS gate, PRD writing, OKR design, sprint planning, design system setup, design quality check, progress tracking, and scope guard. Use when committing to building a product or agent, running individual gate steps, or managing the full build lifecycle."
-argument-hint: "[brief] [--step evidence|product|cogs|prd|okr|sprint|craft-init|craft-lint|track-init|track-status|track-retro|scope]"
+description: "Full build pipeline — evidence gate, product gate, COGS gate, PRD writing, OKR design, sprint planning, design system setup, spec compliance review (--step spec-review), quality gate (--step quality-gate), progress tracking, and scope guard. Use when committing to building a product or agent, running individual gate steps, checking spec compliance after implementation, or managing the full build lifecycle."
+argument-hint: "[brief] [--step evidence|product|cogs|prd|okr|sprint|craft-init|craft-lint|track-init|track-status|track-retro|scope|spec-review|quality-gate]"
 allowed-tools: ["Read", "Write", "Bash"]
 ---
 

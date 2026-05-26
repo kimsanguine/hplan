@@ -1,6 +1,6 @@
 ---
-description: "Verify task/feature completion against CONDITIONAL_GO conditions in STATE.md. Syncs condition status (❌→✅) before any 'done' declaration. Use when marking a task complete, closing a sprint, or claiming a condition is met."
-argument-hint: "[task description or condition name to verify]"
+description: "Verify task/feature completion against CONDITIONAL_GO conditions in STATE.md. Syncs condition status (❌→✅) before any 'done' declaration. Use when marking a task complete, closing a sprint, or claiming a condition is met. Use --spec to run full Spec Compliance Review instead of STATE.md condition check."
+argument-hint: "[task description or condition name] [--spec for PRD compliance check]"
 allowed-tools: ["Read", "Write", "Bash"]
 ---
 
@@ -77,3 +77,16 @@ hplan-verify — [날짜]
 - 이 커맨드는 파일 존재만 확인합니다. 테스트 실행은 `pytest tests/` 로 별도 실행하세요.
 - STATE.md의 `verified_by`를 채우는 것은 개발자 책임입니다.
 - COMPLETE 판정이 나와야 하나의 CONDITIONAL_GO 사이클이 닫힙니다.
+
+## `--spec` 단축 플래그
+
+`$ARGUMENTS`가 `--spec`으로 시작하면 `/harness-build --step spec-review`로 라우팅한다.
+
+```bash
+# STATE.md 검사 대신 spec compliance 체크 실행
+# /harness-verify --spec [brief]
+# → harness-build --step spec-review [brief] 와 동일
+```
+
+이 플래그는 개발 완료 후 즉시 spec 준수 여부를 확인하고 싶을 때 사용한다.
+STATE.md 조건 검사(기본 동작)와 달리 PRD 대비 구현 완성도를 검토한다.

@@ -26,13 +26,12 @@ hplan is **Stage 0**. The other 4 plugins inherit decisions from hplan's gates.
 | [`ost`](./skills/ost/) | Generate Teresa Torres-style Opportunity Solution Tree with Mermaid + outcome → opportunity → solution → experiment + decision_rule | Product |
 | [`decision-log`](./skills/decision-log/) | Append-only build/interview/pivot/hold log + 3-6 month self-eval audit (hit_rate, false_holds, missed_builds) | cross-cutting |
 | [`handoff`](./skills/handoff/) | Build Gate brief → Spec-Kit `specs/NNN-slug/`, Kiro `.kiro/specs/`, GStack `/office-hours` brief, Claude Code `AGENTS.md` + `CLAUDE.md` | Build (terminal) |
-| [`pmf-gate`](./skills/pmf-gate/) | **[Sketch]** Post-launch loop — COGS realtime + behavior metrics → next Evidence Gate inputs. Closes the hplan cycle. | Post-launch |
 
 ## Lifecycle Commands (단일 플러그인 설치로 전체 라이프사이클 커버)
 
 | Command | Phase | Function |
 |---|---|---|
-| `/harness-discover <idea>` | **Discover** | 기회 매핑 → 가정 분석 → 비용 시뮬레이션 → 빌드/바이 결정 |
+| `/harness-discover <idea>` | **Discover** | 기회 매핑 → 가정 분석(빌드/바이 포함) → 비용 시뮬레이션 |
 | `/harness-plan <system>` | **Plan** | 오케스트레이션 패턴 → 3-tier 설계 → 메모리 아키텍처 → 모델 라우팅 |
 | `/harness-build <brief>` | **Build** | COGS gate + PRD 8-section 자동 작성 + W1 스프린트 플랜 |
 | `/harness-operate <agent>` | **Operate** | KPI 대시보드 → 신뢰성 스캔 → 비용 리뷰 → 개선 계획 + 지식 추출 |
@@ -68,7 +67,7 @@ hplan is **Stage 0**. The other 4 plugins inherit decisions from hplan's gates.
 | `discover/opp-tree` (exploration) | `hplan/ost` (persistence) | opp-tree explores → ost validates + persists + Mermaid |
 | `discover/hitl` (agent runtime) | `hplan/hooks/gate_guard` (build time) | Different time horizons — runtime vs build-time HITL |
 | `discover/assumptions` (V/F/R/E) | `hplan/evidence-rubric` (100-pt) | Same intent, different axes — complement |
-| `discover/build-or-buy` (vendor) | `hplan/exclusions` (do-not-build) | Vendor decision vs permanent exclusion memory |
+| `discover/assumptions` build-or-buy mode (vendor) | `hplan/exclusions` (do-not-build) | Vendor decision vs permanent exclusion memory |
 | `deliver/prd` (agent PRD shape) | `hplan/handoff` (multi-target export) | deliver canonicalizes shape, hplan exports across 4 ecosystems |
 | `operate/burn-rate` (post-deploy) | `hplan/cogs-sentinel` (pre-deploy) | Sequential — predict → track |
 

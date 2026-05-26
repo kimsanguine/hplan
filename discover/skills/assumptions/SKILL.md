@@ -1,7 +1,7 @@
 ---
 name: assumptions
-description: "Identify and prioritize the riskiest assumptions in an agent idea across four axes: Value, Feasibility, Reliability, and Ethics. Use after defining an agent opportunity and before starting implementation. Prevents building agents that work technically but fail operationally or cause unintended harm."
-argument-hint: "[agent idea to analyze]"
+description: "Identify and prioritize the riskiest assumptions in an agent idea across four axes: Value, Feasibility, Reliability, and Ethics. Use after defining an agent opportunity and before starting implementation. Prevents building agents that work technically but fail operationally or cause unintended harm. Includes build-or-buy vendor decision framework."
+argument-hint: "[agent idea to analyze] [--mode validate|build-or-buy]"
 allowed-tools: ["Read", "Write"]
 model: sonnet
 ---
@@ -279,6 +279,21 @@ Assumption: "API가 있으니까 가능하다"
 - 원본 프레임워크: 일반 PM 가정 검증(8 risk categories) → 에이전트 특화 4축(Value/Feasibility/Reliability/Ethics)으로 재편
 - Reliability / Ethics 축: Byeonghyeok Kwak의 엔터프라이즈 에이전트 거버넌스 논의 기반
 - 설계자: AI PM Skills Contributors, 2026-03
+
+---
+
+## Build-or-Buy 판단 프레임워크
+
+`--mode build-or-buy`로 호출하거나, Feasibility 가정 검증 후 "직접 만들 것인가" 결정이 필요할 때 이 섹션을 활성화한다.
+
+**핵심 판단 기준 4가지**
+
+1. **차별화 필수 여부** — 이 에이전트가 제품의 핵심 경쟁력인가? YES → Build. NO → 외부 솔루션 탐색 우선.
+2. **외부 솔루션 충족도** — 기존 솔루션이 요구사항의 70% 이상을 충족하는가? YES → Buy/No-Code. NO → Build 검토.
+3. **도메인 특화 로직** — 우리 데이터나 판단 로직이 반드시 필요한가? YES → Build. NO → No-Code 플랫폼으로 검증 후 결정.
+4. **하이브리드 전략** — 오케스트레이션/도메인 레이어는 Build, 외부 연동/UI 레이어는 Buy/No-Code로 분리할 수 있는가? 레이어가 4개 이상이면 단순화(핵심 2개 레이어만 Build).
+
+**결정 재검토 트리거**: 유지보수 시간 > 월 20시간이면 Buy 전환 검토. 외부 솔루션 비용 > 월 $500이면 Build 전환 검토. No-Code로 검증 완료 후 스케일 필요 시 Build 전환.
 
 ---
 

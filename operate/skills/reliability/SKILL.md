@@ -225,9 +225,55 @@ High Impact 3가지:
 
 ---
 
+---
+
+## 사전 위험 분석 (Pre-mortem)
+
+배포 전 "이 에이전트가 3개월 후 완전히 실패했다고 가정하자. 왜 실패했을까?"로 시작하는 FMEA 체크리스트.
+
+### Pre-mortem Exercise
+
+배포 전 최소 5개의 실패 시나리오를 도출한다:
+```
+"The agent failed because..."
+1. ___ (모델 실패 — 환각, 컨텍스트 윈도우 오버플로우, prompt injection)
+2. ___ (데이터 실패 — upstream API 변경, PII 유출, 데이터 드리프트)
+3. ___ (통합 실패 — API rate limit, 인증 토큰 만료, 버전 불일치)
+4. ___ (비즈니스 실패 — 비용 초과, 낮은 사용자 채택, 규제 위반)
+5. ___ (운영 실패 — 모니터링 부재, 알림 미설정, 대응 절차 없음)
+```
+
+### RPN 기반 우선순위화
+
+**RPN** = Severity × Probability × Detection (각 1-10)
+- Detection: 1 = 쉽게 감지, 10 = 감지 불가능
+- RPN > 100 고위험: 재설계 또는 완화 조치 필수
+- RPN 50-100 중위험: Yellow alert 설정 + 제한된 범위로 시작
+- RPN < 50 저위험: 모니터링으로 충분
+
+### 배포 Go/NoGo 기준
+
+| RPN 범위 | 의사결정 | 조건 |
+|:--------:|---------|------|
+| < 50 | GO | 모니터링 설정으로 충분 |
+| 50-100 | CONDITIONAL GO | Prevention 구현 + Yellow alert 필수 |
+| > 100 | NO-GO | Prevention 전략 완성 + Red alert 구현 후 재검토 |
+
+### Pre-mortem 체크리스트
+
+- [ ] 5개 이상의 실패 시나리오가 도출되었는가?
+- [ ] 모델·데이터·통합·비즈니스 4가지 카테고리가 모두 포함되었는가?
+- [ ] RPN > 100 고위험 항목 각각에 Prevention/Detection/Response/Recovery 전략이 있는가?
+- [ ] 배포 Go/NoGo 기준이 명시되었는가?
+- [ ] 분기별 재검토 일정이 예정되었는가?
+
+---
+
 ## Further Reading
 - Google SRE Book — Site Reliability Engineering principles
 - Anthropic, "Building Effective Agents" (2024) — Error handling patterns
+- Gary Klein, "Performing a Project Premortem" — HBR, 2007
+- IEC 60812 — FMEA standard methodology
 
 ## Contextual Knowledge (auto-loaded)
 

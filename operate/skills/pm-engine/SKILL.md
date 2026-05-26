@@ -1,7 +1,7 @@
 ---
 name: pm-engine
-description: "Interface with the PM-ENGINE-MEMORY file — the operator's accumulated PM tacit knowledge database. Enables agents to reference, search, and apply TK (Tacit Knowledge) entries, and supports TK extraction from experience (--mode extract), TK querying and referencing (--mode query), and TK-to-instruction conversion (--mode build). The core of the pm-engine competitive moat."
-argument-hint: "[TK query or operation] [--mode extract|query|build]"
+description: "Interface with the PM-ENGINE-MEMORY file — the operator's accumulated PM tacit knowledge database. Enables agents to reference, search, and apply TK (Tacit Knowledge) entries, and supports TK extraction from experience (--mode extract), TK querying and referencing (--mode query), and TK-to-instruction conversion (--mode build). The core of the pm-engine competitive moat. --mode decide for pattern-matching against stored PM decision patterns."
+argument-hint: "[TK query or operation] [--mode extract|query|build|save|decide]"
 allowed-tools: ["Read", "Write"]
 model: sonnet
 ---
@@ -24,6 +24,7 @@ model: sonnet
 - 기존 TK들이 서로 어떻게 연결되는지 확인하거나, 새 TK의 연관성을 매핑할 때
 - "이 경험을 TK로 구조화하고 싶어" → `--mode extract`
 - "PM 판단 패턴을 암묵지로 기록하고 싶어" → `--mode extract`
+- "세션에서 발견한 인사이트를 빠르게 저장하고 싶어" → `--mode save "인사이트"` 사용
 
 ### Route to Other Skills When
 
@@ -33,11 +34,44 @@ model: sonnet
 - "TK를 기반으로 비용 시뮬레이션이나 시나리오 분석을 하고 싶어" → discover의 cost-sim, opp-tree 사용
 - "에이전트 실행 중 예측 vs 실측 deviation 을 TK 후보로 자동 추출" → track/retro-extract → /pm-tacit-from-retro 로 자동 promote
 
+> **Note:** `--mode save`는 다른 스킬로 라우팅하지 않고 직접 TK 항목을 저장한다.
+
 ### Boundary Checks
 
 - PM-ENGINE-MEMORY는 "실전 경험 기반"이므로, 일반 LLM 지식과 항상 충돌할 수 있음 → 충돌 시 TK 우선
 - TK가 충분하지 않은 영역(새 제품, 새 시장)에서는 TK만 믿지 말고 데이터 검증 필수
 - TK의 활성화/비활성화 조건을 항상 확인 → 조건을 무시한 TK 적용은 오류
+
+---
+
+## `--mode save` — 빠른 인사이트 저장
+
+세션 중 발견한 인사이트를 TK 추출 플로우 없이 즉시 저장한다.
+
+### 사용법
+```
+/pm-engine --mode save "인터뷰에서 B2B 고객은 ROI 계산보다 리스크 제거를 더 원함"
+```
+
+### 저장 형식
+`PM-ENGINE-MEMORY.md` 맨 끝에 다음 형식으로 추가:
+
+```
+## TK-QUICK-[YYMMDDHHmm]: [인사이트 제목 자동 추출]
+
+- **날짜**: YYYY-MM-DD
+- **출처**: [세션/컨텍스트 — 사용자가 제공하지 않으면 "직접 관찰"로 기록]
+- **내용**: [인사이트 전문]
+- **적용 가능 상황**: [인사이트에서 추론]
+- **태그**: #quick-save
+
+> ⚠️ TK-QUICK은 정식 TK-NNN 검토 전 임시 항목입니다. `/pm-engine --mode extract`로 정식 등록하거나 삭제하세요.
+```
+
+### 동작 규칙
+1. `PM-ENGINE-MEMORY.md` 없으면 자동 생성 후 저장
+2. 같은 내용 중복 감지 (첫 20자 매칭) → 중복 경고 후 저장 여부 확인
+3. 저장 후 "TK-QUICK-[ID] 저장됨 — `/pm-engine --mode extract`로 정식 등록 가능" 출력
 
 ---
 
@@ -586,3 +620,92 @@ TK-[도메인접두사][시계열번호]
 - 이 TK가 기존 TK와 다른가? 중복 검사(유사도 0.85 미만) 통과? (Yes/No/Merged)
 - TK의 분류(Decision/Failure/Heuristic/Anti-Pattern/Insight)가 올바르게 되었는가? (Yes/No)
 - CR 메타데이터 포함? (활성화 키워드, CR Score 임계값, 저장 위치) (Yes/No)
+
+---
+
+## Mode: decide (구 pm-decision)
+
+PM Decision Pattern Library — 반복되는 의사결정 상황에서 입증된 패턴을 참조한다.
+
+### Core Goal (decide mode)
+
+- 반복되는 의사결정 상황에서 패턴을 즉시 참조하여 판단 품질 향상
+- "왜 이렇게 결정했는가"의 근거를 패턴 라이브러리에서 찾아 설명 가능하게 만들기
+- 새로운 판단 경험을 TK로 축적하여 라이브러리를 지속적으로 강화
+
+### 핵심 패턴 모음
+
+**Pattern: Why-First Decision Making**
+```
+상황: 요청/아이디어가 들어왔을 때
+판단: "왜 이것이 필요한가?" 먼저 묻는다 → 요청자의 진짜 목표 파악 → 그 목표를 달성하는 최적 방법을 역산
+함정: 요청을 그대로 수행하고 "왜"를 묻지 않음 → 올바른 문제의 잘못된 해결책
+```
+
+**Pattern: Prototype-First Validation**
+```
+상황: 새로운 기능/에이전트를 만들려 할 때
+판단: 45분 프로토타입 → 검증 → 스펙 (역순). 프로토타입 오류 시 스펙 폐기 비용 = 0
+함정: "제대로 된 것"을 만들려다 시작을 못함
+```
+
+**Pattern: Minimum Viable Agent**
+```
+상황: 에이전트 설계 초안을 잡을 때
+판단: 단 하나의 핵심 기능으로 최소 버전 배포 → 실사용 데이터로 확장 방향 결정
+함정: 처음부터 모든 기능을 넣으려 함 → 복잡도 급증, 실패 원인 파악 어려움
+```
+
+**Pattern: Stakeholder Energy Management**
+```
+상황: 여러 이해관계자의 요청이 동시에 들어올 때
+판단: 각 요청을 "비즈니스 임팩트"로만 평가. 발신자의 직급/압박감은 우선순위 기준이 아님
+함정: 가장 많이 요청하는 사람 요청이 올라감 → 핵심 작업이 밀림
+```
+
+**Pattern: Data-Before-Opinion**
+```
+상황: 의견이 갈릴 때
+판단: "이것을 검증할 수 있는 가장 작은 실험은?" → 실험 설계 → 데이터 수집 → 결정
+함정: 회의에서 의견으로 결정 → 나중에 틀렸을 때 근거 없이 방향 전환 어려움
+```
+
+**Pattern: Scope Creep Prevention**
+```
+상황: 프로젝트 진행 중 "이것도 추가하면 어때?"가 나올 때
+판단: 추가 요청을 즉시 수용하지 않음. 현재 목표와 연결되면 다음 이터레이션, 아니면 백로그
+함정: 좋은 아이디어를 모두 넣으려다 아무것도 못 냄
+```
+
+### Instructions (decide mode)
+
+You are helping apply decision patterns to: **$ARGUMENTS**
+
+**Step 1** — 상황 파악: 어떤 의사결정 상황인지 명확히 정의
+**Step 2** — 패턴 매칭: 라이브러리에서 가장 유사한 패턴 1~2개 찾기
+**Step 3** — 패턴 적용: 해당 패턴의 판단 기준을 현재 상황에 적용
+**Step 4** — 함정 체크: 해당 패턴의 흔한 실수를 현재 상황에서 피하고 있는가?
+**Step 5** — 신규 패턴 가능성: 기존 패턴에 없으면 `--mode extract`로 새 TK 추출
+
+### 패턴 추가 방법
+
+새로운 의사결정 경험 → `/pm-engine --mode extract`로 구조화 → TK-NNN 번호 부여 → PM-ENGINE-MEMORY.md에 저장 → `--mode decide` 패턴 라이브러리 업데이트
+
+### Quality Gate (decide mode)
+
+- 의사결정 상황이 패턴 라이브러리의 어느 패턴과 가장 유사한지 명확히 설명할 수 있는가?
+- 선택한 패턴의 활성화/비활성화 조건이 현재 상황과 일치하는가?
+- 패턴을 따랐을 때의 예상 결과와 위험 요소를 명시했는가?
+- 팀원이나 이해관계자에게 "왜 이 패턴을 선택했는가"를 설명할 수 있는가?
+
+---
+
+## Scorecard 활용
+
+포트폴리오 헬스 스코어 맥락에서 pm-engine TK를 활용하는 방법:
+
+- **스코어카드 결과 → TK 추출**: 스코어카드에서 반복되는 패턴(특정 축의 지속적 하락)을 TK로 구조화
+- **TK → 운영 의사결정**: `--mode decide`로 스코어카드 이상치 대응 패턴 매칭
+- **T1 에이전트 우선**: TK 적용 시 T1 에이전트의 Accuracy·Reliability축 가중치를 높게 설정
+
+포트폴리오 스코어카드 상세 운영은 → `portfolio --mode report` 참조.

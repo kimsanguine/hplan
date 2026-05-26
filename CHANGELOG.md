@@ -4,6 +4,47 @@ All notable changes to hplan (renamed from AI_PM_Skills in v0.5) are documented 
 
 ---
 
+## [0.11.0] — 2026-05-26
+
+> **사용자 영향**: 스킬 48→30 통합 (Conductor·QA Checklist 신규, 18개 제거/병합). Spec Compliance Review discoverability 개선. 배포 후 회고(post-retro) Phase 추가. Cursor MCP 설정 예시 추가. pm-engine --mode save 빠른 메모 기능 추가.
+
+### Added — 신규 스킬 2개
+
+**`deliver/conductor`** — 태스크별 fresh subagent 디스패치 + 2단계 게이트(spec→quality) 반복. parallel-team의 역할 병렬 패턴과 달리, 구현 → Spec Compliance Review → Quality Gate 순서를 태스크마다 반복해 품질을 강제한다.
+
+**`deliver/qa-checklist`** — `docs/PRD.md` §3(ICP)·§11(테스트 전략)·§14(실패 시나리오) 기반 QA 체크리스트 자동 생성. TC를 critical/major/minor 3등급으로 AI 분류, 디바이스·환경 링크 포함. 출력: `harness/QA_CHECKLIST.md`.
+
+### Added — 커맨드 기능 확장
+
+**`harness-build --step spec-review|quality-gate`** — `argument-hint` 및 `description` 프론트매터에 명시적으로 추가해 discoverability 개선. 기존에 Phase 7·8로 존재했으나 슬래시 커맨드 자동완성에서 노출되지 않던 문제 해결.
+
+**`harness-verify --spec`** — `--spec` 단축 플래그 추가. `harness-build --step spec-review`로 라우팅해 개발 완료 후 즉시 PRD 준수 여부를 확인할 수 있다.
+
+**`harness-operate --mode post-retro`** — 배포 후 closed-loop 회고 Phase 추가. 원래 Evidence Gate 8개 축 예측 vs 실제 사용자 행동 대조, COGS 예측 vs 실제 비용 비교. 판정: HYPOTHESIS_CONFIRMED / PARTIAL_MATCH / HYPOTHESIS_WRONG. 결과는 `harness/operate/post-retro-YYYY-MM-DD.md`에 저장.
+
+**`hplan_mcp/README.md`** — Cursor 전용 `.cursor/mcp.json` 설정 예시 추가. Windsurf/Kiro 설정 파일 위치 명시.
+
+**`operate/pm-engine --mode save`** — 세션 중 발견한 인사이트를 TK 추출 플로우 없이 즉시 `PM-ENGINE-MEMORY.md`에 저장하는 빠른 메모 기능 추가. 저장 형식: `TK-QUICK-[YYMMDDHHmm]`.
+
+### Changed — 스킬 통합 48→30 (-18 제거/병합, +7 신규)
+
+| 플러그인 | 이전 | 이후 | 변경 |
+|---|---|---|---|
+| hplan | 8 | 7 | pmf-gate 제거 (harness-operate post-retro 흡수) |
+| discover | 6 | 4 | assumptions+build-or-buy 통합; agent-gtm 제거 |
+| architect | 7 | 5 | biz-model+moat+growth-loop → strategy 통합 |
+| deliver | 13 | 8 | +conductor·qa-checklist 신규; agent-setup·sprint 통합; 5개 제거 |
+| operate | 14 | 6 | ops-review·portfolio 신규 통합; pm-decision→pm-engine 흡수; 5개 제거 |
+| **합계** | **48** | **30** | |
+
+**통합 원칙**: "커맨드에 이미 있으면 스킬이 아니다." `agent-plan-review`(→harness-build Phase 7), `ctx-budget`(→prd 스킬 내부), `harness-design`(→harness-build 커맨드)처럼 커맨드에 흡수된 스킬들을 제거. 고유 내용은 흡수 대상 스킬에 이식 후 삭제.
+
+### Fixed
+
+- `validate_plugins.py`: `EXPECTED_ACTIVE_SKILLS` 46 → 30으로 갱신 (v0.11.0 통합 반영)
+
+---
+
 ## [0.10.2] — 2026-05-26
 
 > **사용자 영향**: PostToolUse 훅에 MD→HTML 자동 렌더러 추가. hplan 커맨드가 `.md`를 Write하면 같은 위치에 `.html`이 자동 생성되어 브라우저에서 즉시 열 수 있다.

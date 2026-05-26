@@ -129,6 +129,21 @@ ICP (Ideal Customer Profile):
 
 > 자동 호출: `discover/agent-gtm` beachhead 5-criteria 결과 inject
 
+**이해관계자 영향도 매트릭스 (조직 도입 시 선택):**
+
+에이전트가 조직 전체에 영향을 미치거나 여러 팀 합의가 필요한 경우, 페르소나 이후 아래 항목을 추가한다.
+
+| 이해관계자 그룹 | Power (1-5) | Interest (1-5) | 전략 | 핵심 메시지 |
+|---|---|---|---|---|
+| 경영진 (C-Level) | | | Engage Actively | ROI + 리스크 대비책 |
+| 직접 사용자 | | | Engage Actively | 반복 작업 해방 |
+| 엔지니어링 | | | Manage Closely | 깔끔한 아키텍처 + 소유권 |
+| 법무/컴플라이언스 | | | Keep Informed | HITL + 감사 로그 |
+| 운영/CS | | | Keep Informed | 안정성 + 에스컬레이션 경로 |
+| 재무 | | | Keep Informed | 비용 예측 가능성 + ROI |
+
+주요 저항 유형: Job Threat("내 일 대체") → Co-pilot 포지셔닝 / Trust Deficit("AI 믿을 수 없다") → Shadow Mode 검증 / Control Loss("통제 못 함") → HITL 설계
+
 ---
 
 ### Section 2 — JTBD (Jobs To Be Done)
@@ -276,6 +291,20 @@ Long-term Memory (DB / 파일):
 Procedural Memory (Skills):
 - [참조하는 도메인 SKILL.md 목록]
 ```
+
+**컨텍스트 예산 가이드 (토큰 추정 기준):**
+
+| 모델 | 최대 컨텍스트 | 실용적 한도 |
+|---|---|---|
+| Haiku | 200k tokens | 40k (비용 효율) |
+| Sonnet | 200k tokens | 80k (균형) |
+| Opus | 200k tokens | 100k (품질 우선) |
+
+토큰 추정: 마크다운 1KB ≈ 250~350 tokens, 코드 1KB ≈ 200~300 tokens, JSON 1KB ≈ 150~250 tokens
+
+임계값: 70% 미만 정상 / 70~85% 경고(새 파일 로드 최소화) / 85%+ 위험(조건부 항목 제외)
+
+필수/조건부/제외 분류: 항상 로드(SOUL+USER+최근 메모리)·조건부 로드(MEMORY, 도메인 SKILL)·제외(오래된 파일·원문 전체)로 구분하고 총 예산의 40% 이상을 출력+추론용으로 확보한다.
 
 ---
 

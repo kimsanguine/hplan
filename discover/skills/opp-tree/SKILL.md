@@ -235,6 +235,10 @@ Experiment (Value):
 
 ---
 
+### GTM 연계
+
+AOT로 선택된 기회를 실제 시장에 출시할 때: 첫 고객 세그먼트(비치헤드)를 Pain Intensity / Willingness to Trust AI / Data Availability / Budget Authority / Reference Potential 5개 기준(각 1-5점, 총점 20+ 권장)으로 선정한다. 신뢰 구축은 Shadow Mode → Co-pilot → Auto-pilot → Full Delegation 4단계 시퀀스를 따른다. 출시는 Lighthouse(1-3개 고객, 성공 사례 확보) → Wedge(10-30개, 반복 가능한 세일즈 모션) → Expand(100+, 인접 세그먼트 확장) 순으로 진행한다.
+
 ### 참고
 - 원본 프레임워크: Teresa Torres, *Continuous Discovery Habits* (OST)
 - 에이전트 특화 확장: AI PM Skills Contributors, 2026

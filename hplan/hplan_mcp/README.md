@@ -38,10 +38,38 @@ python3 hplan_mcp/server.py
 }
 ```
 
-### Cursor / Windsurf / Kiro / Goose
+### Cursor
 
-Each host has its own MCP config file but the schema is the same — point
-`command` at `python3` and `args` at the `server.py` path.
+`.cursor/mcp.json` (프로젝트 루트 또는 `~/.cursor/mcp.json` 글로벌):
+
+```json
+{
+  "mcpServers": {
+    "hplan": {
+      "command": "python3",
+      "args": ["/absolute/path/to/hplan/hplan_mcp/server.py"],
+      "env": {}
+    }
+  }
+}
+```
+
+Cursor 설정 방법:
+1. `Cmd+Shift+P` → "MCP: Configure"
+2. 위 JSON을 `.cursor/mcp.json`에 저장
+3. Cursor 재시작 → 우하단 MCP 아이콘에서 `hplan` 확인
+
+### Windsurf / Kiro / Goose
+
+각 호스트는 자체 MCP 설정 파일을 가지지만 스키마는 동일하다 —
+`command`를 `python3`, `args`를 `server.py` 절대 경로로 지정.
+설정 파일 위치: Windsurf는 `~/.windsurf/mcp.json`, Kiro는 `.kiro/mcp.json`.
+
+### 기타 MCP 호환 호스트
+
+MCP 프로토콜을 지원하는 모든 호스트 (Codex, 기타 에이전트 프레임워크)에서
+동일한 방식으로 `server.py`를 등록할 수 있다.
+설정 형식이 다를 경우 해당 호스트 문서의 "Add MCP server" 섹션을 참조.
 
 ## Tools
 

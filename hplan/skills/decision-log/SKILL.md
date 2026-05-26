@@ -83,3 +83,17 @@ python3 hplan/scripts/decision_log.py audit
 | `alive_no_revenue` | Live but no paid users (signal trouble) |
 | `pivoted` | Direction changed mid-flight |
 | `external_success` | Someone else built it and succeeded — our hold was wrong |
+
+## PMF 측정 연계
+
+출시 후 30일 경과, 유료 전환 10명 도달, 또는 실측 p90 margin이 Build Gate 예측 대비 ±15pp 이상 차이날 때 다음 판정 기준을 decision-log에 함께 기록한다.
+
+| 조건 | 판정 | 다음 action |
+|------|------|------------|
+| Day-30 retention ≥ 30% + COGS GREEN + strong_push ≥ 3 | PMF_SIGNAL | `evidence-rubric` 다음 사이클로 |
+| 실측 p90 margin < 20% | ECONOMICS_MISS | `cogs-sentinel` 재산정 후 pricing 조정 |
+| Day-7 retention < 20% | RETENTION_MISS | `ost` 재검토 (opportunities 재우선순위) |
+| strong_push_quotes < 3 | EVIDENCE_THIN | 인터뷰 추가 수집 |
+| 위 조건 복합 | PIVOT | decision-log pivot 기록 후 Evidence Gate 재시작 |
+
+PMF 측정 결과를 `decision-log update --id <id> --outcome <verdict>` 로 backfill하면 hit_rate 계산에 포함된다.
