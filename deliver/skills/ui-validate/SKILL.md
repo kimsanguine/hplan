@@ -289,6 +289,27 @@ python3 deliver/skills/ui-validate/scripts/pw_runner.py --parse-only harness/QA_
 ```
 TC-ID / severity / 시나리오 목록 출력. critical → major → minor 순 정렬.
 
+**QA_CHECKLIST Expected State 컬럼 (선택)**
+
+TC에 Playwright assertion을 추가하려면 8번째 컬럼으로 `Expected State`를 추가한다.
+컬럼이 없거나 `—`이면 기존 스크린샷 전용 모드로 동작한다.
+
+```markdown
+| TC-ID | 시나리오 | 환경 | 전제조건 | 기대결과 | PRD출처 | Expected State | Severity |
+|-------|----------|------|----------|----------|---------|----------------|----------|
+| TC-001 | 로그인 성공 | Chrome | 유효한 자격증명 | 대시보드 이동 | §11 | url_contains:/dashboard | critical |
+| TC-002 | 오류 메시지 표시 | Chrome | 잘못된 비밀번호 | 에러 메시지 노출 | §14 | element_text:#error-msg:입력 오류 | major |
+| TC-003 | 버튼 상태 | Chrome | — | 버튼 활성화 | §11 | element_exists:#submit-btn | minor |
+| TC-004 | 화면 일반 점검 | Chrome | — | 레이아웃 정상 | §11 | — | minor |
+```
+
+**지원 assertion 타입 3가지:**
+- `url_contains:<path>` — 현재 URL에 path가 포함되는지
+- `element_exists:<selector>` — CSS selector 요소 존재 여부
+- `element_text:<selector>:<text>` — 요소 텍스트에 text가 포함되는지
+
+gstack /browse 대비 차별점: assertion이 TC-ID → QA_CHECKLIST → PRD §11/§14로 추적 가능.
+
 **Step 3 — 출력 디렉터리 준비**
 ```bash
 mkdir -p harness/ui-evidence
@@ -332,6 +353,7 @@ python3 deliver/skills/ui-validate/scripts/pw_runner.py \
 ```
 ✅ harness/ui-evidence/ 생성 완료
    Total: N | Critical: X/X2 | Major: Y/Y2 | Minor: Z/Z2
+   Critical assertion 실패: K건  ← assertion 실패 있을 때만 출력
    실패: [error 목록 (있을 때만)]
    → harness-build --step quality-gate 에서 자동 검사
 ```

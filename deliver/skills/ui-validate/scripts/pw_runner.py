@@ -22,6 +22,9 @@ def parse_checklist(checklist_path: str) -> list[dict]:
     Table row format (7 columns, last column = severity):
     | TC-001 | 시나리오 | 환경 | 전제조건 | 기대결과 | PRD출처 | critical |
 
+    Optional 8-column format with Expected State assertion:
+    | TC-001 | 시나리오 | 환경 | 전제조건 | 기대결과 | PRD출처 | Expected State | critical |
+
     Uses split-based parser (not regex) so pipe chars inside cells don't break parsing.
     TC-ID is always column 0 (starts with TC-), severity is always last column.
     """
@@ -46,12 +49,14 @@ def parse_checklist(checklist_path: str) -> list[dict]:
                 continue
             if severity not in ("critical", "major", "minor"):
                 continue
+            expected_state = parts[-2].strip() if len(parts) >= 8 else "—"
             tcs.append(
                 {
                     "id": tc_id,
                     "scenario": parts[1],
                     "environment": parts[2],
                     "severity": severity,
+                    "expected_state": expected_state,
                 }
             )
 
@@ -67,6 +72,68 @@ def parse_checklist(checklist_path: str) -> list[dict]:
     severity_order = {"critical": 0, "major": 1, "minor": 2}
     tcs.sort(key=lambda t: severity_order.get(t["severity"], 3))
     return tcs
+
+
+def run_assertion(page, expected: str) -> dict:
+    """
+    Run a single Playwright assertion against the current page state.
+    Supports 3 assertion types:
+      url_contains:<path>
+      element_exists:<selector>
+      element_text:<selector>:<text>
+    Returns {"passed": bool, "type": str, "detail": str}
+    """
+    if not expected or expected in ("—", "-", ""):
+        return {"passed": True, "type": "none", "detail": "no assertion defined"}
+
+    try:
+        if expected.startswith("url_contains:"):
+            path = expected[len("url_contains:"):]
+            current_url = page.url
+            passed = path in current_url
+            return {
+                "passed": passed,
+                "type": "url_contains",
+                "detail": f"expected '{path}' in '{current_url}'",
+            }
+
+        elif expected.startswith("element_exists:"):
+            selector = expected[len("element_exists:"):]
+            count = page.locator(selector).count()
+            passed = count > 0
+            return {
+                "passed": passed,
+                "type": "element_exists",
+                "detail": f"selector='{selector}' count={count}",
+            }
+
+        elif expected.startswith("element_text:"):
+            rest = expected[len("element_text:"):]
+            parts = rest.split(":", 1)
+            if len(parts) != 2:
+                return {
+                    "passed": False,
+                    "type": "element_text",
+                    "detail": f"invalid format (expected 'element_text:<selector>:<text>'): {expected}",
+                }
+            selector, text = parts
+            content = page.locator(selector).text_content(timeout=5000) or ""
+            passed = text in content
+            return {
+                "passed": passed,
+                "type": "element_text",
+                "detail": f"selector='{selector}' expected='{text}' got='{content[:80]}'",
+            }
+
+        else:
+            return {
+                "passed": False,
+                "type": "unknown",
+                "detail": f"unknown assertion type: {expected}",
+            }
+
+    except Exception as e:
+        return {"passed": False, "type": "error", "detail": str(e)[:120]}
 
 
 def run_tc_gate(url: str, checklist_path: str, output_dir: str) -> None:
@@ -87,6 +154,7 @@ def run_tc_gate(url: str, checklist_path: str, output_dir: str) -> None:
 
     results = []
     counts = {s: {"total": 0, "screenshots": 0} for s in ("critical", "major", "minor")}
+    critical_assertion_fails = 0  # critical TC assertion 실패 수
 
     for tc in tcs:
         sev = tc["severity"]
@@ -108,15 +176,31 @@ def run_tc_gate(url: str, checklist_path: str, output_dir: str) -> None:
                 page.screenshot(path=str(screenshot_path), full_page=True)
                 if sev in counts:
                     counts[sev]["screenshots"] += 1
+                print(f"    ✅ saved → {screenshot_path}")
+
+                # Assertion 실행 (expected_state가 정의된 TC만)
+                assertion_result = None
+                exp_state = tc.get("expected_state", "—")
+                if exp_state and exp_state not in ("—", "-", ""):
+                    assertion_result = run_assertion(page, exp_state)
+                    if sev == "critical" and not assertion_result["passed"]:
+                        critical_assertion_fails += 1
+                        print(
+                            f"    ⚠️  assertion FAIL: {assertion_result['detail']}",
+                            file=sys.stderr,
+                        )
+                    elif assertion_result["passed"]:
+                        print(f"    ✅ assertion PASS: {assertion_result['type']}")
+
                 results.append(
                     {
                         "id": tc_id,
                         "severity": sev,
                         "screenshot": str(screenshot_path),
                         "status": "captured",
+                        "assertion": assertion_result,
                     }
                 )
-                print(f"    ✅ saved → {screenshot_path}")
             except Exception as e:
                 results.append(
                     {
@@ -125,6 +209,7 @@ def run_tc_gate(url: str, checklist_path: str, output_dir: str) -> None:
                         "screenshot": None,
                         "status": "error",
                         "error": str(e)[:120],
+                        "assertion": None,
                     }
                 )
                 print(f"    ❌ error: {e}", file=sys.stderr)
@@ -142,19 +227,27 @@ def run_tc_gate(url: str, checklist_path: str, output_dir: str) -> None:
         "major_total": counts["major"]["total"],
         "minor_screenshots": counts["minor"]["screenshots"],
         "minor_total": counts["minor"]["total"],
+        "critical_assertion_fails": critical_assertion_fails,
         "tc_results": results,
     }
 
     summary_path = output_path / "summary.json"
     summary_path.write_text(json.dumps(summary, ensure_ascii=False, indent=2))
 
-    print(f"\n✅ harness/ui-evidence/ 시각 증거 수집 완료 (자동 assertion 없음 — 스크린샷은 PM/QA 육안 검토용)")
+    print(f"\n✅ harness/ui-evidence/ 생성 완료")
     print(
         f"   Total: {summary['total']} | "
         f"Critical: {summary['critical_screenshots']}/{summary['critical_total']} | "
         f"Major: {summary['major_screenshots']}/{summary['major_total']} | "
         f"Minor: {summary['minor_screenshots']}/{summary['minor_total']}"
     )
+
+    if critical_assertion_fails > 0:
+        print(
+            f"   ⚠️  Critical assertion 실패: {critical_assertion_fails}건 "
+            f"— harness/ui-evidence/summary.json tc_results 확인 후 수정",
+            file=sys.stderr,
+        )
 
     errors = [r for r in results if r["status"] == "error"]
     if errors:
