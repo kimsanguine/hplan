@@ -1,7 +1,7 @@
 ---
 name: prd
-description: "Write a complete unified PRD covering user/JTBD/decisions/scope/agent-spec/metrics/hypotheses in 14 sections. Single source of truth for both customer-facing products and the LLM agents inside them. Replaces the older 7-section agent-only template."
-argument-hint: "[product or agent name]"
+description: "Write a complete unified PRD covering user/JTBD/decisions/scope/agent-spec/metrics/hypotheses in 14 sections. Single source of truth for both customer-facing products and the LLM agents inside them. Replaces the older 7-section agent-only template. --mode design-shotgun reads §1+§11 from existing PRD and generates harness/design-variants/ (4 HTML variants + comparison.md)."
+argument-hint: "[product or agent name] | --mode design-shotgun"
 allowed-tools: ["Read", "Write"]
 model: sonnet
 hooks:
@@ -39,6 +39,7 @@ hooks:
 - 도메인 특화 제품 (법률·교육·의료) — 사용자 페르소나·JTBD가 핵심
 - 내부용 LLM 에이전트 spec — Section 1·3에 페르소나 = 내부 사용자, Section 7-11에 에이전트 상세
 - 투자자·파트너·외부 엔지니어에게 제품 사양 공식 전달
+- PRD §11 Output Spec 작성 후 UI 변형 4개를 비교해 설계 방향을 결정할 때 → `--mode design-shotgun`
 
 ### Route to Other Skills When
 
@@ -53,6 +54,7 @@ hooks:
 - **신뢰성·SLO** → `measure/reliability` → Section 14
 - **Multi-ecosystem export** → `hplan/handoff` (Spec-Kit / Kiro / GStack / Claude Code)
 - **사용자 인터페이스가 있는 LLM 에이전트 (UI/UX 강제)** → `deliver/respect --mode brief` (RESPECT.md 디자인 시그니처) → Section 11 출력 사양 보강
+- design-shotgun 변형 선택 후 TC 자동 생성 → `deliver/qa-checklist`
 
 ### Boundary Checks
 
@@ -60,6 +62,8 @@ hooks:
 - 각 섹션은 "5명 사랑 인터뷰에 그대로 쓸 수 있는가? + 엔지니어가 이것만으로 구현 가능한가?" 두 기준으로 검증
 - 제외사항(Section 5)이 최소 5개 이상 — "의식적으로 안 만드는 것" 명시
 - Section 7-11 (에이전트 사양)은 1인 빌더가 LLM 에이전트를 포함하지 않으면 "N/A — 일반 SaaS"로 간단 표기 가능
+- `--mode design-shotgun` 사용 시 `docs/PRD.md` 부재 → fail loud: "docs/PRD.md 없음. /prd [제품명] 먼저 실행하세요."
+- `--mode design-shotgun` 사용 시 §11 섹션 부재 → fail loud: "PRD §11 Output Specification 섹션이 필요합니다."
 
 ---
 
@@ -79,6 +83,9 @@ hooks:
 | 성공 지표가 추정·동기 부재 | Section 12에 측정·기한 없음 | `operate/metrics-design --step okr` 라우팅으로 Dual-axis 재작성 |
 | 검증 가능 가설 없음 | Section 13에 가설 0개 | `discover/assumptions`로 top-3 + 2-day experiment 강제 |
 | HITL 트리거 모호 | Section 14에 "사용자 확인" 같이 추상 | 구체적 임계값·이벤트로 재정의 (예: 충실성 < 0.7) |
+| `docs/PRD.md` 부재 (`--mode design-shotgun`) | `ls` 실패 | fail loud + "/prd 먼저" 후 종료 |
+| §11 부재 (`--mode design-shotgun`) | 섹션 추출 없음 | fail loud + "PRD §11 필요" 후 종료 |
+| §1 부재 (`--mode design-shotgun`) | 섹션 추출 없음 | WARN + ICP 적합도 평가 생략, 계속 진행 |
 
 ---
 
@@ -101,6 +108,10 @@ hooks:
 - [ ] 디자인 시그니처 commit: UI/UX 있으면 `deliver/respect --mode brief` 호출 + RESPECT.md 참조, 없으면 "N/A — 백엔드만" 명시 (Yes/No/N/A)
 - [ ] 전체 일관성: 섹션 간 충돌·누락 없음 (Yes/No)
 - [ ] TK 인용: `learn/pm-engine` 쿼리로 관련 TK-NNN 3~5개 (Yes/No)
+- [ ] `--mode design-shotgun`: docs/PRD.md 부재 시 즉시 종료
+- [ ] `--mode design-shotgun`: §11 부재 시 즉시 종료
+- [ ] `--mode design-shotgun`: 4개 HTML 변형 + comparison.md 생성됨
+- [ ] `--mode design-shotgun`: 각 HTML 파일에 §11 해석 주석 포함
 
 ---
 
@@ -414,6 +425,176 @@ Human-in-the-loop 트리거:
 - 결제 분쟁 → admin escalation
 - 법률·의료 등 high-stakes → 항상 사용자 확인
 ```
+
+---
+
+## `--mode design-shotgun` — §11 시각화 변형 생성
+
+`docs/PRD.md`의 §1 ICP + §11 Output Specification을 파싱해
+`harness/design-variants/` 에 HTML 변형 4개와 비교 문서를 생성한다.
+
+---
+
+### Rule 5 준수
+
+| 판단 | 도구 | LLM |
+|---|---|---|
+| PRD 파일 존재 여부 | ls/Read | ❌ |
+| §1·§11 섹션 추출 | 텍스트 파싱 | ✅ (비정형 추출) |
+| 4개 HTML 변형 생성 | — | ✅ (자연어 생성) |
+| comparison.md 적합도 평가 | — | ✅ (판단 설명) |
+| 파일 저장 | Write | ❌ |
+
+---
+
+### Inputs
+
+| 입력 | 출처 | 처리 |
+|---|---|---|
+| ICP 정의 + 핵심 고통 | `docs/PRD.md` §1 | 변형 적합도 판단 기준 |
+| 출력 채널·형식·톤 | `docs/PRD.md` §11 | 4개 변형의 공통 기반 |
+
+---
+
+### Instructions (--mode design-shotgun)
+
+**Step 1 — PRD 로드 및 섹션 추출**
+
+```bash
+ls docs/PRD.md 2>/dev/null || echo "PRD_MISSING"
+```
+
+PRD_MISSING 시:
+```
+❌ 에러: docs/PRD.md 없음.
+/prd [제품명] 먼저 실행하세요.
+```
+즉시 종료.
+
+`docs/PRD.md` Read → §1 (ICP / 페르소나) + §11 (Output Specification) 추출.
+§11 부재 시:
+```
+❌ 에러: PRD §11 Output Specification 섹션이 필요합니다.
+```
+즉시 종료.
+
+**Step 2 — 출력 디렉터리 준비**
+```bash
+mkdir -p harness/design-variants
+```
+
+**Step 3 — 4개 HTML 변형 생성**
+
+각 변형은 §11을 다르게 해석한 것이다. 변형 패턴:
+
+| 변형 | §11 해석 전략 | ICP 적합 상황 |
+|---|---|---|
+| Variant A | 단계 명시 (스텝퍼/탭) — 순서와 진행 상태 강조 | 처음 사용하는 ICP, 학습 비용이 있는 플로우 |
+| Variant B | 컨텍스트 보존 (모달/오버레이) — 현재 화면 유지 | 비교·참조가 필요한 ICP, 중단 후 재개 빈번 |
+| Variant C | 단순 직선 (미니멀) — 핵심 입력/출력만 | 반복 사용 ICP, 숙련 사용자 |
+| Variant D | 프로그레시브 공개 — 기본 옵션 → 고급 옵션 순차 노출 | 입문자+숙련자 혼재 ICP |
+
+각 `harness/design-variants/variant-[A-D].html` 파일은:
+- 순수 HTML + 인라인 CSS만 사용 (외부 CDN, JS 프레임워크 금지)
+- 파일 상단 주석에 §11 해석 명시:
+  ```html
+  <!--
+    Variant A — §11 해석: [어떤 §11 스펙 부분을 어떻게 해석했는가]
+    ICP 적합 시나리오: [어떤 페르소나에 맞는가]
+    TC 후보: [이 변형에서 테스트해야 할 시나리오 2개]
+  -->
+  ```
+- 실제 제품 와이어프레임 수준의 HTML 마크업 (더미 텍스트 OK, 구조는 §11 반영)
+- 색상: 회색 팔레트 (설계 결정이 아니라 레이아웃 집중)
+
+**Step 4 — comparison.md 생성**
+
+`harness/design-variants/comparison.md`:
+
+```markdown
+# Design Variants — [제품명]
+생성: YYYY-MM-DD | 소스: docs/PRD.md §1 + §11
+
+## §11 Output Spec 요약
+[추출된 §11 핵심 내용 3-5줄]
+
+## ICP 요약 (§1)
+[추출된 ICP 핵심 1-2줄]
+
+## 변형 비교
+
+| 변형 | §11 해석 | ICP 적합도 | 주요 TC 후보 | 선택 시 주의점 |
+|---|---|---|---|---|
+| Variant A | ... | ★★★☆☆ | ... | ... |
+| Variant B | ... | ★★☆☆☆ | ... | ... |
+| Variant C | ... | ★★★★☆ | ... | ... |
+| Variant D | ... | ★★★☆☆ | ... | ... |
+
+## 권장 변형
+[ICP 기준으로 가장 적합한 변형 + 이유 2-3줄]
+
+## 다음 단계
+1. 변형 선택 후 → `deliver/qa-checklist` 로 해당 변형 TC 생성
+2. TC 생성 후 → `deliver/ui-validate --check tc-gate [URL]` 로 증거 수집
+```
+
+**Step 5 — 완료 출력**
+```
+✅ harness/design-variants/ 생성 완료
+   Variant A: variant-A.html (스텝퍼/탭 방식)
+   Variant B: variant-B.html (컨텍스트 보존 방식)
+   Variant C: variant-C.html (미니멀 직선 방식)
+   Variant D: variant-D.html (프로그레시브 공개 방식)
+   비교: comparison.md
+
+   → comparison.md를 검토하고 변형을 선택한 후 /qa-checklist 를 실행하세요.
+```
+
+---
+
+### Failure Handling (--mode design-shotgun)
+
+| 실패 상황 | 감지 | 대응 |
+|---|---|---|
+| `docs/PRD.md` 부재 | `ls` 실패 | fail loud + "/prd [제품명] 먼저" 후 종료 |
+| §11 부재 | 섹션 추출 결과 없음 | fail loud + "PRD §11 필요" 후 종료 |
+| §1 부재 | 섹션 추출 결과 없음 | WARN (FAIL 아님) + "§1 없이 ICP 적합도 평가 생략" 후 계속 |
+| `harness/` 부재 | `ls` 실패 | `mkdir -p harness/design-variants/` 후 진행 |
+
+---
+
+### Quality Gate (--mode design-shotgun)
+
+- [ ] PRD 부재 시 즉시 종료, 변형 생성 금지
+- [ ] §11 부재 시 즉시 종료
+- [ ] 4개 변형 파일 모두 생성됨 (variant-A~D.html)
+- [ ] 각 HTML 파일에 §11 해석 주석 포함
+- [ ] 외부 CDN / JS 프레임워크 없음 (순수 HTML+인라인 CSS)
+- [ ] comparison.md에 권장 변형 명시됨
+- [ ] comparison.md에 다음 단계(qa-checklist → tc-gate) 안내 포함
+
+---
+
+### Examples (--mode design-shotgun)
+
+#### Good Example
+**입력:** `--mode design-shotgun` (docs/PRD.md 존재, §1·§11 있음)
+
+**기대 동작:**
+1. PRD §1 ICP + §11 Output Spec 추출
+2. 4개 HTML 변형 생성 (harness/design-variants/)
+3. comparison.md 작성 (ICP 적합도 평가 포함)
+4. 완료 통계 출력
+
+#### Bad Example
+**입력:** `--mode design-shotgun` (docs/PRD.md 없음)
+
+**기대 동작:**
+```
+❌ 에러: docs/PRD.md 없음.
+/prd [제품명] 먼저 실행하세요.
+```
+실행 중단.
 
 ---
 
