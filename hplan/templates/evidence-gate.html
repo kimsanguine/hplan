@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Evidence Gate</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+  <style>body{background:#0f1117}</style>
+</head>
+<body class="min-h-screen text-slate-100 font-sans">
+  <!-- 판정 배너 -->
+  <div id="verdict-banner" class="w-full px-8 py-4 text-center text-2xl font-bold tracking-wide"></div>
+
+  <div class="max-w-5xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- 총점 게이지 -->
+    <div class="bg-slate-800/60 border border-slate-700/50 rounded-2xl p-6">
+      <p class="text-xs text-slate-400 uppercase tracking-widest mb-2">총점</p>
+      <div class="flex items-end gap-3 mb-3">
+        <span id="score-number" class="text-6xl font-black text-white"></span>
+        <span class="text-2xl text-slate-400 mb-1">/ 100</span>
+      </div>
+      <div class="w-full bg-slate-700 rounded-full h-3">
+        <div id="score-bar" class="h-3 rounded-full transition-all" style="width:0%"></div>
+      </div>
+    </div>
+
+    <!-- 레이더 차트 -->
+    <div class="bg-slate-800/60 border border-slate-700/50 rounded-2xl p-6">
+      <p class="text-xs text-slate-400 uppercase tracking-widest mb-4">8축 평가</p>
+      <canvas id="radarChart"></canvas>
+    </div>
+
+    <!-- 취약 축 경고 -->
+    <div id="weak-axes" class="lg:col-span-2 flex flex-wrap gap-3"></div>
+  </div>
+
+  <script>
+    const DATA = __DATA_JSON__;
+
+    // 판정 배너
+    const banner = document.getElementById('verdict-banner');
+    const colorMap = { green: '#059669', amber: '#d97706', red: '#dc2626' };
+    banner.style.background = colorMap[DATA.verdict_color] || '#4f46e5';
+    banner.textContent = DATA.verdict_label || (DATA.decision || '').toUpperCase();
+
+    // 총점
+    document.getElementById('score-number').textContent = DATA.score || 0;
+    const bar = document.getElementById('score-bar');
+    bar.style.width = (DATA.score || 0) + '%';
+    bar.style.background = colorMap[DATA.verdict_color] || '#6366f1';
+
+    // 레이더 차트
+    if (DATA.axes && DATA.axes.length) {
+      new Chart(document.getElementById('radarChart'), {
+        type: 'radar',
+        data: {
+          labels: DATA.axes.map(a => a.name),
+          datasets: [{
+            data: DATA.axes.map(a => a.score),
+            backgroundColor: 'rgba(99,102,241,0.2)',
+            borderColor: 'rgba(99,102,241,0.8)',
+            pointBackgroundColor: 'rgba(99,102,241,1)',
+          }]
+        },
+        options: {
+          plugins: { legend: { display: false } },
+          scales: {
+            r: {
+              min: 0, max: 15,
+              ticks: { color: '#94a3b8', stepSize: 5 },
+              grid: { color: 'rgba(255,255,255,0.1)' },
+              pointLabels: { color: '#cbd5e1', font: { size: 11 } }
+            }
+          }
+        }
+      });
+    }
+
+    // 취약 축 경고
+    const weakEl = document.getElementById('weak-axes');
+    (DATA.weak_axes || []).forEach(a => {
+      weakEl.innerHTML += `<div class="bg-amber-500/10 border border-amber-500/30 rounded-xl px-4 py-2 text-sm text-amber-300">⚠ ${a.name}: ${a.score}/15 — 다음 인터뷰에서 보완 필요</div>`;
+    });
+  </script>
+</body>
+</html>
