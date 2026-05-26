@@ -107,35 +107,33 @@ Running for: **$ARGUMENTS**
 [ ] T3: [태스크 제목] — [담당 파일 범위]
 ```
 
-태스크 파싱 후 실행 전에 목록을 사용자에게 확인한다.
+태스크 목록 파싱 후 **즉시 실행**한다. (기본값: Continuous Execution)
+
+사용자에게 묻는 유일한 이유:
+- BLOCKED 상태가 자력으로 해결 불가능할 때
+- PRD 자체가 모순되어 진행 불가할 때
+
+`--confirm-plan` 플래그가 있을 때만 파싱 후 목록 확인 후 진행.
+
+### 모델 선택 가이드
+
+태스크의 PRD 관련 섹션을 기준으로 모델을 선택한다:
+
+| 태스크 성격 | 관련 PRD 섹션 | 권장 모델 | 이유 |
+|---|---|---|---|
+| 에이전트 설계, LLM 아키텍처 | §7-11 (에이전트 사양) | opus (capable) | 설계 판단 + LLM 아키텍처 이해 필요 |
+| 기능 구현, PRD 요건 해석 | §1-6 (Product 요건) | sonnet (standard) | PRD 해석 + 코드 구현 복합 |
+| 포맷 변환, 파일 수정, 스캐폴딩 | §11 출력 포맷 구현 등 | haiku (fast) | 기계적 작업, 판단 불필요 |
+| 검토 에이전트 (spec/quality) | 전체 | sonnet (standard) | 판단 필요하나 가장 넓은 범용 |
 
 ### Step 2 — 구현 에이전트 디스패치
 
-각 태스크마다 아래 템플릿을 사용해 fresh subagent를 호출한다.
+각 태스크마다 `deliver/skills/conductor/prompts/implementer.md` 템플릿을 사용해
+fresh subagent를 호출한다. 템플릿의 각 플레이스홀더를 현재 태스크 정보로 채운다.
 
-**구현 에이전트 프롬프트 템플릿:**
-```
-## 태스크: [태스크 제목]
-
-### 목표
-[태스크 설명 전문]
-
-### 허용 파일 범위
-[수정 가능 경로 명시]
-
-### 완료 기준
-[검증 가능한 조건]
-
-### 반환 형식
-STATUS: DONE / DONE_WITH_CONCERNS / NEEDS_CONTEXT / BLOCKED
-요약: [한 줄]
-변경 파일: [목록]
-```
-
-**필수 포함 항목:**
-- 허용 파일 범위 명시 (Rule 9 — Agent Scope Declaration)
-- 이전 태스크 컨텍스트 전달 금지 (fresh context 보장)
-- 완료 기준은 검증 가능한 형태로
+마찬가지로:
+- Spec Compliance Review: `prompts/spec-reviewer.md` 템플릿 사용
+- Quality Review: `prompts/quality-reviewer.md` 템플릿 사용
 
 ### Step 3 — STATUS 처리
 
@@ -220,7 +218,7 @@ cat harness/PROGRESS.md
 
 ## Quality Gate (스킬 자체)
 
-- [ ] 플랜 파싱 결과가 사용자 확인 후 실행됨
+- [ ] 플랜 파싱 후 즉시 실행됨 (--confirm-plan 없는 경우)
 - [ ] 각 태스크 에이전트 프롬프트에 허용 파일 범위 명시됨
 - [ ] STATUS 처리 규칙이 각 태스크마다 적용됨
 - [ ] Spec Compliance + Quality Gate가 모든 완료 태스크에 실행됨
