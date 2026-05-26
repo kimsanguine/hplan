@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Design System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>body{background:#0f1117}</style>
+</head>
+<body class="min-h-screen text-slate-100 font-sans">
+
+  <div class="max-w-5xl mx-auto p-6 space-y-8">
+
+    <!-- 제목 -->
+    <h1 id="doc-title" class="text-2xl font-black text-white"></h1>
+
+    <!-- Color Palette -->
+    <section>
+      <p class="text-xs text-slate-400 uppercase tracking-widest mb-3">Color Palette</p>
+      <div id="color-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+    </section>
+
+    <!-- Typography -->
+    <section>
+      <p class="text-xs text-slate-400 uppercase tracking-widest mb-3">Typography</p>
+      <div id="typo-list" class="space-y-3"></div>
+    </section>
+
+    <!-- Tailwind Tokens -->
+    <section>
+      <p class="text-xs text-slate-400 uppercase tracking-widest mb-3">Tailwind Tokens</p>
+      <div id="token-list" class="flex flex-wrap gap-2"></div>
+    </section>
+
+  </div>
+
+  <script>
+    const DATA = __DATA_JSON__;
+
+    // 제목
+    document.getElementById('doc-title').textContent = DATA.title || 'Design System';
+
+    // ── Color Palette ─────────────────────────────────────────
+    const colorGrid = document.getElementById('color-grid');
+    (DATA.colors || []).forEach(function(color) {
+      const colorValue = color.hex || color.rgb || '#888888';
+
+      const card = document.createElement('div');
+      card.className = 'bg-slate-800/60 border border-slate-700/50 rounded-xl overflow-hidden';
+
+      // 색상 스워치
+      const swatch = document.createElement('div');
+      swatch.style.backgroundColor = colorValue;
+      swatch.style.height = '80px';
+      card.appendChild(swatch);
+
+      // 정보 영역
+      const info = document.createElement('div');
+      info.className = 'p-3 space-y-1';
+
+      const nameEl = document.createElement('p');
+      nameEl.className = 'text-sm font-semibold text-white';
+      nameEl.textContent = color.name;
+      info.appendChild(nameEl);
+
+      const valueEl = document.createElement('p');
+      valueEl.className = 'text-xs text-slate-400 font-mono';
+      valueEl.textContent = colorValue;
+      info.appendChild(valueEl);
+
+      card.appendChild(info);
+      colorGrid.appendChild(card);
+    });
+
+    // ── Typography ────────────────────────────────────────────
+    const typoList = document.getElementById('typo-list');
+    (DATA.typography || []).forEach(function(typo) {
+      const row = document.createElement('div');
+      row.className = 'bg-slate-800/60 border border-slate-700/50 rounded-xl p-4 flex items-center justify-between gap-4';
+
+      const left = document.createElement('div');
+
+      const nameEl = document.createElement('p');
+      nameEl.className = 'text-sm font-semibold text-white';
+      nameEl.textContent = typo.name;
+      left.appendChild(nameEl);
+
+      const specimenEl = document.createElement('p');
+      specimenEl.className = 'text-slate-300 mt-1';
+      specimenEl.style.fontSize = typo.size;
+      specimenEl.style.fontWeight = typo.weight;
+      specimenEl.textContent = typo.name;
+      left.appendChild(specimenEl);
+
+      const right = document.createElement('div');
+      right.className = 'text-right shrink-0';
+
+      const sizeEl = document.createElement('p');
+      sizeEl.className = 'text-xs text-slate-400 font-mono';
+      sizeEl.textContent = typo.size;
+      right.appendChild(sizeEl);
+
+      const weightEl = document.createElement('p');
+      weightEl.className = 'text-xs text-slate-400 font-mono';
+      weightEl.textContent = 'weight ' + typo.weight;
+      right.appendChild(weightEl);
+
+      row.appendChild(left);
+      row.appendChild(right);
+      typoList.appendChild(row);
+    });
+
+    // ── Tailwind Tokens ───────────────────────────────────────
+    const tokenList = document.getElementById('token-list');
+    (DATA.tailwind_tokens || []).forEach(function(token) {
+      const badge = document.createElement('code');
+      badge.className = 'bg-slate-800 border border-slate-700 rounded-lg px-3 py-1 text-sm text-indigo-300 font-mono';
+      badge.textContent = token;
+      tokenList.appendChild(badge);
+    });
+  </script>
+
+</body>
+</html>

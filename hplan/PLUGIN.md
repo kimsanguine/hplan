@@ -58,6 +58,7 @@ hplan is **Stage 0**. The other 4 plugins inherit decisions from hplan's gates.
 | [`agents/`](./agents/) | 4 role-locked reviewer agents: evidence / product / economics / build |
 | [`references/`](./references/) | 14 playbooks (market research, ICP/interview, product planning, design gate, unit economics, performance benchmark, implementation readiness, project scaffold, HITL, competitive landscape, source integration notes, diagnosis rubric, metrics/launch, provider_pricing.json snapshot) |
 | [`scripts/`](./scripts/) | 9 executable Python scripts backing each skill |
+| [`templates/`](./templates/) | MD→HTML 자동 렌더링 템플릿 10개. PostToolUse 훅이 harness/*.md, docs/*.md Write 시 자동 호출. |
 
 ## Routing — When hplan paired with this marketplace's other plugins
 

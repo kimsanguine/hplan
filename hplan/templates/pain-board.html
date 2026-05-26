@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pain Board</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+  <style>body{background:#0f1117}</style>
+</head>
+<body class="min-h-screen text-slate-100 font-sans">
+
+  <!-- 신호 게이트 상태 배너 -->
+  <div id="gate-banner" class="w-full px-8 py-3 text-center text-sm font-semibold tracking-wide"></div>
+
+  <div class="max-w-5xl mx-auto p-6 space-y-6">
+
+    <!-- 제목 + 통계 -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <h1 id="doc-title" class="text-2xl font-black text-white"></h1>
+      <div class="flex gap-4">
+        <div class="bg-slate-800/60 border border-slate-700/50 rounded-xl px-5 py-3 text-center">
+          <p class="text-3xl font-black text-white" id="interview-count"></p>
+          <p class="text-xs text-slate-400 uppercase tracking-widest mt-1">인터뷰</p>
+        </div>
+        <div class="bg-slate-800/60 border border-slate-700/50 rounded-xl px-5 py-3 text-center">
+          <p class="text-3xl font-black text-white" id="card-count"></p>
+          <p class="text-xs text-slate-400 uppercase tracking-widest mt-1">페인 카드</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 태그 빈도 차트 -->
+    <div class="bg-slate-800/60 border border-slate-700/50 rounded-2xl p-6">
+      <p class="text-xs text-slate-400 uppercase tracking-widest mb-4">태그 빈도</p>
+      <canvas id="tagChart" height="80"></canvas>
+    </div>
+
+    <!-- 페인 카드 그리드 -->
+    <div>
+      <p class="text-xs text-slate-400 uppercase tracking-widest mb-3">Pain Cards</p>
+      <div id="card-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </div>
+
+  </div>
+
+  <script>
+    const DATA = __DATA_JSON__;
+
+    // 게이트 배너
+    const banner = document.getElementById('gate-banner');
+    if (DATA.signal_gate_met) {
+      banner.textContent = '✅ Signal Gate Passed — ' + DATA.interview_count + ' interviews collected';
+      banner.style.background = '#059669';
+    } else {
+      banner.textContent = '⚠ Signal Gate Not Met — ' + DATA.interview_count + '/5 interviews (need 5+)';
+      banner.style.background = '#b45309';
+    }
+
+    // 제목 + 통계
+    document.getElementById('doc-title').textContent = DATA.title || 'Pain Board';
+    document.getElementById('interview-count').textContent = DATA.interview_count ?? 0;
+    document.getElementById('card-count').textContent = (DATA.pain_cards || []).length;
+
+    // 태그 빈도 가로 막대 차트
+    const tagCounts = DATA.tag_counts || {};
+    const tagLabels = Object.keys(tagCounts);
+    const tagValues = Object.values(tagCounts);
+    if (tagLabels.length) {
+      new Chart(document.getElementById('tagChart'), {
+        type: 'bar',
+        data: {
+          labels: tagLabels,
+          datasets: [{
+            data: tagValues,
+            backgroundColor: 'rgba(99,102,241,0.7)',
+            borderColor: 'rgba(99,102,241,1)',
+            borderWidth: 1,
+            borderRadius: 4,
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          plugins: { legend: { display: false } },
+          scales: {
+            x: {
+              ticks: { color: '#94a3b8', stepSize: 1 },
+              grid: { color: 'rgba(255,255,255,0.05)' },
+            },
+            y: {
+              ticks: { color: '#cbd5e1' },
+              grid: { display: false },
+            }
+          }
+        }
+      });
+    }
+
+    // 페인 카드 그리드
+    const grid = document.getElementById('card-grid');
+    const tagColors = [
+      'bg-indigo-500/20 border-indigo-500/40 text-indigo-300',
+      'bg-rose-500/20 border-rose-500/40 text-rose-300',
+      'bg-amber-500/20 border-amber-500/40 text-amber-300',
+      'bg-emerald-500/20 border-emerald-500/40 text-emerald-300',
+      'bg-sky-500/20 border-sky-500/40 text-sky-300',
+      'bg-violet-500/20 border-violet-500/40 text-violet-300',
+    ];
+    const tagColorMap = {};
+    let colorIdx = 0;
+    (DATA.pain_cards || []).forEach(card => {
+      if (!tagColorMap[card.tag]) {
+        tagColorMap[card.tag] = tagColors[colorIdx % tagColors.length];
+        colorIdx++;
+      }
+      const cls = tagColorMap[card.tag];
+
+      const cardEl = document.createElement('div');
+      cardEl.className = 'bg-slate-800/60 border border-slate-700/50 rounded-2xl p-5 flex flex-col gap-3';
+
+      const tagBadge = document.createElement('span');
+      tagBadge.className = 'self-start text-xs font-bold px-2 py-1 rounded-full border ' + cls;
+      tagBadge.textContent = card.tag;
+
+      const quoteEl = document.createElement('p');
+      quoteEl.className = 'text-slate-200 text-sm leading-relaxed';
+      quoteEl.textContent = '"' + card.quote + '"';
+
+      const interviewEl = document.createElement('p');
+      interviewEl.className = 'text-xs text-slate-500 mt-auto';
+      interviewEl.textContent = 'Interview ' + card.interview;
+
+      cardEl.appendChild(tagBadge);
+      cardEl.appendChild(quoteEl);
+      cardEl.appendChild(interviewEl);
+      grid.appendChild(cardEl);
+    });
+  </script>
+</body>
+</html>

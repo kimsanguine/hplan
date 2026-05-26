@@ -51,3 +51,9 @@ __pycache__/
 # Claude Code local state
 .claude/
 tools/intro-video/*.mp4
+
+# hplan 자동 생성 HTML (MD 옆에 생성됨, 버전 관리 제외)
+harness/**/*.html
+docs/*.html
+.design/*.html
+specs/**/*.html

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hplan — Generic</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <style>body { background: #0f1117; }</style>
+</head>
+<body class="min-h-screen text-slate-100 font-sans p-6 max-w-4xl mx-auto">
+  <div id="header" class="mb-6"></div>
+  <nav id="toc" class="mb-6 hidden"></nav>
+  <div id="content" class="prose prose-invert max-w-none"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked@9/marked.min.js"></script>
+  <script>
+    const DATA = __DATA_JSON__;
+    mermaid.initialize({ startOnLoad: false, theme: 'dark' });
+
+    // 제목
+    document.getElementById('header').innerHTML =
+      `<h1 class="text-2xl font-bold text-white">${DATA.title}</h1>`;
+
+    // 목차 (헤딩 2개 이상일 때)
+    if (DATA.headings && DATA.headings.length >= 2) {
+      const tocEl = document.getElementById('toc');
+      tocEl.classList.remove('hidden');
+      tocEl.innerHTML = '<p class="text-xs text-slate-400 mb-2 font-semibold uppercase tracking-widest">목차</p>' +
+        DATA.headings.filter(h => h.level <= 2).map(h =>
+          `<a href="#${h.slug}" class="block text-sm text-indigo-400 hover:text-indigo-200 py-0.5 ${h.level === 2 ? 'ml-0' : 'ml-4'}">${h.text}</a>`
+        ).join('');
+    }
+
+    // 본문 (marked로 MD→HTML)
+    const contentEl = document.getElementById('content');
+    contentEl.innerHTML = marked.parse(DATA.body_md || '');
+
+    // 헤딩에 id 추가 (Python _slugify와 동일 로직)
+    contentEl.querySelectorAll('h1,h2,h3').forEach(el => {
+      let t = el.textContent.toLowerCase();
+      t = t.replace(/—/g, '-').replace(/–/g, '-'); // em-dash, en-dash
+      t = t.replace(/ /g, '-');
+      t = t.replace(/[^\w가-힣-]/g, '');
+      el.id = t;
+    });
+
+    // Mermaid 렌더링
+    if (DATA.has_mermaid) {
+      mermaid.run();
+    }
+  </script>
+</body>
+</html>

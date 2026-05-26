@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Market Intel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>body{background:#0f1117}</style>
+</head>
+<body class="min-h-screen text-slate-100 font-sans">
+
+  <div class="max-w-6xl mx-auto p-6 space-y-6">
+
+    <!-- 제목 + 경쟁사 수 -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <h1 id="doc-title" class="text-2xl font-black text-white"></h1>
+      <div class="bg-slate-800/60 border border-slate-700/50 rounded-xl px-5 py-3 text-center">
+        <p class="text-3xl font-black text-white" id="competitor-count"></p>
+        <p class="text-xs text-slate-400 uppercase tracking-widest mt-1">경쟁사</p>
+      </div>
+    </div>
+
+    <!-- 비교 테이블 -->
+    <div class="bg-slate-800/60 border border-slate-700/50 rounded-2xl overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm" id="intel-table">
+          <thead id="intel-thead"></thead>
+          <tbody id="intel-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const DATA = __DATA_JSON__;
+
+    // 제목
+    document.getElementById('doc-title').textContent = DATA.title || 'Market Intel';
+
+    const headers = DATA.table_headers || [];
+    const rows = DATA.table_rows || [];
+
+    // 경쟁사 수 계산 (첫 셀이 "우리"로 시작하는 행 제외)
+    const competitorCount = rows.filter(row => {
+      const first = (row[0] || '').trim();
+      return !first.startsWith('우리');
+    }).length;
+    document.getElementById('competitor-count').textContent = competitorCount;
+
+    // 헤더 행 생성 (XSS safe: textContent 사용)
+    const thead = document.getElementById('intel-thead');
+    if (headers.length > 0) {
+      const tr = document.createElement('tr');
+      tr.className = 'bg-slate-700/80';
+      headers.forEach(header => {
+        const th = document.createElement('th');
+        th.className = 'px-4 py-3 text-left text-xs font-bold text-slate-200 uppercase tracking-wider whitespace-nowrap';
+        th.textContent = header;
+        tr.appendChild(th);
+      });
+      thead.appendChild(tr);
+    }
+
+    // 데이터 행 생성 (XSS safe: textContent 사용)
+    const tbody = document.getElementById('intel-tbody');
+    rows.forEach((row, rowIdx) => {
+      const tr = document.createElement('tr');
+      const isOurs = (row[0] || '').trim().startsWith('우리');
+      if (isOurs) {
+        tr.className = 'bg-indigo-900/30 border-t border-indigo-500/30';
+      } else {
+        tr.className = rowIdx % 2 === 0
+          ? 'bg-slate-800/40 border-t border-slate-700/30'
+          : 'bg-slate-800/20 border-t border-slate-700/30';
+      }
+
+      row.forEach((cell, cellIdx) => {
+        const td = document.createElement('td');
+        td.className = 'px-4 py-3 text-slate-200 whitespace-nowrap';
+        if (cellIdx === 0) {
+          td.className += isOurs
+            ? ' font-bold text-indigo-300'
+            : ' font-semibold text-white';
+        }
+        td.textContent = cell;
+        tr.appendChild(td);
+      });
+
+      tbody.appendChild(tr);
+    });
+  </script>
+</body>
+</html>

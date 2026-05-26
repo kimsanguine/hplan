@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Opportunity Solution Tree</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <style>body{background:#0f1117}</style>
+</head>
+<body class="min-h-screen text-slate-100 font-sans">
+
+  <div class="max-w-5xl mx-auto p-6 space-y-8">
+
+    <!-- 제목 -->
+    <h1 id="doc-title" class="text-2xl font-black text-white"></h1>
+
+    <!-- Mermaid 다이어그램 -->
+    <div class="bg-slate-800/60 border border-slate-700/50 rounded-2xl p-6">
+      <p class="text-xs text-slate-400 uppercase tracking-widest mb-4">Opportunity Solution Tree</p>
+      <div id="mermaid-container">
+        <pre id="mermaid-diagram" class="mermaid"></pre>
+      </div>
+    </div>
+
+    <!-- 솔루션 카드 목록 -->
+    <div>
+      <p class="text-xs text-slate-400 uppercase tracking-widest mb-3">Solutions</p>
+      <div id="solution-cards" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </div>
+
+  </div>
+
+  <script>
+    const DATA = __DATA_JSON__;
+
+    // Mermaid 초기화 (dark theme, startOnLoad: false)
+    mermaid.initialize({ startOnLoad: false, theme: 'dark' });
+
+    // 제목
+    document.getElementById('doc-title').textContent = DATA.title || 'Opportunity Solution Tree';
+
+    // Mermaid 다이어그램 렌더링
+    const diagramEl = document.getElementById('mermaid-diagram');
+    if (DATA.mermaid_code) {
+      diagramEl.textContent = DATA.mermaid_code;
+      mermaid.run({ nodes: [diagramEl] });
+    } else {
+      document.getElementById('mermaid-container').innerHTML =
+        '<p class="text-slate-500 text-sm">다이어그램 없음</p>';
+    }
+
+    // 솔루션 카드
+    const statusConfig = {
+      done:      { bg: 'bg-emerald-500/20', border: 'border-emerald-500/40', text: 'text-emerald-300', label: 'Done' },
+      running:   { bg: 'bg-blue-500/20',    border: 'border-blue-500/40',    text: 'text-blue-300',    label: 'Running' },
+      pending:   { bg: 'bg-slate-500/20',   border: 'border-slate-500/40',   text: 'text-slate-300',   label: 'Pending' },
+      cancelled: { bg: 'bg-red-500/20',     border: 'border-red-500/40',     text: 'text-red-300',     label: 'Cancelled' },
+    };
+
+    const grid = document.getElementById('solution-cards');
+    (DATA.solutions || []).forEach(sol => {
+      const cfg = statusConfig[sol.status] || statusConfig.pending;
+
+      const card = document.createElement('div');
+      card.className = 'bg-slate-800/60 border border-slate-700/50 rounded-2xl p-5 flex flex-col gap-3';
+
+      const badge = document.createElement('span');
+      badge.className = `self-start text-xs font-bold px-2 py-1 rounded-full border ${cfg.bg} ${cfg.border} ${cfg.text}`;
+      badge.textContent = cfg.label;
+
+      const nameEl = document.createElement('p');
+      nameEl.className = 'text-slate-200 text-sm font-semibold leading-snug';
+      nameEl.textContent = sol.name;
+
+      card.appendChild(badge);
+      card.appendChild(nameEl);
+      grid.appendChild(card);
+    });
+  </script>
+</body>
+</html>
