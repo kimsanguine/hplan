@@ -186,8 +186,10 @@ def main():
     total_skills = 0
     total_aliases = 0
     total_commands = 0
-    EXPECTED_ACTIVE_SKILLS = 30
+    EXPECTED_ACTIVE_SKILLS = 31
     EXPECTED_ALIASES = 0
+    # v0.12.0 migration note: brainstorm skill added to hplan plugin.
+    # hplan plugin: 7 → 8 skills. Total: 30 → 31.
     # v0.11.0 migration note: 18 skills consolidated (48→30).
     # Removed/merged: pmf-gate, agent-gtm, build-or-buy, biz-model, moat, growth-loop,
     #   burn-rate, weekly-rollup, agent-portfolio, portfolio-report, pm-decision,
