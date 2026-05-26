@@ -1,7 +1,7 @@
 ---
 name: ui-validate
-description: "Unified UI validation skill — hierarchy (Playwright DOM saliency + WCAG AA), motion (CSS transition vs RESPECT.md drift), drift (pHash N-screen consistency), mobile (375/768/1440px breakpoint). Each check is independently runnable and independently failable. --check 인자 미명시 시 에러 출력 후 사용 가능한 check 목록 안내 — auto-run 절대 금지."
-argument-hint: "--check hierarchy|motion|drift|mobile [url or path or src dir]"
+description: "Unified UI validation skill — hierarchy (Playwright DOM saliency + WCAG AA), motion (CSS transition vs RESPECT.md drift), drift (pHash N-screen consistency), mobile (375/768/1440px breakpoint). Each check is independently runnable and independently failable. --check 인자 미명시 시 에러 출력 후 사용 가능한 check 목록 안내 — auto-run 절대 금지., tc-gate (QA_CHECKLIST.md TC-ID별 Playwright 스크린샷 증거 생성 → harness/ui-evidence/)"
+argument-hint: "--check hierarchy|motion|drift|mobile|tc-gate [url or path or src dir]"
 allowed-tools: ["Read", "Write", "Bash"]
 model: sonnet
 ---
@@ -16,6 +16,7 @@ model: sonnet
 | `--check motion` | CSS transition vs RESPECT.md motion_language 일관성 | `.design/motion-drift.md` | ❌ |
 | `--check drift` | N 화면 pHash + DOM 구조 시각 drift 감지 | `.design/ui-drift-report.md` | ❌ |
 | `--check mobile` | 375/768/1440px 브레이크포인트 Playwright 검증 | `mobile-check-report.md` | ❌ |
+| `--check tc-gate` | QA_CHECKLIST.md TC-ID별 Playwright 스크린샷 → `harness/ui-evidence/` | `harness/ui-evidence/summary.json` | ❌ |
 
 > ⚠️ **`--check` 인자 필수**: 미명시 시 에러 출력 후 사용 가능한 check 목록 안내. auto-run 절대 금지.
 
@@ -51,6 +52,7 @@ model: sonnet
 - 리디자인 후 motion 일관성 검증 → `--check motion`
 - 5+ 화면 생성 후 일관성 확인 → `--check drift`
 - ship 직전 모바일 브레이크포인트 검증 → `--check mobile`
+- qa-checklist 실행 후 TC-ID별 브라우저 스크린샷 증거 생성 → `--check tc-gate [URL]`
 
 ### Route to Other Skills When
 - RESPECT.md 갱신 → `deliver/respect --mode brief`
@@ -59,6 +61,7 @@ model: sonnet
 
 ### Boundary Checks
 - `--check` 미명시 → 즉시 에러 + 사용 가능한 check 목록 출력 (auto-run 금지)
+- `harness/QA_CHECKLIST.md` 부재 → fail loud + "qa-checklist 먼저 실행하세요"
 - Playwright 미설치 → fail loud + 설치 안내
 - RESPECT.md 부재 시 hierarchy/motion → fail loud + "respect --mode brief 먼저"
 - DESIGN.md 부재 시 mobile → fail loud + "design-token 먼저"
@@ -263,6 +266,78 @@ TARGET_URL=${target:-http://localhost:3000} \
 
 ---
 
+### check: tc-gate
+
+**대상**: URL (배포된 앱 또는 localhost)
+
+**Step 1 — QA_CHECKLIST.md 로드**
+
+```bash
+ls harness/QA_CHECKLIST.md 2>/dev/null || echo "CHECKLIST_MISSING"
+```
+
+CHECKLIST_MISSING 시:
+```
+❌ 에러: harness/QA_CHECKLIST.md 없음.
+/qa-checklist 먼저 실행하세요.
+```
+즉시 종료.
+
+**Step 2 — TC 목록 추출 (결정론)**
+```bash
+python3 deliver/skills/ui-validate/scripts/pw_runner.py --parse-only harness/QA_CHECKLIST.md
+```
+TC-ID / severity / 시나리오 목록 출력. critical → major → minor 순 정렬.
+
+**Step 3 — 출력 디렉터리 준비**
+```bash
+mkdir -p harness/ui-evidence
+```
+
+**Step 4 — Playwright 스크린샷 실행**
+```bash
+python3 deliver/skills/ui-validate/scripts/pw_runner.py \
+  --url "$TARGET_URL" \
+  --checklist harness/QA_CHECKLIST.md \
+  --output harness/ui-evidence
+```
+
+각 TC-ID별:
+- Playwright 브라우저 → URL 네비게이트
+- 전체 화면 스크린샷 → `harness/ui-evidence/[TC-ID].png`
+- 결과 기록 (captured / error)
+
+**Step 5 — summary.json 생성**
+
+`pw_runner.py`가 자동 생성:
+```json
+{
+  "generated": "YYYY-MM-DD",
+  "url": "...",
+  "total": N,
+  "critical_captured": X,
+  "critical_total": X2,
+  "major_captured": Y,
+  "major_total": Y2,
+  "minor_captured": Z,
+  "minor_total": Z2,
+  "tc_results": [
+    {"id": "TC-001", "severity": "critical", "screenshot": "harness/ui-evidence/TC-001.png", "status": "captured"},
+    {"id": "TC-002", "severity": "critical", "screenshot": "harness/ui-evidence/TC-002.png", "status": "error", "error": "timeout"}
+  ]
+}
+```
+
+**Step 6 — 결과 출력**
+```
+✅ harness/ui-evidence/ 생성 완료
+   Total: N | Critical: X/X2 | Major: Y/Y2 | Minor: Z/Z2
+   실패: [error 목록 (있을 때만)]
+   → harness-build --step quality-gate 에서 자동 검사
+```
+
+---
+
 ## Failure Handling
 
 | 실패 상황 | 감지 | 대응 |
@@ -274,6 +349,9 @@ TARGET_URL=${target:-http://localhost:3000} \
 | baseline 없음 (drift) | 화면 수 < 2 | SKIP (FAIL 아님) + warning |
 | 타임아웃 30초 초과 | per-check timeout | 해당 check SKIP + warning, 나머지 계속 |
 | 화면 수 < 3 (drift) | argument count | "최소 3 화면 필요" warning + SKIP |
+| `harness/QA_CHECKLIST.md` 부재 | ls 실패 | fail loud + "qa-checklist 먼저 실행하세요" 후 종료 |
+| Playwright 미설치 (`tc-gate`) | python3 import 실패 | `pip install playwright && playwright install` 안내 |
+| URL 응답 없음 | Playwright timeout | 해당 TC status="error" 로 기록, 나머지 계속 진행 |
 
 ---
 
@@ -285,6 +363,9 @@ TARGET_URL=${target:-http://localhost:3000} \
 - [ ] drift: 5 차원 모두 측정, baseline 명시, LLM 호출 0
 - [ ] mobile: 3 뷰포트 모두 검증, ASCII 결과 출력
 - [ ] 각 check 독립 실패 가능 (한 check FAIL이 다른 check를 막지 않음)
+- [ ] tc-gate: QA_CHECKLIST.md 부재 시 즉시 종료 (auto-run 금지)
+- [ ] tc-gate: critical TC 스크린샷 모두 시도, summary.json 생성
+- [ ] tc-gate: error TC도 summary.json에 기록됨 (silent 실패 금지)
 
 ---
 
@@ -322,6 +403,25 @@ TARGET_URL=${target:-http://localhost:3000} \
 **입력:** `--check hierarchy` (RESPECT.md 없음)
 
 **기대 동작:** "RESPECT.md 부재 — deliver/respect --mode brief 먼저" fail loud
+
+### Good Example
+**입력:** `--check tc-gate http://localhost:3000`
+
+**기대 동작:**
+1. harness/QA_CHECKLIST.md 로드 → TC-001~TC-NNN 추출
+2. critical TC 먼저 스크린샷
+3. harness/ui-evidence/ 생성 + summary.json 작성
+4. 통계 출력
+
+### Bad Example
+**입력:** `--check tc-gate http://localhost:3000` (QA_CHECKLIST.md 없음)
+
+**기대 동작:**
+```
+❌ 에러: harness/QA_CHECKLIST.md 없음.
+/qa-checklist 먼저 실행하세요.
+```
+실행 중단.
 
 ---
 

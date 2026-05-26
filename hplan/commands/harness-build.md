@@ -537,7 +537,24 @@ python3 hplan/scripts/decision_log.py hitl \
 **③ 보안 기본 점검** — 하드코딩 시크릿·미검증 외부 입력 여부
 - 발견 즉시 차단, 수정 후 재실행
 
-**출력:** 3개 항목 판정 + 발견된 이슈 목록 + 다음 단계 태스크
+**④ UI Evidence Gate (UI 있는 제품에만)** — `harness/ui-evidence/summary.json` 존재 여부:
+
+```bash
+cat harness/ui-evidence/summary.json 2>/dev/null | python3 -c "
+import json,sys
+d=json.load(sys.stdin)
+if d['critical_total']>0 and d['critical_captured']<d['critical_total']:
+    print('BLOCK')
+else:
+    print('PASS')
+" 2>/dev/null || echo "SKIP"
+```
+
+- `SKIP` (파일 없음) → 백엔드 전용 제품으로 간주, 통과
+- `PASS` → ✅ UI Evidence Gate 통과
+- `BLOCK` → 차단: "Critical TC 스크린샷 미완. `ui-validate --check tc-gate [URL]` 재실행"
+
+**출력:** 3~4개 항목 판정 + 발견된 이슈 목록 + 다음 단계 태스크
 
 *`--step quality-gate` 선택 시 여기서 종료.*
 
