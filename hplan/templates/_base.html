@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{TITLE}}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <style>
+    body { background: #0f1117; }
+    .card { background: rgba(30,41,59,0.6); border: 1px solid rgba(71,85,105,0.5); border-radius: 1rem; padding: 1.5rem; }
+    .verdict-green  { background: #059669; }
+    .verdict-amber  { background: #d97706; }
+    .verdict-red    { background: #dc2626; }
+    .verdict-blue   { background: #4f46e5; }
+  </style>
+</head>
+<body class="min-h-screen text-slate-100 font-sans p-6">
+  <!-- 판정 배너 (필요 시) -->
+  <!-- 콘텐츠 영역 -->
+  <script>
+    const DATA = __DATA_JSON__;
+    mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+    // Chart.js 초기화는 각 템플릿에서
+  </script>
+</body>
+</html>

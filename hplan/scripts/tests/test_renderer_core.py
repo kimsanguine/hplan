@@ -88,3 +88,45 @@ class TestTemplateSelection:
 
     def test_unrelated_path_returns_none(self):
         assert select_template("src/main.py") is None
+
+
+from parsers import parse as parse_md
+
+
+class TestGenericParser:
+    def test_extracts_title_from_h1(self):
+        md = "# My Document\n\nSome content here."
+        data = parse_md(md, "generic")
+        assert data["title"] == "My Document"
+
+    def test_extracts_title_from_frontmatter(self):
+        md = "---\ntitle: Test Title\n---\n# Ignored H1"
+        data = parse_md(md, "generic")
+        assert data["title"] == "Test Title"
+
+    def test_extracts_headings(self):
+        md = "# Title\n## Section A\n### Sub\n## Section B"
+        data = parse_md(md, "generic")
+        assert "Section A" in [h["text"] for h in data["headings"]]
+        assert "Section B" in [h["text"] for h in data["headings"]]
+
+    def test_detects_mermaid_blocks(self):
+        md = "```mermaid\nflowchart LR\nA --> B\n```"
+        data = parse_md(md, "generic")
+        assert data["has_mermaid"] is True
+
+    def test_no_mermaid_when_absent(self):
+        md = "# Title\n\nPlain text."
+        data = parse_md(md, "generic")
+        assert data["has_mermaid"] is False
+
+    def test_extracts_body_md(self):
+        md = "# Title\n\nContent with **bold** text."
+        data = parse_md(md, "generic")
+        assert "Content with" in data["body_md"]
+
+    def test_empty_md_returns_safe_defaults(self):
+        data = parse_md("", "generic")
+        assert data["title"] == "Untitled"
+        assert data["headings"] == []
+        assert data["has_mermaid"] is False
