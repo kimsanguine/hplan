@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Architecture Blueprint</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <style>body{background:#0f1117}</style>
+</head>
+<body class="min-h-screen text-slate-100 font-sans">
+
+  <div class="max-w-5xl mx-auto p-6 space-y-8">
+
+    <!-- 제목 -->
+    <h1 id="doc-title" class="text-2xl font-black text-white"></h1>
+
+    <!-- Mermaid 아키텍처 다이어그램 -->
+    <div class="bg-slate-800/60 border border-slate-700/50 rounded-2xl p-6">
+      <p class="text-xs text-slate-400 uppercase tracking-widest mb-4">Architecture Diagram</p>
+      <div id="mermaid-container">
+        <pre id="mermaid-diagram" class="mermaid"></pre>
+      </div>
+    </div>
+
+    <!-- 라우팅 테이블 -->
+    <div class="bg-slate-800/60 border border-slate-700/50 rounded-2xl overflow-hidden">
+      <div class="px-6 pt-5 pb-3">
+        <p class="text-xs text-slate-400 uppercase tracking-widest">Routing</p>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm" id="routing-table">
+          <thead id="routing-thead"></thead>
+          <tbody id="routing-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 메모리 섹션 -->
+    <div>
+      <p class="text-xs text-slate-400 uppercase tracking-widest mb-3">Memory</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="memory-cards"></div>
+    </div>
+
+  </div>
+
+  <script>
+    const DATA = __DATA_JSON__;
+
+    // Mermaid 초기화 (dark theme, startOnLoad: false)
+    mermaid.initialize({ startOnLoad: false, theme: 'dark' });
+
+    // 제목
+    document.getElementById('doc-title').textContent = DATA.title || 'Architecture Blueprint';
+
+    // Mermaid 다이어그램 렌더링
+    const diagramEl = document.getElementById('mermaid-diagram');
+    if (DATA.mermaid_code) {
+      diagramEl.textContent = DATA.mermaid_code;
+      mermaid.run({ nodes: [diagramEl] });
+    } else {
+      document.getElementById('mermaid-container').innerHTML =
+        '<p class="text-slate-500 text-sm">다이어그램 없음</p>';
+    }
+
+    // 라우팅 테이블 생성 (XSS safe: textContent 사용)
+    const routingTable = DATA.routing_table || { headers: [], rows: [] };
+    const thead = document.getElementById('routing-thead');
+    if (routingTable.headers.length > 0) {
+      const tr = document.createElement('tr');
+      tr.className = 'bg-slate-700/80';
+      routingTable.headers.forEach(header => {
+        const th = document.createElement('th');
+        th.className = 'px-4 py-3 text-left text-xs font-bold text-slate-200 uppercase tracking-wider whitespace-nowrap';
+        th.textContent = header;
+        tr.appendChild(th);
+      });
+      thead.appendChild(tr);
+    }
+
+    const tbody = document.getElementById('routing-tbody');
+    (routingTable.rows || []).forEach((row, rowIdx) => {
+      const tr = document.createElement('tr');
+      tr.className = rowIdx % 2 === 0
+        ? 'bg-slate-800/40 border-t border-slate-700/30'
+        : 'bg-slate-800/20 border-t border-slate-700/30';
+      row.forEach((cell, cellIdx) => {
+        const td = document.createElement('td');
+        td.className = 'px-4 py-3 text-slate-200 whitespace-nowrap';
+        if (cellIdx === 0) {
+          td.className += ' font-semibold text-white';
+        }
+        td.textContent = cell;
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+
+    // 메모리 카드 생성 (XSS safe: textContent 사용)
+    const memoryItems = [
+      { label: '단기 (Short-term)', value: DATA.memory_short, accent: 'border-blue-500/40 bg-blue-500/10', textColor: 'text-blue-300' },
+      { label: '장기 (Long-term)',  value: DATA.memory_long,  accent: 'border-purple-500/40 bg-purple-500/10', textColor: 'text-purple-300' },
+    ];
+    const memoryCards = document.getElementById('memory-cards');
+    memoryItems.forEach(item => {
+      const card = document.createElement('div');
+      card.className = `rounded-2xl border p-5 flex flex-col gap-2 ${item.accent}`;
+
+      const labelEl = document.createElement('p');
+      labelEl.className = 'text-xs font-bold uppercase tracking-widest text-slate-400';
+      labelEl.textContent = item.label;
+
+      const valueEl = document.createElement('p');
+      valueEl.className = `text-lg font-semibold ${item.textColor}`;
+      valueEl.textContent = item.value || '—';
+
+      card.appendChild(labelEl);
+      card.appendChild(valueEl);
+      memoryCards.appendChild(card);
+    });
+  </script>
+</body>
+</html>
