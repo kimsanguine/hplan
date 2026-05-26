@@ -89,5 +89,16 @@ if [ -n "$FINDINGS" ]; then
   echo "──────────────────────────────────────────────────────────" >&2
 fi
 
+# ── MD → HTML 자동 렌더링 ──────────────────────────────────
+if [[ "$FILE_PATH" =~ \.md$ ]]; then
+  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  RENDERER="$SCRIPT_DIR/../hplan/scripts/md_renderer.py"
+  if [ -f "$RENDERER" ]; then
+    PYTHONPATH="$SCRIPT_DIR/../hplan/scripts" \
+      python3 "$RENDERER" "$FILE_PATH" 2>/dev/null || true
+  fi
+fi
+# ──────────────────────────────────────────────────────────
+
 # PostToolUse always exits 0 — it cannot block (only warn)
 exit 0
