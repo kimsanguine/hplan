@@ -123,10 +123,17 @@ class TestGenericParser:
     def test_extracts_body_md(self):
         md = "# Title\n\nContent with **bold** text."
         data = parse_md(md, "generic")
-        assert "Content with" in data["body_md"]
+        assert data["body_md"] == md
 
     def test_empty_md_returns_safe_defaults(self):
         data = parse_md("", "generic")
         assert data["title"] == "Untitled"
         assert data["headings"] == []
         assert data["has_mermaid"] is False
+
+    def test_code_block_hash_not_extracted_as_heading(self):
+        md = "# Real Heading\n\n```python\n# not a heading\n```"
+        data = parse_md(md, "generic")
+        heading_texts = [h["text"] for h in data["headings"]]
+        assert "not a heading" not in heading_texts
+        assert "Real Heading" in heading_texts

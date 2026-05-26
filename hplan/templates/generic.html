@@ -36,10 +36,13 @@
     const contentEl = document.getElementById('content');
     contentEl.innerHTML = marked.parse(DATA.body_md || '');
 
-    // 헤딩에 id 추가
+    // 헤딩에 id 추가 (Python _slugify와 동일 로직)
     contentEl.querySelectorAll('h1,h2,h3').forEach(el => {
-      const slug = el.textContent.toLowerCase().replace(/[^\w가-힣]/g, '-');
-      el.id = slug;
+      let t = el.textContent.toLowerCase();
+      t = t.replace(/—/g, '-').replace(/–/g, '-'); // em-dash, en-dash
+      t = t.replace(/ /g, '-');
+      t = t.replace(/[^\w가-힣-]/g, '');
+      el.id = t;
     });
 
     // Mermaid 렌더링
