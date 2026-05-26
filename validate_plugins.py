@@ -188,6 +188,8 @@ def main():
     total_commands = 0
     EXPECTED_ACTIVE_SKILLS = 31
     EXPECTED_ALIASES = 0
+    # v0.13.0 migration note: conductor Phase 0/Step E/--mode sprint + ui-validate assertion engine.
+    # No skill count change — all existing skills strengthened. Total: 31 (unchanged).
     # v0.12.0 migration note: brainstorm skill added to hplan plugin.
     # hplan plugin: 7 → 8 skills. Total: 30 → 31.
     # v0.11.0 migration note: 18 skills consolidated (48→30).
