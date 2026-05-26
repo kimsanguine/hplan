@@ -105,14 +105,27 @@ outcome: null             # operate/ops-review --mode post-retro 에서 업데�
 
 ### TD-NNN 번호 부여 (결정론)
 ```bash
-ls harness/tech-decisions/TD-*.yaml 2>/dev/null | wc -l
+# 기존 최대 번호 파악 후 +1 (삭제된 파일이 있어도 덮어쓰기 없음)
+ls harness/tech-decisions/TD-*.yaml 2>/dev/null \
+  | grep -oE 'TD-[0-9]+' \
+  | grep -oE '[0-9]+' \
+  | sort -n \
+  | tail -1 \
+  | python3 -c "
+import sys
+n = sys.stdin.read().strip()
+print(int(n) + 1 if n else 1)
+  "
 ```
-결과 + 1 → zero-padding 3자리 (TD-001, TD-002 …)
+결과를 zero-padding 3자리로 포맷: `TD-$(printf '%03d' $NEXT_NUM)`
+
+> ⚠️ `wc -l` 방식은 파일 삭제 시 번호가 충돌합니다. 항상 기존 최댓값+1을 사용하세요.
 
 ### 동작 규칙
 1. `harness/tech-decisions/` 없으면 `mkdir -p` 후 진행
 2. `"결정 내용 — PRD 링크"` 파싱: `—` 기준 split. PRD 링크 없으면 prd_link: "" 로 저장
 3. 저장 후 출력:
+4. 이미 동일한 TD-NNN 파일이 존재하면 즉시 에러: "TD-NNN already exists. 재실행하세요." — 절대 덮어쓰기 금지
 ```
 ✅ TD-NNN 저장 완료 → harness/tech-decisions/TD-NNN.yaml
    결정: [내용]

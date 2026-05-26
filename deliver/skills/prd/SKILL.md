@@ -440,7 +440,8 @@ Human-in-the-loop 트리거:
 | 판단 | 도구 | LLM |
 |---|---|---|
 | PRD 파일 존재 여부 | ls/Read | ❌ |
-| §1·§11 섹션 추출 | 텍스트 파싱 | ✅ (비정형 추출) |
+| §1·§11 섹션 존재 여부 확인 | grep 결정론 | ❌ |
+| §1·§11 섹션 내용 추출 | 라인 번호 기반 파싱 후 LLM | ✅ (비정형 내용 해석) |
 | 4개 HTML 변형 생성 | — | ✅ (자연어 생성) |
 | comparison.md 적합도 평가 | — | ✅ (판단 설명) |
 | 파일 저장 | Write | ❌ |
@@ -470,6 +471,27 @@ PRD_MISSING 시:
 /prd [제품명] 먼저 실행하세요.
 ```
 즉시 종료.
+
+**§11 섹션 존재 결정론 확인 (LLM 호출 전)**:
+
+```bash
+# 허용 heading 패턴: "Section 11", "§11", "11 —", "11." (대소문자 무관)
+grep -in "^#\+.*\(section 11\|§11\|11 —\|11\.\)" docs/PRD.md | head -3
+```
+
+- 매칭 0건 → 즉시 종료:
+  ```
+  ❌ 에러: PRD §11 Output Specification 섹션이 필요합니다.
+  (감지된 패턴: ## Section 11, ### §11, ## 11 — Output Specification 등)
+  ```
+- 매칭 2건 이상 → 경고 출력: "§11 heading이 여러 개 감지됨 — 첫 번째 매칭 사용"
+- 매칭 1건 → ✅ 진행
+
+§1도 동일하게 grep으로 확인:
+```bash
+grep -in "^#\+.*\(section 1\b\|§1\b\|1 —\|1\.\)" docs/PRD.md | head -3
+```
+§1 매칭 0건 → WARN (FAIL 아님): "§1 없이 ICP 적합도 평가 생략"
 
 `docs/PRD.md` Read → §1 (ICP / 페르소나) + §11 (Output Specification) 추출.
 §11 부재 시:
