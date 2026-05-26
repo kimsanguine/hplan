@@ -2,7 +2,7 @@ import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from md_renderer import select_template, should_exclude
+from md_renderer import select_template, should_exclude, _escape_json_for_script
 
 
 class TestExcludePatterns:
@@ -137,3 +137,33 @@ class TestGenericParser:
         heading_texts = [h["text"] for h in data["headings"]]
         assert "not a heading" not in heading_texts
         assert "Real Heading" in heading_texts
+
+
+class TestEscapeJsonForScript:
+    def test_script_close_tag_escaped(self):
+        """</script>가 포함된 JSON이 스크립트 블록을 탈출하지 못한다."""
+        result = _escape_json_for_script('{"title": "</script><script>alert(1)</script>"}')
+        assert "</script>" not in result
+
+    def test_html_comment_escaped(self):
+        """HTML 주석 시작 패턴이 이스케이프된다."""
+        result = _escape_json_for_script('{"body": "<!--inject-->"}')
+        assert "<!--" not in result
+
+    def test_normal_content_unchanged(self):
+        """XSS 패턴 없는 일반 JSON은 의미가 보존된다."""
+        import json
+        data = {"title": "정상 제목", "score": 87}
+        escaped = _escape_json_for_script(json.dumps(data, ensure_ascii=False))
+        parsed = json.loads(escaped)
+        assert parsed["title"] == "정상 제목"
+        assert parsed["score"] == 87
+
+    def test_unicode_line_separators_escaped(self):
+        """U+2028/U+2029가 리터럴 이스케이프 시퀀스로 변환된다."""
+        raw = "line sep end"
+        result = _escape_json_for_script(raw)
+        assert " " not in result
+        assert " " not in result
+        assert "\\u2028" in result
+        assert "\\u2029" in result

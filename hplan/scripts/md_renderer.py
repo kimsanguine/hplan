@@ -70,13 +70,28 @@ def _load_template(template_name: str) -> str | None:
     return template_path.read_text(encoding="utf-8")
 
 
+def _escape_json_for_script(json_str: str) -> str:
+    """<script> 블록 내 JSON 삽입 시 스크립트 태그 탈출 방지.
+
+    브라우저 HTML 파서는 JS 문자열 파싱보다 먼저 실행되므로
+    JSON 문자열 안의 </script> 만으로도 스크립트 블록이 닫힌다.
+    """
+    return (
+        json_str
+        .replace("</", "<\\/")          # </script> 탈출 방지
+        .replace("<!--", "<\\!--")      # HTML 주석 삽입 방지
+        .replace(" ", "\\u2028")   # JS 줄 구분자 (일부 엔진 오작동)
+        .replace(" ", "\\u2029")   # JS 단락 구분자
+    )
+
+
 def render(template_name: str, data: dict) -> str | None:
     """템플릿에 data dict를 __DATA_JSON__ 자리에 주입한 HTML 반환."""
     html = _load_template(template_name)
     if html is None:
         return None
     json_str = json.dumps(data, ensure_ascii=False, indent=None)
-    return html.replace("__DATA_JSON__", json_str)
+    return html.replace("__DATA_JSON__", _escape_json_for_script(json_str))
 
 
 def main() -> None:
