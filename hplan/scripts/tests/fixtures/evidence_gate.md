@@ -27,4 +27,4 @@ score: 87
 ## Acquisition Path
 점수: 9/10
 
-취약 축: Switching Trigger (9), Acquisition Path (9)
+취약 축: Switching Trigger (9/15 = 60%)

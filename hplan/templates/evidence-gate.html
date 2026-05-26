@@ -67,7 +67,10 @@
           plugins: { legend: { display: false } },
           scales: {
             r: {
-              min: 0, max: 15,
+              min: 0,
+              max: DATA.axes && DATA.axes.length
+                ? Math.max(...DATA.axes.map(a => a.max || 15))
+                : 15,
               ticks: { color: '#94a3b8', stepSize: 5 },
               grid: { color: 'rgba(255,255,255,0.1)' },
               pointLabels: { color: '#cbd5e1', font: { size: 11 } }
