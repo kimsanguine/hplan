@@ -74,7 +74,7 @@ WHETHER is bigger than WHY. WHY answers the reason ("why would users pay?"). WHE
 | COGS Sentinel | Why would this pricing work at scale? | Can the economics support a real business? |
 | **All 3 combined** | — | **GO / HOLD / INVESTIGATE** |
 
-Other tools handle **HOW** (Claude Code plugins → how to work with Claude Code), **WHO** (gstack → who the agents are), **WHERE** (GSD → where in the workflow). hplan handles **WHETHER** — the decision that comes before all other decisions.
+Other tools handle **HOW** (Claude Code plugins → how to work with Claude Code), **WHERE** (GSD → where in the workflow). hplan handles **WHETHER** — the decision that comes before all other decisions.
 
 ### hplan's 3 Principles vs Opposing Assumptions
 
