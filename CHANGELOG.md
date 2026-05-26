@@ -4,6 +4,46 @@ All notable changes to hplan (renamed from AI_PM_Skills in v0.5) are documented 
 
 ---
 
+## [0.12.0] — 2026-05-27
+
+> **사용자 영향**: brainstorm 스킬 신설(31개). conductor 지속 실행 강화. ui-validate TC 스크린샷 증거 수집(tc-gate). pm-engine 기술 결정 기록(save-decision)·코드베이스 인덱싱(index-codebase). prd 설계 시각화(design-shotgun). gstack 대비 차별화 3점 완성.
+
+### Added — 신규 스킬 1개
+
+**`hplan/brainstorm`** — Phase 0 Worth-Building 3문 체크(특정 사람? / 우회로? / 행동 변화?) → Phase 1 1문1답 대화 설계(2-3가지 접근법 제시) → Phase 2 Signal Gate Bootstrap(harness/pain.md seed · brainstorm-assumptions.md · PRD-draft-section1.md 3개 artifact 생성). 제품을 만들기 전에 "만들 가치가 있는가"를 결정론적으로 검증한다.
+
+### Changed — 기존 스킬 기능 확장
+
+**`deliver/conductor`** — Continuous Execution 기본 동작으로 변경(이전: 단계별 확인 기본, 이제 `--confirm-plan`으로 opt-in). PRD-aware 모델 선택: §7-11(설계·배포·운영) → opus, §1-6(발견·설계) → sonnet, mechanical → haiku. 외부 프롬프트 템플릿 3개 신설(`prompts/implementer.md`, `prompts/spec-reviewer.md`, `prompts/quality-reviewer.md`) — spec-reviewer가 PRD §3/§11/§14/§7 교차 검증.
+
+**`deliver/ui-validate`** — `--check tc-gate [URL]` 5번째 검사 모드 추가. `harness/QA_CHECKLIST.md`의 TC-ID를 파싱하여 Playwright로 URL 스크린샷을 찍고 `harness/ui-evidence/`에 시각 증거 저장. `summary.json`에 `evidence_type: "screenshot_only"` 명시 — 자동 assertion 없음, PM/QA 육안 검토용. `deliver/skills/ui-validate/scripts/pw_runner.py` 신설.
+
+**`operate/pm-engine`** — `--mode save-decision`: 기술 결정을 `harness/tech-decisions/TD-NNN.yaml`(id·date·decision·alternatives·prd_link·evidence·outcome 필드)로 저장, post-retro 시 outcome 업데이트. `--mode index-codebase`: package.json/pyproject.toml/README 스캔 후 기존 TD와 교차 비교해 미기록 기술 결정 후보 제안.
+
+**`deliver/prd`** — `--mode design-shotgun` 추가. PRD §11(Output Spec) 해석 차이를 기반으로 HTML 변형 4개 생성: variant-A(스텝퍼/탭), B(모달/오버레이), C(미니멀 폼), D(프로그레시브 공개). 출력: `harness/design-variants/variant-{A-D}.html` + `comparison.md`. §11 존재 여부는 `grep`으로 결정론 판정(LLM 호출 전).
+
+### Changed — 커맨드 기능 확장
+
+**`hplan/commands/harness-build`** Phase 8 ④ — UI Evidence Gate 추가(5-state 결정론 게이트). `harness/QA_CHECKLIST.md` 존재 여부로 UI 제품 판정 → SKIP(백엔드 전용) / PASS / BLOCK_MISSING(`summary.json` 없음) / BLOCK_EMPTY(TC 0개) / BLOCK_INCOMPLETE(Critical TC 스크린샷 미완).
+
+### Fixed
+
+- `pw_runner.py` — TC 파싱을 정규식에서 split 방식으로 교체. `|` 문자를 셀 내부에 포함하는 행도 정확히 파싱. TC가 0개면 `sys.exit(1)` fail-loud(이전: 빈 리스트 silent return).
+- `harness-build` ④ — `|| echo "SKIP"` 패턴 제거. QA_CHECKLIST.md 부재 시만 SKIP, 존재하지만 summary.json 없으면 BLOCK_MISSING으로 분리. (이전: 어떤 실패든 SKIP으로 통과)
+- `pm-engine save-decision` — TD 번호를 `wc -l + 1`(삭제 시 충돌)에서 `max + 1` 방식으로 수정. TD 덮어쓰기 즉시 에러 처리 추가.
+- `prd design-shotgun` — §11 섹션 존재 여부를 LLM 판단에서 `grep -in` 결정론 검사로 교체(Rule 5 준수). 0매칭 → 즉시 fail loud.
+- `validate_plugins.py` — `EXPECTED_ACTIVE_SKILLS` 30 → 31 갱신(brainstorm 신설 반영).
+
+### gstack 대비 차별화 달성 포인트
+
+| gstack | hplan v0.12.0 |
+|---|---|
+| /browse — 일반 브라우저 탐색 | tc-gate — TC-ID별 스크린샷 → quality-gate 자동 블록 |
+| GBrain — 코드 상태 인덱싱 | save-decision — 결정 이유 + PRD 링크 → outcome 추적 |
+| 미적 UI 변형 | design-shotgun — §11 해석 변형 + §1 ICP 적합도 평가 |
+
+---
+
 ## [0.11.0] — 2026-05-26
 
 > **사용자 영향**: 스킬 48→30 통합 (Conductor·QA Checklist 신규, 18개 제거/병합). Spec Compliance Review discoverability 개선. 배포 후 회고(post-retro) Phase 추가. Cursor MCP 설정 예시 추가. pm-engine --mode save 빠른 메모 기능 추가.
