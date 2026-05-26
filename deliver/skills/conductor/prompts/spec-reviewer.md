@@ -23,21 +23,23 @@ superpowers와의 차이: task description 대조 외에 **PRD 섹션 대조**�
 - 요청하지 않은 것이 추가됐는가? (있으면 FAIL)
 - 완료 기준이 모두 충족됐는가?
 
-### 검증 항목 B — PRD 섹션 대조 (docs/PRD.md 존재 시)
-docs/PRD.md가 있으면 아래를 추가로 확인한다:
-- **§3 핵심 문제**: 이 구현이 PRD가 정의한 핵심 문제를 해결하는가?
-- **§11 출력 사양**: 실제 출력 구조가 §11 출력 예시와 일치하는가?
-- **§14 실패 모드**: 이 태스크가 담당해야 할 실패 시나리오가 처리됐는가?
-- **§7 Anti-Goals**: 하면 안 된다고 명시된 것이 구현되지 않았는가?
+### 검증 항목 B — PRD 섹션 대조 (필수)
+harness/PRD.md를 Read하여 아래를 확인한다.
+harness/PRD.md가 없으면 **FAIL** — conductor Step 0에서 이미 존재를 확인했어야 함.
 
-docs/PRD.md가 없으면 항목 B를 SKIP한다.
+- **§3 ICP**: 이 구현이 PRD가 정의한 핵심 고객의 핵심 문제를 해결하는가?
+- **§11 Output Spec**: 실제 출력 구조가 §11 출력 예시·포맷과 일치하는가?
+- **§14 Failure Scenarios**: 이 태스크가 담당해야 할 실패 시나리오가 처리됐는가?
+- **§7 Success Metrics (Anti-Goals)**: 하면 안 된다고 명시된 것이 구현되지 않았는가?
+
+4항목 모두 확인. SKIP 없음.
 
 ### 판정 기준
-- ✅ PASS: A 모두 충족 + B (있을 경우) 주요 항목 충족
+- ✅ PASS: A 모두 충족 + B 4항목 모두 충족
 - ❌ FAIL with gaps: 충족 안 된 항목 목록 명시 → 구현자에게 수정 요청
 - ⚠️ PASS with notes: 통과하나 관찰 사항 있음
 
 ### 반환 형식
 판정: PASS / FAIL / PASS_WITH_NOTES
 미충족 항목: [있을 경우 목록]
-PRD 섹션 대조 결과: [§ 번호별 PASS/FAIL/SKIP]
+PRD 섹션 대조 결과: [§ 번호별 PASS/FAIL]

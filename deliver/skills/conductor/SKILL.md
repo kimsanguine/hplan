@@ -58,11 +58,48 @@ Running for: **$ARGUMENTS**
 
 ---
 
+## 실행 모드
+
+| 모드 | 트리거 | 실행 방식 | 리뷰 | COGS 검토 |
+|---|---|---|---|---|
+| `quality` (기본) | `--mode quality` 또는 플래그 없음 | 태스크 순차 | Spec + Quality 2단계 | ✅ |
+| `sprint` | `--mode sprint` | 독립 태스크 병렬 + 의존 태스크 순차 | 생략 | ✅ |
+
+**--mode sprint 사용 시 주의**:
+- `harness/implementation-plan.md`의 `depends_on` 필드 기준으로 의존 관계 파악
+- `depends_on: []` 태스크 → 병렬 서브에이전트 동시 디스패치
+- `depends_on: [TN]` 태스크 → TN 완료 확인 후 순차 실행
+- Spec/Quality 리뷰 루프 생략 (속도 우선)
+- **Step E(COGS 영향 검토)는 마지막에 한 번 유지** — 빠르게 만든 뒤 경제성이 깨지는 것을 방지
+- sprint 모드 완료 시 "⚠️ sprint 모드: 리뷰 루프 생략됨 — 배포 전 /harness-build --step spec-review 권장" 출력
+
+---
+
 ## 실행 루프
 
 ```
+[Phase 0] PRD → 구현 플랜 (자동)
+  - harness/PRD.md 존재 확인
+    없으면 → fail loud: "harness/PRD.md 없음 — /prd 먼저 실행하거나 $ARGUMENTS에 PRD 경로 명시"
+    있으면 → 계속
+  - harness/implementation-plan.md 존재 확인
+    있으면 → 기존 플랜 로드 (재생성 없음)
+    없으면 → PRD §7(성공지표) + §11(Output Spec) 두 섹션 읽기
+             → 태스크 단위 구현 플랜 생성
+             → harness/implementation-plan.md 저장
+             형식:
+               # Implementation Plan
+               generated: YYYY-MM-DD
+               source: harness/PRD.md
+
+               ## Tasks
+               - [ ] T1: [태스크 제목] — [파일 범위] depends_on: []
+               - [ ] T2: [태스크 제목] — [파일 범위] depends_on: [T1]
+               ...
+  - Phase 1에서 harness/implementation-plan.md를 우선 파싱 소스로 사용
+
 [Phase 1] 플랜 파싱
-  - docs/PRD.md 또는 harness/PROGRESS.md에서 태스크 목록 추출
+  - harness/implementation-plan.md 또는 harness/PROGRESS.md에서 태스크 목록 추출
   - 각 태스크를 체크리스트로 변환 ([ ] 형식)
 
 [Phase 2] 태스크별 루프 (태스크 하나씩 순서대로)
@@ -86,6 +123,16 @@ Running for: **$ARGUMENTS**
       - [ ] → [x] 갱신
       - 완료 증거 (커밋 해시 또는 파일명) 기록
 
+    Step E: COGS 영향 검토
+      - harness/build-gate/cogs_result.json 존재 확인
+        없으면 → SKIP (COGS 미실행 또는 백엔드 전용 제품)
+        있으면 →
+          예측 tokens_in, calls_per_user_month 읽기
+          구현 코드에서 LLM 호출 패턴 리뷰 (API 호출 수, 프롬프트 길이 추정)
+          예측 범위 명백히 초과하는 패턴 발견 시:
+            CONDITIONAL_PASS 표시 + "COGS 예측 초과 가능성 — 배포 전 cogs_sentinel.py --mode realtime 실행 권장"
+          범위 내 또는 판단 불가 → PASS
+
 [Phase 3] 최종 리뷰
   - 전체 태스크 완료 후 spec-review 전체 실행
   - 완료 리포트 출력
@@ -95,10 +142,29 @@ Running for: **$ARGUMENTS**
 
 ## Instructions
 
+### Step 0 — PRD 존재 확인 + 구현 플랜 생성
+
+1. `harness/PRD.md` Read 실행
+   - 파일 없으면 즉시 중단:
+     ```
+     ❌ harness/PRD.md 없음.
+     /prd 스킬로 PRD를 먼저 작성하거나,
+     $ARGUMENTS에 PRD 경로를 명시하세요.
+     ```
+2. `harness/implementation-plan.md` 존재 확인
+   - 있으면 → 로드 후 Step 1로 이동 (재생성 생략)
+   - 없으면 → PRD §7(성공지표 및 추적 지표), §11(Output Spec) 두 섹션 추출
+3. 추출된 섹션을 기반으로 태스크 단위 구현 플랜 생성:
+   - 각 태스크는 `T1`, `T2`, … 번호 + 제목 + 담당 파일 범위 + `depends_on` 필드 포함
+   - `depends_on: []` = 독립 태스크 (--mode sprint 병렬 대상)
+   - `depends_on: [T1]` = T1 완료 후 실행
+4. `harness/implementation-plan.md` Write
+5. Step 1로 이동 — 이 파일을 플랜 파싱 소스로 사용
+
 ### Step 1 — 플랜 파싱
 
 1. `$ARGUMENTS`에서 PRD 경로 또는 delivery brief 추출
-2. 우선순위: `docs/PRD.md` → `harness/PROGRESS.md` → `$ARGUMENTS` 인라인
+2. 우선순위: `harness/implementation-plan.md` → `harness/PROGRESS.md` → `$ARGUMENTS` 인라인
 3. 태스크 목록을 아래 형식으로 변환:
 
 ```
@@ -114,6 +180,12 @@ Running for: **$ARGUMENTS**
 - PRD 자체가 모순되어 진행 불가할 때
 
 `--confirm-plan` 플래그가 있을 때만 파싱 후 목록 확인 후 진행.
+
+`--mode sprint` 인 경우:
+- `harness/implementation-plan.md`의 `depends_on` 필드 파싱
+- 독립 태스크 (depends_on: []) 목록 → 병렬 디스패치 그룹으로 분류
+- 의존 태스크 → 순서 유지 그룹으로 분류
+- 병렬 그룹은 동시에 Agent 디스패치 (worktree isolation 권장)
 
 ### 모델 선택 가이드
 
@@ -147,6 +219,14 @@ fresh subagent를 호출한다. 템플릿의 각 플레이스홀더를 현재 �
 `NEEDS_CONTEXT` 재디스패치는 최대 2회. 2회 초과 시 `BLOCKED`로 처리.
 
 ### Step 4 — Spec Compliance Check
+
+**전처리: PRD 섹션 로드**
+1. `harness/PRD.md` Read (Step 0에서 이미 로드됐으므로 캐시 활용)
+2. 다음 3섹션 추출:
+   - §3 ICP 정의 (핵심 고객 + 해결 문제)
+   - §11 Output Spec (출력 구조·포맷·예시)
+   - §14 Failure Scenarios (실패 시나리오 목록)
+3. 구현 결과물과 3섹션을 나란히 제시해 교차 검증 수행
 
 3체크포인트를 순서대로 검증한다.
 
@@ -184,6 +264,25 @@ fresh subagent를 호출한다. 템플릿의 각 플레이스홀더를 현재 �
 ```
 
 완료 증거가 없는 체크 표시는 허용하지 않는다 (Rule 4 — Goal-Driven Execution).
+
+### Step 5-E — COGS 영향 검토 (경제성 삼각 검증)
+
+```bash
+# COGS 예측 로드 (없으면 SKIP)
+cat harness/build-gate/cogs_result.json 2>/dev/null || echo "COGS_SKIP"
+```
+
+- 파일 없으면 → SKIP (백엔드 전용 또는 COGS 미실행 제품)
+- 파일 있으면:
+  1. `inputs.tokens_in`, `inputs.calls_per_user_month` 확인
+  2. 구현 코드의 LLM API 호출 패턴 검토:
+     - 루프 안에서 반복 호출하는 패턴이 있는가?
+     - 단일 요청당 여러 LLM 호출이 예측보다 많은가?
+  3. 명백한 초과 패턴 → CONDITIONAL_PASS + 사유 기록
+  4. 범위 내 → PASS
+
+> 이 단계는 superpowers가 구조적으로 수행할 수 없는 hplan 고유 검증입니다.
+> COGS 예측 없이 출시하면 margin collapse 리스크가 있습니다.
 
 ### Step 7 — 최종 리뷰
 
