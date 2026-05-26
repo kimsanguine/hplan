@@ -51,3 +51,8 @@ class TestDesignSystemParser:
         html = render("design-system", data)
         assert html is not None
         assert "Primary" in html
+
+    def test_colors_preserve_source_order(self):
+        data = parse_design_system(FIXTURE)
+        names = [c["name"] for c in data["colors"]]
+        assert names == ["Primary", "Background", "Surface"]

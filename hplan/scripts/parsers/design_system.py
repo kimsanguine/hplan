@@ -39,20 +39,17 @@ def _extract_colors(md: str) -> list[dict]:
     if not section:
         return []
 
+    # Single pass: match hex OR rgb on each bullet line (preserves source order)
+    pattern = re.compile(
+        r"-\s+([^:]+):\s+(?:(#[0-9A-Fa-f]{3,8})\b|(rgb\([^)]+\)))"
+    )
     colors = []
-    # HEX 색상 매칭 (태스크 명세 정규식)
-    for m in re.finditer(r"-\s+([^:]+):\s+(#[0-9A-Fa-f]{3,8})\b", section):
+    for m in pattern.finditer(section):
+        name = m.group(1).strip()
         colors.append({
-            "name": m.group(1).strip(),
-            "hex": m.group(2),
-            "rgb": None,
-        })
-    # RGB 색상 매칭 (태스크 명세 정규식)
-    for m in re.finditer(r"-\s+([^:]+):\s+(rgb\([^)]+\))", section):
-        colors.append({
-            "name": m.group(1).strip(),
-            "hex": None,
-            "rgb": m.group(2),
+            "name": name,
+            "hex": m.group(2),    # None if rgb matched
+            "rgb": m.group(3),    # None if hex matched
         })
     return colors
 
