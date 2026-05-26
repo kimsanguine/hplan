@@ -370,9 +370,9 @@ python3 hplan/scripts/decision_log.py hitl \
 
 새 화면 또는 기능의 디자인 시스템 설정. 3단계 체인:
 
-1. **RESPECT.md 인터뷰** — `respect-brief` 스킬: three_second_rule / next_action / social_proof / hierarchy_rules / motion_language 정의 → `.design/RESPECT.md` 작성
+1. **RESPECT.md 인터뷰** — `deliver/respect` 스킬: three_second_rule / next_action / social_proof / hierarchy_rules / motion_language 정의 → `.design/RESPECT.md` 작성
 2. **DESIGN.md 확인** — 부재 시 `npx @google/design.md init` 권유; 존재 시 cross-reference 검증
-3. **Baseline 측정** (기존 화면 있을 경우) — hierarchy-rules 5룰 + WCAG AA 측정 → `.design/hierarchy-baseline.json`
+3. **Baseline 측정** (기존 화면 있을 경우) — `deliver/ui-validate --mode layout` 5룰 + WCAG AA 측정 → `.design/hierarchy-baseline.json`
 
 **출력**: `VERDICT: READY / NEEDS_DESIGN_MD / DRIFT_FOUND` + RESPECT.md 상태 + 다음 단계
 
@@ -389,9 +389,9 @@ python3 scripts/validate-craft-lint.py --strict   # Step 1: 정적 검증
 | Step | 검사 | PASS 조건 |
 |------|------|---------|
 | 1 | validate-craft-lint.py --strict | RESPECT.md 필드 + DESIGN.md cross-ref + hierarchy color_ratio |
-| 2 | hierarchy-rules (Playwright 1440×1080) | 5룰 + WCAG AA 모두 통과 |
-| 3 | motion-language 스캔 | drift 0 |
-| 4 | ui-drift-detect (5+ 화면 있을 때만) | baseline 대비 drift 없음 |
+| 2 | deliver/ui-validate --mode layout (Playwright 1440×1080) | 5룰 + WCAG AA 모두 통과 |
+| 3 | deliver/respect --mode motion 스캔 | drift 0 |
+| 4 | deliver/ui-validate --mode drift (5+ 화면 있을 때만) | baseline 대비 drift 없음 |
 
 **출력**: `VERDICT: PASS / FAIL` + 4단계 결과 + 실패 레이어 + 수정 권유
 
@@ -401,10 +401,10 @@ python3 scripts/validate-craft-lint.py --strict   # Step 1: 정적 검증
 
 새 기능 구현 시 PM 급 가시성 설정. 4단계 체인:
 
-1. **velocity-baseline** — `profiles/<operator>/velocity/baseline.jsonl` 확인 (trust_grade ≥ B이면 사용, 없으면 추출)
-2. **estimate-tasks** — PRD/feature description으로 WBS 분해 → `.track/predicted.json` 잠금
-3. **progress-probe install** — `.claude/settings.json` PostToolUse에 track-probe.sh 등록
-4. **gate-checkpoint install** — PreToolUse에 gate-block.sh 등록, 6-phase 통과 조건 로드
+1. **velocity baseline 추출** — `deliver/sprint --step init`: `profiles/<operator>/velocity/baseline.jsonl` 확인 (trust_grade ≥ B이면 사용, 없으면 추출)
+2. **태스크 분해** — `deliver/sprint --step plan`으로 PRD/feature description → WBS 분해 → `.track/predicted.json` 잠금
+3. **progress hook 등록** — `.claude/settings.json` PostToolUse에 track-probe.sh 등록
+4. **gate-checkpoint 등록** — PreToolUse에 gate-block.sh 등록, 6-phase 통과 조건 로드
 
 **출력**: `VERDICT: READY / NEEDS_BASELINE / FAILED` + 예측 범위 요약 + Hook 등록 상태
 
@@ -415,8 +415,8 @@ python3 scripts/validate-craft-lint.py --strict   # Step 1: 정적 검증
 구현 중 현재 상태 스냅샷. 3단계 체인:
 
 1. **Hook 상태 점검** — 직전 5분 항목 수 + hook/shell 비율 (hook < 80% → warning)
-2. **blocker-detect** — 5종 결정론 신호: self_doubt / retry_loop / test_fail_repeat / context_pressure / stall (score ≥ 8 → blocker, ≥ 15 → critical)
-3. **progress-report** — Predicted vs Actual (LOC/tokens/hours), Velocity vs baseline, ETA p50/p90, Blockers, Next gate
+2. **blocker 감지** — `deliver/sprint --step status` 5종 결정론 신호: self_doubt / retry_loop / test_fail_repeat / context_pressure / stall (score ≥ 8 → blocker, ≥ 15 → critical)
+3. **진척 보고** — `deliver/sprint --step status` Predicted vs Actual (LOC/tokens/hours), Velocity vs baseline, ETA p50/p90, Blockers, Next gate
 
 **출력**: 6섹션 보고 (Predicted/Actual/Velocity/ETA/Blockers/Next gate)
 
@@ -491,12 +491,12 @@ COGS 티어:  UNCHANGED / WARNING
 
 3개 체크포인트를 순서대로 확인한다:
 
-**① ICP 정합성** — `docs/PRD.md` Section 3 타겟 사용자 정의 vs 실제 구현된 접근 경로
+**① ICP 정합성** — `docs/PRD.md` Section 1 타겟 사용자 정의 vs 실제 구현된 접근 경로
 - PRD에 정의된 ICP 조건 목록 추출
 - 실제 구현에서 각 조건이 충족되는지 확인
 - 미구현 ICP 조건을 수정 태스크로 기록
 
-**② 비기능 요건** — PRD Section 9 (레이턴시·에러율·가용성) vs 실제 측정값
+**② 비기능 요건** — PRD Section 12 (성공 지표 Dual-axis — 레이턴시·에러율·가용성) vs 실제 측정값
 - 측정된 항목: 수치 비교 (목표 vs 실측)
 - 미측정 항목: 측정 계획 수립 태스크 생성
 

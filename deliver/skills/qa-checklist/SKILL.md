@@ -8,7 +8,7 @@ model: sonnet
 
 ## Core Goal
 
-`docs/PRD.md`의 ICP·테스트 전략·실패 시나리오 섹션을 파싱해
+`docs/PRD.md`의 ICP·성공 지표·실패 시나리오 섹션을 파싱해
 `harness/QA_CHECKLIST.md`를 자동 생성한다.
 
 | 모드 | 동작 |
@@ -67,7 +67,7 @@ PRD에 명시된 타겟 플랫폼 기준:
 
 ### Boundary Checks
 - `docs/PRD.md` 부재 → fail loud + "docs/PRD.md 없음. /harness-build --step prd 먼저 실행하세요."
-- Section 3(ICP) 부재 → fail loud + "PRD §3 ICP 섹션이 필요합니다."
+- Section 1(ICP) 부재 → fail loud + "PRD §1 ICP 섹션이 필요합니다."
 - `harness/` 디렉터리 부재 → `mkdir -p harness/` 후 진행
 
 ---
@@ -77,8 +77,8 @@ PRD에 명시된 타겟 플랫폼 기준:
 | 입력 | 출처 | 처리 |
 |---|---|---|
 | `--regenerate` / `--append` | `$ARGUMENTS` | 모드 분기 |
-| ICP 조건 목록 | `docs/PRD.md` Section 3 | critical TC 후보 |
-| 테스트 전략 | `docs/PRD.md` Section 11 (있으면) | 기존 케이스 병합 |
+| ICP 조건 목록 | `docs/PRD.md` Section 1 | critical TC 후보 |
+| 성공 지표 | `docs/PRD.md` Section 12 (있으면) | 성공 지표 기반 TC 후보 |
 | 실패 시나리오 | `docs/PRD.md` Section 14 | major/critical TC 후보 |
 | CONDITIONAL_GO 조건 | `harness/build-gate/checkpoint.json` (있으면) | 추가 TC 후보 |
 
@@ -109,9 +109,9 @@ PRD_MISSING 시:
 
 다음 섹션을 순서대로 Read해 내용을 추출한다:
 
-- **§3 ICP / 타겟 사용자**: ICP 정의, 주요 사용 시나리오, 핵심 목표 목록
-  - 부재 시 fail loud: "PRD §3 ICP 섹션이 필요합니다."
-- **§11 테스트 전략** (있으면): 기존 TC 목록 또는 테스트 범위 기술
+- **§1 ICP / 타겟 사용자**: ICP 정의, 주요 사용 시나리오, 핵심 목표 목록
+  - 부재 시 fail loud: "PRD §1 ICP 섹션이 필요합니다."
+- **§12 성공 지표** (있으면): 성공 지표 및 측정 기준
 - **§14 실패 시나리오** (있으면): 예상 실패 케이스 목록
 
 ```bash
@@ -123,7 +123,7 @@ cat harness/build-gate/checkpoint.json 2>/dev/null | grep -A2 "CONDITIONAL_GO" |
 
 각 입력 소스에서 TC 후보를 생성하고 심각도를 분류한다:
 
-**critical 생성 규칙 (§3 ICP 기반)**:
+**critical 생성 규칙 (§1 ICP 기반)**:
 - ICP의 핵심 목표 달성에 직결되는 시나리오 → critical
 - 회원가입, 로그인, 결제, 핵심 기능 단일 경로 → critical
 
@@ -160,7 +160,7 @@ mkdir -p harness
 ## 🔴 Critical (ICP 핵심 경로)
 | TC-ID | 시나리오 | 환경/디바이스 | 전제조건 | 기대 결과 | PRD 출처 | 심각도 |
 |---|---|---|---|---|---|---|
-| TC-001 | ... | ... | ... | ... | §3 ICP | critical |
+| TC-001 | ... | ... | ... | ... | §1 ICP | critical |
 
 ## 🟡 Major (대체 경로 존재, 현저히 불편)
 | TC-ID | 시나리오 | 환경/디바이스 | 전제조건 | 기대 결과 | PRD 출처 | 심각도 |
@@ -172,7 +172,7 @@ mkdir -p harness
 
 ## 통계
 - Total: N개 | Critical: X | Major: Y | Minor: Z
-- PRD 섹션 커버리지: §3 ✅/❌, §11 ✅/❌, §14 ✅/❌
+- PRD 섹션 커버리지: §1 ✅/❌, §12 ✅/❌, §14 ✅/❌
 ```
 
 ### Step 5 — 통계 출력
@@ -180,7 +180,7 @@ mkdir -p harness
 ```
 ✅ harness/QA_CHECKLIST.md 생성 완료
    Total: N | Critical: X | Major: Y | Minor: Z
-   커버리지: §3 ICP ✅ | §11 테스트전략 [✅/❌(없음)] | §14 실패시나리오 [✅/❌(없음)]
+   커버리지: §1 ICP ✅ | §12 성공지표 [✅/❌(없음)] | §14 실패시나리오 [✅/❌(없음)]
 ```
 
 ---
@@ -190,8 +190,8 @@ mkdir -p harness
 | 실패 상황 | 감지 | 대응 |
 |---|---|---|
 | `docs/PRD.md` 부재 | `ls` 실패 | fail loud + "harness-build --step prd 먼저" 안내 후 종료 |
-| §3 ICP 섹션 부재 | 섹션 추출 결과 없음 | fail loud + "PRD §3 ICP 섹션이 필요합니다." 후 종료 |
-| §11/§14 부재 | 섹션 추출 결과 없음 | SKIP (FAIL 아님) + 커버리지에 ❌ 표시 |
+| §1 ICP 섹션 부재 | 섹션 추출 결과 없음 | fail loud + "PRD §1 ICP 섹션이 필요합니다." 후 종료 |
+| §12/§14 부재 | 섹션 추출 결과 없음 | SKIP (FAIL 아님) + 커버리지에 ❌ 표시 |
 | `harness/` 부재 | `ls` 실패 | `mkdir -p harness/` 후 진행 |
 | `checkpoint.json` 부재 | `cat` 실패 | SKIP + 경고 없이 계속 |
 | `--append`에서 기존 파일 없음 | Read 실패 | `--regenerate`와 동일하게 신규 생성 |
@@ -201,8 +201,8 @@ mkdir -p harness
 ## Quality Gate
 
 - [ ] PRD_MISSING 시 즉시 종료, auto-generation 금지
-- [ ] §3 ICP 부재 시 즉시 종료
-- [ ] §11/§14 부재는 SKIP (FAIL 아님)
+- [ ] §1 ICP 부재 시 즉시 종료
+- [ ] §12/§14 부재는 SKIP (FAIL 아님)
 - [ ] 심각도 분류가 명시된 기준을 따름 (임의 분류 금지)
 - [ ] 디바이스/환경이 PRD 플랫폼 키워드 기반 결정론 매핑으로 결정됨
 - [ ] TC-ID가 TC-001부터 세 자리 순번으로 부여됨
@@ -214,10 +214,10 @@ mkdir -p harness
 ## Examples
 
 ### Good Example
-**입력:** `--append` (기본값, docs/PRD.md 존재, §3·§14 있음)
+**입력:** `--append` (기본값, docs/PRD.md 존재, §1·§14 있음)
 
 **기대 동작:**
-1. PRD §3에서 ICP 조건 추출 → critical TC 후보
+1. PRD §1에서 ICP 조건 추출 → critical TC 후보
 2. PRD §14에서 실패 시나리오 추출 → major/critical TC 후보
 3. 심각도 기준으로 분류
 4. harness/QA_CHECKLIST.md 생성
@@ -239,6 +239,6 @@ mkdir -p harness
 실행 중단. TC 생성 금지.
 
 ### Bad Example
-**입력:** `--append` (PRD에 §3 없음)
+**입력:** `--append` (PRD에 §1 없음)
 
-**기대 동작:** "PRD §3 ICP 섹션이 필요합니다." fail loud 후 종료. 부분 생성 금지.
+**기대 동작:** "PRD §1 ICP 섹션이 필요합니다." fail loud 후 종료. 부분 생성 금지.

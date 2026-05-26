@@ -441,13 +441,12 @@ COGS 오차 >50%이면 별도 🔴 표시 + "COGS 예측 모델 재검토" 권�
 
 **자동 기록**:
 ```bash
-python3 hplan/scripts/decision_log.py post-retro \
-  --gate "post-deploy" \
-  --verdict "[HYPOTHESIS_CONFIRMED|PARTIAL_MATCH|HYPOTHESIS_WRONG]" \
-  --axes_matched "[N]/8" \
-  --cogs_error "[N]%" \
-  --summary "[한 줄 요약]" \
-  --date "$(date +%Y-%m-%d)"
+python3 hplan/scripts/decision_log.py hitl \
+  --phase "operate" \
+  --q "post-retro 판정" \
+  --options "HYPOTHESIS_CONFIRMED|PARTIAL_MATCH|HYPOTHESIS_WRONG" \
+  --chosen "[판정: HYPOTHESIS_CONFIRMED / PARTIAL_MATCH / HYPOTHESIS_WRONG]" \
+  --why "[axes_matched: [N]/8, cogs_error: [N]%, 한 줄 요약]"
 ```
 
 보고서 저장:
