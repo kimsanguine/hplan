@@ -72,20 +72,24 @@ def import_ai_export(root: Path, export_path: Path) -> dict:
 
     imported = 0
     skipped = 0
+    # File-level namespace prevents anon-{idx} collisions when importing two
+    # different export files that both have anonymous interviewees at the same
+    # index. Same file re-imported still produces identical IDs (idempotency).
+    file_ns = export_path.stem
     with out_path.open("a", encoding="utf-8") as f:
         for interview_idx, interview in enumerate(data.get("interviews", [])):
             person_raw = interview.get("person")
-            # Assign sequential anon-N ID when person field is absent so that
-            # multiple anonymous interviewees in the same file produce distinct
-            # hashes and are never silently dropped as duplicates.
-            person = person_raw if person_raw else f"anon-{interview_idx}"
+            # Sequential anon-{file_ns}-{idx} ID when person field is absent.
+            person = person_raw if person_raw else f"anon-{file_ns}-{interview_idx}"
             int_date = interview.get("date", datetime.now(timezone.utc).date().isoformat())
             # Use raw date (or empty string) for hash so the same quote imported
             # on different dates always gets the same ID (idempotency).
             hash_date = interview.get("date") or ""
             for quote in interview.get("quotes", []):
+                # `or ""` handles explicit null text values (key present, value None).
+                quote_text = quote.get("text") or ""
                 qhash = hashlib.sha1(
-                    f"{person}{hash_date}{quote.get('text','')}".encode("utf-8")
+                    f"{person}{hash_date}{quote_text}".encode("utf-8")
                 ).hexdigest()[:8]
                 qhash_id = f"q-{qhash}"
                 if qhash_id in existing_ids:
@@ -98,7 +102,7 @@ def import_ai_export(root: Path, export_path: Path) -> dict:
                     "company_size": interview.get("company_size"),  # AI export JSON passthrough; None if absent
                     "date": int_date,
                     "theme": quote.get("theme"),
-                    "quote": quote.get("text", ""),
+                    "quote": quote_text,
                     "source": data.get("source", "ai-export"),
                     "status": "awaiting_human_tag",
                     "strength": None,
@@ -254,7 +258,7 @@ def write_persona_specs(root: Path, by_person: dict) -> "Path | None":
             q for q in strong_medium
             if "push" in (q.get("axes") or []) and q.get("strength") == "strong"
         ]
-        trigger = push_quotes[0]["quote"][:80] if push_quotes else ""
+        trigger = (push_quotes[0].get("quote") or "")[:80] if push_quotes else ""
         role = quotes[0].get("role") if quotes else None
         company_size = quotes[0].get("company_size") if quotes else None
         qualified.append({

@@ -1,8 +1,8 @@
-# Test Cases — Unified PRD 15-section Quality Gate
+# Test Cases — Unified PRD Quality Gate (15 sections + 4 cross-cutting checks = 19 items)
 
 ## 자동 검증 (validate-prd.sh)
 
-PRD 15-section 모두 통과해야 release 허용.
+PRD 15-section + 4 cross-cutting check 모두 통과해야 release 허용 (총 19개 항목).
 
 | # | 검증 | 통과 기준 |
 |---|------|----------|

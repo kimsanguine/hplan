@@ -141,7 +141,7 @@ ICP (Ideal Customer Profile):
 - 도달 채널 (verified):
 ```
 
-> 자동 호출: `discover/agent-gtm` beachhead 5-criteria 결과 inject
+> 자동 호출: `discover/agent-gtm` [예정] beachhead 5-criteria 결과 inject (부재 시 ICP 1줄 + 페르소나 2~3개 직접 작성)
 
 **이해관계자 영향도 매트릭스 (조직 도입 시 선택):**
 
@@ -172,7 +172,7 @@ ICP (Ideal Customer Profile):
 - Habit (기존 습관 관성):
 ```
 
-> 자동 호출: `discover/agent-gtm` Switch Interview 산출물
+> 자동 호출: `discover/agent-gtm` [예정] Switch Interview 산출물 (부재 시 Push/Pull/Anxiety/Habit 4 Forces로 1~3개 Job 직접 작성)
 
 ---
 
@@ -270,7 +270,7 @@ Anti-Goals (하면 안 되는 것, 최소 3개):
 3. [법적 책임 — 예: 의료 진단 대체 금지]
 ```
 
-> 자동 호출: `deliver/instruction` 7요소 상세 설계
+> 자동 호출: `deliver/instruction` [예정] 7요소 상세 설계 (부재 시 Anti-Goals 3개 직접 작성)
 
 ---
 
@@ -384,7 +384,7 @@ Anti-Metric (이 지표가 오르면 위험):
 [예: 평균 세션 시간이 30분 넘으면 사용자가 길을 잃은 것]
 ```
 
-> 자동 호출: `operate/metrics-design --step all` (dual-axis)
+> 자동 호출: `operate/metrics-design --step okr` (dual-axis)
 
 ---
 
@@ -700,7 +700,7 @@ You are helping write a complete **Unified PRD** for: **$ARGUMENTS**
 
 **Phase 1** — Section 1-3 (사람·문제·가치)
 - Section 1: ICP·페르소나 — `discover/agent-gtm` [예정] (beachhead 5-criteria; 부재 시 ICP 1줄 + 페르소나 2~3개 직접 작성)
-- Section 2: JTBD·Switch 4 Forces
+- Section 2: JTBD·Switch 4 Forces — `discover/agent-gtm` [예정] (부재 시 Push/Pull/Anxiety/Habit 4 Forces로 1~3개 Job 직접 작성)
 - Section 3: 핵심 문제 + 10배 가치 (정량)
 
 🔍 Checkpoint 1: User 검증 — "ICP·JTBD·문제가 5명 사랑 인터뷰에 그대로 쓸 수 있는가?"

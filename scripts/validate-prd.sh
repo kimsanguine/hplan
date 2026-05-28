@@ -1,6 +1,6 @@
 #!/bin/bash
-# validate-prd.sh — Unified PRD 14-section Quality Gate
-# v0.7: Agent PRD 7-section → Unified PRD 14-section 통합
+# validate-prd.sh — Unified PRD 15-section Quality Gate
+# v0.8: Add §15 QA Pool to 14-section gate
 
 OUTPUT_DIR="${1:-.}"
 ERRORS=0
@@ -12,9 +12,9 @@ if [ -z "$PRD_FILE" ]; then
   exit 0
 fi
 
-echo "📋 Unified PRD 14-section Quality Gate 검증: $PRD_FILE"
+echo "📋 Unified PRD 15-section Quality Gate 검증: $PRD_FILE"
 
-# 14-section 필수 키워드 (한글·영문 모두 매칭)
+# 15-section 필수 키워드 (한글·영문 모두 매칭)
 SECTIONS=(
   "ICP|페르소나|persona"
   "JTBD|Jobs|Push|Pull"
@@ -30,6 +30,7 @@ SECTIONS=(
   "OKR|North Star|Anti-Metric|성공 지표"
   "가설|Hypothes|2-day experiment"
   "실패|Failure|HITL|Human-in-the-loop"
+  "QA Pool|페르소나 에이전트|dev_roles|interview_evidence_verified"
 )
 
 SECTION_NAMES=(
@@ -47,6 +48,7 @@ SECTION_NAMES=(
   "Success Metrics (OKR)"
   "검증 가능 가설"
   "실패 모드·HITL"
+  "QA Pool (페르소나 + dev_roles)"
 )
 
 for i in "${!SECTIONS[@]}"; do
@@ -59,7 +61,7 @@ for i in "${!SECTIONS[@]}"; do
 done
 
 if [ $ERRORS -eq 0 ]; then
-  echo "✅ Quality Gate 통과 — 14-section 모두 포함"
+  echo "✅ Quality Gate 통과 — 15-section 모두 포함"
 else
   echo "⚠️ $ERRORS개 섹션 누락 — 검토 권장"
 fi

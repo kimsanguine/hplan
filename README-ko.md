@@ -408,7 +408,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 에이전트를 만들기 전에 반드시 답해야 할 질문들 — "어디에 기회가 있는지", "리스크는 뭔지", "직접 만들어야 하는지 사야 하는지", "비용은 얼마인지"를 체계적으로 분석합니다.
 
 > ⚠️ **현재 사용 가능 (4개):** `opp-tree` · `assumptions` · `cost-sim` · `hitl`
-> 아래 목록의 `build-or-buy`, `agent-gtm`, `design-reference`는 **로드맵 예정**입니다.
+> 아래 목록의 `build-or-buy`, `agent-gtm`, `design-reference`는 **로드맵 예정**입니다 — 표에 섞여 있으니 위 4개만 호출 가능한 것으로 간주하세요.
 
 | 스킬 | 기능 | 이런 상황에서 쓰세요 |
 |------|------|-------------------|
@@ -429,7 +429,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 에이전트의 구조를 잡는 단계입니다. 에이전트가 하나일 때는 괜찮지만, 여러 개가 협업해야 할 때 — 누가 전략을 짜고, 누가 실행하고, 비용은 어떻게 줄이고, 해자는 어떻게 만들지를 설계합니다.
 
 > ⚠️ **현재 사용 가능 (5개):** `orchestration` · `router` · `memory-arch` · `design-token` · `strategy`
-> 아래 목록의 `3-tier`, `biz-model`, `moat`, `growth-loop`는 **로드맵 예정**입니다.
+> 아래 목록의 `3-tier`, `biz-model`, `moat`, `growth-loop`는 **로드맵 예정**입니다 — 표에 섞여 있으니 위 5개만 호출 가능한 것으로 간주하세요.
 
 | 스킬 | 기능 | 이런 상황에서 쓰세요 |
 |------|------|-------------------|
@@ -451,7 +451,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 실제로 만들고 출시하는 단계입니다. 프로젝트 온보딩(CLAUDE.md 자동 생성)부터 에이전트 전용 PRD 작성, 시스템 프롬프트 설계, 토큰 예산 관리, 이해관계자 설득 자료 제작, 실행 진행 추적, 디자인 시스템 강제까지 포함합니다.
 
 > ⚠️ **현재 사용 가능 (8개):** `agent-setup` · `prd` · `build-loop` · `qa-checklist` · `respect` · `sprint` · `ui-validate` · `conductor`
-> 아래 목록의 나머지 스킬(instruction, prompt, ctx-budget, parallel-team 등)은 **로드맵 예정**입니다.
+> 아래 목록의 나머지 스킬(instruction, prompt, ctx-budget, parallel-team 등)은 **로드맵 예정**입니다 — 표에 섞여 있으니 위 8개만 호출 가능한 것으로 간주하세요.
 
 | 스킬 | 기능 | 이런 상황에서 쓰세요 |
 |------|------|-------------------|
@@ -492,7 +492,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 출시 이후가 진짜 시작입니다. 에이전트는 "조용히 틀리는" 경우가 많아서, 운영 지표 설정·비용 추적·실패 감지·실험 설계와 함께 PM 암묵지 구조화·포트폴리오 우선순위까지 한 플러그인에서 처리합니다.
 
 > ⚠️ **현재 사용 가능 (6개):** `metrics-design` · `reliability` · `pm-engine` · `incident` · `ops-review` · `portfolio`
-> 아래 목록의 나머지 스킬(kpi, burn-rate, premortem, scorecard-5axis 등)은 **로드맵 예정**입니다.
+> 아래 목록의 나머지 스킬(kpi, burn-rate, premortem, scorecard-5axis 등)은 **로드맵 예정**입니다 — 표에 섞여 있으니 위 6개만 호출 가능한 것으로 간주하세요.
 
 | 스킬 | 기능 | 이런 상황에서 쓰세요 |
 |------|------|-------------------|
@@ -613,9 +613,9 @@ claude \
 
 ### 명령어 체이닝
 
-슬래시 명령어 하나로 여러 스킬을 순서대로 실행할 수 있습니다:
+> ⚠️ **아래 5개 슬래시 명령은 로드맵 예정입니다.** 현재 사용 가능한 슬래시: `/hplan` · `/prd` · `/harness-discover` · `/harness-plan` · `/harness-build` · `/harness-operate` · `/harness-doctor` · `/harness-exclude` · `/harness-handoff` · `/harness-verify` · `/evidence-rubric` · `/cogs-sentinel`. 아래 표는 향후 추가 예정 체이닝 패턴입니다.
 
-| 명령어 | 실행되는 스킬 순서 | 플러그인 |
+| 명령어 (로드맵) | 실행되는 스킬 순서 | 플러그인 |
 |--------|-----------------|---------|
 | `/discover` | opp-tree → assumptions → hitl | discover |
 | `/architecture` | orchestration → memory-arch → strategy | architect |

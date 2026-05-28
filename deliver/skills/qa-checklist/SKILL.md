@@ -216,7 +216,7 @@ ls docs/PRD.md 2>/dev/null || echo "PRD_MISSING"
 
 `harness/QA_POOL.json` 로드 → `dev_roles` 배열에서 역할 목록 추출.
 - `dev_roles`가 빈 배열(`[]`)이면 즉시 종료: "`dev_roles`가 비어 있습니다. /prd 재실행하고 §15 QA Pool을 완성하세요."
-- `interview_evidence_verified` 필드가 `false`이면 WARN: "⚠️ interview_evidence_verified: false — 인터뷰 evidence 없이 생성된 QA Pool입니다. 결과 신뢰도가 낮을 수 있습니다. `/interview-synthesis import → tag → audit` 완료 후 `/prd` 재실행해 `interview_evidence_verified: true`로 갱신하세요."
+- `interview_evidence_verified` 필드가 `false`이면 WARN: "⚠️ interview_evidence_verified: false — 인터뷰 evidence 없이 생성된 QA Pool입니다. 결과 신뢰도가 낮을 수 있습니다. `python3 hplan/scripts/interview_synthesis.py import → tag → audit` 완료 후 `/prd` 재실행해 `interview_evidence_verified: true`로 갱신하세요."
 
 `harness/PERSONA_SPECS.json` 존재 시 → P01~P0N 로드.
 - PERSONA_SPECS.json 내용이 빈 배열(`[]`)이면 → PERSONA_MISSING과 동일하게 처리:

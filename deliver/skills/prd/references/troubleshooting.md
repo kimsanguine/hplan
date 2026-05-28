@@ -1,15 +1,15 @@
-# Troubleshooting — Unified PRD 14-section 작성 FAQ
+# Troubleshooting — Unified PRD 15-section 작성 FAQ
 
-## Q: 14 섹션이 너무 많다. 줄일 수 없나?
+## Q: 15 섹션이 너무 많다. 줄일 수 없나?
 
 A: 모든 섹션이 필요. 다만 적용 강도가 다름.
 - 1인 빌더 v0.1: Section 1·2·3·6은 상세, 나머지 간단
 - 5명 사랑 직전 v0.3: 모든 섹션 상세
-- 외부 전달용 v1.0: 14개 모두 + TK 인용
+- 외부 전달용 v1.0: 15개 모두 + TK 인용
 
 ## Q: 일반 SaaS (LLM 에이전트 없음)이면 Section 7-11을 어떻게 채우나?
 
-A: "N/A — 일반 SaaS. AI 기능 없음"으로 간단 표기. PRD가 14-section을 모두 가지되 적용 안 되는 섹션은 명시. 미래에 AI 기능 추가 시 이 섹션이 빈 자리로 남아 작성 가능.
+A: "N/A — 일반 SaaS. AI 기능 없음"으로 간단 표기. PRD가 15-section을 모두 가지되 적용 안 되는 섹션은 명시. 미래에 AI 기능 추가 시 이 섹션이 빈 자리로 남아 작성 가능.
 
 ## Q: ICP가 너무 좁아서 시장이 작다고 느껴진다
 

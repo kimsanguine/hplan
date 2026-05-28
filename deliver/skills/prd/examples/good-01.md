@@ -1,7 +1,7 @@
 # Unified PRD — 1인 변호사용 한국 판례 RAG SaaS (LLM Wiki Legal v0.1)
 
-> 14-section 통합 PRD 예시. 1인 빌더 60일 사이클의 모범 PRD.
-> 고객 향 SaaS (Section 1-6) + LLM 에이전트 사양 (Section 7-11) + 지표·가설·실패 (Section 12-14) 통합.
+> 15-section 통합 PRD 예시. 1인 빌더 60일 사이클의 모범 PRD.
+> 고객 향 SaaS (Section 1-6) + LLM 에이전트 사양 (Section 7-11) + 지표·가설·실패 (Section 12-14) + 부록 §15 QA Pool 통합.
 
 ---
 
@@ -272,7 +272,7 @@ Procedural Memory:
 
 ---
 
-## TK 인용 (learn/pm-engine 자동)
+## TK 인용 (operate/pm-engine 자동)
 
 - **TK-041**: 긴급 트리거 규칙 — 변호사 책임 영역 hallucination = Critical
 - **TK-018**: 1인 빌더 60일 사이클 — Day 30 MVP / Day 60 Live URL / Day 90 5명 사랑

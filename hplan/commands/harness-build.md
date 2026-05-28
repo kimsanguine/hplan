@@ -320,6 +320,14 @@ python3 hplan/scripts/decision_log.py hitl \
   --prd-version "v0.1"
 ```
 
+**Phase E — §15 QA Pool 작성 (`/prd`로 위임)**
+
+§15 QA Pool과 `harness/QA_POOL.json`은 `deliver/prd` 스킬이 작성한다. `harness-build --step prd`는 Section 1-14만 작성하므로, `qa-checklist --mode adversarial` 진입 전 `/prd $ARGUMENTS`를 추가 호출해 §15까지 채워야 한다.
+
+자동 호출 가이드:
+- `interview-synthesis audit` 결과 `PROCEED_TO_PRODUCT_GATE` + `harness/PERSONA_SPECS.json` 존재 → `/prd`가 페르소나를 §15에 매핑
+- audit 결과 `INTERVIEW_OR_HOLD` 또는 `PERSONA_SPECS.json` 부재 → §15는 `interview_evidence_verified: false` 플래그로 작성
+
 *`--step prd` 선택 시 여기서 종료.*
 
 #### Step 4-2: OKR 설계 (`--step okr`)
@@ -589,7 +597,7 @@ fi
 2. **Product Gate** — OST 상태 / Journey+sitemap / Design pointer / 다음 게이트
 3. **COGS Gate** — 비용 p50/p90 / Gross margin / GREEN·CONDITIONAL_GO·RED
 4. **Checkpoint 상태** — `harness/build-gate/checkpoint.json` 작성 완료 (gate_guard.py 해제)
-5. **`docs/PRD.md`** — 15섹션 PRD 작성 완료
+5. **`docs/PRD.md`** — Section 1-14 작성 완료 (§15 QA Pool은 `/prd` 추가 호출 필요)
 6. **`harness/SPRINT-W1.md`** — W1 스프린트 플랜 작성 완료
 7. **다음 단계** — "W1 Day 1: 에이전트 인스트럭션 작성 시작"
 8. **Spec Compliance** — ICP·비기능·실패 모드 3 체크포인트 판정 (통과/조건부/재작업)

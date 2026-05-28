@@ -62,10 +62,12 @@ Expected AI export JSON shape:
 
 ## Steps
 
-1. `interview_synthesis.py import <ai_export.json>` — quotes를 `harness/evidence/snapshots.jsonl` 에 ingest (status: awaiting_human_tag).
-2. `list --untagged` — 미태깅 quote 확인.
-3. quote마다 `tag <quote_id> --strength strong --axes push,anxiety` — 인간 입력.
-4. `audit` — 5/3 규칙 통과 여부 + 다음 액션 가이드.
+실행은 `python3 hplan/scripts/interview_synthesis.py <subcommand>` 형태로 호출합니다.
+
+1. `python3 hplan/scripts/interview_synthesis.py import <ai_export.json>` — quotes를 `harness/evidence/snapshots.jsonl` 에 ingest (status: awaiting_human_tag).
+2. `python3 hplan/scripts/interview_synthesis.py list --untagged` — 미태깅 quote 확인.
+3. quote마다 `python3 hplan/scripts/interview_synthesis.py tag <quote_id> --strength strong --axes push,anxiety` — 인간 입력.
+4. `python3 hplan/scripts/interview_synthesis.py audit` — 5/3 규칙 통과 여부 + 다음 액션 가이드.
 5. `audit` 결과가 `PROCEED_TO_PRODUCT_GATE`이면 **PERSONA_SPECS.json 저장** — 태깅된 인터뷰이를 QA 라운드용 페르소나로 구조화해 `harness/PERSONA_SPECS.json`에 기록.
 
 ### PERSONA_SPECS.json 생성 규칙

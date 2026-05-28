@@ -316,7 +316,7 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 | Skill | What it does | When to use |
 |-------|-------------|-------------|
 | `claude-md` ⭐ | Scan project structure → auto-generate CLAUDE.md → recommend matching hplan plugins | "New project — set up Claude Code context" |
-| `prd` | **Unified 14-section PRD** — People/Problem/Decisions + Agent/Execution Spec + Metrics/Hypotheses/Failure | "Write a PRD for a solo-lawyer Korean case-law RAG agent" |
+| `prd` | **Unified 15-section PRD** — People/Problem/Decisions + Agent/Execution Spec + Metrics/Hypotheses/Failure + §15 QA Pool | "Write a PRD for a solo-lawyer Korean case-law RAG agent" |
 | `agent-instructions` | Draft (CRISP prompt design, 7 failure patterns) or full (system prompt + 7-element spec + tool list + memory_config). `--level draft\|full` | "What goes in (and out of) the system prompt?" / "Longer prompts make my agent behave worse" |
 | `ctx-budget` | Estimate per-file token usage → classify Essential/Conditional/Excluded → 70% threshold alerts | "How do I fit 5 RAG docs + chat history into 128K?" |
 | `stakeholder-map` | Power-Interest matrix + blocker response strategies + internal champion cultivation | "Legal is blocking the agent rollout" |
