@@ -221,6 +221,14 @@ claude-hplan-gate  # 게이트만 (WHETHER 판단 전용)
 
 > **시스템 요구사항:** Claude Code v1.0+, Python 3.9+ (Evidence Gate 스크립트용), Git (pre-commit hook 선택). 자세한 설치 환경은 [GUIDE-ko.md](GUIDE-ko.md#시스템-요구사항) 참조.
 
+### 유료 강의 수강생용 private 설치
+
+```bash
+bash <(curl -fsSL https://habix.ai/hplan/install.sh)
+```
+
+이 명령은 private package를 `~/hplan`에 설치하고 로컬 Claude CLI alias를 등록합니다. 운영 방식은 [`docs/private-distribution.md`](docs/private-distribution.md)에 정리되어 있습니다.
+
 ### 방법 A — 라이프사이클 커맨드 (권장, hplan 1개만 설치)
 
 ```bash

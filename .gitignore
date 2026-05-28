@@ -37,6 +37,9 @@ Thumbs.db
 # Node (if skills use npm)
 node_modules/
 package-lock.json
+dist/
+.wrangler/
+infra/cloudflare/hplan-installer/public/
 
 # Python
 __pycache__/

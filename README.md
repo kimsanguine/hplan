@@ -124,6 +124,14 @@ This project turns those questions into **65 production-grade skills** across th
 
 ## Quick Start (60 seconds)
 
+For private course distribution, use the one-line installer:
+
+```bash
+bash <(curl -fsSL https://habix.ai/hplan/install.sh)
+```
+
+This installs the current private package to `~/hplan` and registers local Claude CLI aliases. See [`docs/private-distribution.md`](docs/private-distribution.md) for the Worker/R2 publishing flow.
+
 ```bash
 # 1. Install the marketplace
 /plugin marketplace add kimsanguine/hplan

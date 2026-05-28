@@ -1,0 +1,13 @@
+name = "hplan-installer"
+main = "src/worker.js"
+compatibility_date = "2026-05-28"
+workers_dev = true
+
+routes = [
+  { pattern = "habix.ai/hplan/*", zone_name = "habix.ai" }
+]
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+run_worker_first = true
