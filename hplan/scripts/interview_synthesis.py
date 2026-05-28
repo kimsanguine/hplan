@@ -58,7 +58,20 @@ def import_ai_export(root: Path, export_path: Path) -> dict:
     out_path = snapshots_path(root)
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
+    # Idempotency: load existing IDs so re-importing the same file is a no-op.
+    existing_ids: set[str] = set()
+    if out_path.exists():
+        for line in out_path.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                existing_ids.add(json.loads(line)["id"])
+            except (json.JSONDecodeError, KeyError):
+                continue
+
     imported = 0
+    skipped = 0
     with out_path.open("a", encoding="utf-8") as f:
         for interview in data.get("interviews", []):
             person = interview.get("person", "anonymous")
@@ -67,10 +80,15 @@ def import_ai_export(root: Path, export_path: Path) -> dict:
                 qhash = hashlib.sha1(
                     f"{person}{int_date}{quote.get('text','')}".encode("utf-8")
                 ).hexdigest()[:8]
+                qhash_id = f"q-{qhash}"
+                if qhash_id in existing_ids:
+                    skipped += 1
+                    continue
                 payload = {
-                    "id": f"q-{qhash}",
+                    "id": qhash_id,
                     "person": person,
-                    "role": interview.get("role"),  # AI export JSON passthrough; None if absent
+                    "role": interview.get("role"),          # AI export JSON passthrough; None if absent
+                    "company_size": interview.get("company_size"),  # AI export JSON passthrough; None if absent
                     "date": int_date,
                     "theme": quote.get("theme"),
                     "quote": quote.get("text", ""),
@@ -80,8 +98,9 @@ def import_ai_export(root: Path, export_path: Path) -> dict:
                     "axes": [],
                 }
                 f.write(json.dumps(payload, ensure_ascii=False) + "\n")
+                existing_ids.add(qhash_id)
                 imported += 1
-    return {"imported": imported, "path": str(out_path)}
+    return {"imported": imported, "skipped": skipped, "path": str(out_path)}
 
 
 def read_all(root: Path) -> list[dict]:
@@ -195,9 +214,8 @@ def write_persona_specs(root: Path, by_person: dict) -> "Path | None":
     Inclusion rule: interviewee must have at least 2 tagged quotes with
     strength in {strong, medium} — filters noise.
     Deterministic fields (no LLM inference):
-      id, name, role, anxiety_tags, trigger, experience_level — from tagging data.
-      role — passthrough from import_ai_export(); None if absent in source JSON.
-      company_size — not in tagging data; left as None (fill manually).
+      id, name, role, company_size, anxiety_tags, trigger, experience_level — from tagging data.
+      role, company_size — passthrough from import_ai_export(); None if absent in source JSON.
     P-IDs are assigned by qualification order (len(qualified)+1), not by
     iteration order, so skipped interviewees do not create ID gaps.
     Returns the written Path, or None if no interviewee qualifies.
@@ -223,14 +241,15 @@ def write_persona_specs(root: Path, by_person: dict) -> "Path | None":
         ]
         trigger = push_quotes[0]["quote"][:80] if push_quotes else ""
         role = quotes[0].get("role") if quotes else None
+        company_size = quotes[0].get("company_size") if quotes else None
         qualified.append({
             "id": f"P{len(qualified)+1:02d}",
             "name": person,
-            "role": role,        # passthrough from import_ai_export(); None if absent
+            "role": role,         # passthrough from import_ai_export(); None if absent
             "anxiety_tags": anxiety_tags,
             "trigger": trigger,
             "experience_level": _experience_level(quotes),
-            "company_size": None,  # not in tagging data; fill manually
+            "company_size": company_size,  # passthrough from import_ai_export(); None if absent
         })
     if not qualified:
         return None

@@ -228,7 +228,7 @@ claude-hplan-gate  # 게이트만 (WHETHER 판단 전용)
 /plugin marketplace add kimsanguine/hplan
 /plugin install hplan@kimsanguine-hplan
 
-# 전체 라이프사이클을 4개 커맨드로
+# 전체 라이프사이클을 5개 커맨드로
 /harness-discover "AI 마케팅 카피 생성기"   # 기회 매핑 + 가정 분석 + 비용 추정
 /hplan "AI 마케팅 카피 생성기"            # WHETHER gate — GO / HOLD / INVESTIGATE
 /harness-plan "마케팅 카피 에이전트"        # 아키텍처 설계 + W1 Done Criteria
@@ -245,9 +245,9 @@ claude-hplan-gate  # 게이트만 (WHETHER 판단 전용)
 # → reopen_trigger UNMET → HOLD
 
 # 개별 게이트로 깊은 분석:
-/hplan-evidence "AI 마케팅 카피 생성기"   # 100점 루브릭 전체 + 인터뷰 합성
-/hplan-cogs --provider anthropic --model claude-sonnet-4-6 \
-            --tokens-in 3000 --calls 40 --arpu 29
+/evidence-rubric "AI 마케팅 카피 생성기"   # 100점 루브릭 전체 + 인터뷰 합성
+/cogs-sentinel --provider anthropic --model claude-sonnet-4-6 \
+               --tokens-in 3000 --calls 40 --arpu 29
 # → p50 마진 95%, p90 90%, blended 49% → GREEN
 ```
 
@@ -392,7 +392,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 |--------|------|------|
 | `/harness-discover <idea>` | Discover | 기회 매핑 → 가정 분석 → 비용 시뮬 → 빌드/바이 결정 |
 | `/harness-plan <system>` | Plan | 오케스트레이션 → 3-tier → 메모리 → 모델 라우팅 |
-| `/harness-build <brief>` | Build | COGS gate + PRD 8-section 자동 작성 + W1 스프린트 |
+| `/harness-build <brief>` | Build | COGS gate + PRD 15-section 자동 작성 + W1 스프린트 |
 | `/harness-operate <agent>` | Operate | KPI · 신뢰성 · 비용 · 개선 계획 + 지식 추출 |
 
 **게이트 세밀 제어:** `/hplan` · `/harness-exclude` · `/harness-handoff` · `/harness-doctor`

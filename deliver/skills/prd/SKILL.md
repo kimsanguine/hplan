@@ -109,7 +109,7 @@ hooks:
 - [ ] 디자인 시그니처 commit: UI/UX 있으면 `deliver/respect --mode brief` 호출 + RESPECT.md 참조, 없으면 "N/A — 백엔드만" 명시 (Yes/No/N/A)
 - [ ] Section 15: QA Pool — 페르소나 소스 명시, 개발 역할 결정론 매핑 근거 포함, `harness/QA_POOL.json` 저장됨 (Yes/No)
 - [ ] 전체 일관성: 섹션 간 충돌·누락 없음 (Yes/No)
-- [ ] TK 인용: `learn/pm-engine` 쿼리로 관련 TK-NNN 3~5개 (Yes/No)
+- [ ] TK 인용: `operate/pm-engine` 쿼리로 관련 TK-NNN 3~5개 (Yes/No)
 - [ ] `--mode design-shotgun`: docs/PRD.md 부재 시 즉시 종료
 - [ ] `--mode design-shotgun`: §11 부재 시 즉시 종료
 - [ ] `--mode design-shotgun`: 4개 HTML 변형 + comparison.md 생성됨
@@ -699,21 +699,21 @@ mkdir -p harness/design-variants
 You are helping write a complete **Unified PRD** for: **$ARGUMENTS**
 
 **Phase 1** — Section 1-3 (사람·문제·가치)
-- Section 1: ICP·페르소나 — `discover/agent-gtm` 호출 (beachhead 5-criteria)
+- Section 1: ICP·페르소나 — `discover/agent-gtm` [예정] (beachhead 5-criteria; 부재 시 ICP 1줄 + 페르소나 2~3개 직접 작성)
 - Section 2: JTBD·Switch 4 Forces
 - Section 3: 핵심 문제 + 10배 가치 (정량)
 
 🔍 Checkpoint 1: User 검증 — "ICP·JTBD·문제가 5명 사랑 인터뷰에 그대로 쓸 수 있는가?"
 
 **Phase 2** — Section 4-6 (결정·범위)
-- Section 4: 결정 옵션 매트릭스 — `discover/build-or-buy` + `architect/orchestration` + `discover/hitl`
+- Section 4: 결정 옵션 매트릭스 — `discover/build-or-buy` [예정] + `architect/orchestration` + `discover/hitl`
 - Section 5: 제외사항 — `hplan/exclusions` 자동 인용
 - Section 6: Now/Next/Later — `discover/cost-sim` (cogs p50/p90)
 
 🔍 Checkpoint 2: User 검증 — "MVP가 60일 안에 가능한가? cogs가 1인 빌더 감당 가능한가?"
 
 **Phase 3** — Section 7-11 (에이전트·실행 사양)
-- Section 7: Role + Anti-Goals — `deliver/instruction` 호출
+- Section 7: Role + Anti-Goals — `deliver/instruction` [예정] (부재 시 Anti-Goals 3개 직접 작성)
 - Section 8: Tools & Integrations + 호출 제한 mandatory
 - Section 9: 3-tier Memory (Working / Long-term / Procedural)
 - Section 10: Trigger & Execution Flow Step-by-Step
@@ -729,10 +729,10 @@ You are helping write a complete **Unified PRD** for: **$ARGUMENTS**
 - Section 14: 실패 모드 (4개 이상) + HITL 트리거
 
 **Phase 5** — PRD 통합 & TK 인용 & QA Pool 저장
-- `learn/pm-engine` 쿼리로 관련 TK-NNN 3~5개 인용 (각 섹션 하단에 시드)
+- `operate/pm-engine` 쿼리로 관련 TK-NNN 3~5개 인용 (각 섹션 하단에 시드)
 - §15 QA Pool 결정론 매핑 실행 → `harness/QA_POOL.json` 저장
   - `harness/PERSONA_SPECS.json` 존재 시 페르소나 소스 연결, 없으면 "페르소나 없음" 명시
-- Quality Gate 17개 항목 (15 섹션 + 일관성 + TK 인용) 모두 통과 확인
+- Quality Gate 18개 항목 (15 섹션 + 디자인 시그니처 + 일관성 + TK 인용) 모두 통과 확인
 - `docs/PRD.md`에 저장
 
 ---

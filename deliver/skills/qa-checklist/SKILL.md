@@ -195,8 +195,6 @@ mkdir -p harness
 
 ---
 
----
-
 ## Instructions (`--mode adversarial`)
 
 You are running qa-checklist in **adversarial QA 라운드** mode.

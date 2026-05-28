@@ -10,7 +10,7 @@
 | `agent-setup` | 에이전트 환경 설정 통합 — 7요소 인스트럭션 작성 + CLAUDE.md/AGENTS.md 구성 | `--focus instructions\|claude-md\|both` |
 | `build-loop` | 빌드-테스트-수정 자율 반복 루프 | `[task brief]` |
 | `conductor` | 태스크별 fresh subagent 디스패치 + 2단계 게이트(spec→quality) 반복 실행 | `[PRD path or delivery brief]` |
-| `prd` | 14-section 통합 PRD 작성 — 사용자/JTBD/결정/스코프/에이전트 사양/지표/가설 | `[product or agent name]` |
+| `prd` | 15-section 통합 PRD 작성 — 사용자/JTBD/결정/스코프/에이전트 사양/지표/가설/QA Pool | `[product or agent name]` |
 | `qa-checklist` | QA 체크리스트 실행 — 기능/성능/보안/접근성 검증 | `[target or scope]` |
 | `respect` | UI/UX 디자인 시그니처 적용 — RESPECT.md 기반 3초 룰/다음 행동/social proof | `--mode brief\|full\|audit` |
 | `sprint` | 스프린트 계획-실행-추적 통합 — WBS 분해, predicted.json 초기화, 진척 추적, 회고 | `--step plan\|init\|status\|retro` |

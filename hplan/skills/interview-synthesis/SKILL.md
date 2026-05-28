@@ -72,7 +72,7 @@ Expected AI export JSON shape:
 - **대상**: `strength: strong` 또는 `medium` quote가 2개 이상인 인터뷰이만 포함 (noise 제거)
 - **결정론**: id·name·anxiety_tags·trigger·experience_level은 태깅 데이터에서 직접 추출 (LLM 추론 금지)
 - **null 처리**: `role`과 `company_size`는 AI export JSON에 해당 필드가 있으면 기입, 없으면 `null` 저장 — LLM 추론으로 채우지 않음.
-- **experience_level**: `axes`에 `habit` strong이 있으면 "숙련", `push` strong만 있으면 "입문", 혼재 시 "중급" (결정론 매핑)
+- **experience_level**: `axes`에 `habit` strong이 있으면 "숙련", `push` strong만 있으면 "입문", 혼재 시 "중급", strong 신호 없으면 "입문" (default) — 결정론 매핑, 4 케이스 모두 코드에서 처리
 
 ```json
 // harness/PERSONA_SPECS.json
@@ -80,11 +80,11 @@ Expected AI export JSON shape:
   {
     "id": "P01",
     "name": "인터뷰이 이름 또는 익명 ID",
-    "role": "직군·역할 (PRD ICP 기반)",
-    "anxiety_tags": ["anxiety축 태그 목록"],
-    "trigger": "가장 강한 push quote 요약 (1줄)",
+    "role": "AI export JSON passthrough — 없으면 null (수동 입력)",
+    "anxiety_tags": ["anxiety"],
+    "trigger": "가장 강한 strong push quote 앞 80자 (없으면 빈 문자열)",
     "experience_level": "입문 | 중급 | 숙련",
-    "company_size": "ICP에서 추론 가능하면 기재, 불명이면 null"
+    "company_size": "AI export JSON passthrough — 없으면 null (수동 입력)"
   }
 ]
 ```
