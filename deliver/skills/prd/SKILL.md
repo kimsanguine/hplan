@@ -732,7 +732,7 @@ You are helping write a complete **Unified PRD** for: **$ARGUMENTS**
 - `operate/pm-engine` 쿼리로 관련 TK-NNN 3~5개 인용 (각 섹션 하단에 시드)
 - §15 QA Pool 결정론 매핑 실행 → `harness/QA_POOL.json` 저장
   - `harness/PERSONA_SPECS.json` 존재 시 페르소나 소스 연결, 없으면 "페르소나 없음" 명시
-- Quality Gate 18개 항목 (15 섹션 + 디자인 시그니처 + 일관성 + TK 인용) 모두 통과 확인
+- Quality Gate 19개 항목 (15 섹션 + 디자인 시그니처 + §15 QA Pool + 일관성 + TK 인용) 모두 통과 확인 (`references/test-cases.md`와 동일 산식)
 - `docs/PRD.md`에 저장
 
 ---

@@ -26,4 +26,4 @@ Running for: **$ARGUMENTS**
 ## 후속
 
 - `harness/QA_POOL.json` 생성 후 `qa-checklist --mode adversarial` 실행 가능.
-- 14-section만 필요하고 §15 QA Pool 미필요 시 `harness-build --step prd` 단축 경로 사용.
+- §15 QA Pool 생성을 다음 단계로 미루고 PRD 본문(Section 1-14)만 빨리 작성하려면 `harness-build --step prd` 단축 경로 사용. (단, `qa-checklist --mode adversarial`은 §15가 있어야 진입 가능 — 사후 `/prd` 재호출 필요)

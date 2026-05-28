@@ -181,7 +181,7 @@ Phase 0-1 대화에서 페르소나 정보를 추출해 PRD §1 구조로 변환
    B. docs/brainstorm-assumptions.md 가정 목록 생성
    C. docs/PRD-draft-section1.md §1 ICP 초안 생성
 
-다음 단계: /deliver:prd 를 실행하면 위 초안을 참고해 14섹션 PRD를 작성합니다.
+다음 단계: /deliver:prd 를 실행하면 위 초안을 참고해 15섹션 PRD를 작성합니다.
 발견 단계를 더 깊이 하려면: /harness-discover --mode opp 를 먼저 실행하세요.
 ```
 

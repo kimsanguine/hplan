@@ -149,7 +149,7 @@ unique_insights: 0        # 인터뷰로 발견한 고유 인사이트 수 (건�
 이 파일 완성 후:
 ```bash
 /hplan "idea"                            # 풀 게이트 (빠른 verdict)
-/hplan-evidence context-intake.md        # 증거 게이트만 (100점 루브릭 전체)
+/evidence-rubric context-intake.md       # 증거 게이트만 (100점 루브릭 전체)
 ```
 
 context_dates를 checkpoint.json에 기록하는 예시:

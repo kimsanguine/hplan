@@ -9,7 +9,7 @@
 - 프롬프트 개선은 instruction-design 스킬 범위
 
 ## 올바른 라우팅
-- 프롬프트 최적화: `deliver/instruction-design`
+- 프롬프트 최적화: `deliver/instruction` [예정]
 - HITL 설계 필요: `discover/hitl`
 
 ## 수정 방향

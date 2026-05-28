@@ -22,7 +22,7 @@
 ### Should NOT Trigger (5)
 
 1. "선택한 에이전트의 프롬프트와 인스트럭션을 작성해 줄 수 있어요?"
-   - 올바른 라우팅: AOT 완료 후 구현 → `deliver/instruction` 또는 `agent-plan-review`
+   - 올바른 라우팅: AOT 완료 후 구현 → `deliver/instruction` [예정] (또는 `agent-plan-review` [예정])
 
 2. "이 에이전트의 기술 스택(Haiku vs Sonnet)을 결정해 줄 수 있어요?"
    - 올바른 라우팅: 모델/비용 선택 → `architect/router` 또는 `discover/cost-sim`

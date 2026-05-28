@@ -1,7 +1,9 @@
 # hplan Skill Consolidation Plan — v0.9.2 목표
 
-**현재**: 65 skills (hplan 8 / discover 7 / architect 8 / deliver 27 / operate 15)
-**목표**: 55 skills (-10)
+> **[HISTORICAL — superseded]** 이 문서는 v0.9.2 시점의 통합 계획입니다. v0.13.0 기준 실재 스킬은 **31개** (hplan 8 / discover 4 / architect 5 / deliver 8 / operate 6). 본 plan은 통합 결정과 trade-off 회고용 보존 자료입니다.
+
+**v0.9.2 당시**: 65 skills (hplan 8 / discover 7 / architect 8 / deliver 27 / operate 15)
+**v0.9.2 목표**: 55 skills (-10)
 **Codex adversarial review 반영 (2026-05-22)**: pm-trinity 통합 보류, ui-validate 기본값 제거, alias 계약 테이블 추가, track 순차 실행 명시
 
 ---

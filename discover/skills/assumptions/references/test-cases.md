@@ -43,12 +43,12 @@
 3. **프롬프트 최적화**
    - Query: "이 프롬프트를 CRISP 프레임워크로 다시 작성해줘. 더 명확하게."
    - Reason: 이미 기존 에이전트의 성능 개선 → instruction-design 스킬
-   - Correct Route: deliver/instruction-design
+   - Correct Route: deliver/instruction [예정]
 
 4. **비즈니스 모델 설계**
    - Query: "에이전트 비즈니스 모델을 설계하고 싶어. 가격 전략이랑 수익 구조를 잡아줘."
    - Reason: 비즈니스 모델 설계 → agent-gtm 스킬
-   - Correct Route: discover/agent-gtm
+   - Correct Route: discover/agent-gtm [예정]
 
 5. **기회 탐색**
    - Query: "우리 회사에서 에이전트로 자동화할 수 있는 기회가 뭐가 있을까? 대략적인 아이디어만 줘."

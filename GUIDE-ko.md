@@ -241,7 +241,7 @@ TK 유닛을 에이전트가 바로 사용할 수 있는 인스트럭션 형식�
 | `handoff` | Build Gate brief → Spec-Kit / Kiro / GStack / Claude Code 4개 ecosystem 동시 export |
 | `pmf-gate` | Post-launch PMF 신호 루프 — COGS 실시간 + 행동 지표 → 다음 Evidence Gate 입력 |
 
-### discover — 발견 (7개 스킬)
+### discover — 발견 (4개 스킬, 일부는 로드맵)
 
 | 스킬 | 하는 일 | 이럴 때 쓰세요 |
 |------|--------|-------------|
@@ -253,7 +253,7 @@ TK 유닛을 에이전트가 바로 사용할 수 있는 인스트럭션 형식�
 | `agent-gtm` | 에이전트 Go-to-Market 전략 | "출시를 어떻게 해야 하지?" |
 | `design-reference` | UI/UX 레퍼런스 수집·구조화 + 공통 패턴 추출 | "경쟁사 레퍼런스에서 패턴을 뽑아 설계에 반영하고 싶어" |
 
-### architect — 설계 (8개 스킬)
+### architect — 설계 (5개 스킬, 일부는 로드맵)
 
 | 스킬 | 하는 일 | 이럴 때 쓰세요 |
 |------|--------|-------------|
@@ -266,7 +266,7 @@ TK 유닛을 에이전트가 바로 사용할 수 있는 인스트럭션 형식�
 | `growth-loop` | 데이터 플라이휠 설계 | "사용할수록 똑똑해지게 만들려면?" |
 | `design-token` | 시맨틱 CSS 토큰 + DESIGN.md 자동 생성 | "디자인 시스템 토큰을 어떻게 정의하지?" |
 
-### deliver — 딜리버리 (27개 스킬, 핵심 15개 표시 — 전체 목록은 [README-ko.md](README-ko.md) 참조)
+### deliver — 딜리버리 (8개 스킬 — 아래 표에는 로드맵 스킬도 섞여 있으니 실재 8개는 [README-ko.md](README-ko.md) 참조)
 
 | 스킬 | 하는 일 | 이럴 때 쓰세요 |
 |------|--------|-------------|
@@ -286,7 +286,7 @@ TK 유닛을 에이전트가 바로 사용할 수 있는 인스트럭션 형식�
 | `parallel-team` ⭐ NEW | 독립 태스크 ≥2 → worktree 격리 병렬 디스패치 | "여러 모듈 동시에 작업해도 충돌 안 나게" |
 | `build-loop` ⭐ NEW | `/build` 한 번으로 발견→리서치→설계→PRD→분해→구현 | "아이디어부터 구현까지 한 루프로" |
 
-### operate — 측정·학습·운영 (15개 스킬)
+### operate — 측정·학습·운영 (6개 스킬 — 아래 표에는 로드맵 스킬도 섞여 있으니 실재 6개는 [README-ko.md](README-ko.md) 참조)
 
 v0.9에서 `measure`(측정) + `learn`(학습) + 기존 `operate`(포트폴리오 운영)가 하나로 통합되었습니다.
 
@@ -322,21 +322,23 @@ v0.9에서 `measure`(측정) + `learn`(학습) + 기존 `operate`(포트폴리�
 
 ---
 
-## 커맨드 전체 목록 (19개)
+## 커맨드 전체 목록
+
+> ⚠️ **이 표는 v0.9 시점이며 v0.13에서 일부 커맨드가 rename됐습니다.** 현재 사용 가능한 슬래시는 README-ko.md를 우선 참조하세요. `/hplan-evidence` → `/evidence-rubric`, `/hplan-cogs` → `/cogs-sentinel`, `/hplan-build`/`/hplan-product`/`/hplan-exclude`/`/hplan-handoff`/`/hplan-doctor` → 각각 `/harness-build`·`/harness-discover`·`/harness-exclude`·`/harness-handoff`·`/harness-doctor`. `/discover`·`/validate`는 **로드맵 예정**.
 
 커맨드는 여러 스킬을 체이닝해서 한 번에 실행하는 워크플로우입니다.
 
 | 커맨드 | 플러그인 | 하는 일 |
 |--------|---------|--------|
-| `/hplan-evidence` | hplan | Evidence Gate — exclusions check + 100점 루브릭 + 인터뷰 audit |
-| `/hplan-product` | hplan | Product Gate — OST + 사용자 여정 + 사이트맵 + 디자인 포인터 |
-| `/hplan-build` | hplan | Build Gate — COGS sentinel + decision log + checkpoint approval |
-| `/hplan-cogs` | hplan | COGS sentinel만 빠르게 — p50/p90 마진 + free-abuse 시뮬레이션 |
-| `/hplan-exclude` | hplan | "Do Not Build" 영구 메모리 add/check/list |
-| `/hplan-handoff` | hplan | Build Gate brief → Spec-Kit / Kiro / GStack / Claude Code export |
-| `/hplan-doctor` | hplan | 설치 진단 — 훅 등록·실행·체크포인트·레지스트리·git 훅 5-check |
-| `/discover` | discover | 자동화 기회 탐색 + 기회 트리 생성 |
-| `/validate` | discover | 에이전트 가정 4축 검증 |
+| `/evidence-rubric` | hplan | Evidence Gate — exclusions check + 100점 루브릭 + 인터뷰 audit |
+| `/hplan-product` (로드맵) | hplan | Product Gate — OST + 사용자 여정 + 사이트맵 + 디자인 포인터 |
+| `/harness-build` | hplan | Build Gate — COGS sentinel + decision log + checkpoint approval |
+| `/cogs-sentinel` | hplan | COGS sentinel만 빠르게 — p50/p90 마진 + free-abuse 시뮬레이션 |
+| `/harness-exclude` | hplan | "Do Not Build" 영구 메모리 add/check/list |
+| `/harness-handoff` | hplan | Build Gate brief → Spec-Kit / Kiro / GStack / Claude Code export |
+| `/harness-doctor` | hplan | 설치 진단 — 훅 등록·실행·체크포인트·레지스트리·git 훅 5-check |
+| `/discover` (로드맵) | discover | 자동화 기회 탐색 + 기회 트리 생성 |
+| `/validate` (로드맵) | discover | 에이전트 가정 4축 검증 |
 | `/architecture` | architect | 에이전트 아키텍처 설계 |
 | `/strategy-review` | architect | 전략 리뷰 (수익 모델 + 경쟁 우위) |
 | `/write-prd` | deliver | 에이전트 전용 PRD 작성 |

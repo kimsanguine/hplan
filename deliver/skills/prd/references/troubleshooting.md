@@ -63,4 +63,4 @@ A: 도메인별 표.
 
 ## Q: Section 7-11이 deliver/instruction과 중복 아닌가?
 
-A: Section 7-11은 PRD 본문 내 요약. 상세 spec이 더 필요하면 `deliver/instruction`으로 라우팅. 두 산출물이 같은 PRD 내에 inline될 수 있음 (큰 SaaS 의 핵심 에이전트).
+A: Section 7-11은 PRD 본문 내 요약. 상세 spec이 더 필요하면 `deliver/instruction` [예정]으로 라우팅. 두 산출물이 같은 PRD 내에 inline될 수 있음 (큰 SaaS 의 핵심 에이전트).

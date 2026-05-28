@@ -38,7 +38,7 @@
 2. **경쟁사 분석**
    - Query: "경쟁사 분석 좀 해줘. 우리 에이전트 제품의 경쟁 우위가 뭔지 알고 싶어."
    - Reason: 비용이 아닌 경쟁 포지셔닝 → agent-gtm 스킬
-   - Correct Route: discover/agent-gtm
+   - Correct Route: discover/agent-gtm [예정]
 
 3. **이미 배포된 에이전트 비용 리뷰**
    - Query: "이번 달 에이전트 토큰 비용 리뷰해줘. 예산 대비 초과된 것 같아."
@@ -48,7 +48,7 @@
 4. **가격 책정**
    - Query: "에이전트 제품 가격을 얼마로 책정하면 좋을까? 경쟁사는 월 $50~$100인데."
    - Reason: 가격 모델/GTM → agent-gtm 스킬
-   - Correct Route: discover/agent-gtm
+   - Correct Route: discover/agent-gtm [예정]
 
 5. **모델 성능 비교**
    - Query: "Claude Opus vs GPT-4o 성능 비교해줄 수 있어? 어떤 게 더 나아?"

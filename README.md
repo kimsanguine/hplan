@@ -163,19 +163,19 @@ This isn't a random collection of skills. It's a **complete lifecycle** — the 
 ```
    Gate  →  Discover  →  Architect  →  Deliver  →  Operate
    hplan    discover      architect     deliver      operate
-   8 skills  7 skills     8 skills     32 skills    17 skills
+   8 skills  4 skills     5 skills      8 skills    6 skills   (= 31 total)
 
      ↑                                                   │
      └──── Operational insights feed back into gate ─────┘
 ```
 
-| Plugin | The Question | Key Skills |
+| Plugin | The Question | Key Skills (currently available) |
 |--------|-------------|------------|
-| **Gate** ⭐ `hplan` | "Should we build this at all?" | evidence-rubric · interview-synthesis · exclusions · cogs-sentinel · ost · decision-log · handoff · pmf-gate |
-| **Discover** `discover` | "What agent should we build?" | opp-tree · assumptions · build-or-buy · cost-sim · hitl · agent-gtm |
-| **Architect** `architect` | "How should we structure it?" | orchestration · router · memory-arch · moat · growth-loop · biz-model · design-token |
-| **Deliver** `deliver` | "How to spec, build, and ship it?" | claude-md · prd · agent-instructions · ctx-budget · stakeholder-map · agent-plan-review · delivery-plan · harness-design · parallel-team · build-loop · respect · track · ui-validate |
-| **Operate** `operate` | "How to run and improve agents over time?" | agent-portfolio · portfolio-report · cross-team-routing · reliability · premortem · burn-rate · metrics-design · agent-ab-test · cohort · incident · pm-decision · pm-engine |
+| **Gate** ⭐ `hplan` | "Should we build this at all?" | brainstorm · evidence-rubric · interview-synthesis · exclusions · cogs-sentinel · ost · decision-log · handoff |
+| **Discover** `discover` | "What agent should we build?" | opp-tree · assumptions · cost-sim · hitl |
+| **Architect** `architect` | "How should we structure it?" | orchestration · router · memory-arch · design-token · strategy |
+| **Deliver** `deliver` | "How to spec, build, and ship it?" | agent-setup · prd · build-loop · conductor · sprint · qa-checklist · respect · ui-validate |
+| **Operate** `operate` | "How to run and improve agents over time?" | metrics-design · reliability · pm-engine · incident · ops-review · portfolio |
 
 ### What makes hplan different from the other 4
 
@@ -266,15 +266,18 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 | `ost` | Generate Teresa Torres-style Opportunity Solution Tree as `docs/OPPORTUNITY_TREE.md` with Mermaid diagram | "Lock the opportunity → solution → experiment tree before any PRD" |
 | `decision-log` | Append-only build/interview/pivot/hold log + 3–6 month self-eval audit (hit_rate, false_holds, missed_builds) | "Were my product decisions 6 months ago actually right?" |
 | `handoff` | Multi-target Build Gate brief → Spec-Kit / Kiro / GStack / Claude Code in one command | "Ready to start building — export the spec to my coding agent" |
-| `pmf-gate` | Post-launch measurement loop — converts COGS sentinel results + behavioral metrics into Evidence Gate inputs for the next build cycle. Closes the hplan loop: Evidence → Product → Build → [ship] → PMF → Evidence | "30 days post-beta — did we actually hit PMF?" |
+| `brainstorm` | Develop a vague idea into a product concept — structured question flow, tradeoff exploration, 2-3 approach proposals | "I want to crystallize a fuzzy idea before writing a PRD" |
 
-**Commands (9):** `/hplan` ⭐ · `/harness-discover` · `/harness-plan` · `/harness-build` · `/harness-operate` · `/harness-exclude` · `/harness-handoff` · `/harness-verify` · `/harness-doctor`
+**Commands (12):** `/hplan` ⭐ · `/prd` · `/evidence-rubric` · `/cogs-sentinel` · `/harness-discover` · `/harness-plan` · `/harness-build` · `/harness-operate` · `/harness-exclude` · `/harness-handoff` · `/harness-verify` · `/harness-doctor`
 
 **Cross-cutting assets:** MCP server (`hplan_mcp/`) for Cursor / Windsurf / Kiro / Codex / Goose · PreToolUse hook (`hooks/gate_guard.py`) · 4 role-locked reviewer agents (`agents/`)
 </details>
 
 <details>
-<summary><strong>2. discover</strong> — What agent to build? <code>(6 skills)</code></summary>
+<summary><strong>2. discover</strong> — What agent to build? <code>(4 skills)</code></summary>
+
+> ⚠️ **Currently available (4):** `opp-tree` · `assumptions` · `cost-sim` · `hitl`
+> `build-or-buy` and `agent-gtm` in the table below are **roadmap** — treat only the 4 above as callable.
 
 | Skill | What it does | When to use |
 |-------|-------------|-------------|
@@ -289,7 +292,10 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 </details>
 
 <details>
-<summary><strong>3. architect</strong> — How to architect it? <code>(7 skills)</code></summary>
+<summary><strong>3. architect</strong> — How to architect it? <code>(5 skills)</code></summary>
+
+> ⚠️ **Currently available (5):** `orchestration` · `router` · `memory-arch` · `design-token` · `strategy`
+> `biz-model`, `moat`, `growth-loop` in the table below are **roadmap** — treat only the 5 above as callable.
 
 | Skill | What it does | When to use |
 |-------|-------------|-------------|
@@ -305,17 +311,14 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 </details>
 
 <details>
-<summary><strong>4. deliver</strong> — How to spec, build, and ship it? <code>(13 skills)</code></summary>
+<summary><strong>4. deliver</strong> — How to spec, build, and ship it? <code>(8 skills)</code></summary>
 
-> **Onboarding (1):** claude-md
-> **Core Spec (5):** prd · agent-instructions · ctx-budget · stakeholder-map · agent-plan-review
-> **Planning (2):** delivery-plan · harness-design
-> **Build (3):** parallel-team · build-loop · track
-> **UI/UX (2):** respect · ui-validate
+> ⚠️ **Currently available (8):** `agent-setup` · `prd` · `build-loop` · `conductor` · `sprint` · `qa-checklist` · `respect` · `ui-validate`
+> Other skills (agent-instructions, ctx-budget, parallel-team, etc.) in the table below are **roadmap** — treat only the 8 above as callable.
 
 | Skill | What it does | When to use |
 |-------|-------------|-------------|
-| `claude-md` ⭐ | Scan project structure → auto-generate CLAUDE.md → recommend matching hplan plugins | "New project — set up Claude Code context" |
+| `agent-setup` ⭐ | Scan project structure → auto-generate CLAUDE.md → recommend matching hplan plugins | "New project — set up Claude Code context" |
 | `prd` | **Unified 15-section PRD** — People/Problem/Decisions + Agent/Execution Spec + Metrics/Hypotheses/Failure + §15 QA Pool | "Write a PRD for a solo-lawyer Korean case-law RAG agent" |
 | `agent-instructions` | Draft (CRISP prompt design, 7 failure patterns) or full (system prompt + 7-element spec + tool list + memory_config). `--level draft\|full` | "What goes in (and out of) the system prompt?" / "Longer prompts make my agent behave worse" |
 | `ctx-budget` | Estimate per-file token usage → classify Essential/Conditional/Excluded → 70% threshold alerts | "How do I fit 5 RAG docs + chat history into 128K?" |
@@ -333,11 +336,10 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 </details>
 
 <details>
-<summary><strong>5. operate</strong> — How to run and improve agents over time? <code>(12 skills)</code></summary>
+<summary><strong>5. operate</strong> — How to run and improve agents over time? <code>(6 skills)</code></summary>
 
-> **Portfolio (3):** agent-portfolio · portfolio-report · cross-team-routing
-> **Measure (6):** metrics-design · reliability · premortem · burn-rate · agent-ab-test · cohort · incident
-> **Learn (3):** pm-decision · pm-engine · portfolio-report
+> ⚠️ **Currently available (6):** `metrics-design` · `reliability` · `pm-engine` · `incident` · `ops-review` · `portfolio`
+> Other skills (agent-portfolio, burn-rate, premortem, agent-ab-test, cohort, pm-decision, portfolio-report, cross-team-routing) in the table below are **roadmap** — treat only the 6 above as callable.
 
 | Skill | What it does | When to use |
 |-------|-------------|-------------|
@@ -383,7 +385,7 @@ claude --plugin-dir ./hplan     # L2 Skills — pick what you need (hplan, disco
 ```
 
 **Not sure which AI product to commit to?** → Start with `hplan` — evidence gate first.
-**First time with Claude Code?** → Run `deliver/claude-md` — it scans your project and recommends the right plugins.
+**First time with Claude Code?** → Run `deliver/agent-setup` — it scans your project and recommends the right plugins.
 **Already past the gate?** → Pick by lifecycle stage (discover → architect → deliver → operate).
 
 ### ADK 5-Layer Architecture
@@ -393,7 +395,7 @@ hplan ships as a complete **Agent Development Kit** — five reinforcing layers 
 | Layer | What | How it activates |
 |-------|------|-----------------|
 | **L1 Memory** | `CLAUDE.md` — 9 behavioral rules + hplan gate policy | Loaded by Claude Code at session start, every time |
-| **L2 Skills** | 30 PM discipline skills across 5 plugins | Auto-invoked when you describe a task in natural language |
+| **L2 Skills** | 31 PM discipline skills across 5 plugins | Auto-invoked when you describe a task in natural language |
 | **L3 Hooks** | `hooks/` — PreToolUse · PostToolUse · SessionStart | `scripts/install-hooks.sh` registers to `.claude/settings.json` |
 | **L4 Subagents** | 8-role parallel team (designer · engineer · critic · security…) | Dispatched by `deliver/skills/parallel-team` |
 | **L5 Plugins** | Marketplace distribution (`/plugin install`) | Claude Code plugin registry |
@@ -434,18 +436,20 @@ The Trigger Gate's "Route" field enables routing between plugins:
 |------|------------------|----------|
 | `opp-tree` | "Validate assumptions for top opportunity" | `assumptions` |
 | `burn-rate` | "Need model routing change" | `router` |
-| `prd` | "Need instruction design" | `agent-instructions` |
+| `prd` | "Need instruction design" | `architect/strategy` |
 | `pm-engine --mode extract` | "Convert implicit judgment to TK units" | `pm-engine` |
 
 ### Command Chaining
 
+> ⚠️ **Some chain entries below reference roadmap skills** (e.g., `build-or-buy`, `agent-instructions`, `burn-rate`). Currently callable slash commands: `/hplan` · `/prd` · `/evidence-rubric` · `/cogs-sentinel` · `/harness-*` (9 commands). Other chains in the table are aspirational.
+
 | Command | Chained Skills | Plugin |
 |---------|---------------|--------|
 | `/hplan` ⭐ | exclusions → evidence-rubric → cogs-sentinel → verdict | hplan |
-| `/harness-discover` | opp-tree → assumptions → build-or-buy | discover |
+| `/harness-discover` | opp-tree → assumptions → hitl | discover |
 | `/harness-plan` | orchestration → memory-arch → design-token | architect |
-| `/harness-build` | prd → agent-instructions → ctx-budget | deliver |
-| `/harness-operate` | metrics-design → reliability → burn-rate · pm-engine | operate |
+| `/harness-build` | prd → qa-checklist → respect | deliver |
+| `/harness-operate` | metrics-design → reliability → ops-review · pm-engine | operate |
 
 ### Skills 1.0 vs Skills 2.0
 

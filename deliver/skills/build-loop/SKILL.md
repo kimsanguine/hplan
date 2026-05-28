@@ -85,7 +85,7 @@ You are running build-loop for: **$ARGUMENTS**
 
 | 실패 상황 | 감지 | 대응 |
 |---|---|---|
-| 빌드 게이트 미통과 | hplan checkpoint != approved | 즉시 중단 → `/hplan-evidence` 안내 |
+| 빌드 게이트 미통과 | hplan checkpoint != approved | 즉시 중단 → `/evidence-rubric` 안내 |
 | PRD mermaid 정합성 실패 | validate-mermaid.py exit≠0 | Step 4 재실행, missing requirements 보강 |
 | 작업 분해 시 파일 충돌 | parallel-team Step 2 fail | 직렬 처리로 fallback |
 | 자율 모드 미승인인데 진입 | "ralph loop" 키워드 부재 | 사용자 확인 필요 → 단계별 컨펌 모드 |
