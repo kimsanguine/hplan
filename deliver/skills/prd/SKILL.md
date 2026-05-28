@@ -44,22 +44,22 @@ hooks:
 ### Route to Other Skills When
 
 - **배포 전 QA 라운드** → `deliver/qa-checklist --mode adversarial` (PRD §15 QA Pool + PERSONA_SPECS 기반 동적 에이전트 구성)
-- **ICP·beachhead 정의** → `discover/agent-gtm`로 라우팅 후 Section 1에 주입
-- **JTBD·Switch Interview** → `discover/agent-gtm`로 라우팅 후 Section 2에 주입
-- **결정 옵션 매트릭스** → `discover/build-or-buy` (6축) + `architect/orchestration` (4패턴) + `discover/hitl` (5레벨) → Section 4
+- **ICP·beachhead 정의** → `discover/agent-gtm` [예정]으로 라우팅 후 Section 1에 주입
+- **JTBD·Switch Interview** → `discover/agent-gtm` [예정]으로 라우팅 후 Section 2에 주입
+- **결정 옵션 매트릭스** → `discover/build-or-buy` [예정] (6축) + `architect/orchestration` (4패턴) + `discover/hitl` (5레벨) → Section 4
 - **제외사항 자동 인용** → `hplan/exclusions` 레지스트리 fuzzy match → Section 5
 - **MVP 비용 시뮬레이션** → `discover/cost-sim` (lognormal p50/p90) → Section 6
-- **Instruction 7요소 상세 설계** → `deliver/instruction` → Section 7 보강
+- **Instruction 7요소 상세 설계** → `deliver/instruction` [예정] → Section 7 보강
 - **OKR 정의** → `operate/metrics-design --step okr` (dual-axis) → Section 12
 - **가설 분해** → `discover/assumptions` (4축) → Section 13
-- **신뢰성·SLO** → `measure/reliability` → Section 14
+- **신뢰성·SLO** → `operate/reliability` → Section 14
 - **Multi-ecosystem export** → `hplan/handoff` (Spec-Kit / Kiro / GStack / Claude Code)
 - **사용자 인터페이스가 있는 LLM 에이전트 (UI/UX 강제)** → `deliver/respect --mode brief` (RESPECT.md 디자인 시그니처) → Section 11 출력 사양 보강
 - design-shotgun 변형 선택 후 TC 자동 생성 → `deliver/qa-checklist`
 
 ### Boundary Checks
 
-- PRD 14-section은 "무엇을 하는가"를 명시하지만, "어떻게 기술적으로 구현하는가"는 별도 구현 문서
+- PRD 15-section은 "무엇을 하는가"를 명시하지만, "어떻게 기술적으로 구현하는가"는 별도 구현 문서
 - 각 섹션은 "5명 사랑 인터뷰에 그대로 쓸 수 있는가? + 엔지니어가 이것만으로 구현 가능한가?" 두 기준으로 검증
 - 제외사항(Section 5)이 최소 5개 이상 — "의식적으로 안 만드는 것" 명시
 - Section 7-11 (에이전트 사양)은 1인 빌더가 LLM 에이전트를 포함하지 않으면 "N/A — 일반 SaaS"로 간단 표기 가능
@@ -74,11 +74,11 @@ hooks:
 |----------|------|------|
 | ICP가 "20-50대 일반인" 같이 추상적 | Section 1 검토 시 beachhead 5-criteria 통과 못 함 | `discover/agent-gtm` 라우팅으로 ICP 재정의 |
 | JTBD가 솔루션 어조 ("편하게 X 할 수 있다") | Section 2가 Job이 아닌 Feature 설명 | Switch Interview 4 Forces (Push·Pull·Anxiety·Habit)로 재작성 |
-| 결정 옵션 매트릭스가 옵션 1개만 | Section 4에 옵션 A/B/C 중 하나만 | 최소 2개 옵션 + 트레이드오프 강제. `discover/build-or-buy` 호출 |
+| 결정 옵션 매트릭스가 옵션 1개만 | Section 4에 옵션 A/B/C 중 하나만 | 최소 2개 옵션 + 트레이드오프 강제. `discover/build-or-buy` [예정] 호출 |
 | 제외사항 비어 있음 | Section 5 빈 칸 | "절대 안 만드는 것 5개" 강제 입력. `hplan/exclusions` 자동 인용 |
 | MVP·Full vision 분리 없음 | Section 6에 Now/Next/Later 구분 없음 | 3-tier 분할 + 각 tier에 cogs p50/p90 첨부 |
 | Anti-Goals 없음 | Section 7에 "하면 안 되는 것" 없음 | 최소 3개 강제. 도메인 룰·hallucination 정책·법적 책임 영역 포함 |
-| Tools 호출 제한 없음 | Section 8 일부 행에 "호출 제한" 컬럼 빈 칸 | `deliver/instruction` 라우팅으로 도구별 상세 조건 정의 |
+| Tools 호출 제한 없음 | Section 8 일부 행에 "호출 제한" 컬럼 빈 칸 | `deliver/instruction` [예정] 라우팅으로 도구별 상세 조건 정의 |
 | Trigger 모호 ("필요 시") | Section 10 트리거 유형 미지정 | Cron/Event/Manual/Pipeline 중 명시적 선택 |
 | Output 예시 없음 | Section 11 출력 샘플 칸 빈 칸 | 실제 출력 1개 작성 강제 (Markdown / JSON / Plain text) |
 | 성공 지표가 추정·동기 부재 | Section 12에 측정·기한 없음 | `operate/metrics-design --step okr` 라우팅으로 Dual-axis 재작성 |

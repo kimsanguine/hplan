@@ -70,6 +70,7 @@ def import_ai_export(root: Path, export_path: Path) -> dict:
                 payload = {
                     "id": f"q-{qhash}",
                     "person": person,
+                    "role": interview.get("role"),  # AI export JSON passthrough; None if absent
                     "date": int_date,
                     "theme": quote.get("theme"),
                     "quote": quote.get("text", ""),
@@ -194,12 +195,15 @@ def write_persona_specs(root: Path, by_person: dict) -> "Path | None":
     Inclusion rule: interviewee must have at least 2 tagged quotes with
     strength in {strong, medium} — filters noise.
     Deterministic fields (no LLM inference):
-      id, name, anxiety_tags, trigger, experience_level — from tagging data.
-      role, company_size — not in tagging data; left as None (fill manually).
+      id, name, role, anxiety_tags, trigger, experience_level — from tagging data.
+      role — passthrough from import_ai_export(); None if absent in source JSON.
+      company_size — not in tagging data; left as None (fill manually).
+    P-IDs are assigned by qualification order (len(qualified)+1), not by
+    iteration order, so skipped interviewees do not create ID gaps.
     Returns the written Path, or None if no interviewee qualifies.
     """
     qualified = []
-    for idx, (person, quotes) in enumerate(by_person.items(), start=1):
+    for person, quotes in by_person.items():
         strong_medium = [
             q for q in quotes
             if q.get("status") == "tagged"
@@ -218,10 +222,11 @@ def write_persona_specs(root: Path, by_person: dict) -> "Path | None":
             if "push" in (q.get("axes") or []) and q.get("strength") == "strong"
         ]
         trigger = push_quotes[0]["quote"][:80] if push_quotes else ""
+        role = quotes[0].get("role") if quotes else None
         qualified.append({
-            "id": f"P{idx:02d}",
+            "id": f"P{len(qualified)+1:02d}",
             "name": person,
-            "role": None,        # not derivable from tagging data; fill manually
+            "role": role,        # passthrough from import_ai_export(); None if absent
             "anxiety_tags": anxiety_tags,
             "trigger": trigger,
             "experience_level": _experience_level(quotes),

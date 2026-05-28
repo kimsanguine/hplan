@@ -217,7 +217,7 @@ ls docs/PRD.md 2>/dev/null || echo "PRD_MISSING"
 
 `harness/QA_POOL.json` 로드 → `dev_roles` 배열에서 역할 목록 추출.
 - `dev_roles`가 빈 배열(`[]`)이면 즉시 종료: "`dev_roles`가 비어 있습니다. /prd 재실행하고 §15 QA Pool을 완성하세요."
-- `interview_evidence_verified` 필드가 `false`이면 WARN: "⚠️ interview_evidence_verified: false — 인터뷰 evidence 없이 생성된 QA Pool입니다. 결과 신뢰도가 낮을 수 있습니다. interview-synthesis 완료 후 재실행 권장."
+- `interview_evidence_verified` 필드가 `false`이면 WARN: "⚠️ interview_evidence_verified: false — 인터뷰 evidence 없이 생성된 QA Pool입니다. 결과 신뢰도가 낮을 수 있습니다. `/interview-synthesis import → tag → audit` 완료 후 `/prd` 재실행해 `interview_evidence_verified: true`로 갱신하세요."
 
 `harness/PERSONA_SPECS.json` 존재 시 → P01~P0N 로드.
 - PERSONA_SPECS.json 내용이 빈 배열(`[]`)이면 → PERSONA_MISSING과 동일하게 처리:
@@ -329,7 +329,7 @@ CRITICAL 또는 HIGH 이슈가 1건 이상이면:
 
 ```jsonl
 {"round": 1, "ts_start": "...", "ts_end": "...", "agents": ["P01","P02","frontend","backend"], "critical": 2, "high": 3, "medium": 5, "minor": 8, "auto_fixed": 4, "deferred": 1, "fix_commits": ["abc1234"], "test_delta": "+3 passed", "verdict": "REWORK"}
-{"round": 2, "ts_start": "...", "ts_end": "...", "agents": [...], "critical": 0, "high": 0, "medium": 4, "minor": 7, "auto_fixed": 0, "deferred": 4, "fix_commits": [], "test_delta": "0", "verdict": "SHIP"}
+{"round": 2, "ts_start": "...", "ts_end": "...", "agents": [...], "critical": 0, "high": 0, "medium": 4, "minor": 7, "auto_fixed": 3, "deferred": 0, "fix_commits": ["def4567"], "test_delta": "+2 passed", "verdict": "SHIP"}
 ```
 
 ### Step 7 — 최종 보고
