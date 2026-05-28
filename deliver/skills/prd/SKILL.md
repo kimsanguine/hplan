@@ -43,6 +43,7 @@ hooks:
 
 ### Route to Other Skills When
 
+- **배포 전 QA 라운드** → `deliver/qa-checklist --mode adversarial` (PRD §15 QA Pool + PERSONA_SPECS 기반 동적 에이전트 구성)
 - **ICP·beachhead 정의** → `discover/agent-gtm`로 라우팅 후 Section 1에 주입
 - **JTBD·Switch Interview** → `discover/agent-gtm`로 라우팅 후 Section 2에 주입
 - **결정 옵션 매트릭스** → `discover/build-or-buy` (6축) + `architect/orchestration` (4패턴) + `discover/hitl` (5레벨) → Section 4
@@ -106,6 +107,7 @@ hooks:
 - [ ] Section 13: Top-3 가설 + 2-day experiment 링크 (Yes/No)
 - [ ] Section 14: 실패 시나리오 (4개 이상) + HITL 트리거 (Yes/No)
 - [ ] 디자인 시그니처 commit: UI/UX 있으면 `deliver/respect --mode brief` 호출 + RESPECT.md 참조, 없으면 "N/A — 백엔드만" 명시 (Yes/No/N/A)
+- [ ] Section 15: QA Pool — 페르소나 소스 명시, 개발 역할 결정론 매핑 근거 포함, `harness/QA_POOL.json` 저장됨 (Yes/No)
 - [ ] 전체 일관성: 섹션 간 충돌·누락 없음 (Yes/No)
 - [ ] TK 인용: `learn/pm-engine` 쿼리로 관련 TK-NNN 3~5개 (Yes/No)
 - [ ] `--mode design-shotgun`: docs/PRD.md 부재 시 즉시 종료
@@ -408,6 +410,70 @@ Top-3 가설 (Value/Feasibility/Reliability/Ethics 4축):
 
 ---
 
+### Section 15 — QA Pool (배포 전 검수 에이전트 구성)
+
+> 이 섹션은 PRD 작성 시 자동 생성. `qa-checklist --mode adversarial` 실행 전 필수.
+> **결정론 원칙**: 역할 선택은 아래 매핑 테이블 기반 — LLM 임의 판단 금지.
+
+```
+QA Pool 구성 규칙:
+
+### 페르소나 에이전트 (harness/PERSONA_SPECS.json 에서 자동 연결)
+- interview-synthesis 결과가 있으면 PERSONA_SPECS.json의 P01~P0N 전원 포함
+- PERSONA_SPECS.json 부재 시 → QA Pool에 "페르소나 없음 (인터뷰 완료 후 재실행 권장)" 명시
+
+### 개발 리뷰어 역할 (도메인·스택 기반 결정론 매핑)
+```
+
+**결정론 매핑 테이블**:
+
+| PRD 조건 | 포함 역할 |
+|----------|-----------|
+| §1 ICP 도메인 = 법률 | `legal_domain` (법령 정확성 검증) |
+| §1 ICP 도메인 = 의료 | `medical_domain` |
+| §1 ICP 도메인 = 금융 | `finance_domain` |
+| §8 스택에 Next.js / React / Vue 포함 | `frontend` |
+| §8 스택에 FastAPI / Django / Node 포함 | `backend` |
+| §8 스택에 LLM API 포함 | `ai_engineer` |
+| §7 Anti-Goals에 보안·개인정보 포함 | `security` |
+| §14 실패 시나리오 4개 이상 | `qa_engineer` |
+| 기본 (항상 포함) | `qa_engineer` |
+
+```markdown
+## §15 QA Pool
+
+생성일: YYYY-MM-DD | 소스: §1 ICP, §7 Anti-Goals, §8 스택, §14 실패 시나리오
+
+### 페르소나 에이전트
+- 소스: harness/PERSONA_SPECS.json
+- [P01: 이름·역할] / [P02: 이름·역할] / ...
+
+### 개발 리뷰어 역할
+- [역할1]: [포함 근거 — 어떤 PRD 조건에 해당하는지]
+- [역할2]: [포함 근거]
+- ...
+
+### 예상 라운드 수
+- Critical 이슈 없을 때: 1~2 라운드
+- Critical 이슈 발생 시: ralph loop 자동 수정 후 재검토
+```
+
+**저장**: `harness/QA_POOL.json` (qa-checklist --mode adversarial이 읽음)
+
+```json
+{
+  "generated_at": "YYYY-MM-DD",
+  "persona_source": "harness/PERSONA_SPECS.json",
+  "dev_roles": ["frontend", "backend", "qa_engineer", "legal_domain"],
+  "role_rationale": {
+    "frontend": "§8 스택 Next.js 포함",
+    "legal_domain": "§1 ICP 법률 도메인"
+  }
+}
+```
+
+---
+
 ### Section 14 — 실패 모드 + Human-in-the-loop
 
 ```
@@ -654,9 +720,11 @@ You are helping write a complete **Unified PRD** for: **$ARGUMENTS**
 - Section 13: Top-3 가설 — `discover/assumptions` + 2-day experiment
 - Section 14: 실패 모드 (4개 이상) + HITL 트리거
 
-**Phase 5** — PRD 통합 & TK 인용
+**Phase 5** — PRD 통합 & TK 인용 & QA Pool 저장
 - `learn/pm-engine` 쿼리로 관련 TK-NNN 3~5개 인용 (각 섹션 하단에 시드)
-- Quality Gate 16개 항목 (14 섹션 + 일관성 + TK 인용) 모두 통과 확인
+- §15 QA Pool 결정론 매핑 실행 → `harness/QA_POOL.json` 저장
+  - `harness/PERSONA_SPECS.json` 존재 시 페르소나 소스 연결, 없으면 "페르소나 없음" 명시
+- Quality Gate 17개 항목 (15 섹션 + 일관성 + TK 인용) 모두 통과 확인
 - `docs/PRD.md`에 저장
 
 ---

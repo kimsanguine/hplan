@@ -101,12 +101,13 @@ hplan을 설치한 뒤에도 Claude와 평소대로 대화하면 됩니다. 단,
 | **"이 AI 기능 월 ₩19,000에 팔자"** | 실제 provider 단가 + 예상 사용량 + 무료 abuse 시나리오로 COGS 계산. *"p50 마진 78%, p90 41%, free abuse 포함 −12%"*. 무엇을 바꿔야 하는지 정확한 숫자로 보여줍니다. |
 | **"이거 지난 분기 Alex가 제안했던 거랑 비슷한데?"** | decision-log 조회. *"네 — 2026-02-03에 hold됐습니다. 이유는 [...]. 재검토 조건은 '엔터프라이즈 고객이 명시적으로 요청'. 그 조건이 충족됐나요?"* |
 | **"마케팅 자동화 AI 만들자"** | exclusions registry 검사. *"이전 exclusion ex-2026-04-17과 겹칩니다. 기존 incumbent가 이미 점유. 재오픈 조건은 [...]. 해당되나요?"* |
-| **"spec 짜서 바로 개발 시작하자"** | 3개 게이트가 모두 GREEN인지 확인 후에야 spec 파일 생성. Evidence "interview", COGS "RED"이면 **파일 자체가 생성 안 됨**. filesystem 레벨 차단. |
+| **"spec 짜서 바로 개발 시작하자"** | 게이트가 모두 GREEN인지 확인 후에야 spec 파일 생성. Evidence "interview", COGS "RED"이면 **파일 자체가 생성 안 됨**. filesystem 레벨 차단. |
 | **"내 제품 결정이 정말 맞았나?"** | 최근 6-12개월 결정을 자동 audit. *"hold 8건 중 6건은 실제로 죽은 게 맞고 (correct), 2건은 다른 사람이 성공시켰음 (false_hold). 이 2건의 공통점은 [...]"* |
+| **"이제 배포해도 되겠지?"** | QA 라운드가 확인합니다. evidence 단계에서 만든 페르소나 + PRD §15에서 결정된 도메인·개발 역할 에이전트가 병렬 검토. CRITICAL·HIGH = 0이 될 때까지 자동 수정 반복. 완료되면 `harness/qa-rounds/round-N.md` 최종 보고. |
 
 핵심: **hplan을 일부러 부르지 않아도 됩니다.** "만들자", "팔자", "출시하자", "spec 짜자" 같은 말이 나오는 순간 자동 발동.
 
-> 🆕 **Claude Code가 처음이라면?** → [`deliver/claude-md`](deliver/skills/claude-md/SKILL.md)가 프로젝트를 스캔하고, CLAUDE.md를 자동 생성하고, 맞는 hplan 플러그인을 추천해줍니다. 가장 빠른 온보딩 방법입니다.
+> 🆕 **Claude Code가 처음이라면?** → [`deliver/agent-setup`](deliver/skills/agent-setup/SKILL.md)가 프로젝트를 스캔하고, CLAUDE.md를 자동 생성하고, 맞는 hplan 플러그인을 추천해줍니다. 가장 빠른 온보딩 방법입니다.
 
 ---
 
@@ -145,6 +146,7 @@ Day 50-60   매출·성과 구조
 - 🔌 **MCP server** — 같은 gate primitive가 MCP tool로도 노출되어 Cursor / Windsurf / Kiro / Codex / Goose에서도 호출 가능.
 - 🛑 **Claude Code PreToolUse hook** — `harness/build-gate/checkpoint.json`이 `status: "approved"`가 되기 전까지 PRD.md / specs/* / .kiro/specs/* 작성을 파일 시스템 레벨에서 차단. 프롬프트 룰이 아닌 강제력 있는 게이트.
 - 🚚 **Multi-target handoff** — 단일 brief JSON이 Spec-Kit `specs/NNN-slug/`, Kiro `.kiro/specs/`, GStack `/office-hours` brief, Claude Code `AGENTS.md` + `CLAUDE.md`로 동시 export.
+- 📋 **Append-only qa_log.jsonl** — 배포 전 QA 라운드별 영구 로그. 페르소나·개발 리뷰어 풀, CRITICAL/HIGH 건수, 자동 수정 내역, 테스트 delta 추적. `decisions.jsonl` 패턴 확장 — "몇 라운드 만에 CRITICAL=0이 됐는지"가 다음 제품 QA 설계의 학습 데이터.
 
 *이전 이름 `AI_PM_Skills` — v0.5에서 새 flagship plugin인 `hplan`이 라이프사이클 Stage 0에 들어가면서 리네임. 옛 URL은 자동 redirect.*
 
@@ -259,7 +261,7 @@ claude-hplan-gate  # 게이트만 (WHETHER 판단 전용)
 /plugin install operate@kimsanguine-hplan    # 측정·학습·운영 — KPI, burn rate, PM 암묵지, 포트폴리오
 ```
 
-스킬 이름을 외울 필요는 없습니다. 자연어로 질문하면 55개 스킬 중 맞는 게 auto-load 됩니다.
+스킬 이름을 외울 필요는 없습니다. 자연어로 질문하면 31개 스킬 중 맞는 게 auto-load 됩니다.
 
 ---
 
@@ -281,7 +283,7 @@ hplan   discover  architect  deliver   operate
 | **게이트** ⭐ | `hplan` | "정말 만들 가치가 있을까?" | evidence-rubric · interview-synthesis · exclusions · cogs-sentinel · ost · decision-log · handoff · pmf-gate |
 | **발견** | `discover` | "어떤 에이전트를 만들어야 할까?" | opp-tree · assumptions · build-or-buy · cost-sim · hitl · agent-gtm · design-reference |
 | **설계** | `architect` | "어떻게 구조를 잡을까?" | 3-tier · orchestration · router · memory-arch · moat · growth-loop · biz-model · design-token |
-| **실행** | `deliver` | "어떻게 스펙을 쓰고 출시할까?" | claude-md · prd · instruction · prompt · ctx-budget · okr · stakeholder-map · agent-plan-review · pptx-ai-slide (4엔진 라우터) · harness-design · parallel-team · build-loop · mobile-check + 디자인·추적 12종 |
+| **실행** | `deliver` | "어떻게 스펙을 쓰고 출시할까?" | agent-setup · prd · conductor · sprint · build-loop · respect · qa-checklist · ui-validate |
 | **운영** | `operate` | "측정·학습·포트폴리오를 어떻게 할까?" | kpi · burn-rate · reliability · premortem + pm-framework · pm-decision · pm-engine + agent-portfolio · scorecard-5axis · weekly-rollup · cross-team-routing |
 
 ### hplan이 나머지 4개와 다른 점
@@ -440,7 +442,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 
 실제로 만들고 출시하는 단계입니다. 프로젝트 온보딩(CLAUDE.md 자동 생성)부터 에이전트 전용 PRD 작성, 시스템 프롬프트 설계, 토큰 예산 관리, 이해관계자 설득 자료 제작, 실행 진행 추적, 디자인 시스템 강제까지 포함합니다.
 
-> **온보딩 (1):** claude-md
+> **온보딩 (1):** agent-setup
 > **Core Spec (7):** instruction · prd · prompt · ctx-budget · okr · stakeholder-map · agent-plan-review
 > **커뮤니케이션 (4):** gemini-image-flow · infographic-gif-creator · pptx-ai-slide · agent-demo-video
 > **실행 인프라 (4):** harness-design · parallel-team · build-loop · mobile-check
@@ -449,7 +451,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 
 | 스킬 | 기능 | 이런 상황에서 쓰세요 |
 |------|------|-------------------|
-| `claude-md` ⭐ | 프로젝트 구조 스캔 → CLAUDE.md 자동 생성 → 맞춤형 hplan 플러그인 추천 | "새 프로젝트에 Claude Code를 세팅하고, 어떤 스킬을 쓸지 추천받고 싶어" |
+| `agent-setup` ⭐ | 프로젝트 구조 스캔 → CLAUDE.md 자동 생성 → 맞춤형 hplan 플러그인 추천 | "새 프로젝트에 Claude Code를 세팅하고, 어떤 스킬을 쓸지 추천받고 싶어" |
 | `instruction` | Role/Context/Goal/Tools/Memory/Output/Failure 정의 + 최소 권한 도구 접근 설계 | "시스템 프롬프트에 뭘 넣고 뭘 빼야 하지?" |
 | `prd` | **통합 14섹션 PRD** — 사람/문제/결정 (1-6) + 에이전트·실행 사양 (7-11) + 지표/가설/실패 (12-14). 제품과 그 안의 에이전트를 단일 PRD로. | "1인 변호사 한국 판례 RAG PRD 작성해줘" |
 | `prompt` | CRISP 프레임워크(Context/Role/Instruction/Scope/Parameters) + Why-First 원칙 + 7가지 실패 패턴 회피 | "프롬프트가 길어질수록 에이전트가 오히려 이상하게 동작해" |
@@ -572,7 +574,7 @@ claude \
 
 **어디서부터 시작할지 모르겠다면?**
 **어떤 AI 제품을 만들지 결정 못 하셨다면** → `hplan`으로 시작 — evidence 게이트가 먼저.
-**Claude Code가 처음이라면** → `deliver/claude-md`를 돌리면 프로젝트를 스캔하고 맞는 플러그인을 추천해줍니다.
+**Claude Code가 처음이라면** → `deliver/agent-setup`을 돌리면 프로젝트를 스캔하고 맞는 플러그인을 추천해줍니다.
 **이미 게이트 통과했다면** → 라이프사이클 순서대로 (discover → architect → deliver → operate) 골라서 설치.
 
 ### 다른 AI 도구에서도 쓸 수 있습니다

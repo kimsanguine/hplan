@@ -62,17 +62,44 @@ Expected AI export JSON shape:
 2. `list --untagged` — 미태깅 quote 확인.
 3. quote마다 `tag <quote_id> --strength strong --axes push,anxiety` — 인간 입력.
 4. `audit` — 5/3 규칙 통과 여부 + 다음 액션 가이드.
+5. `audit` 결과가 `PROCEED_TO_PRODUCT_GATE`이면 **PERSONA_SPECS.json 저장** — 태깅된 인터뷰이를 QA 라운드용 페르소나로 구조화해 `harness/PERSONA_SPECS.json`에 기록.
+
+### PERSONA_SPECS.json 생성 규칙
+
+- **대상**: `strength: strong` 또는 `medium` quote가 2개 이상인 인터뷰이만 포함 (noise 제거)
+- **결정론**: id·name·role·anxiety_tags·trigger는 태깅 데이터에서 직접 추출 (LLM 추론 금지)
+- **experience_level**: `axes`에 `habit` strong이 있으면 "숙련", `push` strong만 있으면 "입문", 혼재 시 "중급" (결정론 매핑)
+
+```json
+// harness/PERSONA_SPECS.json
+[
+  {
+    "id": "P01",
+    "name": "인터뷰이 이름 또는 익명 ID",
+    "role": "직군·역할 (PRD ICP 기반)",
+    "anxiety_tags": ["anxiety축 태그 목록"],
+    "trigger": "가장 강한 push quote 요약 (1줄)",
+    "experience_level": "입문 | 중급 | 숙련",
+    "company_size": "ICP에서 추론 가능하면 기재, 불명이면 null"
+  }
+]
+```
+
+- `PROCEED_TO_PRODUCT_GATE`가 아닌 경우 PERSONA_SPECS.json **생성하지 않음** — 미충족 evidence로 QA 진입 방지.
 
 ## Outputs
 
 - `harness/evidence/snapshots.jsonl` — append-only quote 저장소
 - audit returns: `interviews, tagged_quotes, untagged_quotes, by_strength, persons_with_strong_push, verdict, guidance`
+- `harness/PERSONA_SPECS.json` — PROCEED_TO_PRODUCT_GATE 시에만 생성. QA 라운드(`qa-checklist --mode adversarial`)의 페르소나 에이전트 설정 소스.
 
 ## Verification
 
 - [ ] 모든 imported quote는 처음에 `status: awaiting_human_tag`
 - [ ] tag 후 `status: tagged`, `strength`, `axes`, `tagged_at` 채워짐
 - [ ] verdict는 `PROCEED_TO_PRODUCT_GATE` (5인터뷰 + 3 distinct strong-push) 또는 `INTERVIEW_OR_HOLD`
+- [ ] `PROCEED_TO_PRODUCT_GATE` 시 `harness/PERSONA_SPECS.json` 존재, strong/medium 인터뷰이만 포함됨
+- [ ] `INTERVIEW_OR_HOLD` 시 `harness/PERSONA_SPECS.json` 생성되지 않음
 
 ## Why this design
 
