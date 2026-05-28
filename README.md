@@ -1,3 +1,5 @@
+![hplan Product Build Gate banner](./assets/banner.svg)
+
 # hplan — The Product Build Gate for AI Agents
 
 > **The 30-minute check that stops you from spending 6 months building the wrong AI product.**

@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="420" viewBox="0 0 1280 420" role="img" aria-label="hplan Product Build Gate banner">
+  <defs>
+    <pattern id="dot-paper" x="0" y="0" width="18" height="18" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="1" fill="#171717" fill-opacity="0.07"/>
+    </pattern>
+    <pattern id="bottom-rule" x="0" y="0" width="112" height="6" patternUnits="userSpaceOnUse">
+      <rect width="36" height="3" fill="#2563eb"/>
+      <rect x="44" y="3" width="16" height="3" fill="#10b981"/>
+      <rect x="68" width="10" height="3" fill="#f59e0b"/>
+      <rect x="86" y="3" width="8" height="3" fill="#ef4444"/>
+    </pattern>
+    <style>
+      .mono { font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+      .display { font-family: "Space Grotesk", "Inter", ui-sans-serif, system-ui, sans-serif; font-weight: 800; }
+      .serif { font-family: "Source Serif 4", Georgia, serif; }
+      .blue-stroke { stroke: #2563eb; fill: none; stroke-linejoin: miter; stroke-linecap: square; }
+      .ink-stroke { stroke: #171717; fill: none; stroke-linejoin: miter; stroke-linecap: square; }
+      .gate-fill { fill: rgba(37, 99, 235, 0.06); }
+      .green-fill { fill: rgba(16, 185, 129, 0.12); }
+      .amber-fill { fill: rgba(245, 158, 11, 0.12); }
+      .red-fill { fill: rgba(239, 68, 68, 0.12); }
+    </style>
+  </defs>
+
+  <rect width="1280" height="420" fill="#fbfaf4"/>
+  <rect width="1280" height="420" fill="url(#dot-paper)"/>
+
+  <g class="mono" font-size="11" letter-spacing="2.2">
+    <text x="56" y="44" fill="#2563eb">FIG_HPLAN_00  /  PRODUCT BUILD GATE</text>
+    <text x="1224" y="44" fill="#74716a" text-anchor="end">OPEN SOURCE  /  MIT  /  STAGE 0</text>
+  </g>
+  <line x1="56" y1="64" x2="1224" y2="64" stroke="#2563eb" stroke-width="0.7" stroke-opacity="0.36"/>
+
+  <g transform="translate(56, 108)">
+    <text class="display" x="0" y="66" font-size="76" letter-spacing="0" fill="#171717">hplan</text>
+    <text class="display" x="0" y="138" font-size="64" letter-spacing="0.8" fill="#2563eb">PRODUCT BUILD GATE.</text>
+  </g>
+
+  <g class="serif" font-size="18" fill="#171717">
+    <text x="56" y="292">Evidence, economics, and human checkpoints before an AI agent idea becomes code.</text>
+  </g>
+  <g class="mono" font-size="11" letter-spacing="2.1" fill="#74716a">
+    <text x="56" y="323">EVIDENCE  /  PRODUCT  /  COGS  /  EXCLUSIONS  /  HANDOFF</text>
+  </g>
+
+  <line x1="740" y1="104" x2="740" y2="350" stroke="#2563eb" stroke-width="0.7" stroke-opacity="0.32" stroke-dasharray="4 5"/>
+
+  <g transform="translate(782, 116)">
+    <g class="mono" font-size="9" letter-spacing="1.9" fill="#2563eb">
+      <text x="0" y="0">FIG_HPLAN.A  /  WHETHER PIPELINE</text>
+    </g>
+
+    <g transform="translate(0, 32)">
+      <rect x="0" y="28" width="76" height="52" class="gate-fill" stroke="#2563eb" stroke-width="1.2"/>
+      <text class="mono" x="38" y="51" font-size="9" letter-spacing="1.5" text-anchor="middle" fill="#2563eb">IDEA</text>
+      <text class="mono" x="38" y="66" font-size="8" letter-spacing="1.2" text-anchor="middle" fill="#74716a">RAW SIGNAL</text>
+
+      <path class="blue-stroke" stroke-width="1" d="M76 54 L118 54"/>
+      <path d="M118 54 L110 50 L110 58 Z" fill="#2563eb"/>
+
+      <g transform="translate(118, 0)">
+        <rect x="0" y="0" width="170" height="108" rx="0" class="gate-fill" stroke="#2563eb" stroke-width="1.4"/>
+        <line x1="42" y1="0" x2="42" y2="108" stroke="#2563eb" stroke-opacity="0.35"/>
+        <line x1="84" y1="0" x2="84" y2="108" stroke="#2563eb" stroke-opacity="0.35"/>
+        <line x1="126" y1="0" x2="126" y2="108" stroke="#2563eb" stroke-opacity="0.35"/>
+
+        <g class="mono" font-size="7.5" letter-spacing="0.4" text-anchor="middle">
+          <text x="21" y="126" fill="#2563eb">SIGNAL</text>
+          <text x="63" y="126" fill="#2563eb">EVID.</text>
+          <text x="105" y="126" fill="#2563eb">PROD.</text>
+          <text x="147" y="126" fill="#2563eb">COGS</text>
+        </g>
+
+        <g transform="translate(10, 22)">
+          <circle cx="11" cy="11" r="10" class="green-fill" stroke="#10b981" stroke-width="1.2"/>
+          <path d="M6 11 L10 15 L17 7" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="square"/>
+        </g>
+        <g transform="translate(52, 22)">
+          <circle cx="11" cy="11" r="10" class="green-fill" stroke="#10b981" stroke-width="1.2"/>
+          <path d="M6 11 L10 15 L17 7" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="square"/>
+        </g>
+        <g transform="translate(94, 22)">
+          <circle cx="11" cy="11" r="10" class="amber-fill" stroke="#f59e0b" stroke-width="1.2"/>
+          <line x1="11" y1="5" x2="11" y2="13" stroke="#f59e0b" stroke-width="2"/>
+          <circle cx="11" cy="17" r="1.2" fill="#f59e0b"/>
+        </g>
+        <g transform="translate(136, 22)">
+          <circle cx="11" cy="11" r="10" class="red-fill" stroke="#ef4444" stroke-width="1.2"/>
+          <line x1="7" y1="7" x2="15" y2="15" stroke="#ef4444" stroke-width="2"/>
+          <line x1="15" y1="7" x2="7" y2="15" stroke="#ef4444" stroke-width="2"/>
+        </g>
+
+        <g stroke="#171717" stroke-opacity="0.26" stroke-width="1">
+          <line x1="14" y1="70" x2="156" y2="70"/>
+          <line x1="14" y1="84" x2="136" y2="84"/>
+          <line x1="14" y1="98" x2="116" y2="98"/>
+        </g>
+      </g>
+
+      <path class="blue-stroke" stroke-width="1" d="M288 54 L336 54"/>
+      <path d="M336 54 L328 50 L328 58 Z" fill="#2563eb"/>
+
+      <g transform="translate(336, 20)">
+        <rect x="0" y="0" width="112" height="68" fill="#171717" fill-opacity="0.04" stroke="#171717" stroke-width="1"/>
+        <text class="mono" x="56" y="27" font-size="9" letter-spacing="1.4" text-anchor="middle" fill="#171717">BUILD BRIEF</text>
+        <text class="mono" x="56" y="45" font-size="8" letter-spacing="1.1" text-anchor="middle" fill="#74716a">SPEC / KIRO / CLAUDE</text>
+      </g>
+    </g>
+
+    <g transform="translate(10, 198)">
+      <text class="mono" x="0" y="0" font-size="9" letter-spacing="1.7" fill="#74716a">DECISION STATES</text>
+      <g transform="translate(0, 18)" class="mono" font-size="9" letter-spacing="1.4">
+        <rect x="0" y="0" width="70" height="24" class="green-fill" stroke="#10b981" stroke-width="1"/>
+        <text x="35" y="16" text-anchor="middle" fill="#10b981">BUILD</text>
+
+        <rect x="86" y="0" width="94" height="24" class="amber-fill" stroke="#f59e0b" stroke-width="1"/>
+        <text x="133" y="16" text-anchor="middle" fill="#b45309">INTERVIEW</text>
+
+        <rect x="196" y="0" width="70" height="24" fill="rgba(37,99,235,0.06)" stroke="#2563eb" stroke-width="1"/>
+        <text x="231" y="16" text-anchor="middle" fill="#2563eb">PIVOT</text>
+
+        <rect x="282" y="0" width="64" height="24" class="red-fill" stroke="#ef4444" stroke-width="1"/>
+        <text x="314" y="16" text-anchor="middle" fill="#ef4444">HOLD</text>
+      </g>
+    </g>
+  </g>
+
+  <line x1="0" y1="404" x2="1280" y2="404" stroke="#171717" stroke-opacity="0.16" stroke-width="0.8"/>
+  <rect x="0" y="408" width="1280" height="6" fill="url(#bottom-rule)"/>
+</svg>
