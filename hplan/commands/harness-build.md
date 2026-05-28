@@ -260,7 +260,7 @@ Gate 승인 후 checkpoint.json이 작성되면 자동으로 Phase 4로 진행�
 
 #### Step 4-1: PRD 작성 (`--step prd`)
 
-`docs/PRD.md`를 아래 14섹션으로 작성한다. 각 섹션은 3–8개 bullet 기준.
+`docs/PRD.md`를 아래 15섹션으로 작성한다. 각 섹션은 3–8개 bullet 기준.
 
 **PRD 버전 헤더** — 파일 첫 줄에 반드시 추가한다:
 
@@ -316,7 +316,7 @@ python3 hplan/scripts/decision_log.py hitl \
   --q "PRD 초안 작성" \
   --options "Signal Gate 기반 초안" \
   --chosen "Signal Gate 기반 초안" \
-  --why "4개 Signal Gate 문서(pain/cogs/market/competitors) 기반 14섹션 초안" \
+  --why "4개 Signal Gate 문서(pain/cogs/market/competitors) 기반 15섹션 초안" \
   --prd-version "v0.1"
 ```
 
@@ -589,7 +589,7 @@ fi
 2. **Product Gate** — OST 상태 / Journey+sitemap / Design pointer / 다음 게이트
 3. **COGS Gate** — 비용 p50/p90 / Gross margin / GREEN·CONDITIONAL_GO·RED
 4. **Checkpoint 상태** — `harness/build-gate/checkpoint.json` 작성 완료 (gate_guard.py 해제)
-5. **`docs/PRD.md`** — 14섹션 PRD 작성 완료
+5. **`docs/PRD.md`** — 15섹션 PRD 작성 완료
 6. **`harness/SPRINT-W1.md`** — W1 스프린트 플랜 작성 완료
 7. **다음 단계** — "W1 Day 1: 에이전트 인스트럭션 작성 시작"
 8. **Spec Compliance** — ICP·비기능·실패 모드 3 체크포인트 판정 (통과/조건부/재작업)

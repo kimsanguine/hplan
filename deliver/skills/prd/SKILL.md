@@ -204,7 +204,7 @@ ICP (Ideal Customer Profile):
 | HITL 레벨 | L2 (suggest) | L3 (approve) | L4 (autonomous) | L3 | 안전성 vs 속도 | 5명 사랑 후 |
 ```
 
-> 자동 호출: `discover/build-or-buy` + `architect/orchestration` + `discover/hitl`
+> 자동 호출: `discover/build-or-buy` [예정] + `architect/orchestration` + `discover/hitl`
 
 ---
 
@@ -706,7 +706,7 @@ You are helping write a complete **Unified PRD** for: **$ARGUMENTS**
 🔍 Checkpoint 1: User 검증 — "ICP·JTBD·문제가 5명 사랑 인터뷰에 그대로 쓸 수 있는가?"
 
 **Phase 2** — Section 4-6 (결정·범위)
-- Section 4: 결정 옵션 매트릭스 — `discover/build-or-buy` [예정] + `architect/orchestration` + `discover/hitl`
+- Section 4: 결정 옵션 매트릭스 — `discover/build-or-buy` [예정] + `architect/orchestration` + `discover/hitl` (부재 시 옵션 2개 × 5개 결정 항목 직접 작성)
 - Section 5: 제외사항 — `hplan/exclusions` 자동 인용
 - Section 6: Now/Next/Later — `discover/cost-sim` (cogs p50/p90)
 

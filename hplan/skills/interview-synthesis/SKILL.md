@@ -47,6 +47,7 @@ Expected AI export JSON shape:
     {
       "person": "ICP candidate 1",
       "role": "HR 담당자 (선택 입력)",
+      "company_size": "50-200명 (선택 입력)",
       "date": "2026-05-09",
       "quotes": [
         {"text": "지난주에 30분 또 날렸어요", "theme": "manual workaround"},

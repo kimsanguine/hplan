@@ -71,7 +71,7 @@ PRD에 명시된 타겟 플랫폼 기준:
 - 페르소나 구성 → `hplan/interview-synthesis` (PERSONA_SPECS.json 생성)
 
 ### Boundary Checks
-- `docs/PRD.md` 부재 → fail loud + "docs/PRD.md 없음. /harness-build --step prd 먼저 실행하세요."
+- `docs/PRD.md` 부재 → fail loud + "docs/PRD.md 없음. `/harness-build --step prd` 또는 `/prd` (deliver 스킬, §15 QA Pool 포함) 먼저 실행하세요."
 - Section 1(ICP) 부재 → fail loud + "PRD §1 ICP 섹션이 필요합니다."
 - `harness/` 디렉터리 부재 → `mkdir -p harness/` 후 진행
 - `--mode adversarial` + `harness/QA_POOL.json` 부재 → fail loud + "harness/QA_POOL.json 없음. /prd 실행 후 §15 QA Pool이 생성되어야 합니다."
@@ -111,7 +111,8 @@ ls docs/PRD.md 2>/dev/null || echo "PRD_MISSING"
 PRD_MISSING 시:
 ```
 ❌ 에러: docs/PRD.md 없음.
-/harness-build --step prd 먼저 실행하세요.
+`/harness-build --step prd` 또는 `/prd` (deliver 스킬) 먼저 실행하세요.
+`--mode adversarial` 예정이면 `/prd`를 사용해야 §15 QA Pool(harness/QA_POOL.json)이 생성됩니다.
 ```
 즉시 종료.
 
@@ -411,7 +412,8 @@ CRITICAL 또는 HIGH 잔존 시:
 **기대 동작:**
 ```
 ❌ 에러: docs/PRD.md 없음.
-/harness-build --step prd 먼저 실행하세요.
+`/harness-build --step prd` 또는 `/prd` (deliver 스킬) 먼저 실행하세요.
+`--mode adversarial` 예정이면 `/prd`를 사용해야 §15 QA Pool(harness/QA_POOL.json)이 생성됩니다.
 ```
 실행 중단. TC 생성 금지.
 

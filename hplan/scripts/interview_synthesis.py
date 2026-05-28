@@ -73,12 +73,19 @@ def import_ai_export(root: Path, export_path: Path) -> dict:
     imported = 0
     skipped = 0
     with out_path.open("a", encoding="utf-8") as f:
-        for interview in data.get("interviews", []):
-            person = interview.get("person", "anonymous")
+        for interview_idx, interview in enumerate(data.get("interviews", [])):
+            person_raw = interview.get("person")
+            # Assign sequential anon-N ID when person field is absent so that
+            # multiple anonymous interviewees in the same file produce distinct
+            # hashes and are never silently dropped as duplicates.
+            person = person_raw if person_raw else f"anon-{interview_idx}"
             int_date = interview.get("date", datetime.now(timezone.utc).date().isoformat())
+            # Use raw date (or empty string) for hash so the same quote imported
+            # on different dates always gets the same ID (idempotency).
+            hash_date = interview.get("date") or ""
             for quote in interview.get("quotes", []):
                 qhash = hashlib.sha1(
-                    f"{person}{int_date}{quote.get('text','')}".encode("utf-8")
+                    f"{person}{hash_date}{quote.get('text','')}".encode("utf-8")
                 ).hexdigest()[:8]
                 qhash_id = f"q-{qhash}"
                 if qhash_id in existing_ids:
@@ -151,7 +158,7 @@ def audit(root: Path) -> dict:
     entries = read_all(root)
     by_person = defaultdict(list)
     for e in entries:
-        by_person[e["person"]].append(e)
+        by_person[e.get("person", "unknown")].append(e)
 
     untagged = [e for e in entries if e["status"] == "awaiting_human_tag"]
     tagged = [e for e in entries if e["status"] == "tagged"]
@@ -169,6 +176,14 @@ def audit(root: Path) -> dict:
     if verdict == "PROCEED_TO_PRODUCT_GATE":
         persona_specs_path = write_persona_specs(root, by_person)
 
+    guidance = _audit_guidance(verdict, interview_count, persons_with_strong_push, untagged)
+    if verdict == "PROCEED_TO_PRODUCT_GATE" and persona_specs_path is None:
+        guidance.append(
+            "⚠ PROCEED_TO_PRODUCT_GATE 판정이지만 PERSONA_SPECS.json 미생성: "
+            "strong/medium quote 2개 이상인 인터뷰이가 없습니다. "
+            "QA adversarial 실행 전 태깅을 보강하세요."
+        )
+
     return {
         "interviews": interview_count,
         "tagged_quotes": len(tagged),
@@ -177,7 +192,7 @@ def audit(root: Path) -> dict:
         "persons_with_strong_push": persons_with_strong_push,
         "verdict": verdict,
         "persona_specs": str(persona_specs_path) if persona_specs_path else None,
-        "guidance": _audit_guidance(verdict, interview_count, persons_with_strong_push, untagged),
+        "guidance": guidance,
     }
 
 

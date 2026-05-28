@@ -229,6 +229,7 @@ claude-hplan-gate  # 게이트만 (WHETHER 판단 전용)
 /plugin install hplan@kimsanguine-hplan
 
 # 전체 라이프사이클을 5개 커맨드로
+# (harness-discover가 먼저 실행되는 이유: gate 판단에 필요한 evidence를 수집합니다)
 /harness-discover "AI 마케팅 카피 생성기"   # 기회 매핑 + 가정 분석 + 비용 추정
 /hplan "AI 마케팅 카피 생성기"            # WHETHER gate — GO / HOLD / INVESTIGATE
 /harness-plan "마케팅 카피 에이전트"        # 아키텍처 설계 + W1 Done Criteria
@@ -239,6 +240,7 @@ claude-hplan-gate  # 게이트만 (WHETHER 판단 전용)
 ### 방법 B — 게이트 세밀 제어 (전체 플러그인 설치 시)
 
 ```bash
+# Claude 세션에서 실행
 # 3개 게이트를 한 번에 — exclusions + evidence + COGS → 판정
 /hplan "AI 마케팅 카피 생성기"
 # → [exclusions] COLLISION with ex-2026-04-17 (해당 영역 이미 점유 중)

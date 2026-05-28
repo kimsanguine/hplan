@@ -1,8 +1,8 @@
-# Test Cases — Unified PRD 14-section Quality Gate
+# Test Cases — Unified PRD 15-section Quality Gate
 
 ## 자동 검증 (validate-prd.sh)
 
-PRD 14-section 모두 통과해야 release 허용.
+PRD 15-section 모두 통과해야 release 허용.
 
 | # | 검증 | 통과 기준 |
 |---|------|----------|
@@ -21,8 +21,10 @@ PRD 14-section 모두 통과해야 release 허용.
 | 13 | OKR 구성 | North Star 1 + Business KRs 3~5 + Operational KRs 3~5 (cost KR mandatory) + Anti-Metric 1 |
 | 14 | 가설 박스 | Top-3 + 각각 2-day experiment 명시 |
 | 15 | HITL 트리거 | Section 14에 최소 1개 + Critical 시나리오 명시 |
-| 16 | 일관성 | 섹션 간 충돌·누락 없음 |
-| 17 | TK 인용 | `learn/pm-engine`로 관련 TK-NNN 3~5개 인용 |
+| 16 | 디자인 시그니처 | UI/UX 있으면 RESPECT.md commit, 없으면 "N/A" 명시 |
+| 17 | §15 QA Pool | `harness/QA_POOL.json` 저장됨 + dev_roles 결정론 매핑 |
+| 18 | 일관성 | 섹션 간 충돌·누락 없음 |
+| 19 | TK 인용 | `operate/pm-engine`로 관련 TK-NNN 3~5개 인용 |
 
 ## 인터뷰 검증 (사람 검증)
 
