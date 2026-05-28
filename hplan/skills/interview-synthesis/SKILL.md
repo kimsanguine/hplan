@@ -46,6 +46,7 @@ Expected AI export JSON shape:
   "interviews": [
     {
       "person": "ICP candidate 1",
+      "role": "HR 담당자 (선택 입력)",
       "date": "2026-05-09",
       "quotes": [
         {"text": "지난주에 30분 또 날렸어요", "theme": "manual workaround"},
@@ -55,6 +56,8 @@ Expected AI export JSON shape:
   ]
 }
 ```
+
+> **`role` 필드 처리 정책**: `role`이 AI export JSON에 있으면 PERSONA_SPECS.json에 그대로 기입 (결정론). 없으면 `null`로 저장 — 이 경우 LLM이 ICP 컨텍스트 기반으로 추론하지 않으며, 수동으로 채워야 합니다. `role`은 PERSONA_SPECS 생성 규칙의 "LLM 추론 금지" 원칙의 예외가 아닌, 입력 데이터 부재 시 명시적 `null` 처리로 대응합니다.
 
 ## Steps
 
@@ -67,7 +70,8 @@ Expected AI export JSON shape:
 ### PERSONA_SPECS.json 생성 규칙
 
 - **대상**: `strength: strong` 또는 `medium` quote가 2개 이상인 인터뷰이만 포함 (noise 제거)
-- **결정론**: id·name·role·anxiety_tags·trigger는 태깅 데이터에서 직접 추출 (LLM 추론 금지)
+- **결정론**: id·name·anxiety_tags·trigger·experience_level은 태깅 데이터에서 직접 추출 (LLM 추론 금지)
+- **null 처리**: `role`과 `company_size`는 AI export JSON에 해당 필드가 있으면 기입, 없으면 `null` 저장 — LLM 추론으로 채우지 않음.
 - **experience_level**: `axes`에 `habit` strong이 있으면 "숙련", `push` strong만 있으면 "입문", 혼재 시 "중급" (결정론 매핑)
 
 ```json
@@ -90,7 +94,7 @@ Expected AI export JSON shape:
 ## Outputs
 
 - `harness/evidence/snapshots.jsonl` — append-only quote 저장소
-- audit returns: `interviews, tagged_quotes, untagged_quotes, by_strength, persons_with_strong_push, verdict, guidance`
+- audit returns: `interviews, tagged_quotes, untagged_quotes, by_strength, persons_with_strong_push, verdict, persona_specs, guidance`
 - `harness/PERSONA_SPECS.json` — PROCEED_TO_PRODUCT_GATE 시에만 생성. QA 라운드(`qa-checklist --mode adversarial`)의 페르소나 에이전트 설정 소스.
 
 ## Verification
@@ -98,6 +102,7 @@ Expected AI export JSON shape:
 - [ ] 모든 imported quote는 처음에 `status: awaiting_human_tag`
 - [ ] tag 후 `status: tagged`, `strength`, `axes`, `tagged_at` 채워짐
 - [ ] verdict는 `PROCEED_TO_PRODUCT_GATE` (5인터뷰 + 3 distinct strong-push) 또는 `INTERVIEW_OR_HOLD`
+  - **distinct 정의**: 개인 단위 dedup — 같은 회사·팀 소속이어도 서로 다른 개인이면 distinct로 계산. 단, 동일 인물의 복수 세션은 1명으로 카운트.
 - [ ] `PROCEED_TO_PRODUCT_GATE` 시 `harness/PERSONA_SPECS.json` 존재, strong/medium 인터뷰이만 포함됨
 - [ ] `INTERVIEW_OR_HOLD` 시 `harness/PERSONA_SPECS.json` 생성되지 않음
 

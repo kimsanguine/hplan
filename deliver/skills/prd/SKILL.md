@@ -410,17 +410,40 @@ Top-3 가설 (Value/Feasibility/Reliability/Ethics 4축):
 
 ---
 
+### Section 14 — 실패 모드 + Human-in-the-loop
+
+```
+실패 시나리오 매트릭스 (최소 4개):
+
+| 시나리오 | 감지 | 대응 | 사용자 영향 |
+|---------|------|-----|------------|
+| 도메인 RAG 충실성 < 0.7 | Eval suite | Fallback to GPT + 경고 | 낮음 |
+| 결제 API 실패 | HTTPError | 3회 재시도 → 대안 결제 안내 | 중간 |
+| 한국어 판례명 잘못 인식 | 사용자 신고 | admin 알림 + roll back | 높음 |
+| 데이터 유출 의심 | 비정상 access | 즉시 차단 + audit log | Critical |
+
+Human-in-the-loop 트리거:
+- 도메인 충실성 < 0.7 → 사용자 확인 요청
+- 결제 분쟁 → admin escalation
+- 법률·의료 등 high-stakes → 항상 사용자 확인
+```
+
+---
+
 ### Section 15 — QA Pool (배포 전 검수 에이전트 구성)
 
 > 이 섹션은 PRD 작성 시 자동 생성. `qa-checklist --mode adversarial` 실행 전 필수.
 > **결정론 원칙**: 역할 선택은 아래 매핑 테이블 기반 — LLM 임의 판단 금지.
+
+> ⚠️ `interview_evidence_verified: false`인 QA_POOL.json으로 QA 라운드를 실행하면, 페르소나 기반 검증이 누락된 상태입니다. `interview-synthesis audit`을 먼저 완료하세요.
 
 ```
 QA Pool 구성 규칙:
 
 ### 페르소나 에이전트 (harness/PERSONA_SPECS.json 에서 자동 연결)
 - interview-synthesis 결과가 있으면 PERSONA_SPECS.json의 P01~P0N 전원 포함
-- PERSONA_SPECS.json 부재 시 → QA Pool에 "페르소나 없음 (인터뷰 완료 후 재실행 권장)" 명시
+- PERSONA_SPECS.json 부재 시 → `interview_evidence_verified: false` 로 저장 + "페르소나 없음 (인터뷰 완료 후 재실행 권장)" 명시
+- PERSONA_SPECS.json 존재 시 → `interview_evidence_verified: true` 로 저장
 
 ### 개발 리뷰어 역할 (도메인·스택 기반 결정론 매핑)
 ```
@@ -432,12 +455,15 @@ QA Pool 구성 규칙:
 | §1 ICP 도메인 = 법률 | `legal_domain` (법령 정확성 검증) |
 | §1 ICP 도메인 = 의료 | `medical_domain` |
 | §1 ICP 도메인 = 금융 | `finance_domain` |
-| §8 스택에 Next.js / React / Vue 포함 | `frontend` |
-| §8 스택에 FastAPI / Django / Node 포함 | `backend` |
+| §8 스택에 Next.js / React / Vue / Flutter / Swift / Kotlin 포함 | `frontend` |
+| §8 스택에 FastAPI / Django / Node / Go / Rails / Spring 포함 | `backend` |
+| §8 스택에 GraphQL 포함 | `backend` |
+| §8 스택에 DB (PostgreSQL / MySQL / Supabase / MongoDB) 포함 | `backend` |
 | §8 스택에 LLM API 포함 | `ai_engineer` |
 | §7 Anti-Goals에 보안·개인정보 포함 | `security` |
 | §14 실패 시나리오 4개 이상 | `qa_engineer` |
 | 기본 (항상 포함) | `qa_engineer` |
+| §8 스택 키워드가 위 패턴에 미해당 | WARN 출력: "스택 미매핑 — dev_roles에 수동 역할 추가 필요" |
 
 ```markdown
 ## §15 QA Pool
@@ -464,32 +490,13 @@ QA Pool 구성 규칙:
 {
   "generated_at": "YYYY-MM-DD",
   "persona_source": "harness/PERSONA_SPECS.json",
+  "interview_evidence_verified": false,
   "dev_roles": ["frontend", "backend", "qa_engineer", "legal_domain"],
   "role_rationale": {
     "frontend": "§8 스택 Next.js 포함",
     "legal_domain": "§1 ICP 법률 도메인"
   }
 }
-```
-
----
-
-### Section 14 — 실패 모드 + Human-in-the-loop
-
-```
-실패 시나리오 매트릭스 (최소 4개):
-
-| 시나리오 | 감지 | 대응 | 사용자 영향 |
-|---------|------|-----|------------|
-| 도메인 RAG 충실성 < 0.7 | Eval suite | Fallback to GPT + 경고 | 낮음 |
-| 결제 API 실패 | HTTPError | 3회 재시도 → 대안 결제 안내 | 중간 |
-| 한국어 판례명 잘못 인식 | 사용자 신고 | admin 알림 + roll back | 높음 |
-| 데이터 유출 의심 | 비정상 access | 즉시 차단 + audit log | Critical |
-
-Human-in-the-loop 트리거:
-- 도메인 충실성 < 0.7 → 사용자 확인 요청
-- 결제 분쟁 → admin escalation
-- 법률·의료 등 high-stakes → 항상 사용자 확인
 ```
 
 ---

@@ -117,10 +117,13 @@ def tag(root: Path, quote_id: str, strength: str, axes: list[str]) -> dict:
             break
     if not found:
         raise SystemExit(f"quote id not found: {quote_id}")
-    snapshots_path(root).write_text(
+    target = snapshots_path(root)
+    tmp = target.with_suffix(".tmp")
+    tmp.write_text(
         "\n".join(json.dumps(e, ensure_ascii=False) for e in entries) + "\n",
         encoding="utf-8",
     )
+    tmp.replace(target)
     return found
 
 
@@ -142,6 +145,10 @@ def audit(root: Path) -> dict:
 
     verdict = "PROCEED_TO_PRODUCT_GATE" if proceed else "INTERVIEW_OR_HOLD"
 
+    persona_specs_path = None
+    if verdict == "PROCEED_TO_PRODUCT_GATE":
+        persona_specs_path = write_persona_specs(root, by_person)
+
     return {
         "interviews": interview_count,
         "tagged_quotes": len(tagged),
@@ -149,8 +156,86 @@ def audit(root: Path) -> dict:
         "by_strength": dict(by_strength),
         "persons_with_strong_push": persons_with_strong_push,
         "verdict": verdict,
+        "persona_specs": str(persona_specs_path) if persona_specs_path else None,
         "guidance": _audit_guidance(verdict, interview_count, persons_with_strong_push, untagged),
     }
+
+
+def _experience_level(person_quotes: list[dict]) -> str:
+    """Deterministic mapping from tagged axes to experience level.
+
+    Rules (priority order):
+    - habit strong >= 1 AND push strong = 0  → 숙련
+    - push strong >= 1 AND habit strong = 0  → 입문
+    - habit strong >= 1 AND push strong >= 1 → 중급
+    - otherwise (no strong signal)           → 입문 (default)
+    """
+    tagged = [e for e in person_quotes if e.get("status") == "tagged"]
+    has_habit_strong = any(
+        "habit" in (e.get("axes") or []) and e.get("strength") == "strong"
+        for e in tagged
+    )
+    has_push_strong = any(
+        "push" in (e.get("axes") or []) and e.get("strength") == "strong"
+        for e in tagged
+    )
+    if has_habit_strong and not has_push_strong:
+        return "숙련"
+    if has_push_strong and not has_habit_strong:
+        return "입문"
+    if has_habit_strong and has_push_strong:
+        return "중급"
+    return "입문"
+
+
+def write_persona_specs(root: Path, by_person: dict) -> "Path | None":
+    """Write harness/PERSONA_SPECS.json for interviewees with >= 2 strong/medium quotes.
+
+    Inclusion rule: interviewee must have at least 2 tagged quotes with
+    strength in {strong, medium} — filters noise.
+    Deterministic fields (no LLM inference):
+      id, name, anxiety_tags, trigger, experience_level — from tagging data.
+      role, company_size — not in tagging data; left as None (fill manually).
+    Returns the written Path, or None if no interviewee qualifies.
+    """
+    qualified = []
+    for idx, (person, quotes) in enumerate(by_person.items(), start=1):
+        strong_medium = [
+            q for q in quotes
+            if q.get("status") == "tagged"
+            and q.get("strength") in {"strong", "medium"}
+        ]
+        if len(strong_medium) < 2:
+            continue
+        anxiety_tags = sorted({
+            ax
+            for q in strong_medium
+            for ax in (q.get("axes") or [])
+            if ax == "anxiety"
+        })
+        push_quotes = [
+            q for q in strong_medium
+            if "push" in (q.get("axes") or []) and q.get("strength") == "strong"
+        ]
+        trigger = push_quotes[0]["quote"][:80] if push_quotes else ""
+        qualified.append({
+            "id": f"P{idx:02d}",
+            "name": person,
+            "role": None,        # not derivable from tagging data; fill manually
+            "anxiety_tags": anxiety_tags,
+            "trigger": trigger,
+            "experience_level": _experience_level(quotes),
+            "company_size": None,  # not in tagging data; fill manually
+        })
+    if not qualified:
+        return None
+    out_path = root / "harness" / "PERSONA_SPECS.json"
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(
+        json.dumps(qualified, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+    return out_path
 
 
 def _audit_guidance(verdict, interview_count, persons_push, untagged) -> list[str]:

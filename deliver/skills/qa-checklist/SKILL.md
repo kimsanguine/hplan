@@ -17,6 +17,8 @@ model: sonnet
 | `--regenerate` | 기존 파일 덮어쓰기 |
 | `--mode adversarial` | **QA 라운드** — `harness/PERSONA_SPECS.json` + `harness/QA_POOL.json`을 읽어 페르소나·개발 에이전트를 동적 구성. CRITICAL/HIGH 발견 시 ralph loop 자동 수정. 라운드별 `harness/qa-rounds/round-N.md` + `harness/qa_log.jsonl` 기록. |
 
+> **심각도 체계 구분**: 일반 모드(`--append`/`--regenerate`)는 `critical/major/minor` 3등급. `--mode adversarial`은 `CRITICAL/HIGH/MEDIUM/MINOR` 4등급. 두 체계는 **독립**이며 결과물도 별도 — 일반: `harness/QA_CHECKLIST.md` / adversarial: `harness/qa-rounds/round-N.md`.
+
 ---
 
 ## Rule 5 준수 — 심각도 분류는 명시적 기준으로 결정
@@ -74,6 +76,7 @@ PRD에 명시된 타겟 플랫폼 기준:
 - `harness/` 디렉터리 부재 → `mkdir -p harness/` 후 진행
 - `--mode adversarial` + `harness/QA_POOL.json` 부재 → fail loud + "harness/QA_POOL.json 없음. /prd 실행 후 §15 QA Pool이 생성되어야 합니다."
 - `--mode adversarial` + `harness/PERSONA_SPECS.json` 부재 → WARN (FAIL 아님) + "페르소나 없이 개발 리뷰어만으로 진행합니다. interview-synthesis 완료 후 재실행을 권장합니다."
+- `--mode adversarial` + `harness/QA_POOL.json`의 `dev_roles: []` 빈 배열 → fail loud + "`dev_roles`가 비어 있습니다. /prd 재실행하고 §15 QA Pool을 완성하세요."
 
 ---
 
@@ -213,7 +216,11 @@ ls docs/PRD.md 2>/dev/null || echo "PRD_MISSING"
 ### Step 2 — 에이전트 풀 구성
 
 `harness/QA_POOL.json` 로드 → `dev_roles` 배열에서 역할 목록 추출.
+- `dev_roles`가 빈 배열(`[]`)이면 즉시 종료: "`dev_roles`가 비어 있습니다. /prd 재실행하고 §15 QA Pool을 완성하세요."
+
 `harness/PERSONA_SPECS.json` 존재 시 → P01~P0N 로드.
+- PERSONA_SPECS.json 내용이 빈 배열(`[]`)이면 → PERSONA_MISSING과 동일하게 처리:
+  WARN: "PERSONA_SPECS.json이 빈 배열입니다 — 페르소나 없이 개발 리뷰어만으로 진행합니다."
 
 에이전트 풀 출력:
 ```
@@ -230,7 +237,7 @@ QA 라운드 에이전트 풀 (Round 1)
 
 | 역할 | 검토 관점 |
 |------|-----------|
-| 페르소나 (P0N) | ICP 페인 해소 여부, UX 흐름 이해도, anxiety 태그 기반 불안 요소 |
+| 페르소나 (P0N) | ICP 페인 해소 여부, UX 흐름 이해도.<br>**PERSONA_SPECS 필드 활용 (결정론)**:<br>• `anxiety_tags` → 해당 불안 축의 시나리오를 CRITICAL/HIGH TC 후보로 생성<br>• `trigger` → CRITICAL TC 제목의 시드 문자열로 직접 사용<br>• `experience_level=입문` → 기본 온보딩 경로 TC 우선 검토<br>• `experience_level=숙련` → 고급 기능·엣지케이스 TC 우선 검토 |
 | `frontend` | UI 반응성, 접근성(WCAG AA), 모바일 동작, 빈 상태 처리 |
 | `backend` | API 에러 핸들링, 인증 흐름, 비동기 처리, 레이트 리밋 |
 | `qa_engineer` | TC 커버리지, 경계값, 회귀 위험, 테스트 누락 |
@@ -303,10 +310,15 @@ CRITICAL 또는 HIGH 이슈가 1건 이상이면:
 ```
 1. 이슈별 자동 수정 시도
 2. 수정 후 해당 테스트 재실행 (pytest / npm run build 등)
-3. 통과 시 round-N.md Auto-Fix 로그에 기록
-4. 실패 또는 수정 불가 시 → "수동 개입 필요" 표시 후 사용자에게 보고
-5. CRITICAL·HIGH = 0이 될 때까지 라운드 반복
+3. 통과 시 round-N.md Auto-Fix 로그에 기록 → auto_fixed 카운터 +1
+4. 실패 또는 수정 불가 시 → deferred 카운터 +1, "수동 개입 필요" 표시
+5. 종료 조건 (우선순위 순):
+   a. deferred > 0 AND (CRITICAL > 0 OR HIGH > 0) → 즉시 Step 7 REWORK 경로 (무한 루프 방지)
+   b. CRITICAL = 0 AND HIGH = 0 → Step 7 SHIP 경로
+   c. auto_fixed > 0 AND CRITICAL > 0 OR HIGH > 0 → 다음 라운드 진입
 ```
+
+> **deferred 정의**: auto-fix를 시도했지만 실패하여 수동 개입이 필요한 CRITICAL/HIGH 이슈 건수. deferred > 0이면 라운드를 반복해도 이슈가 줄지 않으므로 즉시 REWORK으로 분기한다.
 
 ### Step 6 — qa_log.jsonl append
 
@@ -329,13 +341,15 @@ CRITICAL = 0 AND HIGH = 0 시:
    로그:   harness/qa_log.jsonl
 ```
 
-CRITICAL 또는 HIGH 잔존 시 (수동 개입 필요):
+CRITICAL 또는 HIGH 잔존 시:
+- `deferred > 0` (자동 수정 실패 이슈 존재):
 ```
 ⚠️  QA 라운드 중단 — 수동 개입 필요
-   CRITICAL: N건 | HIGH: N건 (자동 수정 실패)
+   CRITICAL: N건 | HIGH: N건 (자동 수정 실패: N건)
    상세: harness/qa-rounds/round-N.md
    → 수정 후 /qa-checklist --mode adversarial 재실행
 ```
+- `deferred = 0` (아직 auto-fix 미시도): 다음 라운드 자동 진입 (Step 3→5 반복)
 
 ---
 

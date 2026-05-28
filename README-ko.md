@@ -103,7 +103,7 @@ hplan을 설치한 뒤에도 Claude와 평소대로 대화하면 됩니다. 단,
 | **"마케팅 자동화 AI 만들자"** | exclusions registry 검사. *"이전 exclusion ex-2026-04-17과 겹칩니다. 기존 incumbent가 이미 점유. 재오픈 조건은 [...]. 해당되나요?"* |
 | **"spec 짜서 바로 개발 시작하자"** | 게이트가 모두 GREEN인지 확인 후에야 spec 파일 생성. Evidence "interview", COGS "RED"이면 **파일 자체가 생성 안 됨**. filesystem 레벨 차단. |
 | **"내 제품 결정이 정말 맞았나?"** | 최근 6-12개월 결정을 자동 audit. *"hold 8건 중 6건은 실제로 죽은 게 맞고 (correct), 2건은 다른 사람이 성공시켰음 (false_hold). 이 2건의 공통점은 [...]"* |
-| **"이제 배포해도 되겠지?"** | QA 라운드가 확인합니다. evidence 단계에서 만든 페르소나 + PRD §15에서 결정된 도메인·개발 역할 에이전트가 병렬 검토. CRITICAL·HIGH = 0이 될 때까지 자동 수정 반복. 완료되면 `harness/qa-rounds/round-N.md` 최종 보고. |
+| **"이제 배포해도 되겠지?"** | QA 라운드가 확인합니다. evidence 단계에서 만든 페르소나 + PRD §15에서 결정된 도메인·개발 역할 에이전트가 병렬 검토. CRITICAL·HIGH = 0이 될 때까지 자동 수정 반복. 완료되면 `harness/qa-rounds/round-N.md` 최종 보고.<br><br>**전제 조건**: `deliver/qa-checklist --mode adversarial` 실행 전 두 파일이 필요합니다:<br>• `harness/PERSONA_SPECS.json` — `interview-synthesis audit` PASS 후 자동 생성<br>• `harness/QA_POOL.json` — `prd §15` 작성 후 자동 생성 |
 
 핵심: **hplan을 일부러 부르지 않아도 됩니다.** "만들자", "팔자", "출시하자", "spec 짜자" 같은 말이 나오는 순간 자동 발동.
 
@@ -280,11 +280,11 @@ hplan   discover  architect  deliver   operate
 
 | 단계 | 플러그인 | 이 단계에서 부딪히는 질문 | 주요 스킬 |
 |------|---------|------------------------|----------|
-| **게이트** ⭐ | `hplan` | "정말 만들 가치가 있을까?" | evidence-rubric · interview-synthesis · exclusions · cogs-sentinel · ost · decision-log · handoff · pmf-gate |
-| **발견** | `discover` | "어떤 에이전트를 만들어야 할까?" | opp-tree · assumptions · build-or-buy · cost-sim · hitl · agent-gtm · design-reference |
-| **설계** | `architect` | "어떻게 구조를 잡을까?" | 3-tier · orchestration · router · memory-arch · moat · growth-loop · biz-model · design-token |
+| **게이트** ⭐ | `hplan` | "정말 만들 가치가 있을까?" | brainstorm · evidence-rubric · interview-synthesis · exclusions · cogs-sentinel · ost · decision-log · handoff |
+| **발견** | `discover` | "어떤 에이전트를 만들어야 할까?" | opp-tree · assumptions · cost-sim · hitl |
+| **설계** | `architect` | "어떻게 구조를 잡을까?" | orchestration · router · memory-arch · design-token · strategy |
 | **실행** | `deliver` | "어떻게 스펙을 쓰고 출시할까?" | agent-setup · prd · conductor · sprint · build-loop · respect · qa-checklist · ui-validate |
-| **운영** | `operate` | "측정·학습·포트폴리오를 어떻게 할까?" | kpi · burn-rate · reliability · premortem + pm-framework · pm-decision · pm-engine + agent-portfolio · scorecard-5axis · weekly-rollup · cross-team-routing |
+| **운영** | `operate` | "측정·학습·포트폴리오를 어떻게 할까?" | metrics-design · reliability · pm-engine · incident · ops-review · portfolio |
 
 ### hplan이 나머지 4개와 다른 점
 
