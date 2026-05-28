@@ -217,6 +217,7 @@ ls docs/PRD.md 2>/dev/null || echo "PRD_MISSING"
 
 `harness/QA_POOL.json` 로드 → `dev_roles` 배열에서 역할 목록 추출.
 - `dev_roles`가 빈 배열(`[]`)이면 즉시 종료: "`dev_roles`가 비어 있습니다. /prd 재실행하고 §15 QA Pool을 완성하세요."
+- `interview_evidence_verified` 필드가 `false`이면 WARN: "⚠️ interview_evidence_verified: false — 인터뷰 evidence 없이 생성된 QA Pool입니다. 결과 신뢰도가 낮을 수 있습니다. interview-synthesis 완료 후 재실행 권장."
 
 `harness/PERSONA_SPECS.json` 존재 시 → P01~P0N 로드.
 - PERSONA_SPECS.json 내용이 빈 배열(`[]`)이면 → PERSONA_MISSING과 동일하게 처리:
@@ -237,7 +238,7 @@ QA 라운드 에이전트 풀 (Round 1)
 
 | 역할 | 검토 관점 |
 |------|-----------|
-| 페르소나 (P0N) | ICP 페인 해소 여부, UX 흐름 이해도.<br>**PERSONA_SPECS 필드 활용 (결정론)**:<br>• `anxiety_tags` → 해당 불안 축의 시나리오를 CRITICAL/HIGH TC 후보로 생성<br>• `trigger` → CRITICAL TC 제목의 시드 문자열로 직접 사용<br>• `experience_level=입문` → 기본 온보딩 경로 TC 우선 검토<br>• `experience_level=숙련` → 고급 기능·엣지케이스 TC 우선 검토 |
+| 페르소나 (P0N) | ICP 페인 해소 여부, UX 흐름 이해도. **PERSONA_SPECS 활용**: `anxiety_tags` → 불안 TC, `trigger` → CRITICAL TC 시드, `experience_level=입문` → 온보딩 TC 우선, `experience_level=숙련` → 엣지케이스 TC 우선 |
 | `frontend` | UI 반응성, 접근성(WCAG AA), 모바일 동작, 빈 상태 처리 |
 | `backend` | API 에러 핸들링, 인증 흐름, 비동기 처리, 레이트 리밋 |
 | `qa_engineer` | TC 커버리지, 경계값, 회귀 위험, 테스트 누락 |
@@ -315,7 +316,7 @@ CRITICAL 또는 HIGH 이슈가 1건 이상이면:
 5. 종료 조건 (우선순위 순):
    a. deferred > 0 AND (CRITICAL > 0 OR HIGH > 0) → 즉시 Step 7 REWORK 경로 (무한 루프 방지)
    b. CRITICAL = 0 AND HIGH = 0 → Step 7 SHIP 경로
-   c. auto_fixed > 0 AND CRITICAL > 0 OR HIGH > 0 → 다음 라운드 진입
+   c. auto_fixed > 0 AND (CRITICAL > 0 OR HIGH > 0) → 다음 라운드 진입
 ```
 
 > **deferred 정의**: auto-fix를 시도했지만 실패하여 수동 개입이 필요한 CRITICAL/HIGH 이슈 건수. deferred > 0이면 라운드를 반복해도 이슈가 줄지 않으므로 즉시 REWORK으로 분기한다.
@@ -339,6 +340,7 @@ CRITICAL = 0 AND HIGH = 0 시:
    총 N 라운드 | Auto-fixed: N건 | 유예(MEDIUM): N건
    보고서: harness/qa-rounds/round-N.md
    로그:   harness/qa_log.jsonl
+   → 다음 단계: `/deliver/respect --mode checkpoint` (최종 배포 게이트) 또는 배포 진행
 ```
 
 CRITICAL 또는 HIGH 잔존 시:

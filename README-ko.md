@@ -383,7 +383,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 | `cogs-sentinel` | 실행 가능한 COGS 게이트 — lognormal sampler가 p50/p90 월간 마진 계산, free-user abuse blend, GREEN/CONDITIONAL_GO/RED 결정 | "월 $19에 팔면 p90 마진이 살아남나?" |
 | `ost` | Teresa Torres 식 Opportunity Solution Tree를 `docs/OPPORTUNITY_TREE.md`로 Mermaid 다이어그램과 함께 생성 | "PRD 쓰기 전에 opportunity → solution → experiment 트리 잠그기" |
 | `decision-log` | Append-only build/interview/pivot/hold 로그 + 3-6개월 뒤 self-eval audit (hit_rate, false_holds, missed_builds) | "6개월 전 내 제품 결정이 실제로 맞았나?" |
-| `pmf-gate` | generate_report.py 결정론 Python 측정 — 8축 루브릭 점수화 + interview_lines·economic_pain anti-gaming 내장, 75/55/35 임계값으로 build/interview/hold 판정 | "루브릭 점수가 나왔는데 — 정말 build로 가도 되는지 확인" |
+| `brainstorm` | 아이디어를 제품 컨셉으로 발전시키는 브레인스토밍 — 질문 흐름 구조화, 트레이드오프 탐색, 접근법 2~3가지 제안 | "막연한 아이디어를 PRD 이전에 구체화하고 싶어" |
 | `handoff` | Build Gate brief → Spec-Kit / Kiro / GStack / Claude Code 4개 ecosystem 동시 export | "이제 코딩 에이전트로 넘어가자 — spec 자동 생성" |
 
 **라이프사이클 커맨드 (hplan 1개만 설치해도 전체 커버):**
@@ -405,6 +405,9 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 
 에이전트를 만들기 전에 반드시 답해야 할 질문들 — "어디에 기회가 있는지", "리스크는 뭔지", "직접 만들어야 하는지 사야 하는지", "비용은 얼마인지"를 체계적으로 분석합니다.
 
+> ⚠️ **현재 사용 가능 (4개):** `opp-tree` · `assumptions` · `cost-sim` · `hitl`
+> 아래 목록의 `build-or-buy`, `agent-gtm`, `design-reference`는 **로드맵 예정**입니다.
+
 | 스킬 | 기능 | 이런 상황에서 쓰세요 |
 |------|------|-------------------|
 | `opp-tree` | 반복 빈도·자동화 적합도·판단 의존도로 점수화한 기회 트리 구축 | "자동화 후보가 10개인데, 뭘 먼저 해야 할까?" |
@@ -422,6 +425,9 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 <summary><strong>3. architect</strong> — 어떻게 설계할까? <code>(5 skills)</code></summary>
 
 에이전트의 구조를 잡는 단계입니다. 에이전트가 하나일 때는 괜찮지만, 여러 개가 협업해야 할 때 — 누가 전략을 짜고, 누가 실행하고, 비용은 어떻게 줄이고, 해자는 어떻게 만들지를 설계합니다.
+
+> ⚠️ **현재 사용 가능 (5개):** `orchestration` · `router` · `memory-arch` · `design-token` · `strategy`
+> 아래 목록의 `3-tier`, `biz-model`, `moat`, `growth-loop`는 **로드맵 예정**입니다.
 
 | 스킬 | 기능 | 이런 상황에서 쓰세요 |
 |------|------|-------------------|
@@ -442,18 +448,14 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 
 실제로 만들고 출시하는 단계입니다. 프로젝트 온보딩(CLAUDE.md 자동 생성)부터 에이전트 전용 PRD 작성, 시스템 프롬프트 설계, 토큰 예산 관리, 이해관계자 설득 자료 제작, 실행 진행 추적, 디자인 시스템 강제까지 포함합니다.
 
-> **온보딩 (1):** agent-setup
-> **Core Spec (7):** instruction · prd · prompt · ctx-budget · okr · stakeholder-map · agent-plan-review
-> **커뮤니케이션 (4):** gemini-image-flow · infographic-gif-creator · pptx-ai-slide · agent-demo-video
-> **실행 인프라 (4):** harness-design · parallel-team · build-loop · mobile-check
-> **진행 추적 (7):** velocity-baseline · estimate-tasks · progress-probe · blocker-detect · progress-report · gate-checkpoint · respect-checkpoint
-> **디자인 시스템 (4):** respect-brief · hierarchy-rules · motion-language · ui-drift-detect
+> ⚠️ **현재 사용 가능 (8개):** `agent-setup` · `prd` · `build-loop` · `qa-checklist` · `respect` · `sprint` · `ui-validate` · `conductor`
+> 아래 목록의 나머지 스킬(instruction, prompt, ctx-budget, parallel-team 등)은 **로드맵 예정**입니다.
 
 | 스킬 | 기능 | 이런 상황에서 쓰세요 |
 |------|------|-------------------|
 | `agent-setup` ⭐ | 프로젝트 구조 스캔 → CLAUDE.md 자동 생성 → 맞춤형 hplan 플러그인 추천 | "새 프로젝트에 Claude Code를 세팅하고, 어떤 스킬을 쓸지 추천받고 싶어" |
 | `instruction` | Role/Context/Goal/Tools/Memory/Output/Failure 정의 + 최소 권한 도구 접근 설계 | "시스템 프롬프트에 뭘 넣고 뭘 빼야 하지?" |
-| `prd` | **통합 14섹션 PRD** — 사람/문제/결정 (1-6) + 에이전트·실행 사양 (7-11) + 지표/가설/실패 (12-14). 제품과 그 안의 에이전트를 단일 PRD로. | "1인 변호사 한국 판례 RAG PRD 작성해줘" |
+| `prd` | **통합 15섹션 PRD** — 사람/문제/결정 (1-6) + 에이전트·실행 사양 (7-11) + 지표/가설/실패 (12-14) + QA Pool (15). 제품과 그 안의 에이전트를 단일 PRD로. | "1인 변호사 한국 판례 RAG PRD 작성해줘" |
 | `prompt` | CRISP 프레임워크(Context/Role/Instruction/Scope/Parameters) + Why-First 원칙 + 7가지 실패 패턴 회피 | "프롬프트가 길어질수록 에이전트가 오히려 이상하게 동작해" |
 | `ctx-budget` | 파일별 토큰 사용량 추정 → Essential/Conditional/Excluded 분류 → 70% 임계값 알림 | "RAG 문서 5개 + 대화 히스토리를 128K 컨텍스트에 어떻게 넣지?" |
 | `okr` | 이중축 OKR: 비즈니스 임팩트 + 운영 건강도, 필수 비용 KR 포함 | "정확도 95%면 충분한가? 비용 지표도 넣어야 하는 거 아닌가?" |
@@ -487,9 +489,8 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 
 출시 이후가 진짜 시작입니다. 에이전트는 "조용히 틀리는" 경우가 많아서, 운영 지표 설정·비용 추적·실패 감지·실험 설계와 함께 PM 암묵지 구조화·포트폴리오 우선순위까지 한 플러그인에서 처리합니다.
 
-> **측정 (8):** kpi · reliability · premortem · burn-rate · north-star · agent-ab-test · cohort · incident
-> **지식 자산 (3):** pm-framework · pm-decision · pm-engine
-> **포트폴리오 (4):** agent-portfolio · scorecard-5axis · weekly-rollup · cross-team-routing
+> ⚠️ **현재 사용 가능 (6개):** `metrics-design` · `reliability` · `pm-engine` · `incident` · `ops-review` · `portfolio`
+> 아래 목록의 나머지 스킬(kpi, burn-rate, premortem, scorecard-5axis 등)은 **로드맵 예정**입니다.
 
 | 스킬 | 기능 | 이런 상황에서 쓰세요 |
 |------|------|-------------------|
@@ -604,9 +605,9 @@ claude \
 | 시작 스킬 | 이런 상황이 되면 | 넘어가는 스킬 |
 |----------|---------------|-------------|
 | `opp-tree` | "상위 기회의 가정을 검증해줘" | `assumptions` |
-| `burn-rate` | "비용 급증 → 모델 라우팅 변경이 필요" | `router` |
-| `prd` | "인스트럭션 설계가 필요해" | `instruction` |
-| `pm-framework` | "TK를 에이전트 인스트럭션으로 변환" | `pm-engine` |
+| `reliability` | "비용 급증 → 모델 라우팅 변경이 필요" | `router` |
+| `prd` | "인스트럭션 설계가 필요해" | `architect/strategy` |
+| `pm-engine` | "TK를 에이전트 인스트럭션으로 변환" | `prd` |
 
 ### 명령어 체이닝
 
@@ -614,11 +615,11 @@ claude \
 
 | 명령어 | 실행되는 스킬 순서 | 플러그인 |
 |--------|-----------------|---------|
-| `/discover` | opp-tree → assumptions → build-or-buy | discover |
-| `/architecture` | orchestration → 3-tier → memory-arch | architect |
-| `/write-prd` | prd → instruction → ctx-budget | deliver |
-| `/health-check` | kpi → reliability → burn-rate | operate |
-| `/tk-to-instruction` | pm-engine → instruction | operate+deliver |
+| `/discover` | opp-tree → assumptions → hitl | discover |
+| `/architecture` | orchestration → memory-arch → strategy | architect |
+| `/write-prd` | prd → qa-checklist → respect | deliver |
+| `/health-check` | metrics-design → reliability → ops-review | operate |
+| `/tk-to-instruction` | pm-engine → prd | operate+deliver |
 
 ### Skills 1.0 vs Skills 2.0 — 이 프로젝트의 스펙 적용 현황
 

@@ -1,6 +1,6 @@
 ---
 name: prd
-description: "Write a complete unified PRD covering user/JTBD/decisions/scope/agent-spec/metrics/hypotheses in 14 sections. Single source of truth for both customer-facing products and the LLM agents inside them. Replaces the older 7-section agent-only template. --mode design-shotgun reads §1+§11 from existing PRD and generates harness/design-variants/ (4 HTML variants + comparison.md)."
+description: "Write a complete unified PRD covering user/JTBD/decisions/scope/agent-spec/metrics/hypotheses in 15 sections. Single source of truth for both customer-facing products and the LLM agents inside them. Replaces the older 7-section agent-only template. --mode design-shotgun reads §1+§11 from existing PRD and generates harness/design-variants/ (4 HTML variants + comparison.md)."
 argument-hint: "[product or agent name] | --mode design-shotgun"
 allowed-tools: ["Read", "Write"]
 model: sonnet
@@ -20,11 +20,11 @@ hooks:
 
 ---
 
-## Unified PRD Template — 14 Sections
+## Unified PRD Template — 15 Sections
 
 ## Core Goal
 
-- 고객(인간) 대상 제품과 그 안의 LLM 에이전트 사양을 **단일 PRD 14-section**으로 통합
+- 고객(인간) 대상 제품과 그 안의 LLM 에이전트 사양을 **단일 PRD 15-section**으로 통합
 - "사람·문제·결정"이 상단 (1-6), "에이전트·실행 사양"이 중단 (7-11), "지표·가설·실패"가 하단 (12-14)
 - 1인 빌더 60일 사이클 + 5명 사랑 검증 + Live URL 도착까지 같은 PRD를 매번 갱신
 
@@ -117,11 +117,12 @@ hooks:
 
 ---
 
-## Unified PRD 14-section 구조
+## Unified PRD 15-section 구조
 
 > **상단** = 사람·문제·결정 (Section 1~6) → 비즈니스가 읽음
 > **중단** = 에이전트·실행 사양 (Section 7~11) → 엔지니어가 읽음
 > **하단** = 지표·가설·실패 (Section 12~14) → PM이 매주 갱신
+> **부록** = QA Pool (Section 15) → `deliver/qa-checklist --mode adversarial` 전용
 
 ---
 
