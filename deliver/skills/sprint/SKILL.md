@@ -152,21 +152,22 @@ for task in tasks:
 - `mkdir -p .track`
 - `.gitignore`에 `.track/` 없으면 append
 
-**Step 2 — Hook 등록**
-- `.claude/settings.json`의 hooks.PostToolUse에 추가:
+**Step 2 — probe 스크립트 설치**
+- `references/track-probe.sh`를 프로젝트 `scripts/track-probe.sh`로 복사 (없으면)
+- `chmod +x scripts/track-probe.sh`
+- ⚠ 인라인 작성 금지 — 검증된 배포 스크립트를 그대로 복사한다.
+
+**Step 3 — Hook 등록**
+- `.claude/settings.json`의 hooks.PostToolUse에 추가 (stdin JSON 프로토콜):
 ```json
-{"hooks": {"PostToolUse": [{"command": "scripts/track-probe.sh hook --tool $TOOL --file $FILE --exit $EXIT"}]}}
+{"hooks": {"PostToolUse": [{"matcher": "Write|Edit|NotebookEdit", "hooks": [{"type": "command", "command": "bash scripts/track-probe.sh"}]}]}}
 ```
+- probe는 stdin으로 JSON을 받는다 (tool_name·tool_input). CLI 인자/env-var 방식 아님.
 - 기존 hooks가 있으면 array append (덮어쓰기 금지)
 
-**Step 3 — fallback shell 작성**
-- `scripts/track-probe.sh` 신규 (없으면)
-- `chmod +x`
-- 내용: shell argparse + ISO8601 timestamp + JSON line write
-
 **Step 4 — Hook smoke test**
-- `bash scripts/track-probe.sh hook --tool test --file noop --exit 0`
-- jsonl 마지막 줄에 test entry 확인 → pass
+- `echo '{"tool_name":"Write","tool_input":{"file_path":"noop","content":"a\nb\n"}}' | bash scripts/track-probe.sh`
+- `.track/actual_log.jsonl` 마지막 줄에 entry(loc_delta=2) 확인 → pass
 
 **Step 5 — 사용자 안내**
 - Hook이 PostToolUse에 등록됐음
