@@ -200,7 +200,14 @@ Running for: **$ARGUMENTS**
 
 ### Step 2 — 구현 에이전트 디스패치
 
-각 태스크마다 `deliver/skills/conductor/prompts/implementer.md` 템플릿을 사용해
+각 태스크마다 subagent 디스패치 **직전**에 해당 태스크 id를 `.track/current_task`에 기록한다 (결정론, LLM 호출 없음):
+```bash
+echo "T-001" > .track/current_task   # 현재 태스크 id로 치환
+```
+이 기록이 있어야 probe hook이 이후 Write/Edit 이벤트를 태스크별로 태깅할 수 있다.
+`.track/` 디렉토리가 없으면 기록을 건너뛴다 (`[ -d .track ] && echo "T-001" > .track/current_task`).
+
+이후 `deliver/skills/conductor/prompts/implementer.md` 템플릿을 사용해
 fresh subagent를 호출한다. 템플릿의 각 플레이스홀더를 현재 태스크 정보로 채운다.
 
 마찬가지로:
@@ -213,7 +220,7 @@ fresh subagent를 호출한다. 템플릿의 각 플레이스홀더를 현재 �
 |---|---|
 | `DONE` | 즉시 Spec Compliance로 이동 |
 | `DONE_WITH_CONCERNS` | 우려사항 목록 검토 후 Spec으로 이동 |
-| `NEEDS_CONTEXT` | 누락 컨텍스트 식별 → 제공 후 재디스패치 |
+| `NEEDS_CONTEXT` | 누락 컨텍스트 식별 → 제공 후 재디스패치 (재디스패치 전 `.track/current_task` 재기록) |
 | `BLOCKED` | 블로커 원인 분석 → 컨텍스트 보완 or 태스크 분해 or 상위 에스컬레이션 |
 
 `NEEDS_CONTEXT` 재디스패치는 최대 2회. 2회 초과 시 `BLOCKED`로 처리.

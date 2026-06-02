@@ -9,10 +9,12 @@
 #
 # 캡처 가능 (결정론):
 #   - ts          : 훅 발화 시각 (ISO8601 UTC) → retro가 task별 min/max로 minutes_elapsed 산출
-#   - loc_delta   : Write=content 줄 수, Edit=new_string−old_string 줄 수
+#   - loc_delta   : Write=content 줄 수, Edit=new_string−old_string 줄 수, NotebookEdit=new_source 줄 수
 #   - task        : .track/current_task 파일 (sprint/conductor가 태스크 시작 시 기록, 없으면 unassigned)
+#   - exit_code   : tool_response.exit_code (없으면 0; 추정하지 않음)
 # 캡처 불가 (정직하게 비움):
 #   - tokens      : 훅 페이로드에 token usage 없음 → 기록하지 않음 (retro에서 null).
+#   - minutes     : probe가 직접 기록하지 않음 → retro가 task별 ts min/max 차로 유도.
 #
 # Exit codes: 항상 0 (PostToolUse는 차단 불가, 추적만).
 

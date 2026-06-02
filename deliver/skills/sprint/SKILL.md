@@ -30,6 +30,7 @@ model: sonnet
 | **loc/tokens/minutes 수치 예측** | ❌ **lookup 전용** | baseline percentile 직접 인용, hallucination 방지 |
 | 블로커 패턴 감지 | ❌ 결정론 | 정규식·카운터·임계치 비교 |
 | 7종 트리거 검출 | ❌ 결정론 | 카운터·임계치 비교 |
+| `.track/current_task` 기록 | ❌ 결정론 | `echo T-XXX > .track/current_task` (LLM 아님) |
 | 자연어 보고 문구 생성 | ✅ | Rule 5 허용: 자연어 생성 |
 
 ---
@@ -179,6 +180,15 @@ for task in tasks:
 
 **status의 역할**: 현재 진행 상황 결정론 스캔 + 이벤트 트리거 발화 여부 + 자연어 보고.
 
+**Step 0 — current_task 태깅 (결정론)**
+- `.track/predicted.json`에서 현재 진행 중인(미완료) 태스크 id를 결정론으로 식별한다.
+- 식별된 태스크 id를 `.track/current_task`에 기록한다 (LLM 호출 없음):
+```bash
+echo "T-001" > .track/current_task   # 진행 중인 태스크 id로 치환
+```
+- 이 파일이 있어야 probe가 이후 Write/Edit 이벤트에 task 태그를 붙인다.
+- 미완료 태스크가 없으면(스프린트 완료 상태) `echo "done" > .track/current_task`로 기록한다.
+
 **Step 1 — 7종 트리거 결정론 점검**
 
 | # | 트리거 | 검출 |
@@ -234,11 +244,19 @@ Next gate: <name> — <human approval required | auto>
 - 미완료 task 있으면 "완료되지 않은 task N개" 경고 후 진행
 
 **Step 2 — Deviation 분석 (결정론)**
+
+task별 `minutes_elapsed`는 probe가 `.track/current_task`로 태깅한 이벤트의 min/max `ts` 차로 산출된다.
+즉 `actual.minutes = max(ts[task]) − min(ts[task])` (초 단위 차이를 분으로 변환).
+
 ```python
 for task in predicted_tasks:
     actual = find_actual(task.id)
     loc_deviation = (actual.loc - task.loc_p50) / task.loc_p50 * 100
-    token_deviation = (actual.tokens - task.tokens_p50) / task.tokens_p50 * 100
+    # tokens: probe가 token usage를 캡처하지 않으므로 null일 수 있음 — null-safe 처리
+    if actual.tokens is not None and task.tokens_p50:
+        token_deviation = (actual.tokens - task.tokens_p50) / task.tokens_p50 * 100
+    else:
+        token_deviation = None  # 건너뜀 (retro 보고에서 "N/A"로 표시)
     time_deviation = (actual.minutes - task.minutes_p50) / task.minutes_p50 * 100
 ```
 
@@ -255,7 +273,7 @@ for task in predicted_tasks:
 ─── sprint retro ─── <feature>
 Planned: X tasks · Y LOC · Z tokens · T hours
 Actual:  X tasks · Y LOC · Z tokens · T hours
-Deviations: loc +A%, tokens +B%, time +C%
+Deviations: loc +A%, tokens N/A (probe 미캡처), time +C%
 Velocity trend: baseline 갱신됨 (trust_grade: X)
 TK 추출 후보: N개
 ```
