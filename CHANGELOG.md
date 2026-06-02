@@ -4,6 +4,20 @@ All notable changes to hplan (renamed from AI_PM_Skills in v0.5) are documented 
 
 ---
 
+## [0.13.1] — 2026-06-02
+
+> **사용자 영향**: 신규 스킬 2개 추가로 총 스킬 수 31 → 33. ticket-bridge(Jira/Linear 티켓 자동 생성), ask-team(팀 질의 구조화) 신설. sprint probe hook 실재화(track-probe.sh).
+
+### Added — 신규 스킬 2개 + hook 실재화
+
+**`deliver/ticket-bridge`** — 스펙/이슈를 Jira·Linear 티켓 포맷으로 자동 변환. harness 태스크를 트래커와 연결해 수동 복붙 없이 티켓 생성.
+
+**`deliver/ask-team`** — 팀 질의를 구조화된 RFC/슬랙 스레드 형식으로 변환. 결정 필요 항목·데드라인·담당자 자동 추출.
+
+**`deliver/sprint/track-probe.sh`** — probe hook 실재화. sprint 진행 중 자동 상태 점검(빌드 실패·블로커 감지·진행률 계산)을 스크립트로 구현.
+
+---
+
 ## [0.13.0] — 2026-05-27
 
 > **사용자 영향**: conductor 자동 파이프라인 연결 강화(Phase 0 PRD→플랜 자동생성·COGS 3단계·sprint 모드). tc-gate에 PRD 링크 assertion 추가(3타입). COGS gate/MCP gate 핵심 경로 버그 수정. 스킬 수 31 유지.
