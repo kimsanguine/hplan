@@ -186,7 +186,7 @@ def main():
     total_skills = 0
     total_aliases = 0
     total_commands = 0
-    EXPECTED_ACTIVE_SKILLS = 33
+    EXPECTED_ACTIVE_SKILLS = 34
     EXPECTED_ALIASES = 0
     # v0.13.x migration note: deliver/ask-team skill added (comms MCP — Gmail/Notion/Zoom 비동기 질문 채널).
     # deliver plugin skills +1. Total: 32 → 33.
