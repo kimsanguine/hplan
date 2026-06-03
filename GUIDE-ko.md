@@ -42,23 +42,25 @@
 
 ### 방법 1: 마켓플레이스 설치 (추천)
 
-```bash
+아래 명령을 **Claude 세션 안에서** 실행하세요 (`/` 로 시작하는 슬래시 커맨드는 터미널 bash가 아닌 Claude 세션에서만 동작합니다):
+
+```
 # 한 줄로 5개 플러그인 전부 설치
-claude plugin marketplace add kimsanguine/hplan
+/plugin marketplace add kimsanguine/hplan
+/plugin install hplan@kimsanguine-hplan
 ```
 
 ### 방법 2: 개별 플러그인 설치
 
-```bash
-# 레포 클론 후 원하는 플러그인만 설치
-git clone https://github.com/kimsanguine/hplan.git
-cd hplan
+아래 명령을 **Claude 세션 안에서** 실행하세요:
 
-claude plugin add hplan/     # 게이트 ⭐ (Should we build this?)
-claude plugin add discover/  # 발견 (What to build?)
-claude plugin add architect/ # 설계 (How to architect?)
-claude plugin add deliver/   # 실행 (How to ship?)
-claude plugin add operate/   # 측정·학습·운영 통합 (How to measure, learn & operate?)
+```
+# 필요한 플러그인만 선택해서 설치
+/plugin install hplan@kimsanguine-hplan      # 게이트 ⭐ (Should we build this?)
+/plugin install discover@kimsanguine-hplan   # 발견 (What to build?)
+/plugin install architect@kimsanguine-hplan  # 설계 (How to architect?)
+/plugin install deliver@kimsanguine-hplan    # 실행 (How to ship?)
+/plugin install operate@kimsanguine-hplan    # 측정·학습·운영 통합 (How to measure, learn & operate?)
 ```
 
 만들지 말지부터 고민이라면 → `hplan`을 먼저 설치하세요 (evidence + COGS 게이트).
@@ -224,7 +226,7 @@ TK 유닛을 에이전트가 바로 사용할 수 있는 인스트럭션 형식�
 
 ---
 
-## 스킬 전체 목록 (65개)
+## 스킬 전체 목록 (34개)
 
 ### hplan — 게이트 ⭐ (8개 스킬)
 
@@ -241,7 +243,7 @@ TK 유닛을 에이전트가 바로 사용할 수 있는 인스트럭션 형식�
 | `handoff` | Build Gate brief → Spec-Kit / Kiro / GStack / Claude Code 4개 ecosystem 동시 export |
 | `pmf-gate` | Post-launch PMF 신호 루프 — COGS 실시간 + 행동 지표 → 다음 Evidence Gate 입력 |
 
-### discover — 발견 (4개 스킬, 일부는 로드맵)
+### discover — 발견 (5개 스킬, 일부는 로드맵)
 
 | 스킬 | 하는 일 | 이럴 때 쓰세요 |
 |------|--------|-------------|
@@ -252,6 +254,7 @@ TK 유닛을 에이전트가 바로 사용할 수 있는 인스트럭션 형식�
 | `cost-sim` | 토큰 비용 시뮬레이션 | "한 달에 얼마 들어?" |
 | `agent-gtm` | 에이전트 Go-to-Market 전략 | "출시를 어떻게 해야 하지?" |
 | `design-reference` | UI/UX 레퍼런스 수집·구조화 + 공통 패턴 추출 | "경쟁사 레퍼런스에서 패턴을 뽑아 설계에 반영하고 싶어" |
+| `socratic-question` | 소크라테스식 질문으로 가정을 먼저 심문 — 숨은 리스크와 검증되지 않은 전제 드러내기 | "아이디어에 뛰어들기 전에 내 가정을 먼저 검증하고 싶어" |
 
 ### architect — 설계 (5개 스킬, 일부는 로드맵)
 
@@ -266,7 +269,7 @@ TK 유닛을 에이전트가 바로 사용할 수 있는 인스트럭션 형식�
 | `growth-loop` | 데이터 플라이휠 설계 | "사용할수록 똑똑해지게 만들려면?" |
 | `design-token` | 시맨틱 CSS 토큰 + DESIGN.md 자동 생성 | "디자인 시스템 토큰을 어떻게 정의하지?" |
 
-### deliver — 딜리버리 (8개 스킬 — 아래 표에는 로드맵 스킬도 섞여 있으니 실재 8개는 [README-ko.md](README-ko.md) 참조)
+### deliver — 딜리버리 (10개 스킬 — 아래 표에는 로드맵 스킬도 섞여 있으니 실재 10개는 [README-ko.md](README-ko.md) 참조)
 
 | 스킬 | 하는 일 | 이럴 때 쓰세요 |
 |------|--------|-------------|
@@ -285,6 +288,8 @@ TK 유닛을 에이전트가 바로 사용할 수 있는 인스트럭션 형식�
 | `harness-design` ⭐ NEW | 빌드 하네스 (4명+ 팀 + Ralph Loop + 백업/dry-run) | "자율 모드로 큰 작업 진행하고 싶어" |
 | `parallel-team` ⭐ NEW | 독립 태스크 ≥2 → worktree 격리 병렬 디스패치 | "여러 모듈 동시에 작업해도 충돌 안 나게" |
 | `build-loop` ⭐ NEW | `/build` 한 번으로 발견→리서치→설계→PRD→분해→구현 | "아이디어부터 구현까지 한 루프로" |
+| `ask-team` | 질문을 올바른 이해관계자 또는 에이전트 역할로 구조화하여 라우팅 | "이 트레이드오프를 누구에게 물어봐야 하지?" |
+| `ticket-bridge` | PRD 결정·게이트 출력물 → 추적 가능한 티켓으로 변환 (Linear / Jira / GitHub Issues) | "게이트 판정 결과를 스프린트 티켓으로 자동 전환하고 싶어" |
 
 ### operate — 측정·학습·운영 (6개 스킬 — 아래 표에는 로드맵 스킬도 섞여 있으니 실재 6개는 [README-ko.md](README-ko.md) 참조)
 
