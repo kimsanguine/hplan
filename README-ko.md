@@ -8,7 +8,7 @@
 > 말의 고삐(harness)처럼, Claude Code · Cursor · Lovable 같은 AI 코딩 도구의 거친 동력에 **방향을 부여하는 사전 계획**입니다. 코드를 만드는 도구는 이미 충분히 강합니다. 부족한 건 *"어디로 향할지"*. hplan은 코드를 쓰기 전 7일 동안 시장조사·문제정의·COGS(AI 기능 제공 원가)를 강제로 묻습니다.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-34-blue?style=flat-square)](#에이전트-pm-여정--5-plugin)
+[![Skills](https://img.shields.io/badge/skills-38-blue?style=flat-square)](#에이전트-pm-여정--5-plugin)
 [![Plugins](https://img.shields.io/badge/plugins-5-purple?style=flat-square)](#에이전트-pm-여정--5-plugin)
 [![Version](https://img.shields.io/badge/version-0.13.0-green?style=flat-square)](CHANGELOG.md)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)](CONTRIBUTING.md)
@@ -421,12 +421,12 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 </details>
 
 <details>
-<summary><strong>2. discover</strong> — 어떤 에이전트를 만들까? <code>(5 skills)</code></summary>
+<summary><strong>2. discover</strong> — 어떤 에이전트를 만들까? <code>(6 skills)</code></summary>
 
 에이전트를 만들기 전에 반드시 답해야 할 질문들 — "어디에 기회가 있는지", "리스크는 뭔지", "직접 만들어야 하는지 사야 하는지", "비용은 얼마인지"를 체계적으로 분석합니다.
 
-> ⚠️ **현재 사용 가능 (5개):** `opp-tree` · `assumptions` · `cost-sim` · `hitl` · `socratic-question`
-> 아래 목록의 `build-or-buy`, `agent-gtm`, `design-reference`는 **로드맵 예정**입니다 — 표에 섞여 있으니 위 5개만 호출 가능한 것으로 간주하세요.
+> ⚠️ **현재 사용 가능 (6개):** `opp-tree` · `assumptions` · `cost-sim` · `hitl` · `socratic-question` · `customer-reach`
+> 아래 목록의 `build-or-buy`, `agent-gtm`, `design-reference`는 **로드맵 예정**입니다 — 표에 섞여 있으니 위 6개만 호출 가능한 것으로 간주하세요.
 
 | 스킬 | 기능 | 이런 상황에서 쓰세요 |
 |------|------|-------------------|
@@ -465,12 +465,12 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 </details>
 
 <details>
-<summary><strong>4. deliver</strong> — 어떻게 스펙을 쓰고 출시할까? <code>(10 skills)</code></summary>
+<summary><strong>4. deliver</strong> — 어떻게 스펙을 쓰고 출시할까? <code>(13 skills)</code></summary>
 
 실제로 만들고 출시하는 단계입니다. 프로젝트 온보딩(CLAUDE.md 자동 생성)부터 에이전트 전용 PRD 작성, 시스템 프롬프트 설계, 토큰 예산 관리, 이해관계자 설득 자료 제작, 실행 진행 추적, 디자인 시스템 강제까지 포함합니다.
 
-> ⚠️ **현재 사용 가능 (10개):** `agent-setup` · `prd` · `build-loop` · `qa-checklist` · `respect` · `sprint` · `ui-validate` · `conductor` · `ask-team` · `ticket-bridge`
-> 아래 목록의 나머지 스킬(instruction, prompt, ctx-budget, parallel-team 등)은 **로드맵 예정**입니다 — 표에 섞여 있으니 위 10개만 호출 가능한 것으로 간주하세요.
+> ⚠️ **현재 사용 가능 (13개):** `agent-setup` · `prd` · `build-loop` · `qa-checklist` · `respect` · `sprint` · `ui-validate` · `conductor` · `ask-team` · `ticket-bridge` · `roadmap` · `stakeholder-update` · `stakeholder-review`
+> 아래 목록의 나머지 스킬(instruction, prompt, ctx-budget, parallel-team 등)은 **로드맵 예정**입니다 — 표에 섞여 있으니 위 13개만 호출 가능한 것으로 간주하세요.
 
 | 스킬 | 기능 | 이런 상황에서 쓰세요 |
 |------|------|-------------------|
@@ -664,9 +664,9 @@ Claude Code의 스킬 시스템은 2025년 1.0에서 2026년 2.0으로 크게 �
 ```
 hplan/                # repo 루트
 ├── hplan/            # Gate ⭐ (8 skills, 9 commands) — Product Build Gate
-├── discover/           # 발견 (4 skills)
+├── discover/           # 발견 (6 skills)
 ├── architect/            # 설계 (5 skills)
-├── deliver/            # 실행 (8 skills)
+├── deliver/            # 실행 (13 skills)
 ├── operate/            # 운영·학습·포트폴리오 (6 skills)
 │   └── evals/        # 품질 + 트리거 평가
 ├── docs/images/      # 다이어그램
