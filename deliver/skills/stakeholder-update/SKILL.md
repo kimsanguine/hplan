@@ -64,15 +64,49 @@ grep -A3 "^## 1" harness/PRD.md 2>/dev/null | head -5 || echo "PRD 없음"
 harness 파일에서 수치를 읽어 Gate 색상을 자동 계산한다:
 
 ```bash
-# 블로커 수
+# Gate 상태 결정 — actual_log.jsonl 이벤트 기반
+# 주의: probe가 기록하는 event는 "tool_call" 뿐입니다.
+# "blocker", "task_start", "complete" 이벤트는 conductor/sprint이 명시적으로 기록해야 합니다.
+# 해당 이벤트가 없으면 UNKNOWN fallback을 사용합니다.
+
 BLOCKERS=$(grep -c '"event":"blocker"' .track/actual_log.jsonl 2>/dev/null || echo 0)
-# 완료율
-TOTAL=$(grep -c '"event":"task_start"' .track/actual_log.jsonl 2>/dev/null || echo 0)
-DONE=$(grep -c '"event":"complete"' .track/actual_log.jsonl 2>/dev/null || echo 0)
-COMPLETION=$([ "$TOTAL" -gt 0 ] && echo "$((DONE * 100 / TOTAL))" || echo 0)
-# COGS 결과
+TASK_START=$(grep -c '"event":"task_start"' .track/actual_log.jsonl 2>/dev/null || echo 0)
+TASK_DONE=$(grep -c '"event":"complete"' .track/actual_log.jsonl 2>/dev/null || echo 0)
 COGS_STATUS=$(python3 -c "import json; d=json.load(open('harness/build-gate/cogs_result.json')); print(d.get('status','UNKNOWN'))" 2>/dev/null || echo "UNKNOWN")
+
+# 이벤트 존재 여부 확인
+HAS_TRACKING_DATA=$([[ "$TASK_START" -gt 0 ]] && echo "yes" || echo "no")
+
+if [[ "$HAS_TRACKING_DATA" == "no" ]]; then
+  # probe만 있고 conductor 이벤트가 없는 경우: tool_call 수로 대체 추정
+  TOOL_CALLS=$(grep -c '"event":"tool_call"' .track/actual_log.jsonl 2>/dev/null || echo 0)
+  EXIT_ERRORS=$(python3 -c "
+import json
+errors = 0
+for line in open('.track/actual_log.jsonl'):
+    try:
+        d = json.loads(line)
+        if d.get('exit_code', 0) != 0:
+            errors += 1
+    except: pass
+print(errors)
+" 2>/dev/null || echo 0)
+  # tool_call 데이터 기반 근사: 에러 비율로 BLOCKERS 추정
+  BLOCKERS=$EXIT_ERRORS
+  TOTAL=$TOOL_CALLS
+  DONE=$(( TOOL_CALLS - EXIT_ERRORS ))
+else
+  TOTAL=$TASK_START
+  DONE=$TASK_DONE
+fi
+
+COMPLETION=$([ "$TOTAL" -gt 0 ] && echo "$((DONE * 100 / TOTAL))" || echo 0)
 ```
+
+> **데이터 요건**: BLOCKERS/완료율이 정확하려면 conductor가 actual_log.jsonl에
+> `{"event":"blocker"}`, `{"event":"task_start"}`, `{"event":"complete"}` 이벤트를 기록해야 합니다.
+> 이 이벤트가 없으면 probe의 exit_code 기반 근사값을 사용합니다 (정확도 낮음).
+> probe-errors.log에 에러 로그가 없다면 GREEN 가능성이 높습니다.
 
 **Gate 결정 규칙** (우선순위 순서, 결정론 lookup):
 
