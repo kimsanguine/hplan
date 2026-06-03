@@ -4,17 +4,31 @@ All notable changes to hplan (renamed from AI_PM_Skills in v0.5) are documented 
 
 ---
 
+## [0.14.0] — 2026-06-03
+
+> **사용자 영향**: 스킬 수 33 → 34. `discover/socratic-question` 신설(Phase 0 가정 심문). `harness-discover`에 Phase 0 진입점 추가. `sprint --step codebase-status` 신설(probe 없이 능동 코드베이스 탐색).
+
+### Added — 신규 스킬 1개 + 기존 스킬 2개 강화
+
+**`discover/socratic-question`** — 결정 전 AI 가정 심문 도구. 6가지 질문 유형(명료화·가정·증거·관점·함의·메타)으로 "만들 가치가 있나"를 심문하고 사고 검증 질문 세트 1장을 만든다. harness-discover Phase 1 진입 전 선택적 Phase 0.
+
+**`hplan/commands/harness-discover` Phase 0 추가** — `--mode socratic` 플래그 및 Phase 0 진입점 신설. 가정이 불분명할 때 `socratic-question`으로 선라우팅 후 Phase 1(opp-tree)로 복귀하는 파이프라인 완성.
+
+**`deliver/sprint --step codebase-status`** — probe hook 없이도 동작하는 능동 탐색 단계. 서브에이전트 스폰 → git log/diff/status·테스트 실행·`.track/` 인용 → `harness/codebase-report.md` 생성. 데이터 수집 결정론, 산문 합성만 LLM.
+
+---
+
 ## [0.13.1] — 2026-06-02
 
-> **사용자 영향**: 신규 스킬 2개 추가로 총 스킬 수 31 → 33. ticket-bridge(Jira/Linear 티켓 자동 생성), ask-team(팀 질의 구조화) 신설. sprint probe hook 실재화(track-probe.sh).
+> **사용자 영향**: 신규 스킬 2개 추가로 총 스킬 수 31 → 33. ticket-bridge(GitHub Issues ↔ sprint 연결), ask-team(팀원 비동기 질문 채널) 신설. sprint probe hook 실재화(track-probe.sh) + metrics-capture 문서화.
 
 ### Added — 신규 스킬 2개 + hook 실재화
 
-**`deliver/ticket-bridge`** — 스펙/이슈를 Jira·Linear 티켓 포맷으로 자동 변환. harness 태스크를 트래커와 연결해 수동 복붙 없이 티켓 생성.
+**`deliver/ticket-bridge`** — GitHub Issues ↔ hplan sprint `.track/` 번역기. `--mode pull`(이슈 → WBS 후보), `--mode estimate`(predicted.json p50/p90 → 이슈 코멘트), `--mode status`(actual_log + git/PR → 이슈 코멘트). 추정치를 직접 계산하지 않고 sprint 산출물을 전달만 한다. Rule 5 준수: 라벨→complexity 매핑·이슈↔태스크 매칭·commit/PR 매칭 전부 결정론.
 
-**`deliver/ask-team`** — 팀 질의를 구조화된 RFC/슬랙 스레드 형식으로 변환. 결정 필요 항목·데드라인·담당자 자동 추출.
+**`deliver/ask-team`** — PM이 팀원에게 질문하고 답을 수집하는 비동기 채널. Gmail/Notion/Zoom MCP 활용. `--mode ask`(초안 생성, 자동발송 불가), `--mode pull-answers`(스레드·회의록에서 답 수집), `--mode digest`(요약 → decision-log/ticket-bridge 라우팅). Gmail send 도구 부재로 구조적 자동발송 불가.
 
-**`deliver/sprint/track-probe.sh`** — probe hook 실재화. sprint 진행 중 자동 상태 점검(빌드 실패·블로커 감지·진행률 계산)을 스크립트로 구현.
+**`deliver/sprint/references/track-probe.sh`** — PostToolUse 훅으로 등록되는 probe. Write/Edit/NotebookEdit 이벤트마다 ts·loc_delta·task·exit_code를 `.track/actual_log.jsonl`에 append. tokens는 훅 페이로드에 없어 N/A(Rule 8 정직 처리).
 
 ---
 
