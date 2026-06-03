@@ -10,11 +10,11 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
 [![Skills](https://img.shields.io/badge/skills-34-blue?style=flat-square)](#plugins--full-skill-list)
 [![Plugins](https://img.shields.io/badge/plugins-5-purple?style=flat-square)](#the-agent-pm-journey--5-plugins)
-[![Version](https://img.shields.io/badge/version-0.13.0-green?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.14.0-green?style=flat-square)](CHANGELOG.md)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)](CONTRIBUTING.md)
 [![한국어](https://img.shields.io/badge/lang-한국어-blue?style=flat-square)](README-ko.md)
 
-> **v0.13.1** — hplan now ships as a complete **ADK (Agent Development Kit)**: **L1 Memory** (`CLAUDE.md` — 9 behavioral rules auto-loaded every session) · **L2 Skills** (34 PM disciplines, auto-invoked) · **L3 Hooks** (`hooks/` — SessionStart gate status · PreToolUse gate enforcement · PostToolUse secret scanner + **MD→HTML auto-renderer**) · **L4 Subagents** (8-role parallel team) · **L5 Plugins** (marketplace). One `git clone` + `bash scripts/install-hooks.sh` activates all 5 layers. v0.9.4–v0.13.0 history: see [CHANGELOG.md](CHANGELOG.md).
+> **v0.14.0** — hplan now ships as a complete **ADK (Agent Development Kit)**: **L1 Memory** (`CLAUDE.md` — 9 behavioral rules auto-loaded every session) · **L2 Skills** (34 PM disciplines, auto-invoked) · **L3 Hooks** (`hooks/` — SessionStart gate status · PreToolUse gate enforcement · PostToolUse secret scanner + **MD→HTML auto-renderer**) · **L4 Subagents** (8-role parallel team) · **L5 Plugins** (marketplace). One `git clone` + `bash scripts/install-hooks.sh` activates all 5 layers. v0.9.4–v0.13.1 history: see [CHANGELOG.md](CHANGELOG.md).
 
 ### 📺 99-second intro
 
@@ -322,10 +322,10 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 </details>
 
 <details>
-<summary><strong>4. deliver</strong> — How to spec, build, and ship it? <code>(10 skills)</code></summary>
+<summary><strong>4. deliver</strong> — How to spec, build, and ship it? <code>(13 skills)</code></summary>
 
-> ⚠️ **Currently available (10):** `agent-setup` · `prd` · `build-loop` · `conductor` · `sprint` · `qa-checklist` · `respect` · `ui-validate` · `ask-team` · `ticket-bridge`
-> Other skills (agent-instructions, ctx-budget, parallel-team, etc.) in the table below are **roadmap** — treat only the 10 above as callable.
+> ⚠️ **Currently available (13):** `agent-setup` · `prd` · `build-loop` · `conductor` · `sprint` · `qa-checklist` · `respect` · `ui-validate` · `ask-team` · `ticket-bridge` · `roadmap` · `stakeholder-update` · `stakeholder-review`
+> Other skills (agent-instructions, ctx-budget, parallel-team, etc.) in the table below are **roadmap** — treat only the 13 above as callable.
 
 | Skill | What it does | When to use |
 |-------|-------------|-------------|
@@ -344,6 +344,9 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 | `ui-validate` | Playwright 375/768/1440px viewport gate + DOM saliency + WCAG AA + design-system drift detection | "Do not declare build complete until all viewports pass per DESIGN.md spec" |
 | `ask-team` | Structured question routing to the right stakeholder or agent role — prevents wrong-audience decisions | "Who should I ask about this trade-off?" |
 | `ticket-bridge` | Convert PRD decisions and gate outputs into trackable tickets (Linear / Jira / GitHub Issues) | "Turn the gate verdict into sprint tickets automatically" |
+| `roadmap` | Generate a prioritized roadmap from gate outputs and sprint data — timeline, dependencies, milestone view | "Turn our gate verdicts and sprint estimates into a shareable roadmap" |
+| `stakeholder-update` | Draft async update messages aligned to each stakeholder's Power-Interest tier — Notion/email/Slack export | "Send the weekly progress update to engineering lead and execs in one step" |
+| `stakeholder-review` | Structured review session prep — agenda, pre-read, decision items, and follow-up capture | "Run a clean stakeholder review without losing decisions in Slack threads" |
 
 **Commands:** `/harness-build`
 </details>
@@ -422,6 +425,52 @@ hplan ships as a complete **Agent Development Kit** — five reinforcing layers 
 | `PostToolUse.sh` | After every Write / Edit | Warns if API keys / secrets appear in written content |
 
 **After `scripts/install-hooks.sh`**, run `/harness-doctor` to verify all 5 layers are wired correctly.
+
+### Option 3: Enterprise / Team Rollout
+
+For organizations where individual `git clone` is not viable (IT approval required, shared tooling policy, SSO environments):
+
+**Step 1 — Fork or mirror to your internal Git host (GitLab / Bitbucket / GitHub Enterprise):**
+```bash
+# GitLab mirror example
+git clone --mirror https://github.com/kimsanguine/hplan.git
+cd hplan.git
+git remote set-url --push origin https://your-gitlab.example.com/yourteam/hplan.git
+git push --mirror
+```
+
+**Step 2 — Install from internal mirror per developer:**
+```bash
+git clone https://your-gitlab.example.com/yourteam/hplan.git ~/hplan
+cd ~/hplan
+bash scripts/install-hooks.sh
+```
+
+**Step 3 — Distribute shared team config (optional):**
+```bash
+# Commit a shared profile to your internal mirror
+cp -r profiles/_template profiles/your-team/
+# Edit profiles/your-team/*.yaml with shared settings
+# Commit to your internal repo — do NOT push to public
+```
+
+**What IT needs to approve:** `git clone` from your internal mirror, `bash scripts/install-hooks.sh` (modifies `~/.claude/settings.json`), Python 3.9+ for gate scripts.
+
+> **Information security note:** hplan writes signoff records and PRD review logs to `harness/` inside your local project directory — not to any external service. If your team uses a private Git host, all artifacts stay inside your network perimeter.
+
+### Information Security
+
+hplan is designed to operate within your organization's existing security perimeter:
+
+| Concern | hplan behavior |
+|---|---|
+| **Where PRD and signoff data lives** | `harness/` inside your local repo. No cloud sync unless you push to your own Git remote. |
+| **External API calls** | Only when you explicitly use `stakeholder-review --mode assign` (Gmail draft) or `ticket-bridge --system jira`. Both require user confirmation before any write. |
+| **Confluence / internal wikis** | `stakeholder-update --mode confluence-export` outputs a Confluence-formatted `.md` file for manual upload — no Confluence API call, no credentials required. |
+| **GitHub public repo risk** | If your project repo is public, keep `harness/` in `.gitignore`. The `profiles/` directory is gitignored by default. |
+| **Role-based access** | Use your Git host's branch protection and access controls. hplan does not manage permissions — it defers to your existing IAM. |
+
+For regulated environments (financial services, healthcare, government), the recommended pattern is: internal Git mirror + `harness/` gitignored + manual export to Confluence/SharePoint for signoff records.
 
 ### Other AI Tools
 
