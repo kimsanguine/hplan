@@ -87,6 +87,92 @@ cp -r architect/skills/3-tier/ ~/.claude/skills/
 
 ---
 
+## 외부 도구 연동 (Linear · Slack · team-map)
+
+`ticket-bridge`와 `ask-team` 스킬은 MCP 연결이나 팀 맵 파일 없이도 초안 생성 모드로 동작합니다. 그러나 자동 연동을 원하면 아래 설정이 필요합니다.
+
+### Linear 연동 (`ticket-bridge --system linear`)
+
+1. [Linear MCP 서버](https://linear.app/docs/mcp)를 Claude Code에 등록합니다.
+
+   ```bash
+   # claude_desktop_config.json 또는 .mcp.json에 추가
+   {
+     "mcpServers": {
+       "linear": {
+         "command": "npx",
+         "args": ["-y", "@linear/mcp-server"],
+         "env": { "LINEAR_API_KEY": "<your-api-key>" }
+       }
+     }
+   }
+   ```
+
+2. Linear API 키는 **Settings → API → Personal API keys**에서 발급합니다.
+3. 연결 확인 후 `ticket-bridge --system linear --mode pull` 을 실행합니다.
+
+> **주의:** Linear MCP 미등록 상태에서 `--system linear`를 호출하면 스킬이 `--system github`으로 자동 폴백하고 경고를 출력합니다.
+
+### Slack 연동 (`ask-team --mode ask`)
+
+`ask-team` 스킬은 Gmail MCP(이미 Claude Code에 내장)를 기본 발송 채널로 사용합니다. Slack DM으로 바로 전송하려면 Slack MCP를 추가 등록하세요.
+
+```bash
+# .mcp.json에 추가
+{
+  "mcpServers": {
+    "slack": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-slack"],
+      "env": { "SLACK_BOT_TOKEN": "<xoxb-...>", "SLACK_TEAM_ID": "<T...>" }
+    }
+  }
+}
+```
+
+Slack Bot Token은 **api.slack.com → Your Apps → OAuth & Permissions**에서 `chat:write` 스코프로 발급합니다.
+
+> **Slack MCP 없이도** `ask-team --mode ask`는 동작합니다 — 메시지 초안을 생성하고 클립보드 복사 또는 Gmail 발송 방식으로 안내합니다.
+
+### team-map.json 초기 설정 (`ask-team --mode ask`)
+
+`ask-team`은 첫 실행 시 `harness/team-map.json`이 없으면 작동하지 않습니다. 아래 최소 템플릿을 프로젝트 루트의 `harness/` 디렉토리에 만드세요.
+
+```bash
+mkdir -p harness
+cat > harness/team-map.json << 'EOF'
+{
+  "team": [
+    {
+      "id": "eng-lead",
+      "name": "홍길동",
+      "role": "Engineering Lead",
+      "contact": { "email": "gildong@example.com", "slack": "@gildong" },
+      "topics": ["technical-feasibility", "sprint-estimate", "architecture"]
+    },
+    {
+      "id": "design-lead",
+      "name": "김디자인",
+      "role": "Design Lead",
+      "contact": { "email": "design@example.com", "slack": "@design" },
+      "topics": ["ux", "ui-validate", "user-research"]
+    },
+    {
+      "id": "pm-sponsor",
+      "name": "이후원",
+      "role": "Executive Sponsor",
+      "contact": { "email": "sponsor@example.com", "slack": "@sponsor" },
+      "topics": ["budget", "stakeholder", "go-no-go"]
+    }
+  ]
+}
+EOF
+```
+
+`topics` 배열이 라우팅 키입니다 — `ask-team`이 질문의 맥락을 분석해 가장 관련성 높은 팀원을 자동으로 선택합니다. 팀원·역할·이메일만 채워두면 즉시 사용 가능합니다.
+
+---
+
 ## 5개 플러그인 한눈에 보기
 
 v0.9부터 `measure` + `learn`이 `operate`로 통합되어 **5-plugin 라이프사이클**로 단순화되었습니다.
