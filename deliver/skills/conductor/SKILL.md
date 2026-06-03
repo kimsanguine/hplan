@@ -271,7 +271,7 @@ TODO_COUNT=$(grep -r "TODO\|FIXME\|HACK\|XXX" . --include="*.js" --include="*.ts
 # 에러 처리 구문 감지 — 주석/변수명/타입 정의 제외, 실제 처리 구문만
 ERROR_HANDLER_JS=$(grep -rn "^\s*\(catch\s*(\|\.catch(\|\.on('error'" . \
   --include="*.js" --include="*.ts" 2>/dev/null | grep -v "^\s*//" | wc -l)
-ERROR_HANDLER_PY=$(grep -rn "^\s*except\b\|^\s*except\s\+\w" . \
+ERROR_HANDLER_PY=$(grep -rn "^\s*except\b" . \
   --include="*.py" 2>/dev/null | wc -l)
 ERROR_HANDLER=$((ERROR_HANDLER_JS + ERROR_HANDLER_PY))
 # ERROR_HANDLER == 0 이면 → "에러 처리 구문 미발견" 플래그 (주석에서 언급만 된 경우는 별도 확인 필요)
