@@ -6,7 +6,7 @@ All notable changes to hplan (renamed from AI_PM_Skills in v0.5) are documented 
 
 ## [0.14.0] — 2026-06-03
 
-> **사용자 영향**: 스킬 수 33 → 34. `discover/socratic-question` 신설(Phase 0 가정 심문). `harness-discover`에 Phase 0 진입점 추가. `sprint --step codebase-status` 신설(probe 없이 능동 코드베이스 탐색).
+> **사용자 영향**: 스킬 수 37 → 38. `discover/socratic-question` 신설(Phase 0 가정 심문). `deliver/roadmap`, `deliver/stakeholder-review`, `deliver/stakeholder-update`, `discover/customer-reach` 정식 추가. `harness-discover`에 Phase 0 진입점 추가. `sprint --step codebase-status` 신설(probe 없이 능동 코드베이스 탐색).
 
 ### Added — 신규 스킬 1개 + 기존 스킬 2개 강화
 

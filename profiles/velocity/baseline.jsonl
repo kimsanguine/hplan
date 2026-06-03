@@ -1,0 +1,5 @@
+{"complexity": 1, "label": "trivial", "loc_p50": 15, "loc_p90": 40, "tokens_p50": 1200, "tokens_p90": 3000, "minutes_p50": 3, "minutes_p90": 8, "sample_n": 0, "confidence": "seed"}
+{"complexity": 2, "label": "small", "loc_p50": 45, "loc_p90": 110, "tokens_p50": 3800, "tokens_p90": 8500, "minutes_p50": 8, "minutes_p90": 20, "sample_n": 0, "confidence": "seed"}
+{"complexity": 3, "label": "medium", "loc_p50": 95, "loc_p90": 240, "tokens_p50": 9100, "tokens_p90": 18500, "minutes_p50": 17, "minutes_p90": 38, "sample_n": 0, "confidence": "seed"}
+{"complexity": 4, "label": "large", "loc_p50": 200, "loc_p90": 480, "tokens_p50": 19000, "tokens_p90": 38000, "minutes_p50": 35, "minutes_p90": 75, "sample_n": 0, "confidence": "seed"}
+{"complexity": 5, "label": "xlarge", "loc_p50": 400, "loc_p90": 950, "tokens_p50": 38000, "tokens_p90": 75000, "minutes_p50": 70, "minutes_p90": 150, "sample_n": 0, "confidence": "seed"}

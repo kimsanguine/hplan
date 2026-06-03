@@ -200,7 +200,11 @@ Running for: **$ARGUMENTS**
 - `harness/implementation-plan.md`의 `depends_on` 필드 파싱
 - 독립 태스크 (depends_on: []) 목록 → 병렬 디스패치 그룹으로 분류
 - 의존 태스크 → 순서 유지 그룹으로 분류
-- 병렬 그룹은 동시에 Agent 디스패치 (worktree isolation 권장)
+- 병렬 그룹은 동시에 Agent 디스패치 (worktree isolation 필수)
+  - 디스패치 전 worktree 생성: `git worktree add .worktrees/<태스크-id> HEAD`
+  - implementer 프롬프트의 `### worktree 경로` 필드에 `.worktrees/<태스크-id>` 명시
+  - 태스크 완료 후 worktree 제거: `git worktree remove .worktrees/<태스크-id>`
+  - `.worktrees/` 디렉토리가 `.gitignore`에 없으면 디스패치 전 추가
 
 ### 모델 선택 가이드
 
