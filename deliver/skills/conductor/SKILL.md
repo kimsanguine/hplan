@@ -140,6 +140,21 @@ Running for: **$ARGUMENTS**
 
 ---
 
+## Rule 5 준수 경계 (결정론 vs LLM 판단)
+
+| 작업 | 방법 | 비고 |
+|---|---|---|
+| 태스크 id 기록 | ❌ 결정론 | `echo "T-001" > .track/current_task` |
+| COGS 파일 존재 확인 | ❌ 결정론 | `cat cogs_result.json \|\| echo COGS_SKIP` |
+| STATUS → 처리 경로 분기 | ❌ 결정론 | 문자열 비교 lookup |
+| Spec Compliance 결정론 선행 검사 | ❌ 결정론 | grep/find 기반 — LLM 판단 전 실행 |
+| DONE_WITH_CONCERNS 임계 판정 | ❌ 결정론 | 우려 분류 lookup (Spec충돌/스타일) |
+| ICP 정합성 판단 | ✅ LLM | 자연어 요건 해석 |
+| 실패 모드 누락 판단 | ✅ LLM | 코드 의미론 이해 필요 |
+| 수정 요청 문구 생성 | ✅ LLM | 자연어 생성 |
+
+---
+
 ## Instructions
 
 ### Step 0 — PRD 존재 확인 + 구현 플랜 생성
@@ -225,7 +240,39 @@ fresh subagent를 호출한다. 템플릿의 각 플레이스홀더를 현재 �
 
 `NEEDS_CONTEXT` 재디스패치는 최대 2회. 2회 초과 시 `BLOCKED`로 처리.
 
+#### DONE_WITH_CONCERNS 처리 규칙 (결정론)
+
+우려사항 분류 lookup (LLM 판단 없이 아래 기준으로 분기):
+
+| 우려 유형 | 판정 기준 | 처리 |
+|---|---|---|
+| **Spec 직접 충돌** | ICP 불일치, 비기능 요건 미충족, 실패 모드 미처리 | `BLOCKED`로 격상 → 수정 요청 |
+| **스타일·경고 수준** | 코드 스타일, 경고 로그, 퍼포먼스 힌트 | `actual_log.jsonl`에 기록 후 진행 |
+
+기록 없이 DONE_WITH_CONCERNS에서 다음 단계로 이동하는 경로는 존재하지 않는다.  
+DONE_WITH_CONCERNS 태스크는 완료 리포트에 ⚠️ 태그로 명시된다.
+
 ### Step 4 — Spec Compliance Check
+
+#### Step B-0 — 결정론 선행 검사 (LLM 전 실행)
+
+spec-reviewer 호출 전 다음을 순서대로 실행한다:
+
+```bash
+# 1) 미완료 마커 스캔
+TODO_COUNT=$(grep -r "TODO\|FIXME\|HACK\|XXX" . --include="*.js" --include="*.ts" --include="*.py" 2>/dev/null | wc -l)
+# TODO_COUNT > 0 이면 → 개수를 spec-reviewer에 컨텍스트로 전달
+
+# 2) Error handler 존재 확인
+ERROR_HANDLER=$(grep -rn "catch\|except\|Error" . --include="*.js" --include="*.ts" --include="*.py" 2>/dev/null | wc -l)
+# ERROR_HANDLER == 0 이면 → Failure Mode 미구현으로 spec-reviewer에 플래그
+
+# 3) 테스트 파일 존재 확인
+TEST_FILES=$(find . -name "*.test.*" -o -name "test_*.py" 2>/dev/null | wc -l)
+# TEST_FILES == 0 이면 → Quality Gate 테스트 커버리지 항목 자동 FAIL
+```
+
+결정론 검사 결과를 spec-reviewer 프롬프트에 포함한다. LLM은 이 수치를 해석하고 자연어로 설명하는 역할만 한다.
 
 **전처리: PRD 섹션 로드**
 1. `harness/PRD.md` Read (Step 0에서 이미 로드됐으므로 캐시 활용)
@@ -257,8 +304,12 @@ fresh subagent를 호출한다. 템플릿의 각 플레이스홀더를 현재 �
 
 ```
 [ ] 기술 부채 마커: TODO / FIXME / HACK 주석 신규 추가 없음
+    → 판정: grep -r "TODO\|FIXME\|HACK" <changed_files> | wc -l == 0
 [ ] 테스트 커버리지: 태스크에서 수정된 함수에 대한 단위 테스트 존재
+    → 판정: find . -name "*.test.*" -o -name "test_*.py" | wc -l > 0
+           Step B-0의 TEST_FILES 값 재사용 (0이면 자동 FAIL)
 [ ] 보안 기본: 하드코딩된 시크릿, 검증 없는 외부 입력 없음
+    → 판정: grep -r "password\|secret\|api_key" <changed_files> (대소문자 무시)
 ```
 
 **PASS** → Step 6으로 진행  
