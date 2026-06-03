@@ -1,13 +1,15 @@
 ---
 name: ticket-bridge
-description: "GitHub Issues / Linear / Jira ⇄ hplan 실행 레이어(sprint/.track) 번역기. --mode pull(Issues→WBS 후보), --mode estimate(predicted.json p50/p90 → 이슈 코멘트), --mode status(.track+git/PR 상태 + CI/CD + PR review → 이슈 코멘트). --system github|linear|jira로 대상 시스템 선택. 추정치를 직접 계산하지 않고 sprint 산출물을 전달만 한다. Use when syncing GitHub/Linear/Jira tickets with hplan sprint tracking, or when a PM wants estimates/progress written back onto issues."
-argument-hint: "[--mode pull|estimate|status] [--system github|linear|jira] [issue numbers or filter]"
+description: "GitHub Issues / Linear / Jira ⇄ hplan 실행 레이어(sprint/.track) 번역기. --mode pull(Issues→WBS 후보), --mode estimate(predicted.json p50/p90 → 이슈 코멘트), --mode status(.track+git/PR 상태 + CI/CD + PR review → 이슈 코멘트), --mode push(WBS 태스크 → 이슈 생성). --system github|linear|jira로 대상 시스템 선택. --batch 플래그: write-back 확인 게이트를 전체 요약 1회로 묶음 (개별 게이트 스킵). 추정치를 직접 계산하지 않고 sprint 산출물을 전달만 한다. Use when syncing GitHub/Linear/Jira tickets with hplan sprint tracking, or when a PM wants estimates/progress written back onto issues."
+argument-hint: "[--mode pull|estimate|status|push] [--system github|linear|jira] [--batch] [issue numbers or filter]"
 allowed-tools: ["Read", "Write", "Bash",
   "mcp__github__list_issues", "mcp__github__issue_read", "mcp__github__list_commits",
   "mcp__github__pull_request_read", "mcp__github__add_issue_comment", "mcp__github__issue_write",
   "mcp__github__get_pull_request_reviews", "mcp__github__get_pull_request_status",
+  "mcp__github__create_issue",
   "mcp__linear__list_issues", "mcp__linear__get_issue", "mcp__linear__create_comment",
-  "mcp__linear__update_issue", "mcp__jira__list_issues", "mcp__jira__add_comment"]
+  "mcp__linear__update_issue", "mcp__linear__create_issue",
+  "mcp__jira__list_issues", "mcp__jira__add_comment", "mcp__jira__create_issue"]
 model: sonnet
 ---
 
@@ -21,6 +23,7 @@ ticket-bridge는 **번역기**다 — 추정치나 진척을 *생성*하지 않�
 | `--mode pull` | 이슈 → WBS 태스크 후보 | `list_issues` → `harness/ticket-import.md` | ✅ body 분해만 |
 | `--mode estimate` | `predicted.json` p50/p90 → 이슈 코멘트 | `.track/predicted.json` + `ticket-map.json` → `add_comment` | ✅ 산문만 |
 | `--mode status` | `.track/` + git/PR/CI/review 상태 → 이슈 코멘트 | `actual_log.jsonl` + `list_commits`/`pull_request_read` → `add_comment` | ✅ 산문만 |
+| `--mode push` | WBS 태스크 → 이슈 생성 | `harness/ticket-import.md` + `ticket-map.json` → `create_issue` | ✅ 제목/설명 생성만 |
 
 > **기본값**: `--mode` 미명시 → fail loud + 모드 목록 안내. auto-run 금지.
 
@@ -119,6 +122,14 @@ system = args.get("--system", "github")  # 기본값 github
 mode 미명시 시:
 > "--mode 미명시 — 사용 가능: `--mode pull|estimate|status`. auto-run하지 않습니다."
 
+#### --batch 플래그
+
+`--batch` 있으면: 개별 이슈 확인 게이트를 건너뛰고, 전체 코멘트 목록을 한 번에 보여준 후 일괄 승인받는다.
+- "다음 N개 이슈에 코멘트를 작성합니다. 확인 후 승인하세요:" → 전체 목록 표시 → 승인 1회
+- 개별 이슈 코멘트 문구를 수정하고 싶다면 --batch 없이 실행
+
+`--batch` 없으면 (기본): 기존 이슈별 개별 확인 게이트 유지
+
 #### --system 플래그 파싱 (결정론)
 
 | --system 값 | 사용 도구 | 비고 |
@@ -212,6 +223,31 @@ ticket-bridge가 `--system jira`로 동작할 때 아래 Jira 전용 필드를 �
 
 > pull은 티켓 시스템에 **아무것도 쓰지 않는다** (read-only).
 
+#### Jira 커스텀 필드 반자동 제안 (--system jira)
+
+pull 모드에서 이슈를 읽을 때:
+1. `mcp__jira__list_issues` 응답의 `fields` 객체에서 `customfield_*` 키를 결정론으로 추출 (json keys grep)
+2. `harness/ticket-map.json`에 `custom_fields` 섹션이 없으면:
+   ```
+   발견된 커스텀 필드 목록:
+   - customfield_10016 (sprint)
+   - customfield_10014 (epic_link)
+   - customfield_10028 (story_points)
+   
+   harness/ticket-map.json의 custom_fields에 추가할까요? [y/N]
+   ```
+3. 승인 시 ticket-map.json에 append:
+   ```json
+   "custom_fields": {
+     "sprint": "customfield_10016",
+     "epic_link": "customfield_10014",
+     "story_points": "customfield_10028"
+   }
+   ```
+4. 이후 estimate/status에서 story_points 필드를 코멘트에 포함.
+
+> 이미 custom_fields가 ticket-map에 있으면 이 단계를 건너뛴다.
+
 ---
 
 ### mode: estimate
@@ -259,6 +295,25 @@ ticket-bridge가 `--system jira`로 동작할 때 아래 Jira 전용 필드를 �
 
 ---
 
+### mode: push
+
+> sprint --step plan 또는 harness/implementation-plan.md의 WBS 태스크를 실제 이슈로 생성한다.
+> pull의 반대 방향 — hplan에서 외부 트래커로 내보내기.
+
+1. `harness/implementation-plan.md` 또는 `harness/ticket-import.md` 로드. 없으면 fail loud.
+2. 각 태스크에 대해 이슈 제목/설명 생성 (LLM — 자연어 생성).
+3. complexity bucket → `size/*` 라벨 결정론 역매핑 (T1의 lookup 역순):
+   ```
+   1 → size/XS, 2 → size/S, 3 → size/M, 4 → size/L, 5 → size/XL
+   ```
+4. **확인 게이트**: 생성할 이슈 목록 전체를 보여주고 승인받는다 (--batch 없으면 이슈별 개별 확인).
+5. 승인 후 `create_issue`(system별 도구)로 이슈 생성. `ticket-map.json`에 태스크 ID ↔ 이슈 번호 append.
+6. 이미 ticket-map에 해당 태스크가 있으면 skip + 안내 (중복 생성 금지).
+
+> push는 create만 한다 — 기존 이슈 편집/삭제 금지.
+
+---
+
 ## Failure Handling
 
 | 실패 상황 | 감지 | 대응 |
@@ -273,6 +328,8 @@ ticket-bridge가 `--system jira`로 동작할 때 아래 Jira 전용 필드를 �
 | write-back 권한 없음 | `add_comment` 403 | fail loud — "issue write 권한 없음. 계산 결과는 stdout으로 출력하니 수동 첨부 가능" — 거짓 done 금지 |
 | 중복 코멘트 | 마커+태스크 ID 존재 | skip + 안내 (덮어쓰기 금지) |
 | 확인 게이트 거부 | 사용자 미승인 | write-back 취소, 본문은 stdout 보존 |
+| create_issue 권한 없음 | 403 | fail loud — "issue create 권한 없음. 수동 생성 필요" — 생성 목록 stdout 출력 |
+| 태스크 ticket-map 이미 존재 | 키 충돌 | skip + "이미 이슈 #N와 매핑됨" 안내 |
 
 원칙: **계산 단계와 write-back 단계 분리**. write-back이 실패/거부돼도 계산 결과는 stdout으로 surface — "complete"로 거짓 보고하지 않는다 (Rule 8).
 
@@ -296,6 +353,11 @@ ticket-bridge가 `--system jira`로 동작할 때 아래 Jira 전용 필드를 �
 - [ ] CI/CD 상태 = `get_pull_request_status` 인용 (github 모드)
 - [ ] PR review 상태 = `get_pull_request_reviews` 인용 (github 모드)
 - [ ] write-back 전 확인 게이트 통과
+
+### push
+- [ ] ticket-map에 이미 있는 태스크 skip (중복 생성 0)
+- [ ] 이슈 생성 전 확인 게이트 통과
+- [ ] size/* 라벨 역매핑 = 결정론 (LLM 0)
 
 ---
 
