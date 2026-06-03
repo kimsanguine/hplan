@@ -1,6 +1,6 @@
 ---
 description: "End-to-end discovery workflow — opportunity mapping, assumption analysis, cost simulation, build/buy decision, and assumption validation. Use when exploring a new product or agent idea, stress-testing an agent concept, or running a full discovery pass before any gate decision."
-argument-hint: "[idea] [--mode opp|assumptions|cost|build-or-buy|validate]"
+argument-hint: "[idea] [--mode socratic|opp|assumptions|cost|build-or-buy|validate]"
 allowed-tools: ["Read", "Write", "Bash"]
 ---
 
@@ -8,12 +8,35 @@ allowed-tools: ["Read", "Write", "Bash"]
 
 > 기회 발굴 전체 워크플로우 — 아이디어 → 검증된 기회 + 비용 추정 + 빌드/바이 결정 + 가정 검증
 
+## Phase 0 — 가정 심문 (선택적 진입점)
+
+> 아이디어가 있지만 "만들 가치가 있나"라는 가정이 불분명할 때 **먼저** 이 단계를 거치세요.
+> Phase 1(Opportunity Mapping)은 가정이 어느 정도 정리된 상태에서 시작할 때 더 유효합니다.
+
+**진입 조건:** 다음 중 하나라도 해당되면 Phase 0부터 시작합니다.
+- 아이디어는 있지만 "왜 이게 필요한가"에 대한 가정이 불분명함
+- 이전에 비슷한 아이디어를 시도했다가 실패한 경험이 있음
+- "사람들이 쓸 것 같다"는 직관 외에 근거가 약함
+
+**Phase 0 실행:** `/socratic-question [아이디어]`
+
+`socratic-question`은 6가지 질문 유형(명료화·가정·증거·관점·함의·메타질문)으로
+당신의 가정을 심문하고, "사고 검증 질문 세트" 1장을 만듭니다.
+
+**Phase 0 완료 기준:** *"누구의 / 무슨 문제를 / 무엇으로 / 무엇은 빼고 푼다"* 가 한 문장으로 나오면
+→ Phase 1으로 넘어가세요 (`/harness-discover [아이디어]`)
+
+**Phase 0 생략:** 가정이 이미 명확하거나 빠른 탐색이 목적이라면 바로 Phase 1부터 시작해도 됩니다.
+
+---
+
 ## Routing
 
 Parse `$ARGUMENTS` for a `--mode` flag before proceeding:
 
 | Flag | Execution |
 |------|-----------|
+| `--mode socratic` | Phase 0 — socratic-question 실행 후 종료 |
 | `--mode opp` | Phase 1만 실행 후 종료 |
 | `--mode assumptions` | Phase 2만 실행 후 종료 |
 | `--mode cost` | Phase 3만 실행 후 종료 |
@@ -30,6 +53,8 @@ The remaining text after the flag is the target idea. If no flag is present, the
 You are running the **Discovery Workflow** for: **$ARGUMENTS**
 
 Follow the Routing table above to determine which phases to execute. Each phase is self-contained and independently readable.
+
+**`--mode socratic` 선택 시**: `/socratic-question [아이디어]`를 먼저 실행하세요. 사고 검증 질문 세트가 완성되면 `/harness-discover [아이디어]`로 돌아오세요. (socratic-question을 직접 실행하지 않고 안내만 합니다.)
 
 ---
 
@@ -313,6 +338,7 @@ Risk Score 내림차순 정렬.
 
 실행된 Phase에 따라 다음 형식으로 출력한다:
 
+- **`--mode socratic`**: `/socratic-question [아이디어]` 실행 안내 후 종료
 - **`--mode opp`**: 기회 트리 (Top 3 순위, Layer 1–4 전체)
 - **`--mode assumptions`**: 가정 위험 맵 (CRITICAL / HIGH / LOW) + CRITICAL 항목별 2-day 실험 설계
 - **`--mode cost`**: p50/p90 비용 테이블 (100/1K/10K MAU) + vs 수동 비용 비교
