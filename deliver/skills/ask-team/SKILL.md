@@ -54,6 +54,7 @@ Gmail MCP는 `create_draft`만 노출하고 **send 도구가 없다.** ask-team�
 - "답변 왔는지 모아줘" → `--mode pull-answers`
 - "받은 답 정리해서 결정 로그/티켓에 붙여줘" → `--mode digest`
 - "팀원 없는데 혼자 검토해줘" / "CTO 관점으로 봐줘" → `--mode solo`
+- "ask-team 처음 세팅하고 싶어" / "팀원 연락처 등록" → `--mode init`
 
 ### Route to Other Skills When
 - 결정 기록 자체 → `hplan/decision-log`
@@ -167,16 +168,52 @@ comms MCP 도구 가용성 확인. 하나도 없으면 fail loud.
 3. 태그로 라우팅 (결정론): `#decision` → decision-log 항목 초안, `#ticket:<n>` → ticket-bridge status 코멘트 후보.
 4. **확인 게이트**: 라우팅 대상 + 요약을 보여주고 승인받은 뒤 해당 스킬로 넘긴다.
 
+### mode: init
+
+> ask-team 최초 사용 시 `harness/team-map.json`을 대화형으로 생성합니다.
+
+1. "팀원을 몇 명 등록할까요?"를 묻는다 (AskUserQuestion)
+2. 각 팀원에 대해: 이름 / 이메일 또는 채널 / 주 커뮤니케이션 채널(gmail|notion|slack|zoom) 입력
+3. 입력 결과로 `harness/team-map.json` 생성:
+   ```json
+   {
+     "alex": {"email": "alex@team.com", "channel": "gmail"},
+     "design": {"notion_page": "<page-id>", "channel": "notion"},
+     "eng": {"slack_channel": "#eng-team", "channel": "slack"}
+   }
+   ```
+4. "harness/persona-config.md도 설정할까요?" (AskUserQuestion)
+   - 예: ICP/타겟 도메인 역할 목록 입력 → `harness/persona-config.md` 생성
+5. 완료 후: "이제 `ask-team --mode ask [질문] [이름]`으로 사용할 수 있습니다" 안내
+
+> init은 언제든 재실행 가능합니다. 기존 `team-map.json`이 있으면 덮어쓸지 확인 후 진행합니다.
+
 ### mode: solo
 
 > 팀원이 없을 때 Claude가 역할(CTO/Designer/초기유저)을 맡아 질문에 답하는 시뮬레이션.
 
-1. `$ARGUMENTS`에서 역할 목록 파싱 (없으면 기본: "CTO, Designer, 초기유저 A").
+1. 역할 목록 결정 순서 (결정론):
+   a. `$ARGUMENTS`에 명시된 역할 → 그대로 사용
+   b. `harness/persona-config.md` 존재 시 → 파일에서 로드
+   c. 없으면 기본: "CTO, Designer, 초기유저 A"
+
+   `harness/persona-config.md` 형식:
+   ```
+   roles:
+     - 법무팀 실무자 (계약서 검토 경험 3년+)
+     - 스타트업 HR 담당자
+     - 잠재 고객 (중소기업 대표)
+   ```
+   이 파일이 있으면 solo 모드가 자동으로 도메인 맞춤 역할을 사용합니다.
+
 2. 각 역할로 질문에 답한다 (LLM — 자연어 생성, Rule 5 허용).
 3. 역할별 답변을 `harness/answers.md`에 기록 (출처: "simulated — solo mode", `evidence_type: "simulated"`).
 4. **확인 게이트**: "이 답변은 AI 시뮬레이션입니다. 실제 인터뷰로 검증하세요" 명시 후 저장.
 
 solo 모드 답변은 `evidence_type: "simulated"`로 태깅된다 — Signal Gate는 simulated 답변을 실제 증거로 인정하지 않는다.
+
+> **도메인 역할 설정**: `/harness-discover --mode opp` 완료 후 ICP가 정의되면
+> `harness/persona-config.md`에 타겟 역할을 기록해두세요. solo 모드가 자동으로 활용합니다.
 
 ---
 
