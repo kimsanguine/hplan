@@ -1,7 +1,7 @@
 ---
 name: ask-team
-description: "PM이 사람에게 질문하고 답을 모으는 비동기 채널 — comms MCP(Gmail/Notion/Zoom/Slack)를 감싸는 번역기. --mode ask(질문 초안 작성), --mode pull-answers(스레드·회의록에서 답 수집), --mode digest(수집한 답 요약 → decision-log/ticket-bridge 라우팅), --mode solo(팀원 없을 때 Claude가 역할 대리 시뮬레이션). 메시지를 자동 발송하지 않는다 — 초안/코멘트까지만. Use when a PM needs to ask teammates for status/decisions and collect their answers into hplan."
-argument-hint: "[--mode ask|pull-answers|digest|solo] [question or topic]"
+description: "PM이 사람에게 질문하고 답을 모으는 비동기 채널 — comms MCP(Gmail/Notion/Zoom/Slack)를 감싸는 번역기. --mode ask(질문 초안 작성), --mode pull-answers(스레드·회의록에서 답 수집), --mode digest(수집한 답 요약 → decision-log/ticket-bridge 라우팅), --mode solo(팀원 없을 때 Claude가 역할 대리 시뮬레이션), --mode init(팀 세팅 대화형 온보딩). 메시지를 자동 발송하지 않는다 — 초안/코멘트까지만. Use when a PM needs to ask teammates for status/decisions and collect their answers into hplan."
+argument-hint: "[--mode ask|pull-answers|digest|solo|init] [question or topic]"
 allowed-tools: ["Read", "Write",
   "mcp__gmail__create_draft", "mcp__gmail__search_threads", "mcp__gmail__get_thread",
   "mcp__notion__notion-create-comment", "mcp__notion__notion-get-comments",
