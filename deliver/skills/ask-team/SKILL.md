@@ -7,6 +7,7 @@ allowed-tools: ["Read", "Write",
   "mcp__notion__notion-create-comment", "mcp__notion__notion-get-comments",
   "mcp__notion__notion-create-pages", "mcp__notion__notion-update-page", "mcp__notion__notion-search",
   "mcp__zoom__search_meetings", "mcp__zoom__get_file_content",
+  "mcp__zoom__get_recording_resource", "mcp__zoom__search_zoom", "mcp__zoom__get_meeting_assets",
   "mcp__slack__post_message", "mcp__slack__search_messages", "mcp__slack__get_thread_replies"]
 model: sonnet
 ---
@@ -135,10 +136,30 @@ comms MCP 도구 가용성 확인. 하나도 없으면 fail loud.
 2. 각 question의 channel/ref_id로 답 조회:
    - gmail → `search_threads`/`get_thread` (해당 스레드의 새 메시지)
    - notion → `notion-get-comments`
-   - zoom → `search_meetings` + `get_file_content` (회의록 transcript에서 관련 발언)
+   - zoom → **아래 Zoom 회의록 정밀 추출 절차 따름**
    - slack → `get_thread_replies` (ref_id = 스레드 ts)
 3. 답을 question_id로 역매칭 (결정론). 매칭 안 되면 "미응답"으로 표시.
 4. `harness/answers.md`에 question ↔ answer ↔ 출처를 기록 (요약은 digest에서).
+
+#### Zoom 회의록 정밀 추출
+
+1. `mcp__zoom__search_meetings`로 question의 ref_id(회의 ID) 검색
+2. `mcp__zoom__get_meeting_assets`로 회의 자산 목록 확인 (transcript 존재 여부 사전 검증)
+3. `mcp__zoom__get_file_content`로 transcript 전문 수집
+4. transcript에서 question의 키워드로 관련 발언 추출 (결정론 — 키워드 매칭):
+   - 키워드 전후 3분 이내 발언을 context로 포함
+   - 발언자 + 타임스탬프 + 발언 텍스트 구조로 기록
+5. `mcp__zoom__search_zoom`으로 회의 내 안건·채팅에서 보충 정보 검색
+
+추출 결과를 `harness/answers.md`에 아래 형식으로 기록:
+```
+- question_id: Q-001
+- source: Zoom 회의 (ID: <회의ID>, <날짜 시간>)
+- speaker: [발언자명]
+- timestamp: 00:23:15
+- answer: "[발언 원문]"
+- context: "[전후 발언 요약]"
+```
 
 ### mode: digest
 1. `harness/answers.md` 로드. 없으면 fail loud ("pull-answers 먼저").
@@ -169,6 +190,7 @@ solo 모드 답변은 `evidence_type: "simulated"`로 태깅된다 — Signal Ga
 | 대상 미매핑 (ask) | team-map에 키 없음 | fail loud + "team-map.json에 대상 추가 필요". 주소 추측 금지 |
 | 자동 발송 요구 | send 도구 부재 | fail loud — "ask-team은 발송 불가(초안만). Gmail에서 직접 발송" |
 | `questions.jsonl` 없음 (pull) | file not found | fail loud — "ask 먼저" |
+| Zoom transcript 없음 | `get_file_content` 빈 결과 | "회의록 미생성 또는 미업로드 — Zoom 설정 확인 필요" + `get_meeting_assets`로 대체 자산 탐색 |
 | `answers.md` 없음 (digest) | file not found | fail loud — "pull-answers 먼저" |
 | 미응답 question | ref_id로 답 0건 | "미응답" 표시, 나머지 진행 (부분 성공 명시 — Rule 8) |
 | digest 태그 없음 | `#decision`/`#ticket` 부재 | answers.md에만 보존, 라우팅 보류 + 안내 |
