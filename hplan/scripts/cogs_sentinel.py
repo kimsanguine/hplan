@@ -26,8 +26,20 @@ import argparse
 import json
 import math
 import statistics
+import sys
 from datetime import date
 from pathlib import Path
+
+
+# Currency guardrail: this tool is USD-only. A monthly SaaS ARPU above this
+# threshold is almost never a real USD price — it is the classic "typed KRW into
+# a USD field" mistake (e.g. --arpu 19000 meaning ₩19,000 ≈ $14). We surface a
+# warning instead of blocking, so legitimate enterprise pricing still runs.
+ARPU_USD_SANITY_CEILING = 1000.0
+
+# An override per-MTok rate this much cheaper than the cheapest snapshot rate is
+# treated as suspicious (possible fabricated price to force GREEN). Warn only.
+OVERRIDE_CHEAP_RATIO = 0.1
 
 
 PRICING_FALLBACK = {
@@ -128,6 +140,77 @@ def _validate_params(params: dict) -> None:
         raise SystemExit(msg)
 
 
+def _warn_currency(arpu: float) -> None:
+    """Surface (not block) a likely USD/KRW unit mix-up.
+
+    The sentinel is USD-only with no FX conversion. A user typing --arpu 19000
+    meaning ₩19,000/month would otherwise read as $19,000/month and emit a false
+    GREEN at ~100% margin. We cannot know intent, so we warn loudly on stderr and
+    let the run continue.
+    """
+    if arpu > ARPU_USD_SANITY_CEILING:
+        suggested = arpu / 1350.0  # rough KRW→USD, illustrative only
+        print(
+            f"⚠️  통화 단위 확인 — 본 도구는 USD 기준이며 환율 변환을 하지 않습니다.\n"
+            f"    입력한 arpu={arpu:g}이(가) 월 구독가로는 비정상적으로 큽니다.\n"
+            f"    원화(예: ₩{arpu:,.0f})를 그대로 넣은 것이라면 USD로 환산해 "
+            f"입력하세요 (대략 ${suggested:,.0f}).\n"
+            f"    (예: ₩19,000/월 → --arpu 14)",
+            file=sys.stderr,
+        )
+
+
+def _audit_pricing_override(params: dict, prices: dict) -> str:
+    """Flag and audit a user-supplied pricing override.
+
+    The `pricing` key in --params replaces the provider snapshot wholesale, so a
+    fabricated low rate could manufacture a GREEN verdict. Override is a
+    documented feature (TC-005, SKILL.md), so we do NOT remove it — instead we
+    return an audit tag and warn on stderr when the override is in play, plus a
+    sharper warning when the rate is implausibly cheap vs the snapshot floor.
+
+    Returns "user_override" or "snapshot".
+    """
+    if not params.get("pricing"):
+        return "snapshot"
+
+    print(
+        "⚠️  pricing override 사용 중 — provider 스냅샷 대신 사용자 지정 단가로 "
+        "계산합니다. 결과의 pricing_source=user_override로 감사됩니다.",
+        file=sys.stderr,
+    )
+
+    # Compare the override rate against the cheapest rate in the snapshot/fallback.
+    snapshot = load_pricing()
+    snapshot_rates: list[float] = []
+    for provider_models in snapshot.values():
+        if not isinstance(provider_models, dict):
+            continue  # skip _meta and other non-model keys
+        for model_prices in provider_models.values():
+            if isinstance(model_prices, dict):
+                for key in ("input_per_mtok", "output_per_mtok"):
+                    if isinstance(model_prices.get(key), (int, float)):
+                        snapshot_rates.append(float(model_prices[key]))
+
+    override_rates = [
+        float(prices[k])
+        for k in ("input_per_mtok", "output_per_mtok")
+        if isinstance(prices.get(k), (int, float))
+    ]
+    if snapshot_rates and override_rates:
+        floor = min(r for r in snapshot_rates if r > 0)
+        cheapest_override = min(override_rates)
+        if cheapest_override < floor * OVERRIDE_CHEAP_RATIO:
+            print(
+                f"⚠️  override 단가 ${cheapest_override:g}/MTok가 스냅샷 최저가 "
+                f"${floor:g}/MTok의 {OVERRIDE_CHEAP_RATIO:.0%} 미만입니다 — "
+                f"단가 위조로 인한 거짓 GREEN 가능성을 검토하세요.",
+                file=sys.stderr,
+            )
+
+    return "user_override"
+
+
 def run_realtime(params: dict, baseline_path: Path | None = None) -> dict:
     """Compare actual operational data against the Build Gate prediction.
 
@@ -193,10 +276,13 @@ def run(params: dict) -> dict:
     except KeyError:
         raise SystemExit(f"unknown provider/model: {provider}/{model}")
 
+    pricing_source = _audit_pricing_override(params, prices)
+
     tokens_in = int(params.get("tokens_in", 4000))
     tokens_out = int(params.get("tokens_out", 1000))
     calls_per_user_month = float(params.get("calls_per_user_month", 60))
     arpu = float(params.get("arpu", 19))
+    _warn_currency(arpu)
     paid_conversion = float(params.get("paid_conversion", 0.05))
     free_abuse_multiplier = float(params.get("free_abuse_multiplier", 5))
     target_margin = float(params.get("target_gross_margin", 0.70))
@@ -247,6 +333,7 @@ def run(params: dict) -> dict:
         "generated": date.today().isoformat(),
         "provider": provider,
         "model": model,
+        "pricing_source": pricing_source,
         "inputs": {
             "tokens_in": tokens_in,
             "tokens_out": tokens_out,
@@ -283,6 +370,7 @@ def markdown_report(result: dict) -> str:
         f"Generated: {result['generated']}",
         f"Mode: {mode}",
         f"Provider: {result['provider']} / {result['model']}",
+        f"Pricing source: {result.get('pricing_source', 'snapshot')}",
         "",
         "## Decision",
         f"**{result['decision']}**",

@@ -1,7 +1,7 @@
 ---
 name: orchestration
-description: "Select and design the right orchestration pattern for multi-agent systems. Evaluate Sequential, Parallel, Router, and Hierarchical patterns against your use case requirements. Use when deciding how multiple agents should coordinate, share context, or delegate tasks to each other."
-argument-hint: "[multi-agent scenario]"
+description: "Select and design the right orchestration pattern for multi-agent systems. Evaluate Sequential, Parallel, Router, and Hierarchical patterns against your use case requirements. The Router pattern covers both agent selection (classify input to the right specialist) and model selection (route tasks to the right LLM by complexity to balance cost, latency, quality, and fallback chains). Use when deciding how multiple agents should coordinate, share context, delegate tasks, or which model each task should run on."
+argument-hint: "[multi-agent scenario] [--pattern router]"
 allowed-tools: ["Read", "Write"]
 model: sonnet
 ---
@@ -27,7 +27,7 @@ model: sonnet
 ### Route to Other Skills When
 
 - 선택한 패턴의 세부 구현 (3-tier 위계 구조) → orchestration (Hierarchical pattern 상세 섹션 참조)
-- 입력 분류를 통한 agent 라우팅 로직 구현 → router (모델 선택 확장)
+- 작업별 LLM 모델 선택/비용 최적화 → orchestration --pattern router (Model Routing 상세 섹션 참조)
 - 멀티 에이전트 간 메모리 공유 → memory-arch (저장소 전략)
 - 패턴의 경제성 분석 → biz-model (비용 모델)
 
@@ -93,6 +93,125 @@ Input → Router → Agent A (if type X)
 - Best for: varied input types needing different expertise
 - Risk: router misclassification
 - PM Example: Triage user feedback by category
+
+##### Router 패턴 상세 — 두 가지 라우팅 차원
+
+> **중요**: "Router 패턴"에는 두 가지 직교(orthogonal) 차원이 있다. 둘은 함께 쓸 수 있으며 혼동하면 안 된다.
+>
+> | 차원 | 무엇이 바뀌나 | 목적 | 사용 시점 |
+> |------|-------------|------|----------|
+> | **Agent Routing (에이전트 선택)** | 에이전트 자체 (도구/전문성) | 전문성 향상 (정확도 ↑) | 다른 전문성/도구가 필요한 작업으로 분기 |
+> | **Model Routing (모델 선택)** | 에이전트는 동일, LLM 모델만 | 비용 최적화 (30-60% 절감) | 같은 작업을 다양한 LLM으로 처리 가능 |
+>
+> **함께 사용 (권장)**:
+> ```
+> Input → [Agent Router]: 어떤 에이전트? (General vs Bash vs Custom)
+>           ↓
+>       선택된 에이전트 내에서:
+>       [Model Router]: 어떤 모델? (T1 vs T2 vs T3)
+>           ↓
+>       최종 응답
+> ```
+> 이 구조로 **에이전트 전문성 + 모델 비용 최적화**를 동시에 달성한다.
+
+위의 "Router (Classifier → Specialist)" 기본 다이어그램은 **Agent Routing**에 해당한다. 아래는 **Model Routing**의 상세 설계로, `router` 스킬에서 흡수한 내용이다.
+
+###### Model Routing — 모델 선택 전략
+
+작업 복잡도에 따라 T1(저비용 경량) ~ T4(고성능 전문) 모델을 선택하여 비용 40-80% 절감하면서 품질(>90%)을 유지한다. 모든 작업에 최고 성능 모델을 쓰는 것은 비용 낭비다.
+
+**Trigger Gate (Model Routing을 쓸 때)**:
+- 여러 모델을 쓰는 에이전트 시스템의 비용 최적화 필요
+- 간단한 작업에 비싼 모델을 쓰고 있는 경우
+- 성능과 비용의 트레이드오프를 의도적으로 설정해야 하는 경우
+
+**Boundary Checks (Model Routing 건너뛰기)**:
+- 단일 모델만 사용 → 라우팅 불필요
+- 모든 작업이 고복잡도 → T3 고정 (라우팅 복잡도보다 이득 적음)
+- 라우팅 오버헤드 > 저가 모델 절감 → 라우팅 건너뛰기
+
+**Step 1 — Task Classification**: 각 작업을 복잡도로 분류
+
+| Tier | Complexity | Examples | Recommended Model Class |
+|------|-----------|----------|----------------------|
+| T1 | Simple extraction | Data parsing, formatting, classification | Small/Fast (Haiku, GPT-4o-mini) |
+| T2 | Standard reasoning | Summarization, comparison, basic analysis | Mid (Sonnet, GPT-4o) |
+| T3 | Complex reasoning | Strategy, creative, multi-step analysis | Large (Opus, o1) |
+| T4 | Specialized | Code generation, math, domain-specific | Specialist (Claude Code, Codex) |
+
+**Step 2 — Routing Decision Matrix**: 워크플로우의 각 작업에 대해
+```
+Task: [name]
+├── Input complexity: Low / Medium / High
+├── Output quality sensitivity: Low / Medium / High
+├── Latency requirement: <1s / <5s / <30s / Flexible
+├── Cost tolerance: $ / $$ / $$$
+└── Recommended tier: T1 / T2 / T3 / T4
+```
+
+**Step 3 — Cost Comparison (비용)**: 라우팅 vs 단일 모델 비용 영향 계산
+
+| Approach | Monthly Cost | Quality Score |
+|----------|-------------|---------------|
+| All T3 (premium) | $____ | 95/100 |
+| Routed (mixed) | $____ | 92/100 |
+| All T1 (budget) | $____ | 70/100 |
+
+**Target**: Routed 접근이 premium 비용의 <40%로 >90% 품질 달성.
+
+총 비용 계산 프레임워크 (정확한 경제성 평가):
+```
+총 비용 = API 호출 비용 + 지연시간 비용 + 재처리 비용
+1. API 호출 비용 = Σ(모델별 토큰 단가 × 예상 호출 수)
+2. 지연시간 비용 = 평균 지연시간(초) × 시간당 비용 × 월간 요청 수
+   (사용자 대기 시간 = 생산성 손실로 환산)
+3. 재처리 비용 = 오류율 × 재처리 모델 비용 × 월간 요청 수
+   (폴백 발동 시 추가 비용)
+```
+
+**Step 4 — Fallback Strategy (fallback-chain)**: graceful degradation 설계
+```
+Primary: [preferred model]
+  ↓ if failed/timeout
+Fallback 1: [alternative model]
+  ↓ if failed/timeout
+Fallback 2: [minimum viable model]
+  ↓ if all fail
+Error: [return structured error to user]
+```
+- 폴백 체인 다양화: 다른 제공자의 동급 모델 (Anthropic Sonnet → OpenAI GPT-4o) → 한 등급 낮은 모델(품질 저하 수용) → 캐시된 답변 → 사용자 재시도 요청
+- 폴백 발동 빈도 추적 (>10% = 라우팅 규칙 재검토 신호)
+
+**Step 5 — Quality Gate (2단계)**:
+- Stage 1 (라우팅 전): 라우터 분류 신뢰도 > 85%이면 선택 모델로 라우팅, ≤85%이면 clarification 실행. 목표 오분류율 <10%.
+- Stage 2 (라우팅 후): 출력 품질 점수 <80%이면 폴백 모델로 재시도, 그래도 실패 시 T3로 최종 재시도. 목표 최종 품질 >90%.
+
+**Step 6 — Monitoring Plan**: 주 1회 추적
+- 모델 티어별 비용
+- 라우팅 정확도 (올바른 티어 선택 비율)
+- 폴백 발동 빈도 (<5% 목표)
+- 티어별 품질 점수
+
+**Output — 라우팅 테이블**:
+```
+┌─────────────┬──────┬──────────┬───────┐
+│ Task         │ Tier │ Model    │ $/run │
+├─────────────┼──────┼──────────┼───────┤
+│ [task 1]    │ T1   │ [model]  │ $0.01 │
+│ [task 2]    │ T2   │ [model]  │ $0.05 │
+│ [task 3]    │ T3   │ [model]  │ $0.15 │
+└─────────────┴──────┴──────────┴───────┘
+Monthly estimate: $____  vs all-premium: $____ (___% savings)
+```
+
+**Model Routing Failure Handling (latency/fallback 포함)**:
+
+| 실패 상황 | 감지 | 대응 |
+|---------|-----|-----|
+| 라우팅 오분류: T1 모델이 충분치 않은 작업으로 갈림 | 출력 품질 점수 <70%, "부정확함" 피드백 | 즉시 T2로 재실행(폴백), 라우팅 규칙 업데이트 |
+| 비용 절감 미달: 고비용 모델 호출 비율 높음 | 실제 T1 사용률 10% (예상 50%) | 라우팅 threshold 낮춤, 또는 T1 능력 강화 |
+| 모델 API 장애: T2 모델 다운 (latency timeout) | T2 호출 timeout | 폴백 1: T3 재시도, 모두 실패 시 사용자 보고 |
+| 품질-비용 균형 붕괴: 비용↓ 품질<80% | 만족도 95% → 82% | 라우팅 회귀, 더 높은 티어로 보수적 조정 |
 
 #### Hierarchical (Prometheus-Atlas)
 ```
@@ -272,3 +391,12 @@ Hierarchical + Router + Sequential 결합
 
 ### Troubleshooting
 !`cat references/troubleshooting.md 2>/dev/null || echo ""`
+
+### Model Routing — 구현 레퍼런스 (router 패턴 통합)
+!`cat references/model-routing.md 2>/dev/null || echo ""`
+
+### Model Routing — Good Example
+!`cat examples/model-routing-good.md 2>/dev/null || echo ""`
+
+### Model Routing — Bad Example
+!`cat examples/model-routing-bad.md 2>/dev/null || echo ""`

@@ -1,6 +1,6 @@
 {
   "name": "operate",
-  "version": "0.9.2",
+  "version": "0.14.1",
   "description": "Operate and continuously improve AI agents — portfolio tiering, scorecards, weekly rollups, cross-team routing, KPI/North Star/OKR design (metrics-design), reliability measurement, cost monitoring, cohort analysis, incident response, and PM knowledge capture (pm-engine). Use when running agents in production: measuring health, learning from outcomes, and feeding insights back into the next build cycle.",
   "author": {
     "name": "AI PM Skills Contributors",

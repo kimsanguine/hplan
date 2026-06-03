@@ -1,0 +1,37 @@
+name: CI — Validate
+
+# 결정론적 검증 게이트 (API 키 불필요, <2s).
+# - validate_plugins.py: 5 plugins / 38 skills / 마켓플레이스 정합성
+# - pytest: hplan/scripts/tests (파서 + 렌더러 단위/통합 테스트)
+# trigger eval(run_trigger_evals.py)은 ANTHROPIC_API_KEY가 필요한 비결정 평가라
+# 이 게이트에 포함하지 않는다. 운영자가 별도로 본인 키로 실행한다.
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install pytest
+        run: python3 -m pip install --upgrade pytest
+
+      - name: Validate plugins (structure + skill count)
+        run: python3 validate_plugins.py
+
+      - name: Run parser/renderer tests
+        run: python3 -m pytest hplan/scripts/tests/ -q

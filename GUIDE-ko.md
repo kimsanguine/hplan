@@ -218,37 +218,27 @@ v0.9부터 `measure` + `learn`이 `operate`로 통합되어 **5-plugin 라이프
 
 Evidence Gate 실행. 인터뷰 3건 결과 **78점 (GO)**. `generate_report.py` 출력에서 전환 트리거·경제적 고통 확인, build 판정. 이 점수와 근거가 이후 모든 결정의 **기준선①**이 된다.
 
-**Step 2 — architect: 기술 결정을 한 번, 끝까지 유지**
+**Step 2 — plan: 기술 결정을 한 번, 끝까지 유지**
 
 ```
-/architecture AI 가계부 앱
-/cost-sim --requests 200/day --model gemini-flash
+/harness-plan AI 가계부 앱
+/cogs-sentinel --requests 200/day --model gemini-flash
 ```
 
-아키텍처 결정: FastAPI + Supabase + Gemini Flash, 월 $8 예상. **이 결정이 PRD·health-check·운영 전 구간에 자동 반영됩니다 (기준선②).** 이후 "Firebase로 바꾸면 어때요?" 같은 요청이 들어오면 architect 결정을 참조해 이탈 경고를 냅니다.
+아키텍처 결정: FastAPI + Supabase + Gemini Flash, 월 $8 예상. **이 결정이 PRD·운영 전 구간에 자동 반영됩니다 (기준선②).** 이후 "Firebase로 바꾸면 어때요?" 같은 요청이 들어오면 plan 결정을 참조해 이탈 경고를 냅니다. 디자인 토큰(색상·타이포·간격)도 `/harness-plan` 단계에서 함께 정의되어 이후 모든 화면 구현의 기준이 됩니다 (기준선③).
 
-**Step 3 — discover: 디자인 기준을 한 번, 끝까지 유지**
-
-```
-/design-reference 가계부 앱
-/design-token --palette minimal-fintech
-```
-
-색상·타이포·간격 토큰 정의 (참고: Toshl, Moze). **이 토큰이 이후 모든 화면 구현의 기준입니다 (기준선③).** "버튼 색 바꿔줘" 요청이 들어오면 design-token을 참조해 토큰 외 값 사용 경고를 냅니다.
-
-**Step 4 — deliver: 일관된 기반 위에서 구현**
+**Step 3 — deliver: 일관된 기반 위에서 구현**
 
 ```
-/write-prd AI 가계부 v1
-/mobile-check
+/prd AI 가계부 v1
 ```
 
-PRD에 기준선①(PMF 근거)·②(아키텍처)·③(디자인 토큰)이 자동 반영됩니다. 모바일 체크리스트 통과 후 구현 시작. 구현 도중 새 기능 추가 요청이 오면 "Step 1 근거와 연결되는가?"를 먼저 확인합니다.
+PRD에 기준선①(PMF 근거)·②(아키텍처)·③(디자인 토큰)이 자동 반영됩니다. 통과 후 구현 시작. 구현 도중 새 기능 추가 요청이 오면 "Step 1 근거와 연결되는가?"를 먼저 확인합니다.
 
-**Step 5 — operate: 기준선 이탈 없이 운영**
+**Step 4 — operate: 기준선 이탈 없이 운영**
 
 ```
-/health-check AI 가계부
+/harness-operate AI 가계부
 ```
 
 아키텍처·디자인·PMF 근거 3개 기준선을 동시에 점검합니다. 이탈 감지 시 경고 → decision-log 기록 → 다음 스프린트에 반영.
@@ -257,8 +247,8 @@ PRD에 기준선①(PMF 근거)·②(아키텍처)·③(디자인 토큰)이 자
 |------|-------------|
 | 시작 | Evidence Gate → WHETHER 결정 |
 | 설계 | 아키텍처·디자인 토큰 → 기준선 수립 |
-| 구현 | PRD·mobile-check → 기준선 반영 |
-| 운영 | health-check → 기준선 이탈 방지 |
+| 구현 | PRD → 기준선 반영 |
+| 운영 | harness-operate → 기준선 이탈 방지 |
 
 > 1인 메이커가 6개월 후 "이게 처음 의도였나?" 하는 순간을 없앤다.
 
@@ -267,10 +257,10 @@ PRD에 기준선①(PMF 근거)·②(아키텍처)·③(디자인 토큰)이 자
 ### 시나리오 2: "이미 에이전트가 있는데 비용이 너무 많이 나와"
 
 ```
-/cost-review 문서 요약 에이전트
+/harness-operate 문서 요약 에이전트
 ```
 
-이 커맨드는 `burn-rate` 스킬을 사용해서 현재 토큰 비용을 분석하고, 모델 다운그레이드, 캐싱, 배치 처리 등 최적화 방안을 제시합니다.
+이 커맨드는 운영 단계의 비용 분석을 포함해 현재 토큰 비용을 점검하고, 모델 다운그레이드, 캐싱, 배치 처리 등 최적화 방안을 제시합니다.
 
 ---
 
@@ -281,13 +271,13 @@ PRD에 기준선①(PMF 근거)·②(아키텍처)·③(디자인 토큰)이 자
 **Step 1 — 경험 추출**
 
 ```
-/extract 지난 3개월 고객 상담 에이전트 운영하면서 배운 것들:
+/harness-operate 지난 3개월 고객 상담 에이전트 운영하면서 배운 것들:
 - 고객이 "긴급"이라고 하면 80%는 진짜 긴급이 아니었다
 - 같은 질문이 3번 반복되면 자동화 대상이다
 - 에이전트가 "모르겠다"고 답하는 게 틀린 답보다 낫다
 ```
 
-`pm-framework` 스킬이 이 경험들을 **TK 유닛**(Tacit Knowledge unit)으로 구조화합니다.
+`/harness-operate`의 지식 추출 단계(`pm-engine` 스킬)가 이 경험들을 **TK 유닛**(Tacit Knowledge unit)으로 구조화합니다.
 
 ```
 TK-041: 긴급 트리거 검증 규칙
@@ -298,11 +288,7 @@ TK-041: 긴급 트리거 검증 규칙
 
 **Step 2 — 에이전트 인스트럭션으로 변환**
 
-```
-/tk-to-instruction TK-041
-```
-
-TK 유닛을 에이전트가 바로 사용할 수 있는 인스트럭션 형식으로 변환합니다.
+같은 `/harness-operate` 운영 루프 안에서 TK 유닛을 에이전트가 바로 사용할 수 있는 인스트럭션 형식으로 변환합니다 (`pm-engine`의 인스트럭션 자동 업데이트).
 
 ---
 
@@ -380,7 +366,7 @@ TK 유닛을 에이전트가 바로 사용할 수 있는 인스트럭션 형식�
 | `agent-demo-video` | Remotion 기반 데모 영상 | "이해관계자용 데모 영상 만들어줘" |
 | `harness-design` ⭐ NEW | 빌드 하네스 (4명+ 팀 + Ralph Loop + 백업/dry-run) | "자율 모드로 큰 작업 진행하고 싶어" |
 | `parallel-team` ⭐ NEW | 독립 태스크 ≥2 → worktree 격리 병렬 디스패치 | "여러 모듈 동시에 작업해도 충돌 안 나게" |
-| `build-loop` ⭐ NEW | `/build` 한 번으로 발견→리서치→설계→PRD→분해→구현 | "아이디어부터 구현까지 한 루프로" |
+| `build-loop` ⭐ NEW | `/harness-build` 한 번으로 발견→리서치→설계→PRD→분해→구현 | "아이디어부터 구현까지 한 루프로" |
 | `ask-team` | 질문을 올바른 이해관계자 또는 에이전트 역할로 구조화하여 라우팅 | "이 트레이드오프를 누구에게 물어봐야 하지?" |
 | `ticket-bridge` | PRD 결정·게이트 출력물 → 추적 가능한 티켓으로 변환 (Linear / Jira / GitHub Issues) | "게이트 판정 결과를 스프린트 티켓으로 자동 전환하고 싶어" |
 | `roadmap` | PRD §6(Now/Next/Later) → Mermaid gantt + RICE 우선순위화 | "백로그 우선순위를 시각화하고 싶어" |
@@ -497,33 +483,36 @@ AI 헬스케어 복약 알림 앱 COGS를 계산해줘.
 
 ---
 
-## 커맨드 전체 목록
+## 커맨드 전체 목록 (12개)
 
-> ⚠️ **이 표는 v0.9 시점이며 v0.13에서 일부 커맨드가 rename됐습니다.** 현재 사용 가능한 슬래시는 README-ko.md를 우선 참조하세요. `/hplan-evidence` → `/evidence-rubric`, `/hplan-cogs` → `/cogs-sentinel`, `/hplan-build`/`/hplan-product`/`/hplan-exclude`/`/hplan-handoff`/`/hplan-doctor` → 각각 `/harness-build`·`/harness-discover`·`/harness-exclude`·`/harness-handoff`·`/harness-doctor`. `/discover`·`/validate`는 **로드맵 예정**.
+커맨드는 여러 스킬을 체이닝해서 한 번에 실행하는 워크플로우입니다. v0.14.1 기준 사용 가능한 슬래시 커맨드는 아래 12개입니다.
 
-커맨드는 여러 스킬을 체이닝해서 한 번에 실행하는 워크플로우입니다.
+**게이트 (hplan)**
 
 | 커맨드 | 플러그인 | 하는 일 |
 |--------|---------|--------|
+| `/hplan` | hplan | Build Gate 통합 진입 — WHETHER 결정(evidence + COGS + decision) |
 | `/evidence-rubric` | hplan | Evidence Gate — exclusions check + 100점 루브릭 + 인터뷰 audit |
-| `/hplan-product` (로드맵) | hplan | Product Gate — OST + 사용자 여정 + 사이트맵 + 디자인 포인터 |
-| `/harness-build` | hplan | Build Gate — COGS sentinel + decision log + checkpoint approval |
 | `/cogs-sentinel` | hplan | COGS sentinel만 빠르게 — p50/p90 마진 + free-abuse 시뮬레이션 |
 | `/harness-exclude` | hplan | "Do Not Build" 영구 메모리 add/check/list |
 | `/harness-handoff` | hplan | Build Gate brief → Spec-Kit / Kiro / GStack / Claude Code export |
 | `/harness-doctor` | hplan | 설치 진단 — 훅 등록·실행·체크포인트·레지스트리·git 훅 5-check |
-| `/discover` (로드맵) | discover | 자동화 기회 탐색 + 기회 트리 생성 |
-| `/validate` (로드맵) | discover | 에이전트 가정 4축 검증 |
-| `/architecture` | architect | 에이전트 아키텍처 설계 |
-| `/strategy-review` | architect | 전략 리뷰 (수익 모델 + 경쟁 우위) |
-| `/write-prd` | deliver | 에이전트 전용 PRD 작성 |
-| `/set-okr` | deliver | 에이전트 OKR 설정 |
-| `/sprint` | deliver | 프로토타입 스프린트 계획 |
-| `/health-check` | operate | 주간 건강 점검 (KPI + 비용 + 실패율) |
-| `/cost-review` | operate | 비용 심층 분석 + 최적화 제안 |
-| `/extract` | operate | 경험에서 TK 유닛 추출 |
-| `/decide` | operate | 의사결정 프레임워크 적용 |
-| `/tk-to-instruction` | operate | TK → 에이전트 인스트럭션 변환 |
+
+**라이프사이클 (hplan 1개만 설치해도 전체 커버)**
+
+| 커맨드 | 단계 | 하는 일 |
+|--------|------|--------|
+| `/harness-discover <idea>` | Discover | 기회 매핑 → 가정 분석 → 비용 시뮬 → 빌드/바이 결정 |
+| `/harness-plan <system>` | Plan | 오케스트레이션 → 3-tier → 메모리 → 모델 라우팅 → 디자인 토큰 |
+| `/harness-build <brief>` | Build | COGS gate + PRD 15-section 자동 작성 + W1 스프린트 |
+| `/harness-verify` | Verify | 구현물 검증 게이트 (테스트·체크포인트·드리프트) |
+| `/harness-operate <agent>` | Operate | KPI · 신뢰성 · 비용 · 개선 계획 + 지식 추출(TK) |
+
+**스펙 (deliver)**
+
+| 커맨드 | 플러그인 | 하는 일 |
+|--------|---------|--------|
+| `/prd` | deliver | 통합 15섹션 에이전트 PRD + mermaid 정합성 게이트 |
 
 ---
 
@@ -542,7 +531,7 @@ A: 커맨드와 프롬프트 모두 한국어로 입력하면 됩니다. 스킬 
 A: TK = Tacit Knowledge(암묵지), NNN = Never-ending Nuance Network(끝없이 쌓이는 뉘앙스의 네트워크). TK-001부터 TK-999까지 PM의 판단 기준을 축적합니다. 예: "고객이 긴급이라고 하면 80%는 가짜 긴급이다." 이걸 구조화해서 에이전트 인스트럭션에 넣으면, 당신의 경험이 에이전트의 판단 기준이 됩니다. 매일 1개씩 약 3년이면 999개 — 에이전트가 PM의 분신이 되는 시점입니다. `operate` 플러그인의 pm-framework/pm-decision/pm-engine 스킬이 이를 담당합니다. 선택사항이지만, 쓰면 쓸수록 에이전트가 강해집니다.
 
 **Q: 에이전트를 만들어본 적이 없어도 되나요?**
-A: 네. discover 플러그인의 `/discover`부터 시작하면 "어떤 업무를 자동화할 수 있는지"부터 탐색합니다. 기술적 배경 없이 PM 관점에서 접근할 수 있도록 설계되었습니다.
+A: 네. `/harness-discover`부터 시작하면 "어떤 업무를 자동화할 수 있는지"부터 탐색합니다. 기술적 배경 없이 PM 관점에서 접근할 수 있도록 설계되었습니다.
 
 ---
 
@@ -551,19 +540,19 @@ A: 네. discover 플러그인의 `/discover`부터 시작하면 "어떤 업무�
 ### PM이라면
 
 ```
-/discover → /validate → cost-sim → /architecture → /write-prd → /set-okr
+/harness-discover → /harness-plan → /prd → /harness-build → /harness-verify
 ```
 
 ### 마케터라면
 
 ```
-/discover [마케팅 자동화 업무] → cost-sim → /write-prd → /health-check
+/harness-discover [마케팅 자동화 업무] → /prd → /harness-operate
 ```
 
 ### 이미 에이전트를 운영 중이라면
 
 ```
-/health-check → /cost-review → /extract [운영 교훈] → /tk-to-instruction
+/harness-operate [운영 교훈 + 비용·KPI 점검 + TK 추출]
 ```
 
 ---
@@ -579,7 +568,7 @@ A: 네. discover 플러그인의 `/discover`부터 시작하면 "어떤 업무�
 
 특히 `pm-framework`(TK 유닛)과 `3-tier`(멀티에이전트 설계)는 스킬 없이는 Claude가 제대로 수행하지 못하는 **역량 게이팅(capability-gating)** 영역이었습니다.
 
-> **참고:** 벤치마크는 v0.4 (32개 스킬) 기준 측정값입니다. v0.9.1 (65개 스킬, 5-plugin 구조) 기준 재측정은 차기 iteration에서 진행 예정입니다.
+> **참고:** 벤치마크는 v0.4 (32개 스킬) 기준 측정값입니다. v0.14.1 (34개 스킬, 5-plugin 구조) 기준 재측정은 차기 iteration에서 진행 예정입니다.
 
 ---
 

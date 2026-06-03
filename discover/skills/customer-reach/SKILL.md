@@ -66,7 +66,7 @@ ICP 분야에 따라 문구를 조정한다. 스팸 느낌 패턴 (긴급/할인
 > 인터뷰 약속을 잡은 후, 어떤 질문을 할지 설계합니다.
 > socratic-question이 내 가정을 심문한다면, interview-questions는 고객에게 던질 질문을 설계합니다.
 
-**입력**: $ARGUMENTS의 ICP 설명 + 검증하고 싶은 핵심 가정 (없으면 harness/brainstorm-assumptions.md에서 로드)
+**입력**: $ARGUMENTS의 ICP 설명 + 검증하고 싶은 핵심 가정 (없으면 docs/brainstorm-assumptions.md에서 로드)
 
 1. JTBD(Jobs to Be Done) 프레임으로 핵심 질문 3~5개 생성 (LLM):
    - "마지막으로 이 문제를 겪은 게 언제인가요?" (사실 확인형)

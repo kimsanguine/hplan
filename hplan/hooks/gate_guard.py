@@ -47,12 +47,35 @@ FRESHNESS_THRESHOLDS: dict[str, dict[str, int]] = {
     "market_size":          {"warn": 90,  "block": 180},
 }
 
+_GUARDED_TOKENS = ["PRD", "AGENTS", "ARCHITECTURE", "IMPLEMENTATION_READINESS", "METRICS"]
+
+# Match Build Gate artifact tokens anywhere within the .md *filename* (basename),
+# not just as the exact name. This closes the evasion where variants like
+# PRD_draft.md / MyPRD.md / PRD_v2.md / architecture_notes.md slipped past the old
+# `(^|/)PRD\.md$` exact-name anchors.
+#
+# Pattern shape (per token, case-insensitive):
+#   (^|/)        — start of path OR a path-segment boundary (so the match is on
+#                  the basename, not a directory name like `hplan/agents/`)
+#   [^/]*        — any leading filename characters (e.g. "My" in MyPRD)
+#   <TOKEN>      — the guarded token, appearing as a substring of the filename
+#   [^/]*\.md$   — any trailing filename characters, ending in .md
+#
+# Deliberate scope decision: the token is matched as a bare substring of the
+# basename (no separator required) because the task explicitly requires catching
+# glued variants such as `MyPRD.md`. README.md is unaffected — it contains none
+# of the guarded tokens as a substring. The known cost of substring matching is
+# that domain docs embedding a token (e.g. `metrics-capture.md`) become guarded;
+# this is the conservative (fail-safe) direction for a *security* gate and these
+# are not "common normal files" the way README is. The match is confined to the
+# basename via the (^|/) boundary so directory names never trigger it.
 GUARDED_PATTERNS = [
-    re.compile(r"(^|/)PRD\.md$", re.I),
-    re.compile(r"(^|/)AGENTS\.md$", re.I),
-    re.compile(r"(^|/)ARCHITECTURE\.md$", re.I),
-    re.compile(r"(^|/)IMPLEMENTATION_READINESS\.md$", re.I),
-    re.compile(r"(^|/)METRICS\.md$", re.I),
+    re.compile(
+        rf"(^|/)[^/]*{re.escape(token)}[^/]*\.md$",
+        re.I,
+    )
+    for token in _GUARDED_TOKENS
+] + [
     re.compile(r"specs/\d{3}-", re.I),       # spec-kit
     re.compile(r"\.kiro/specs/", re.I),        # kiro
 ]
@@ -273,12 +296,8 @@ def check_conditional_scope(data: dict, target: str) -> tuple[str, str]:
     return "ok", ""
 
 
-def main():
-    try:
-        event = json.load(sys.stdin)
-    except (json.JSONDecodeError, ValueError):
-        return 0
-
+def _run_gate(event: dict) -> int:
+    """Core gate logic. Raises on unexpected I/O errors so main() can fail-closed."""
     tool_input = event.get("tool_input") or {}
     target = tool_input.get("file_path") or tool_input.get("path") or ""
     if not target:
@@ -378,6 +397,38 @@ def main():
         return 2
 
     return 0
+
+
+def main():
+    # Parse the PreToolUse event. A malformed/empty stdin is the one intentional
+    # fail-open path (Claude Code may probe the hook without a real event); it is
+    # not a crash and must not block normal usage.
+    try:
+        event = json.load(sys.stdin)
+    except (json.JSONDecodeError, ValueError):
+        return 0
+
+    # Fail CLOSED on any unexpected error while running the gate. Previously an
+    # I/O exception (e.g. a Signal Gate doc being a directory → IsADirectoryError,
+    # or a permission error) crashed the script with exit 1. Claude Code only
+    # blocks on exit 2, so an exit-1 crash silently bypassed the gate on guarded
+    # files. Converting unexpected failures to exit 2 makes the guard safe-by-default.
+    try:
+        return _run_gate(event)
+    except SystemExit:
+        raise
+    except Exception as e:  # noqa: BLE001 — intentional catch-all for fail-closed
+        print(
+            "hplan gate guard BLOCKED (fail-closed): the guard crashed while "
+            "evaluating this write.\n"
+            f"  error: {type(e).__name__}: {e}\n"
+            "  A Build Gate artifact write is blocked because the gate could not "
+            "be verified.\n"
+            "  Check harness/ Signal Gate documents (a doc may be a directory, "
+            "unreadable, or have a permission error), then retry.",
+            file=sys.stderr,
+        )
+        return 2
 
 
 if __name__ == "__main__":

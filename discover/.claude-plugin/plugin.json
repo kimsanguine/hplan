@@ -1,10 +1,10 @@
 {
   "name": "discover",
-  "version": "0.9.2",
+  "version": "0.14.1",
   "description": "Discover which AI agent to build — map automation outcomes to solvable opportunities, validate assumptions, and decide build vs buy. Use when exploring agent ideas, analyzing automation opportunities, running build-or-buy analysis, or estimating agent development costs.",
   "author": {
     "name": "AI PM Skills Contributors",
-    "url": "https://github.com/your-username"
+    "url": "https://github.com/kimsanguine"
   },
   "repository": "https://github.com/kimsanguine/hplan",
   "license": "MIT",
