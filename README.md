@@ -8,13 +8,13 @@
 > Like a horse's harness, hplan gives direction to the raw power of AI coding tools (Claude Code, Cursor, Lovable, etc.). The tools that *make* code are already strong enough. What's missing is *where to point them*. hplan is the 7-day discipline that forces you to answer market research, problem definition, and COGS *before* a single PRD line is written.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-34-blue?style=flat-square)](#plugins--full-skill-list)
+[![Skills](https://img.shields.io/badge/skills-38-blue?style=flat-square)](#plugins--full-skill-list)
 [![Plugins](https://img.shields.io/badge/plugins-5-purple?style=flat-square)](#the-agent-pm-journey--5-plugins)
-[![Version](https://img.shields.io/badge/version-0.13.0-green?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.14.0-green?style=flat-square)](CHANGELOG.md)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)](CONTRIBUTING.md)
 [![한국어](https://img.shields.io/badge/lang-한국어-blue?style=flat-square)](README-ko.md)
 
-> **v0.13.1** — hplan now ships as a complete **ADK (Agent Development Kit)**: **L1 Memory** (`CLAUDE.md` — 9 behavioral rules auto-loaded every session) · **L2 Skills** (34 PM disciplines, auto-invoked) · **L3 Hooks** (`hooks/` — SessionStart gate status · PreToolUse gate enforcement · PostToolUse secret scanner + **MD→HTML auto-renderer**) · **L4 Subagents** (8-role parallel team) · **L5 Plugins** (marketplace). One `git clone` + `bash scripts/install-hooks.sh` activates all 5 layers. v0.9.4–v0.13.0 history: see [CHANGELOG.md](CHANGELOG.md).
+> **v0.14.0** — hplan now ships as a complete **ADK (Agent Development Kit)**: **L1 Memory** (`CLAUDE.md` — 9 behavioral rules auto-loaded every session) · **L2 Skills** (38 PM disciplines, auto-invoked) · **L3 Hooks** (`hooks/` — SessionStart gate status · PreToolUse gate enforcement · PostToolUse secret scanner + **MD→HTML auto-renderer**) · **L4 Subagents** (8-role parallel team) · **L5 Plugins** (marketplace). One `git clone` + `bash scripts/install-hooks.sh` activates all 5 layers. v0.9.4–v0.14.0 history: see [CHANGELOG.md](CHANGELOG.md).
 
 ### 📺 99-second intro
 
@@ -173,7 +173,7 @@ This isn't a random collection of skills. It's a **complete lifecycle** — the 
 ```
    Gate  →  Discover  →  Architect  →  Deliver  →  Operate
    hplan    discover      architect     deliver      operate
-   8 skills  5 skills     5 skills      10 skills   6 skills   (= 34 total)
+   8 skills  6 skills     5 skills      13 skills   6 skills   (= 38 total)
 
      ↑                                                   │
      └──── Operational insights feed back into gate ─────┘
@@ -200,7 +200,7 @@ Each skill **auto-loads from natural language** — describe your task and the r
 
 ### ① Complete Agent Lifecycle, Not Random Tools
 
-34 skills across 5 plugins cover the full agent product lifecycle (Gate → Discover → Architect → Deliver → Operate). This isn't "AI tools for PMs" — it's **a structured methodology for building agents as products**, from discovery to production operations.
+38 skills across 5 plugins cover the full agent product lifecycle (Gate → Discover → Architect → Deliver → Operate). This isn't "AI tools for PMs" — it's **a structured methodology for building agents as products**, from discovery to production operations.
 
 ### ② Two-Layer Architecture — Platform and Content Separation
 
@@ -284,7 +284,7 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 </details>
 
 <details>
-<summary><strong>2. discover</strong> — What agent to build? <code>(5 skills)</code></summary>
+<summary><strong>2. discover</strong> — What agent to build? <code>(6 skills)</code></summary>
 
 > ⚠️ **Currently available (5):** `opp-tree` · `assumptions` · `cost-sim` · `hitl` · `socratic-question`
 > `build-or-buy` and `agent-gtm` in the table below are **roadmap** — treat only the 5 above as callable.
@@ -322,7 +322,7 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 </details>
 
 <details>
-<summary><strong>4. deliver</strong> — How to spec, build, and ship it? <code>(10 skills)</code></summary>
+<summary><strong>4. deliver</strong> — How to spec, build, and ship it? <code>(13 skills)</code></summary>
 
 > ⚠️ **Currently available (10):** `agent-setup` · `prd` · `build-loop` · `conductor` · `sprint` · `qa-checklist` · `respect` · `ui-validate` · `ask-team` · `ticket-bridge`
 > Other skills (agent-instructions, ctx-budget, parallel-team, etc.) in the table below are **roadmap** — treat only the 10 above as callable.
@@ -408,7 +408,7 @@ hplan ships as a complete **Agent Development Kit** — five reinforcing layers 
 | Layer | What | How it activates |
 |-------|------|-----------------|
 | **L1 Memory** | `CLAUDE.md` — 9 behavioral rules + hplan gate policy | Loaded by Claude Code at session start, every time |
-| **L2 Skills** | 34 PM discipline skills across 5 plugins | Auto-invoked when you describe a task in natural language |
+| **L2 Skills** | 38 PM discipline skills across 5 plugins | Auto-invoked when you describe a task in natural language |
 | **L3 Hooks** | `hooks/` — PreToolUse · PostToolUse · SessionStart | `scripts/install-hooks.sh` registers to `.claude/settings.json` |
 | **L4 Subagents** | 8-role parallel team (designer · engineer · critic · security…) | Dispatched by `deliver/skills/parallel-team` |
 | **L5 Plugins** | Marketplace distribution (`/plugin install`) | Claude Code plugin registry |
@@ -523,7 +523,7 @@ discover/skills/opp-tree/           ← example skill
 | `examples/bad-01.md` | Explicit anti-patterns with explanations | Prevents common failures |
 | `references/test-cases.md` | Edge cases + assertions | Powers eval system (54 assertions) |
 
-This pattern repeats across all 34 skills — **200+ supporting files** that make each skill measurable, testable, and improvable.
+This pattern repeats across all 38 skills — **200+ supporting files** that make each skill measurable, testable, and improvable.
 
 </details>
 

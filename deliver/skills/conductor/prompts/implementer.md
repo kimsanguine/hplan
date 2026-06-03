@@ -12,8 +12,16 @@
 ### 컨텍스트
 [이 태스크가 전체 플랜에서 어디에 위치하는지, 이전 태스크 결과물 중 알아야 할 것]
 
+### worktree 경로
+[이 에이전트가 작업하는 git worktree 절대 경로]
+예: `/Users/you/project/.worktrees/T-003`
+병렬 실행 시 이 경로 내에서만 파일을 생성·수정한다. main worktree 경로는 읽기 전용.
+(단일 순차 실행이면 이 항목을 "main worktree — 단일 실행" 으로 명시)
+
 ### 허용 파일 범위
-[수정 가능한 경로 명시 — Rule 9 Agent Scope Declaration 준수]
+[수정 가능한 경로 목록 — Rule 9 Agent Scope Declaration 준수]
+예: `src/api/`, `tests/unit/`, `harness/`
+목록에 없는 경로 수정 금지. 불명확하면 작업 전 질문.
 
 ### 완료 기준
 [검증 가능한 조건 — "잘 만들었다" 아닌 "이 파일이 존재한다", "이 테스트가 통과한다" 형식]
@@ -33,5 +41,6 @@ STATUS: DONE / DONE_WITH_CONCERNS / NEEDS_CONTEXT / BLOCKED
 
 **주의:**
 - 이전 태스크의 context를 직접 전달하지 않는다 (fresh context 보장)
-- 허용 파일 범위는 반드시 명시한다
+- worktree 경로와 허용 파일 범위는 반드시 명시한다 (Rule 9)
 - 완료 기준은 검증 가능한 형태로 작성한다
+- 병렬 실행 시 main worktree 파일을 직접 수정하지 않는다
