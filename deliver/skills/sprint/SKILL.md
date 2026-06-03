@@ -1,7 +1,7 @@
 ---
 name: sprint
 description: "스프린트 계획-실행-추적 통합 — 딜리버리 플랜 작성(delivery-plan)과 진척 추적(track) 통합. PRD → WBS 분해, predicted.json 초기화, probe/detect/report/checkpoint 실행. Use when planning or tracking a delivery sprint."
-argument-hint: "[brief] [--step plan|init|status|retro]"
+argument-hint: "[brief] [--step plan|init|status|retro|codebase-status]"
 allowed-tools: ["Read", "Write", "Bash"]
 model: sonnet
 ---
@@ -16,6 +16,7 @@ model: sonnet
 | `--step init` | `.track/` 생성, probe hook 등록, 추적 초기화 | ❌ 결정론 | `.track/actual_log.jsonl` + hook |
 | `--step status` | jsonl 블로커 패턴 결정론 스캔 + 이벤트 트리거 현황 보고 | ✅ 자연어 렌더링만 | 진행 보고 |
 | `--step retro` | 완료 후 실측 vs 예측 deviation 분석 + TK 추출 | ✅ 분류/자연어 | retro report |
+| `--step codebase-status` | 코드베이스 능동 탐색 → PM 현황 보고 | ✅ 산문 합성만 | codebase-report.md |
 
 > **기본값**: `--step plan` — 첫 진입은 항상 계획부터.
 
@@ -43,6 +44,7 @@ model: sonnet
 - "지금 어디까지 왔어?" / "블로커 있어?" → `--step status`
 - 스프린트 완료 후 회고 + TK 추출 → `--step retro`
 - estimate vs actual deviation 50% 초과 → `--step plan` 재실행
+- "지금 코드 어디까지 됐어?" / "probe 없는 환경에서 현황 보고" → `--step codebase-status`
 
 ### Route to Other Skills When
 - 비용 시뮬레이션 (lognormal) → `discover/cost-sim`
@@ -61,7 +63,7 @@ model: sonnet
 
 | 입력 | 출처 | 처리 |
 |---|---|---|
-| `--step` | `$ARGUMENTS` | plan/init/status/retro 분기 |
+| `--step` | `$ARGUMENTS` | plan/init/status/retro/codebase-status 분기 |
 | target | `$ARGUMENTS` (step 이후 나머지) | PRD 경로 또는 feature 설명 |
 | `profiles/<op>/velocity/baseline.jsonl` | velocity-baseline 또는 plan step | estimate lookup 기준 |
 | `.track/predicted.json` | plan step 출력 | status/retro 비교 기준 |
@@ -82,7 +84,7 @@ target = args remainder after --step value
 ```
 
 step 미명시 시:
-> "--step 미명시 — `--step plan` 기본값으로 진입합니다. 사용 가능: `--step plan|init|status|retro`"
+> "--step 미명시 — `--step plan` 기본값으로 진입합니다. 사용 가능: `--step plan|init|status|retro|codebase-status`"
 
 ---
 
@@ -280,6 +282,84 @@ TK 추출 후보: N개
 
 ---
 
+### --step codebase-status
+
+> probe hook이 없거나 외부 PM이 현황을 물을 때 코드베이스를 **능동 탐색**해 현황 보고서를 만든다.
+> 서브에이전트가 git/파일/테스트를 실행하므로 `.track/` 존재 여부에 무관하다.
+
+#### 데이터 수집 (결정론 — LLM 0)
+
+서브에이전트(Read + Bash 권한)를 스폰해 다음을 순서대로 실행한다:
+
+1. **Git 활동** — 결정론적 수집
+   ```bash
+   git log --oneline --since="7 days ago" --no-merges
+   git diff --stat HEAD~5 2>/dev/null || git diff --stat HEAD 2>/dev/null
+   git status --short
+   ```
+
+2. **테스트 결과** — 존재하는 runner만 실행
+   ```bash
+   # package.json 있으면
+   [ -f package.json ] && npm test --passWithNoTests 2>&1 | tail -20 || true
+   # pytest 있으면
+   [ -f pyproject.toml ] || [ -f requirements.txt ] && python -m pytest --tb=no -q 2>&1 | tail -20 || true
+   ```
+
+3. **현재 태스크** — 결정론
+   ```bash
+   [ -f .track/current_task ] && cat .track/current_task || echo "unassigned"
+   ```
+
+4. **실적 로그** — 존재 시만
+   ```bash
+   [ -f .track/actual_log.jsonl ] && tail -20 .track/actual_log.jsonl || echo "no probe data"
+   ```
+
+5. **PRD 대비 달성** — 존재 시만
+   ```bash
+   [ -f harness/PRD.md ] && grep -n "^##" harness/PRD.md | head -20 || true
+   [ -f harness/implementation-plan.md ] && grep -E "^\- \[.\]" harness/implementation-plan.md | head -30 || true
+   ```
+
+#### 보고서 합성 (LLM — Rule 5 허용: 자연어 생성)
+
+수집된 원시 데이터를 바탕으로 `harness/codebase-report.md`를 작성한다:
+
+```markdown
+# Codebase Status — <ISO date>
+
+## 완료 (Done)
+<!-- git log에서 완료된 변경사항 -->
+
+## 진행 중 (In Progress)
+<!-- git status, current_task 기반 -->
+
+## 코드베이스 변화 요약
+<!-- git diff --stat 기반 -->
+
+## 테스트 현황
+<!-- 테스트 결과 기반; 실행 못 했으면 "runner 미발견" 명시 -->
+
+## 블로커 감지
+<!-- test 실패 / git conflict / TODO/FIXME grep 결과 -->
+
+## 다음 권장 액션
+<!-- PRD 대비 미완 태스크 기반; PRD 없으면 생략 -->
+
+> 출처: sprint --step codebase-status 능동 탐색. probe 데이터: <있음/없음>
+```
+
+#### Rule 5 자체 점검
+- [ ] git/파일 수집: 전부 Bash 명령 (LLM 0)
+- [ ] 보고서 작성: 자연어 생성 (Rule 5 허용)
+- [ ] "코드가 완료됐다" 판단: git log 인용 (추측 금지)
+- [ ] 테스트 실패 여부: 실행 결과 인용 (추측 금지)
+
+*`--step codebase-status` 선택 시 여기서 종료. `harness/codebase-report.md` 생성.*
+
+---
+
 ## jsonl 포맷 (append-only 스키마)
 
 ```jsonl
@@ -332,6 +412,12 @@ TK 추출 후보: N개
 - [ ] baseline.jsonl 갱신됨
 - [ ] TK 추출 후보 명시됨
 
+### codebase-status
+- [ ] 모든 수치 = git/파일 실행 결과 인용 (LLM 추측 0)
+- [ ] 테스트 실행 실패 시 "runner 미발견" 명시 (silent pass 금지)
+- [ ] probe 데이터 유무 명시 (있으면 인용, 없으면 "no probe data")
+- [ ] `harness/codebase-report.md` 생성됨
+
 ---
 
 ## Examples
@@ -360,6 +446,15 @@ TK 추출 후보: N개
 2. 5종 블로커 스캔 (LLM 0)
 3. predicted.json + actual_log 비교
 4. 6섹션 보고 (LLM 자연어 렌더링)
+
+### Good Example
+**입력:** `--step codebase-status`
+
+**기대 동작:**
+1. 서브에이전트 스폰 → git log/diff/status 실행
+2. 테스트 runner 탐색 → 존재 시 실행, 없으면 "runner 미발견" 명시
+3. .track/ 존재 시 실적 로그 인용, 없으면 "no probe data" 명시
+4. `harness/codebase-report.md` 생성
 
 ### Bad Example
 **입력:** `--step plan "JWT 만들어줘"` (PRD 아닌 한 줄)
