@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "hplan",
-  "version": "0.9.2",
+  "version": "0.13.1",
   "description": "55 skills and 27 commands across 5 plugins for PMs who decide what, why, and how to build AI agents — evidence gate (hplan) → discovery → architecture → delivery → operations. v0.9.2 consolidates 65 skills into 55 via mode/check/type/step routing (track, ui-validate, media-asset, delivery-plan, agent-instructions, metrics-design, portfolio-report). All new unified skills enforce trust-boundary separation and deprecated alias parity.",
   "owner": {
     "name": "AI PM Skills Contributors",

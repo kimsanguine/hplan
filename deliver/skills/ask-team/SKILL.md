@@ -1,0 +1,199 @@
+---
+name: ask-team
+description: "PM이 사람에게 질문하고 답을 모으는 비동기 채널 — comms MCP(Gmail/Notion/Zoom)를 감싸는 번역기. --mode ask(질문 초안 작성), --mode pull-answers(스레드·회의록에서 답 수집), --mode digest(수집한 답 요약 → decision-log/ticket-bridge 라우팅). 메시지를 자동 발송하지 않는다 — 초안/코멘트까지만. Use when a PM needs to ask teammates for status/decisions and collect their answers into hplan."
+argument-hint: "[--mode ask|pull-answers|digest] [question or topic]"
+allowed-tools: ["Read", "Write", "mcp__gmail__create_draft", "mcp__gmail__search_threads", "mcp__gmail__get_thread", "mcp__notion__notion-create-comment", "mcp__notion__notion-get-comments", "mcp__zoom__search_meetings", "mcp__zoom__get_file_content"]
+model: sonnet
+---
+
+## Core Goal
+
+PM이 "사람에게 질문하고 답을 받는" 기둥을 hplan에 연결한다.
+ask-team은 **번역기**다 — 질문/요약 문구만 생성하고, 외부 comms 시스템(Gmail/Notion/Zoom)을 통한 전달·수집은 MCP 도구에 위임한다. 답을 *판단*하거나 메시지를 *자동 발송*하지 않는다.
+
+| 모드 | 책임 | 입력 → 출력 |
+|---|---|---|
+| `--mode ask` | 질문 초안 작성 (발송 X — 사람이 보냄) | 질문 + 대상 → Gmail `create_draft` / Notion 코멘트 |
+| `--mode pull-answers` | 스레드·회의록·코멘트에서 답 수집 | `search_threads`/Zoom transcript/`get-comments` → `harness/answers.md` |
+| `--mode digest` | 수집한 답 요약 → 라우팅 | `harness/answers.md` → `hplan/decision-log` 또는 `deliver/ticket-bridge` |
+
+> **기본값**: `--mode` 미명시 → fail loud + 모드 목록. auto-run 금지.
+
+### 능력 차원의 안전장치
+Gmail MCP는 `create_draft`만 노출하고 **send 도구가 없다.** ask-team은 구조적으로 메일을 자동 발송할 수 없다 — 초안을 만들면 사람이 Gmail에서 검토 후 보낸다. 확인 게이트가 정책이 아니라 능력으로 강제된다.
+
+---
+
+## Rule 5 준수 경계
+
+| 작업 | LLM 사용 | 근거 |
+|---|---|---|
+| 질문 문구 생성 (ask) | ✅ 자연어 생성 | Rule 5 허용 |
+| 답변 요약 문구 생성 (digest) | ✅ 자연어 생성 | Rule 5 허용 |
+| **대상(수신자) 라우팅** | ❌ **결정론 lookup** | `harness/team-map.json` 매핑 |
+| **채널 선택 (Gmail/Notion/Zoom)** | ❌ 결정론 | 매핑 테이블 — LLM if문 금지 |
+| **답변 ↔ 질문 매칭** | ❌ 결정론 | question_id + 스레드/코멘트 ID |
+| **digest 라우팅 (decision-log vs ticket-bridge)** | ❌ 결정론 | 답변에 붙은 tag(`#decision`/`#ticket`)로 분기 |
+
+> **자체 점검:** 수신자 라우팅·채널 선택·답변 매칭·digest 분기에서 LLM 호출이 감지되면 즉시 fail — Rule 5 위반. "답변이 긍정인지 LLM이 판단" 같은 것도 금지 (요약만, 판단은 사람).
+
+---
+
+## Trigger Gate
+
+### Use This Skill When
+- "이거 팀에 물어봐줘" / "담당자한테 확인 요청" → `--mode ask`
+- "답변 왔는지 모아줘" → `--mode pull-answers`
+- "받은 답 정리해서 결정 로그/티켓에 붙여줘" → `--mode digest`
+
+### Route to Other Skills When
+- 결정 기록 자체 → `hplan/decision-log`
+- 티켓에 상태 코멘트 → `deliver/ticket-bridge --mode status`
+- 고객 인터뷰 합성(디스커버리) → `hplan/interview-synthesis` (ask-team은 *내부 팀* 질문용)
+
+### Boundary Checks
+- `--mode` 미명시 → fail loud
+- comms MCP 미연결 → fail loud (대체 client 안 만듦)
+- 메시지 자동 발송 시도 → 불가 (Gmail send 도구 없음). 초안까지만.
+
+---
+
+## Inputs
+
+| 입력 | 출처 | 처리 |
+|---|---|---|
+| `--mode` | `$ARGUMENTS` | ask/pull-answers/digest 분기 |
+| 질문/주제 | `$ARGUMENTS` 나머지 | 질문 본문 또는 수집 필터 |
+| `harness/team-map.json` | 수동 | 사람 → 채널/주소 매핑 (`{"alex":{"email":"a@x.com","channel":"gmail"}}`) |
+| `harness/questions.jsonl` | ask 산출 | question_id ↔ 대상 ↔ 채널 추적 |
+| `harness/answers.md` | pull-answers 산출 | digest 입력 |
+
+`$ARGUMENTS`를 파싱해 mode와 대상을 분리한다. comms MCP 가용성을 먼저 확인하고, 없으면 fail loud.
+
+> **MCP 서버명 주의:** allowed-tools는 관례명(`mcp__gmail__*` 등)으로 선언했다. 실제 도구명은 사용자 환경의 MCP 서버 설정에 따라 다르다 — 미발견 시 silent degrade 금지, fail loud로 "어느 comms MCP가 연결됐는지" 안내한다.
+
+---
+
+## 결정론적 라우팅 규칙
+
+### 수신자 → 채널 (순수 lookup, LLM 0)
+
+`harness/team-map.json`:
+```json
+{ "alex": {"email": "alex@team.com", "channel": "gmail"},
+  "design": {"notion_page": "<page-id>", "channel": "notion"} }
+```
+- 대상이 team-map에 없으면 → fail loud (임의 추측 금지).
+- channel 값으로 사용할 MCP 도구를 결정론 분기: `gmail` → `create_draft`, `notion` → `notion-create-comment`.
+
+### 답변 ↔ 질문 매칭
+- ask가 `harness/questions.jsonl`에 `{question_id, target, channel, ref_id}`를 기록.
+- pull-answers는 ref_id(스레드 ID/코멘트 ID/회의 ID)로 답을 역매칭한다.
+
+### digest 라우팅
+- 답변 텍스트의 태그로 분기: `#decision` → `hplan/decision-log`, `#ticket:<n>` → `deliver/ticket-bridge`.
+- 태그 없으면 → `harness/answers.md`에만 남기고 라우팅 보류 (안내).
+
+---
+
+## Instructions
+
+You are running ask-team with arguments: **$ARGUMENTS**
+
+### 공통 Step 0 — mode 파싱 + MCP 확인
+```
+mode = args.get("--mode")   # 없으면 fail loud
+```
+comms MCP 도구 가용성 확인. 하나도 없으면 fail loud.
+
+### mode: ask
+1. `harness/team-map.json`으로 대상 → 채널 결정 (결정론). 미매핑 → fail loud.
+2. 질문 문구를 생성한다 (LLM — 명확하고 답하기 쉬운 단일 질문).
+3. **확인 게이트**: 초안 전문 + 수신자 + 채널을 사용자에게 보여주고 승인받는다.
+4. 승인 후 채널별 도구 호출:
+   - gmail → `create_draft` (to/subject/body). **발송 아님 — 초안 생성.** 사람이 Gmail에서 보냄.
+   - notion → `notion-create-comment` (page/comment).
+5. `harness/questions.jsonl`에 `{question_id, target, channel, ref_id, ts}` append.
+6. 안내: "Gmail 초안 생성됨 — 검토 후 직접 발송하세요. ask-team은 발송하지 않습니다."
+
+### mode: pull-answers
+1. `harness/questions.jsonl` 로드. 없으면 fail loud ("ask 먼저").
+2. 각 question의 channel/ref_id로 답 조회:
+   - gmail → `search_threads`/`get_thread` (해당 스레드의 새 메시지)
+   - notion → `notion-get-comments`
+   - zoom → `search_meetings` + `get_file_content` (회의록 transcript에서 관련 발언)
+3. 답을 question_id로 역매칭 (결정론). 매칭 안 되면 "미응답"으로 표시.
+4. `harness/answers.md`에 question ↔ answer ↔ 출처를 기록 (요약은 digest에서).
+
+### mode: digest
+1. `harness/answers.md` 로드. 없으면 fail loud ("pull-answers 먼저").
+2. 각 답변을 요약한다 (LLM — 판단 아님, 압축만).
+3. 태그로 라우팅 (결정론): `#decision` → decision-log 항목 초안, `#ticket:<n>` → ticket-bridge status 코멘트 후보.
+4. **확인 게이트**: 라우팅 대상 + 요약을 보여주고 승인받은 뒤 해당 스킬로 넘긴다.
+
+---
+
+## Failure Handling
+
+| 실패 상황 | 감지 | 대응 |
+|---|---|---|
+| `--mode` 미명시 | 미입력 | fail loud + 모드 목록 |
+| comms MCP 미연결 | 관례명 도구 미발견 | fail loud — "Gmail/Notion/Zoom MCP 중 연결된 것이 없음". 대체 client 안 만듦 |
+| 대상 미매핑 (ask) | team-map에 키 없음 | fail loud + "team-map.json에 대상 추가 필요". 주소 추측 금지 |
+| 자동 발송 요구 | send 도구 부재 | fail loud — "ask-team은 발송 불가(초안만). Gmail에서 직접 발송" |
+| `questions.jsonl` 없음 (pull) | file not found | fail loud — "ask 먼저" |
+| `answers.md` 없음 (digest) | file not found | fail loud — "pull-answers 먼저" |
+| 미응답 question | ref_id로 답 0건 | "미응답" 표시, 나머지 진행 (부분 성공 명시 — Rule 8) |
+| digest 태그 없음 | `#decision`/`#ticket` 부재 | answers.md에만 보존, 라우팅 보류 + 안내 |
+
+원칙: **답을 판단하지 않는다.** ask-team은 질문 전달·답 수집·요약까지만. GO/HOLD 같은 판단은 사람 또는 hplan 게이트의 몫 (Rule 5/8).
+
+---
+
+## Quality Gate
+
+### ask
+- [ ] 대상 → 채널 = team-map lookup (LLM 라우팅 0)
+- [ ] 발송 0회 (초안/코멘트만)
+- [ ] 확인 게이트 통과 후에만 도구 호출
+- [ ] questions.jsonl append (덮어쓰기 0)
+
+### pull-answers
+- [ ] 답 ↔ question = ref_id 결정론 매칭
+- [ ] 미응답 명시
+- [ ] 답 텍스트 원문 보존 (판단·가공 0)
+
+### digest
+- [ ] 요약 = 압축만 (판단 0)
+- [ ] 라우팅 = 태그 결정론 분기
+- [ ] 라우팅 전 확인 게이트 통과
+
+---
+
+## Examples
+
+### Good Example
+**입력:** `--mode ask "결제 모듈 마감일 언제로 볼까요?" alex`
+
+**기대 동작:**
+1. team-map에서 alex → gmail (결정론)
+2. 질문 초안 생성 (LLM) → 확인 게이트 → `create_draft`
+3. "초안 생성됨, Gmail에서 발송하세요" + questions.jsonl 기록
+
+### Good Example
+**입력:** `--mode digest`
+
+**기대 동작:**
+1. answers.md 로드 → 각 답 요약 (LLM)
+2. `#decision` 태그 답 → decision-log 초안 / `#ticket:17` → ticket-bridge 후보
+3. 확인 게이트 → 라우팅
+
+### Bad Example
+**입력:** `--mode ask "..." bob` (bob이 team-map에 없음)
+
+**기대 동작:** "bob 미매핑 — harness/team-map.json에 추가하세요. 주소를 추측하지 않습니다." fail loud
+
+### Bad Example
+**입력:** `--mode ask "..." alex --send`
+
+**기대 동작:** "ask-team은 발송할 수 없습니다(Gmail send 도구 없음). 초안만 생성하니 Gmail에서 직접 보내세요." fail loud

@@ -186,8 +186,12 @@ def main():
     total_skills = 0
     total_aliases = 0
     total_commands = 0
-    EXPECTED_ACTIVE_SKILLS = 31
+    EXPECTED_ACTIVE_SKILLS = 33
     EXPECTED_ALIASES = 0
+    # v0.13.x migration note: deliver/ask-team skill added (comms MCP — Gmail/Notion/Zoom 비동기 질문 채널).
+    # deliver plugin skills +1. Total: 32 → 33.
+    # v0.13.x migration note: deliver/ticket-bridge skill added (GitHub Issues ⇄ sprint/.track bridge).
+    # deliver plugin skills +1. Total: 31 → 32.
     # v0.13.0 migration note: conductor Phase 0/Step E/--mode sprint + ui-validate assertion engine.
     # No skill count change — all existing skills strengthened. Total: 31 (unchanged).
     # v0.12.0 migration note: brainstorm skill added to hplan plugin.

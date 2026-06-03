@@ -1,7 +1,7 @@
 ---
 name: sprint
 description: "스프린트 계획-실행-추적 통합 — 딜리버리 플랜 작성(delivery-plan)과 진척 추적(track) 통합. PRD → WBS 분해, predicted.json 초기화, probe/detect/report/checkpoint 실행. Use when planning or tracking a delivery sprint."
-argument-hint: "[brief] [--step plan|init|status|retro]"
+argument-hint: "[brief] [--step plan|init|status|retro|codebase-status]"
 allowed-tools: ["Read", "Write", "Bash"]
 model: sonnet
 ---
@@ -16,6 +16,7 @@ model: sonnet
 | `--step init` | `.track/` 생성, probe hook 등록, 추적 초기화 | ❌ 결정론 | `.track/actual_log.jsonl` + hook |
 | `--step status` | jsonl 블로커 패턴 결정론 스캔 + 이벤트 트리거 현황 보고 | ✅ 자연어 렌더링만 | 진행 보고 |
 | `--step retro` | 완료 후 실측 vs 예측 deviation 분석 + TK 추출 | ✅ 분류/자연어 | retro report |
+| `--step codebase-status` | 코드베이스 능동 탐색 → PM 현황 보고 | ✅ 산문 합성만 | codebase-report.md |
 
 > **기본값**: `--step plan` — 첫 진입은 항상 계획부터.
 
@@ -30,6 +31,7 @@ model: sonnet
 | **loc/tokens/minutes 수치 예측** | ❌ **lookup 전용** | baseline percentile 직접 인용, hallucination 방지 |
 | 블로커 패턴 감지 | ❌ 결정론 | 정규식·카운터·임계치 비교 |
 | 7종 트리거 검출 | ❌ 결정론 | 카운터·임계치 비교 |
+| `.track/current_task` 기록 | ❌ 결정론 | `echo T-XXX > .track/current_task` (LLM 아님) |
 | 자연어 보고 문구 생성 | ✅ | Rule 5 허용: 자연어 생성 |
 
 ---
@@ -42,6 +44,7 @@ model: sonnet
 - "지금 어디까지 왔어?" / "블로커 있어?" → `--step status`
 - 스프린트 완료 후 회고 + TK 추출 → `--step retro`
 - estimate vs actual deviation 50% 초과 → `--step plan` 재실행
+- "지금 코드 어디까지 됐어?" / "probe 없는 환경에서 현황 보고" → `--step codebase-status`
 
 ### Route to Other Skills When
 - 비용 시뮬레이션 (lognormal) → `discover/cost-sim`
@@ -60,7 +63,7 @@ model: sonnet
 
 | 입력 | 출처 | 처리 |
 |---|---|---|
-| `--step` | `$ARGUMENTS` | plan/init/status/retro 분기 |
+| `--step` | `$ARGUMENTS` | plan/init/status/retro/codebase-status 분기 |
 | target | `$ARGUMENTS` (step 이후 나머지) | PRD 경로 또는 feature 설명 |
 | `profiles/<op>/velocity/baseline.jsonl` | velocity-baseline 또는 plan step | estimate lookup 기준 |
 | `.track/predicted.json` | plan step 출력 | status/retro 비교 기준 |
@@ -81,7 +84,7 @@ target = args remainder after --step value
 ```
 
 step 미명시 시:
-> "--step 미명시 — `--step plan` 기본값으로 진입합니다. 사용 가능: `--step plan|init|status|retro`"
+> "--step 미명시 — `--step plan` 기본값으로 진입합니다. 사용 가능: `--step plan|init|status|retro|codebase-status`"
 
 ---
 
@@ -152,21 +155,22 @@ for task in tasks:
 - `mkdir -p .track`
 - `.gitignore`에 `.track/` 없으면 append
 
-**Step 2 — Hook 등록**
-- `.claude/settings.json`의 hooks.PostToolUse에 추가:
+**Step 2 — probe 스크립트 설치**
+- `references/track-probe.sh`를 프로젝트 `scripts/track-probe.sh`로 복사 (없으면)
+- `chmod +x scripts/track-probe.sh`
+- ⚠ 인라인 작성 금지 — 검증된 배포 스크립트를 그대로 복사한다.
+
+**Step 3 — Hook 등록**
+- `.claude/settings.json`의 hooks.PostToolUse에 추가 (stdin JSON 프로토콜):
 ```json
-{"hooks": {"PostToolUse": [{"command": "scripts/track-probe.sh hook --tool $TOOL --file $FILE --exit $EXIT"}]}}
+{"hooks": {"PostToolUse": [{"matcher": "Write|Edit|NotebookEdit", "hooks": [{"type": "command", "command": "bash scripts/track-probe.sh"}]}]}}
 ```
+- probe는 stdin으로 JSON을 받는다 (tool_name·tool_input). CLI 인자/env-var 방식 아님.
 - 기존 hooks가 있으면 array append (덮어쓰기 금지)
 
-**Step 3 — fallback shell 작성**
-- `scripts/track-probe.sh` 신규 (없으면)
-- `chmod +x`
-- 내용: shell argparse + ISO8601 timestamp + JSON line write
-
 **Step 4 — Hook smoke test**
-- `bash scripts/track-probe.sh hook --tool test --file noop --exit 0`
-- jsonl 마지막 줄에 test entry 확인 → pass
+- `echo '{"tool_name":"Write","tool_input":{"file_path":"noop","content":"a\nb\n"}}' | bash scripts/track-probe.sh`
+- `.track/actual_log.jsonl` 마지막 줄에 entry(loc_delta=2) 확인 → pass
 
 **Step 5 — 사용자 안내**
 - Hook이 PostToolUse에 등록됐음
@@ -177,6 +181,15 @@ for task in tasks:
 ### step: status
 
 **status의 역할**: 현재 진행 상황 결정론 스캔 + 이벤트 트리거 발화 여부 + 자연어 보고.
+
+**Step 0 — current_task 태깅 (결정론)**
+- `.track/predicted.json`에서 현재 진행 중인(미완료) 태스크 id를 결정론으로 식별한다.
+- 식별된 태스크 id를 `.track/current_task`에 기록한다 (LLM 호출 없음):
+```bash
+echo "T-001" > .track/current_task   # 진행 중인 태스크 id로 치환
+```
+- 이 파일이 있어야 probe가 이후 Write/Edit 이벤트에 task 태그를 붙인다.
+- 미완료 태스크가 없으면(스프린트 완료 상태) `echo "done" > .track/current_task`로 기록한다.
 
 **Step 1 — 7종 트리거 결정론 점검**
 
@@ -233,11 +246,19 @@ Next gate: <name> — <human approval required | auto>
 - 미완료 task 있으면 "완료되지 않은 task N개" 경고 후 진행
 
 **Step 2 — Deviation 분석 (결정론)**
+
+task별 `minutes_elapsed`는 probe가 `.track/current_task`로 태깅한 이벤트의 min/max `ts` 차로 산출된다.
+즉 `actual.minutes = max(ts[task]) − min(ts[task])` (초 단위 차이를 분으로 변환).
+
 ```python
 for task in predicted_tasks:
     actual = find_actual(task.id)
     loc_deviation = (actual.loc - task.loc_p50) / task.loc_p50 * 100
-    token_deviation = (actual.tokens - task.tokens_p50) / task.tokens_p50 * 100
+    # tokens: probe가 token usage를 캡처하지 않으므로 null일 수 있음 — null-safe 처리
+    if actual.tokens is not None and task.tokens_p50:
+        token_deviation = (actual.tokens - task.tokens_p50) / task.tokens_p50 * 100
+    else:
+        token_deviation = None  # 건너뜀 (retro 보고에서 "N/A"로 표시)
     time_deviation = (actual.minutes - task.minutes_p50) / task.minutes_p50 * 100
 ```
 
@@ -254,10 +275,88 @@ for task in predicted_tasks:
 ─── sprint retro ─── <feature>
 Planned: X tasks · Y LOC · Z tokens · T hours
 Actual:  X tasks · Y LOC · Z tokens · T hours
-Deviations: loc +A%, tokens +B%, time +C%
+Deviations: loc +A%, tokens N/A (probe 미캡처), time +C%
 Velocity trend: baseline 갱신됨 (trust_grade: X)
 TK 추출 후보: N개
 ```
+
+---
+
+### --step codebase-status
+
+> probe hook이 없거나 외부 PM이 현황을 물을 때 코드베이스를 **능동 탐색**해 현황 보고서를 만든다.
+> 서브에이전트가 git/파일/테스트를 실행하므로 `.track/` 존재 여부에 무관하다.
+
+#### 데이터 수집 (결정론 — LLM 0)
+
+서브에이전트(Read + Bash 권한)를 스폰해 다음을 순서대로 실행한다:
+
+1. **Git 활동** — 결정론적 수집
+   ```bash
+   git log --oneline --since="7 days ago" --no-merges
+   git diff --stat HEAD~5 2>/dev/null || git diff --stat HEAD 2>/dev/null
+   git status --short
+   ```
+
+2. **테스트 결과** — 존재하는 runner만 실행
+   ```bash
+   # package.json 있으면
+   [ -f package.json ] && npm test --passWithNoTests 2>&1 | tail -20 || true
+   # pytest 있으면
+   [ -f pyproject.toml ] || [ -f requirements.txt ] && python -m pytest --tb=no -q 2>&1 | tail -20 || true
+   ```
+
+3. **현재 태스크** — 결정론
+   ```bash
+   [ -f .track/current_task ] && cat .track/current_task || echo "unassigned"
+   ```
+
+4. **실적 로그** — 존재 시만
+   ```bash
+   [ -f .track/actual_log.jsonl ] && tail -20 .track/actual_log.jsonl || echo "no probe data"
+   ```
+
+5. **PRD 대비 달성** — 존재 시만
+   ```bash
+   [ -f harness/PRD.md ] && grep -n "^##" harness/PRD.md | head -20 || true
+   [ -f harness/implementation-plan.md ] && grep -E "^\- \[.\]" harness/implementation-plan.md | head -30 || true
+   ```
+
+#### 보고서 합성 (LLM — Rule 5 허용: 자연어 생성)
+
+수집된 원시 데이터를 바탕으로 `harness/codebase-report.md`를 작성한다:
+
+```markdown
+# Codebase Status — <ISO date>
+
+## 완료 (Done)
+<!-- git log에서 완료된 변경사항 -->
+
+## 진행 중 (In Progress)
+<!-- git status, current_task 기반 -->
+
+## 코드베이스 변화 요약
+<!-- git diff --stat 기반 -->
+
+## 테스트 현황
+<!-- 테스트 결과 기반; 실행 못 했으면 "runner 미발견" 명시 -->
+
+## 블로커 감지
+<!-- test 실패 / git conflict / TODO/FIXME grep 결과 -->
+
+## 다음 권장 액션
+<!-- PRD 대비 미완 태스크 기반; PRD 없으면 생략 -->
+
+> 출처: sprint --step codebase-status 능동 탐색. probe 데이터: <있음/없음>
+```
+
+#### Rule 5 자체 점검
+- [ ] git/파일 수집: 전부 Bash 명령 (LLM 0)
+- [ ] 보고서 작성: 자연어 생성 (Rule 5 허용)
+- [ ] "코드가 완료됐다" 판단: git log 인용 (추측 금지)
+- [ ] 테스트 실패 여부: 실행 결과 인용 (추측 금지)
+
+*`--step codebase-status` 선택 시 여기서 종료. `harness/codebase-report.md` 생성.*
 
 ---
 
@@ -313,6 +412,12 @@ TK 추출 후보: N개
 - [ ] baseline.jsonl 갱신됨
 - [ ] TK 추출 후보 명시됨
 
+### codebase-status
+- [ ] 모든 수치 = git/파일 실행 결과 인용 (LLM 추측 0)
+- [ ] 테스트 실행 실패 시 "runner 미발견" 명시 (silent pass 금지)
+- [ ] probe 데이터 유무 명시 (있으면 인용, 없으면 "no probe data")
+- [ ] `harness/codebase-report.md` 생성됨
+
 ---
 
 ## Examples
@@ -341,6 +446,15 @@ TK 추출 후보: N개
 2. 5종 블로커 스캔 (LLM 0)
 3. predicted.json + actual_log 비교
 4. 6섹션 보고 (LLM 자연어 렌더링)
+
+### Good Example
+**입력:** `--step codebase-status`
+
+**기대 동작:**
+1. 서브에이전트 스폰 → git log/diff/status 실행
+2. 테스트 runner 탐색 → 존재 시 실행, 없으면 "runner 미발견" 명시
+3. .track/ 존재 시 실적 로그 인용, 없으면 "no probe data" 명시
+4. `harness/codebase-report.md` 생성
 
 ### Bad Example
 **입력:** `--step plan "JWT 만들어줘"` (PRD 아닌 한 줄)
