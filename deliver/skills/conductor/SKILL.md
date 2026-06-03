@@ -268,8 +268,17 @@ TODO_COUNT=$(grep -r "TODO\|FIXME\|HACK\|XXX" . --include="*.js" --include="*.ts
 # TODO_COUNT > 0 이면 → 개수를 spec-reviewer에 컨텍스트로 전달
 
 # 2) Error handler 존재 확인
-ERROR_HANDLER=$(grep -rn "catch\|except\|Error" . --include="*.js" --include="*.ts" --include="*.py" 2>/dev/null | wc -l)
-# ERROR_HANDLER == 0 이면 → Failure Mode 미구현으로 spec-reviewer에 플래그
+# 에러 처리 구문 감지 — 주석/변수명/타입 정의 제외, 실제 처리 구문만
+ERROR_HANDLER_JS=$(grep -rn "^\s*\(catch\s*(\|\.catch(\|\.on('error'" . \
+  --include="*.js" --include="*.ts" 2>/dev/null | grep -v "^\s*//" | wc -l)
+ERROR_HANDLER_PY=$(grep -rn "^\s*except\b\|^\s*except\s\+\w" . \
+  --include="*.py" 2>/dev/null | wc -l)
+ERROR_HANDLER=$((ERROR_HANDLER_JS + ERROR_HANDLER_PY))
+# ERROR_HANDLER == 0 이면 → "에러 처리 구문 미발견" 플래그 (주석에서 언급만 된 경우는 별도 확인 필요)
+
+> 이 검사는 false negative 가능성이 있습니다(Rust Result<T,E>, Go error return 등 미감지).
+> ERROR_HANDLER > 0이어도 실제 에러 처리가 충분한지는 spec-reviewer가 자연어로 평가합니다.
+> 이 수치는 "완전 없음"을 감지하는 1차 필터입니다.
 
 # 3) 테스트 파일 존재 확인
 TEST_FILES=$(find . -name "*.test.*" -o -name "test_*.py" 2>/dev/null | wc -l)

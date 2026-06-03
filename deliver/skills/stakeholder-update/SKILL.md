@@ -59,6 +59,34 @@ grep -A3 "^## 1" harness/PRD.md 2>/dev/null | head -5 || echo "PRD 없음"
 - 리스크/의사결정 필요 항목 (있는 경우만)
 - Gate 상태: GREEN/CONDITIONAL_GO/RED
 
+#### Gate 상태 결정 (결정론 — LLM 0)
+
+harness 파일에서 수치를 읽어 Gate 색상을 자동 계산한다:
+
+```bash
+# 블로커 수
+BLOCKERS=$(grep -c '"event":"blocker"' .track/actual_log.jsonl 2>/dev/null || echo 0)
+# 완료율
+TOTAL=$(grep -c '"event":"task_start"' .track/actual_log.jsonl 2>/dev/null || echo 0)
+DONE=$(grep -c '"event":"complete"' .track/actual_log.jsonl 2>/dev/null || echo 0)
+COMPLETION=$([ "$TOTAL" -gt 0 ] && echo "$((DONE * 100 / TOTAL))" || echo 0)
+# COGS 결과
+COGS_STATUS=$(python3 -c "import json; d=json.load(open('harness/build-gate/cogs_result.json')); print(d.get('status','UNKNOWN'))" 2>/dev/null || echo "UNKNOWN")
+```
+
+**Gate 결정 규칙** (우선순위 순서, 결정론 lookup):
+
+| 조건 | Gate |
+|---|---|
+| BLOCKERS ≥ 3 | 🔴 RED |
+| COGS_STATUS = RED | 🔴 RED |
+| BLOCKERS ≥ 1 OR COGS_STATUS = CONDITIONAL_GO OR COMPLETION < 50 | 🟡 CONDITIONAL_GO |
+| COMPLETION ≥ 80 AND BLOCKERS = 0 AND COGS_STATUS = GREEN | 🟢 GREEN |
+| 그 외 | 🟡 CONDITIONAL_GO |
+
+> 데이터 파일이 없으면 "UNKNOWN — actual_log 또는 cogs_result.json 없음"으로 표시. 임의 판단 금지.
+> PM이 Gate 색상을 수동으로 바꾸고 싶으면 `--gate-override RED|GREEN|CONDITIONAL_GO` 플래그 사용.
+
 ### mode: weekly-update
 팀 주간 업데이트. 포맷:
 - 이번 주 완료 (actual_log 인용)
