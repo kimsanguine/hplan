@@ -186,7 +186,7 @@ def main():
     total_skills = 0
     total_aliases = 0
     total_commands = 0
-    EXPECTED_ACTIVE_SKILLS = 32
+    EXPECTED_ACTIVE_SKILLS = 34
     EXPECTED_ALIASES = 0
     # v0.14.0 migration note: socratic-question skill added to discover plugin.
     # discover plugin: Phase 0 진입점. Total: 31 → 32.
