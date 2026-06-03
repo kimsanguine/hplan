@@ -30,15 +30,22 @@
 | 항목 | 최소 버전 | 비고 |
 |-----|---------|------|
 | **Claude Code** | v1.0.0+ | `claude --version`으로 확인 · [설치 가이드](https://docs.anthropic.com/ko/docs/claude-code) |
-| **Python** | 3.9+ | `python3 --version`으로 확인 · Evidence Gate 스크립트 실행 필요 |
+| **Python** | 3.9+ | `python3 --version`으로 확인 · Evidence Gate 스크립트 실행 필요 (선택 — 아래 참고) |
 | **Git** | 2.x+ | pre-commit hook 사용 시 필요 (선택) |
 | **OS** | macOS / Linux | Windows는 WSL2 권장 |
 
+> **Python 없이 시작 가능합니다.** 핵심 스킬(socratic-question, harness-discover, prd, conductor)은
+> Python 없이 동작합니다. Python이 필요한 기능: cogs-sentinel, evidence-rubric, track-probe.sh
+> 나중에 필요해지면 설치해도 됩니다.
+>
 > **Python이 없다면?** Evidence Gate(`generate_report.py`, `gate_guard.py`)를 포함한 일부 스킬이 동작하지 않습니다. 나머지 스킬(SKILL.md 기반)은 Python 없이도 사용 가능합니다.
 
 ---
 
 ## 설치하기 (5분)
+
+> **처음 설치라면 → 방법 A(Claude 데스크탑 앱)만 하면 됩니다.**
+> CLI 사용자이거나 private 설치가 필요한 경우만 방법 B/C를 사용하세요.
 
 ### 방법 1: 마켓플레이스 설치 (추천)
 
@@ -88,6 +95,8 @@ cp -r architect/skills/3-tier/ ~/.claude/skills/
 ---
 
 ## 외부 도구 연동 (Linear · Slack · team-map)
+
+> 💡 **심화 내용** — 처음이라면 건너뛰어도 됩니다.
 
 `ticket-bridge`와 `ask-team` 스킬은 MCP 연결이나 팀 맵 파일 없이도 초안 생성 모드로 동작합니다. 그러나 자동 연동을 원하면 아래 설정이 필요합니다.
 
@@ -170,6 +179,20 @@ EOF
 ```
 
 `topics` 배열이 라우팅 키입니다 — `ask-team`이 질문의 맥락을 분석해 가장 관련성 높은 팀원을 자동으로 선택합니다. 팀원·역할·이메일만 채워두면 즉시 사용 가능합니다.
+
+---
+
+## MCP 연결 빠른 가이드
+
+hplan의 일부 스킬(ask-team, ticket-bridge)은 외부 MCP 서버가 필요합니다.
+
+| 스킬 | 필요한 MCP | 연결 방법 |
+|---|---|---|
+| ask-team (팀 질문) | Gmail / Notion / Slack / Zoom | Claude 데스크탑 앱 → 설정 → MCP 서버 추가 |
+| ticket-bridge (티켓 연동) | GitHub (기본 내장) / Linear / Jira | Linear/Jira는 별도 MCP 플러그인 설치 필요 |
+
+> MCP 없이 시작하면 `ask-team --mode solo`와 `ticket-bridge --system github`만 사용 가능합니다.
+> MCP 없는 상태에서 연결이 필요한 스킬을 호출하면 어떤 MCP가 없는지 안내해줍니다(fail loud).
 
 ---
 
