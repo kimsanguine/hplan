@@ -2,7 +2,7 @@
 name: stakeholder-update
 description: "PM이 이해관계자(임원/팀/외부 파트너)에게 보내는 업데이트 보고서를 자동 생성. --mode exec-summary(임원 1-pager), --mode weekly-update(팀 주간 업데이트), --mode partner-brief(외부 파트너 요약), --mode confluence-export(Confluence 업로드용 포맷 변환). PROGRESS.md + decision_log + sprint actual_log를 소비해 각 대상에 맞는 산문을 생성. Use when a PM needs to communicate project status to different stakeholders, or when a team uses Confluence as the standard documentation platform."
 argument-hint: "[--mode exec-summary|weekly-update|partner-brief|confluence-export] [--source exec-summary|weekly-update|partner-brief]"
-allowed-tools: ["Read", "Write"]
+allowed-tools: ["Read", "Write", "mcp__notion__notion-create-pages", "mcp__notion__notion-fetch"]
 model: sonnet
 ---
 
@@ -108,6 +108,23 @@ Confluence Wiki Markup 또는 Confluence Markdown 형식으로 변환:
 ```
 
 > **정보보안 참고:** hplan은 Confluence 자격증명(API token, username)을 수집하거나 저장하지 않는다. 실제 업로드는 PM이 직접 Confluence UI에서 수행한다.
+
+### mode: confluence-export (Notion publish)
+
+> Confluence가 없는 환경에서 PRD를 Notion 페이지로 publish하는 대체 경로.
+> Confluence MCP가 있는 환경에서는 직접 publish.
+
+1. harness/PRD.md를 읽어 15섹션을 Notion 페이지 계층 구조로 변환 (LLM)
+2. **확인 게이트**: 변환 결과 + 대상 Notion 워크스페이스를 보여주고 승인받는다
+3. 승인 후 `mcp__notion__notion-create-pages`로 PRD 페이지 생성
+4. 팀 공유: 생성된 Notion 페이지 URL을 `harness/prd-share-url.txt`에 기록
+
+Confluence MCP 연결 시 (mcp__confluence__create_page 도구가 있으면):
+```
+allowed-tools 확인 → Confluence MCP 사용 → Confluence에 직접 publish
+```
+
+> 출력: 팀이 접근 가능한 PRD URL. 로컬 파일 의존 탈피.
 
 ## Quality Gate
 - [ ] 모든 수치 = 파일 인용 (생성 0)

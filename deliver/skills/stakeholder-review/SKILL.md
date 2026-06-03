@@ -66,6 +66,18 @@ Signoff 기준: 모든 필수 리뷰어 APPROVED → Gate 통과
    포맷: {날짜, 변경 섹션, 변경 전→후, 변경 이유}
 3. collect는 WRITE하지 않는다 — PM이 코멘트를 직접 전달하면 기록만 함
 
+#### PRD 변경 이력 (audit trail — 결정론)
+
+리뷰어 코멘트로 PRD 섹션이 변경될 때마다 다음을 harness/prd-changelog.md에 append한다:
+
+```
+| 날짜 | 변경 섹션 | 변경 전 (요약) | 변경 후 (요약) | 변경 사유 | 요청자 |
+|---|---|---|---|---|---|
+| 2026-06-03 | §4 ICP | "20-50대 일반인" | "법무팀 3-10인 스타트업" | 법무 리뷰 피드백 | 이서연 |
+```
+
+PRD 변경 이력은 decision-log와 별개입니다 — decision-log는 "만들지 말지" gate 결정, prd-changelog는 "무엇을 만들지" 변경 추적.
+
 ### mode: signoff
 1. harness/review-log.md에서 리뷰어별 상태 집계 (결정론 grep)
 2. harness/signoff-record.md 생성/업데이트
