@@ -16,6 +16,10 @@
 
 **요구사항:** Claude Code v1.0+ · Python 3.9+ · Git 2.x+ · macOS / Linux (Windows: WSL2)
 
+> **Python 없이 시작 가능합니다.** 핵심 스킬(socratic-question, harness-discover, prd, conductor)은
+> Python 없이 동작합니다. Python이 필요한 기능: cogs-sentinel, evidence-rubric, track-probe.sh
+> 나중에 필요해지면 설치해도 됩니다.
+
 ```bash
 git clone https://github.com/kimsanguine/hplan ~/.claude/plugins/hplan
 ```
@@ -30,6 +34,8 @@ git clone https://github.com/kimsanguine/hplan ~/.claude/plugins/hplan
 
 AI가 먼저 당신의 가정을 심문합니다. "만들 가치가 있는가"가 명확해지면 `/harness-discover`로 넘어가세요.
 
+> 💡 **심화 내용** — 처음이라면 건너뛰어도 됩니다.
+>
 > **v0.13.1** — hplan 은 AI 도구가 HOW 로 달려가기 전에 **WHETHER 를 묻는 Product Build Gate** 입니다. ADK 5-Layer 완성: L1 Memory (CLAUDE.md) · L2 Skills (34개 PM 규율) · L3 Hooks (SessionStart · PreToolUse · PostToolUse) · L4 Subagents (8역할 병렬 팀) · L5 Plugins (마켓플레이스). `git clone` + `bash scripts/install-hooks.sh` 한 번으로 5개 레이어 전체 활성화. 자세한 변경 내역은 [CHANGELOG.md](CHANGELOG.md).
 
 ### 📺 99초 소개 영상
@@ -145,6 +151,8 @@ Day 50-60   매출·성과 구조
 > 강의 정보 (D-day 2026년 6월 말 OT 촬영): [패스트캠퍼스 — 추후 업데이트]
 
 ---
+
+> 💡 **심화 내용** — 처음이라면 건너뛰어도 됩니다.
 
 ## 기술적으로는 — Under the Hood
 
@@ -543,6 +551,9 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 ---
 
 ## 설치
+
+> **처음 설치라면 → 방법 A(Claude 데스크탑 앱)만 하면 됩니다.**
+> CLI 사용자이거나 private 설치가 필요한 경우만 방법 B/C를 사용하세요.
 
 ### 방법 1: 자동 설치 스크립트 (CLI 권장)
 
