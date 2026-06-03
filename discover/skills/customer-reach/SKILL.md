@@ -1,7 +1,7 @@
 ---
 name: customer-reach
-description: "인터뷰 대상자 확보 + 컨택 초안 생성. --mode plan(확보 전략), --mode linkedin(LinkedIn cold DM 초안), --mode community(커뮤니티 포스팅 초안), --mode survey(설문 초안). harness/pain.md를 채우기 위한 선행 단계. Use when a PM needs to find and contact interview candidates before evidence-gate."
-argument-hint: "[--mode plan|linkedin|community|survey] [target ICP description]"
+description: "인터뷰 대상자 확보 + 컨택 초안 생성 + 인터뷰 질문 설계. --mode plan(확보 전략), --mode linkedin(LinkedIn cold DM 초안), --mode community(커뮤니티 포스팅 초안), --mode survey(설문 초안), --mode interview-questions(인터뷰 질문 세트 설계). harness/pain.md를 채우기 위한 선행 단계. Use when a PM needs to find and contact interview candidates before evidence-gate."
+argument-hint: "[--mode plan|linkedin|community|survey|interview-questions] [target ICP description]"
 allowed-tools: ["Read", "Write"]
 model: sonnet
 ---
@@ -19,11 +19,13 @@ model: sonnet
 - "커뮤니티에 포스팅하려고요" → community
 - "설문지 만들어줘요" → survey
 - evidence-gate WARN → "실제 인터뷰 증거를 얻기 전에 이 스킬부터 시작하세요"
+- "인터뷰 약속을 잡았는데 뭘 물어봐야 할지 모르겠어" → `--mode interview-questions`
 
 ### Route to Other Skills When
 - 인터뷰 결과를 기록할 때 → harness/pain.md 직접 작성 (커맨드 없음)
 - 기록 후 검증 → evidence-rubric / evidence-gate
 - 소크라테스 가정 심문 (인터뷰 전) → socratic-question
+- 인터뷰 결과를 pain.md에 기록한 후 → evidence-rubric (증거 품질 점검)
 
 ## Instructions
 
@@ -59,7 +61,49 @@ ICP 분야에 따라 문구를 조정한다. 스팸 느낌 패턴 (긴급/할인
 - Q4: 새로운 도구가 생긴다면 가장 원하는 기능 1가지는?
 - Q5: 인터뷰 참여 의향 (예/아니오 + 연락처 선택)
 
+### mode: interview-questions
+
+> 인터뷰 약속을 잡은 후, 어떤 질문을 할지 설계합니다.
+> socratic-question이 내 가정을 심문한다면, interview-questions는 고객에게 던질 질문을 설계합니다.
+
+**입력**: $ARGUMENTS의 ICP 설명 + 검증하고 싶은 핵심 가정 (없으면 harness/brainstorm-assumptions.md에서 로드)
+
+1. JTBD(Jobs to Be Done) 프레임으로 핵심 질문 3~5개 생성 (LLM):
+   - "마지막으로 이 문제를 겪은 게 언제인가요?" (사실 확인형)
+   - "그때 어떻게 해결하셨나요?" (현재 우회책 확인)
+   - "이 과정에서 가장 번거로운 부분은 뭔가요?" (pain 깊이 측정)
+
+2. 각 질문에 대해 인터뷰 지침 추가:
+   - 좋은 답변 신호 (pain 실재 확인)
+   - 나쁜 답변 신호 (pain 없거나 의례적 답변)
+   - 후속 질문 힌트
+
+3. `harness/interview-guide.md`에 저장:
+   ```markdown
+   # 인터뷰 가이드 — [ICP 설명]
+   
+   ## 핵심 가정
+   - [검증할 가정 목록]
+   
+   ## 질문 세트
+   ### Q1. [질문]
+   - 좋은 답변 신호: ...
+   - 나쁜 답변 신호: ...
+   - 후속: ...
+   ```
+
+4. 인터뷰 후: 답변을 `harness/pain.md` 형식으로 기록하는 방법 안내:
+   ```
+   - Source: [역할/직군, 회사 규모]
+   - Date: YYYY-MM-DD
+   - Quote: "[실제 발언]"
+   ```
+   3건 이상 채우면 → evidence-rubric으로 이동
+
+> 질문은 Yes/No를 유도하지 않습니다. 열린 질문으로 시작하되, 구체적 사례로 좁힙니다.
+
 ## Quality Gate
 - [ ] DM/포스팅 초안에 과장/압박 문구 없음
 - [ ] 설문 5문 이하 (인지 부하 최소화)
 - [ ] 확인 게이트: 초안 보여주고 수정 기회 제공 후 저장
+- [ ] interview-questions: 질문이 Yes/No 유도형이 아닌 열린 질문인지 확인

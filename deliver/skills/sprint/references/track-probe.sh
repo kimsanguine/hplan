@@ -16,6 +16,11 @@
 #   - tokens      : 훅 페이로드에 token usage 없음 → 기록하지 않음 (retro에서 null).
 #   - minutes     : probe가 직접 기록하지 않음 → retro가 task별 ts min/max 차로 유도.
 #
+# 에러 처리 정책:
+#   - python3 실패 시 stderr를 .track/probe-errors.log에 append (삼키지 않음)
+#   - exit code는 항상 0 (PostToolUse 차단 불가 원칙 유지)
+#   - 디버깅: cat .track/probe-errors.log 로 확인
+#
 # Exit codes: 항상 0 (PostToolUse는 차단 불가, 추적만).
 
 set -euo pipefail
@@ -78,6 +83,6 @@ entry = {
 }
 with open(os.path.join(".track", "actual_log.jsonl"), "a") as f:
     f.write(json.dumps(entry, ensure_ascii=False) + "\n")
-' 2>/dev/null || true
+' 2>>"${TRACK_DIR}/probe-errors.log" || true
 
 exit 0
