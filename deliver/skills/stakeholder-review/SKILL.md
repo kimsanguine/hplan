@@ -17,6 +17,27 @@ model: sonnet
 | collect | 코멘트 수집 + PRD 버전 변경 기록 | harness/review-log.md |
 | signoff | 승인 상태 집계 + audit trail | harness/signoff-record.md |
 
+## 정보보안 / 접근 제어 정책
+
+이 스킬이 다루는 PRD와 Signoff 기록은 조직 내 민감 문서다. 다음 원칙을 따른다:
+
+| 원칙 | 구체 행동 |
+|---|---|
+| **저장 위치 제어** | harness/signoff-record.md · harness/review-log.md는 **로컬 repo에만** 기록. 외부 서비스(Notion 등) write는 PM 명시 승인 후에만 실행. |
+| **전송 전 확인 게이트** | Gmail draft 생성, Notion 페이지 write 등 모든 외부 전송 전 코멘트 전문을 PM에게 보여주고 명시적 승인 수령. 자동 발송 0. |
+| **리뷰어 연락처 분리** | harness/team-map.json은 .gitignore 권장 대상. 공개 repo push 전 PM이 직접 확인해야 함. hplan은 경고만 출력, 강제 삭제 0. |
+| **Confluence 연동 부재** | 사내 Confluence를 사용하는 조직은 `signoff-record.md`를 수동으로 Confluence에 업로드하거나 `stakeholder-update --mode confluence-export` 출력물을 복사하는 방식을 사용. hplan은 Confluence API를 직접 호출하지 않아 자격증명 노출 위험 없음. |
+| **role-based 접근** | Git host의 branch protection / access control이 실제 권한 관리를 담당. hplan은 권한을 관리하지 않으며 기존 IAM에 위임. |
+
+**공개 repo 사용 시 권고:**
+```
+# .gitignore에 추가
+harness/signoff-record.md
+harness/review-log.md
+harness/review-request.md
+harness/team-map.json
+```
+
 ## harness/signoff-record.md 형식
 
 ```
@@ -55,3 +76,5 @@ Signoff 기준: 모든 필수 리뷰어 APPROVED → Gate 통과
 - [ ] signoff-record.md에 모든 리뷰어 상태 명시
 - [ ] 자동 Signoff 처리 0 (사람이 승인 확인 후 기록)
 - [ ] 코멘트 요약 = 원문 기반 (생성 0)
+- [ ] 외부 write(Gmail/Notion) 전 확인 게이트 통과
+- [ ] team-map.json이 공개 repo에 노출되지 않도록 .gitignore 여부 확인 (경고 출력)
