@@ -132,6 +132,72 @@ mode 미명시 시:
 
 --system 미명시 시 github 기본값 사용. 도구 이름만 바뀌며 이후 로직은 동일하다.
 
+#### --system jira 사전 설정 가이드
+
+`--system jira`를 사용하려면 Jira MCP 서버를 Claude Code에 등록해야 한다. Jira Cloud와 Jira Server(Data Center)는 인증 방식이 다르다.
+
+**Jira Cloud (Atlassian Cloud)**
+
+```bash
+# 1. API Token 발급: https://id.atlassian.com/manage-profile/security/api-tokens
+# 2. claude settings.json에 MCP 서버 등록
+claude mcp add jira-cloud \
+  --transport sse \
+  --url https://mcp.atlassian.com/v1/sse
+# Atlassian Remote MCP는 OAuth 2.0 브라우저 인증 — 토큰 파일 불필요
+```
+
+또는 로컬 MCP 래퍼를 사용하는 경우:
+```json
+// ~/.claude/settings.json → mcpServers 항목에 추가
+{
+  "mcpServers": {
+    "jira": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-jira"],
+      "env": {
+        "JIRA_BASE_URL": "https://yourcompany.atlassian.net",
+        "JIRA_EMAIL": "you@yourcompany.com",
+        "JIRA_API_TOKEN": "<API_TOKEN>"
+      }
+    }
+  }
+}
+```
+
+**Jira Server / Data Center (온프레미스)**
+
+```json
+// ~/.claude/settings.json → mcpServers 항목에 추가
+{
+  "mcpServers": {
+    "jira": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-jira"],
+      "env": {
+        "JIRA_BASE_URL": "https://jira.internal.yourcompany.com",
+        "JIRA_PAT": "<PERSONAL_ACCESS_TOKEN>"
+      }
+    }
+  }
+}
+```
+
+> Jira Server/DC는 API Token 대신 PAT(Personal Access Token)을 사용한다. Jira 7.2+ 에서 지원.
+
+**Jira Cloud/Server 공통 필드 차이**
+
+ticket-bridge가 `--system jira`로 동작할 때 아래 Jira 전용 필드를 코멘트에 포함한다:
+
+| 필드 | ticket-bridge 동작 |
+|---|---|
+| `story_points` | `.track/predicted.json`의 p50 값을 스토리 포인트 후보로 명시 (PM이 Jira 필드에 직접 입력, 자동 설정 0) |
+| `sprint` | `.track/implementation-plan.md`의 sprint 컬럼 값을 인용 (Jira sprint 이름과 일치 여부는 PM 확인) |
+| `issue_type` | pull 모드에서 Jira `issuetype` 필드 읽기 지원 (Bug / Story / Task / Sub-task) |
+| `priority` | pull 모드에서 Jira `priority` 필드 읽기 지원 |
+
+> **사내 Jira 커스텀 필드:** 조직마다 `customfield_10016` 등 커스텀 필드명이 다르다. ticket-bridge는 기본 필드만 지원하며, 커스텀 필드 매핑이 필요하면 `harness/ticket-map.json`에 `"jira_custom_fields"` 키로 매핑 테이블을 수동 작성한다.
+
 ---
 
 ### mode: pull
