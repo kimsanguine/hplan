@@ -44,8 +44,8 @@
 
 ## 설치하기 (5분)
 
-> **처음 설치라면 → 방법 A(Claude 데스크탑 앱)만 하면 됩니다.**
-> CLI 사용자이거나 private 설치가 필요한 경우만 방법 B/C를 사용하세요.
+> **처음 설치라면 → 방법 1 (마켓플레이스 설치)만 하면 됩니다.**
+> CLI 사용자이거나 플러그인을 선택 설치해야 한다면 방법 2/3를 사용하세요.
 
 ### 방법 1: 마켓플레이스 설치 (추천)
 
@@ -151,34 +151,17 @@ Slack Bot Token은 **api.slack.com → Your Apps → OAuth & Permissions**에서
 mkdir -p harness
 cat > harness/team-map.json << 'EOF'
 {
-  "team": [
-    {
-      "id": "eng-lead",
-      "name": "홍길동",
-      "role": "Engineering Lead",
-      "contact": { "email": "gildong@example.com", "slack": "@gildong" },
-      "topics": ["technical-feasibility", "sprint-estimate", "architecture"]
-    },
-    {
-      "id": "design-lead",
-      "name": "김디자인",
-      "role": "Design Lead",
-      "contact": { "email": "design@example.com", "slack": "@design" },
-      "topics": ["ux", "ui-validate", "user-research"]
-    },
-    {
-      "id": "pm-sponsor",
-      "name": "이후원",
-      "role": "Executive Sponsor",
-      "contact": { "email": "sponsor@example.com", "slack": "@sponsor" },
-      "topics": ["budget", "stakeholder", "go-no-go"]
-    }
-  ]
+  "eng-lead": {"email": "gildong@example.com", "channel": "gmail"},
+  "design-lead": {"notion_page": "<page-id>", "channel": "notion"},
+  "pm-sponsor": {"slack_channel": "#sponsor-channel", "channel": "slack"}
 }
 EOF
 ```
 
-`topics` 배열이 라우팅 키입니다 — `ask-team`이 질문의 맥락을 분석해 가장 관련성 높은 팀원을 자동으로 선택합니다. 팀원·역할·이메일만 채워두면 즉시 사용 가능합니다.
+> **주의**: 이 포맷은 ask-team SKILL.md의 결정론 라우팅이 기대하는 포맷입니다.
+> `ask-team --mode init`을 사용하면 대화형으로 자동 생성됩니다.
+
+키(key)가 팀원 식별자이며, `channel` 값이 라우팅 결정론 분기의 기준이 됩니다 — `gmail`, `notion`, `slack` 중 하나. 팀원·채널·주소만 채워두면 즉시 사용 가능합니다.
 
 ---
 
