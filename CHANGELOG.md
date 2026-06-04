@@ -4,6 +4,17 @@ All notable changes to hplan (renamed from AI_PM_Skills in v0.5) are documented 
 
 ---
 
+## [1.0.0] — 2026-06-04
+
+> **첫 정식 안정 릴리스.** `AI_PM_Skills` 리네임(v0.5) 이후 v0.14.2까지의 검증을 거쳐 ADK 5-Layer가 안정화됨. 기능 변화 없이 v0.14.2를 1.0.0으로 승격.
+
+### Stable
+- **ADK 5-Layer 완성** — L1 Memory(CLAUDE.md 9 규칙) · L2 Skills(34개) · L3 Hooks(SessionStart · PreToolUse gate · PostToolUse secret scan) · L4 Subagents(8역할 병렬 팀) · L5 Plugins(5 marketplace).
+- **검증 통과** — `validate_plugins` 34 active / 0 errors · `pytest` 147 passed · 페르소나 5 + codex/claude 적대적 리뷰 통과 · 죽은 라우팅 0.
+- **설치** — `curl -fsSL https://habix.ai/hplan/install.sh | bash` (sha256 검증 · atomic 설치 · path-traversal 차단) 또는 `/plugin marketplace add kimsanguine/hplan`.
+
+---
+
 ## [0.14.2] — 2026-06-04
 
 > **사용자 영향**: 표면 변화 없음. v0.14.1 머지 후 리뷰에서 발견된 MED/LOW 항목 정리 — gate_guard 보안 강화, 죽은 라우팅 참조 제거, 문서 메트릭 실측 정정, 문서 동기화.
