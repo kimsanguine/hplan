@@ -37,7 +37,7 @@
   <g class="row1">
     <text class="prompt" x="20" y="72">❯</text>
     <text class="cmd" x="40" y="72">/plugin marketplace add kimsanguine/hplan</text>
-    <text class="ok" x="40" y="92">✓ hplan marketplace installed (6 plugins, 43 skills, 18 commands)</text>
+    <text class="ok" x="40" y="92">✓ hplan marketplace installed (5 plugins, 34 skills, 12 commands)</text>
   </g>
   <g class="row2">
     <text class="prompt" x="20" y="128">❯</text>
