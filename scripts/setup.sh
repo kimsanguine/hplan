@@ -121,6 +121,16 @@ if [ -z "${PACKAGE_NAME}" ] || [ -z "${EXPECTED_SHA}" ]; then
   exit 1
 fi
 
+# Defense in depth: reject path-traversal in the manifest-supplied package name
+# before using it in a filesystem path. version.json is a trusted (habix.ai) source,
+# but a curl|bash installer should never interpolate an unvalidated path component.
+case "${PACKAGE_NAME}" in
+  */*|*..*)
+    echo "Invalid package name in manifest: ${PACKAGE_NAME}" >&2
+    exit 1
+    ;;
+esac
+
 echo "Downloading: ${BASE_URL}/${PACKAGE_NAME}"
 download "${BASE_URL}/${PACKAGE_NAME}" "${TMP_DIR}/${PACKAGE_NAME}"
 
