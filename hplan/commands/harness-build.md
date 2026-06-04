@@ -353,10 +353,10 @@ python3 hplan/scripts/decision_log.py hitl \
 
 | Day | 작업 | 스킬/도구 |
 |-----|------|---------|
-| 1 | 핵심 에이전트 인스트럭션 정의 (Role/Goal/Output 3요소) | agent-instructions |
-| 2 | 단일 happy path 수동 테스트 (샘플 입력 5개) | instruction |
-| 3 | 에러 처리 + 컨텍스트 예산 설정 | ctx-budget |
-| 4 | 프롬프트 최적화 (CRISP 프레임워크 적용) | agent-instructions |
+| 1 | 핵심 에이전트 인스트럭션 정의 (Role/Goal/Output 3요소) | agent-setup |
+| 2 | 단일 happy path 수동 테스트 (샘플 입력 5개) | agent-setup |
+| 3 | 에러 처리 + 컨텍스트 예산 설정 | agent-setup |
+| 4 | 프롬프트 최적화 (CRISP 프레임워크 적용) | agent-setup |
 | 5 | 비용 시뮬 재실행 + 테스트 시나리오 3–5개 | cost-sim |
 | 6 | PRD 학습 기록 + W2 백로그 작성 | — |
 | 7 | W1 Done Criteria 체크 + 실제 사용자 데모 1회 | — |

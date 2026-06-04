@@ -23,9 +23,9 @@ model: sonnet
 - 초기 배포 또는 새로운 에이전트를 출시할 때 (사용자 신뢰 구축 전)
 
 ### Route to Other Skills When
-- HITL 설계가 완료된 후 에이전트 프롬프트와 인스트럭션을 작성해야 할 때 → `agent-instruction-design` (deliver 플러그인) — Failure Handling에 HITL 전략 반영
-- 에이전트의 신뢰도를 측정하고 Full Autonomous로 전환할지 판단해야 할 때 → `agent-ab-test` (measure 플러그인)
-- 에이전트 제품을 외부에 출시할 때 신뢰 구축 시퀀스를 설계해야 할 때 → `agent-gtm` (discover 플러그인)
+- HITL 설계가 완료된 후 에이전트 프롬프트와 인스트럭션을 작성해야 할 때 → `deliver/agent-setup` — Failure Handling에 HITL 전략 반영
+- 에이전트의 신뢰도를 측정하고 Full Autonomous로 전환할지 판단해야 할 때 → `operate/metrics-design`
+- 에이전트 제품을 외부에 출시할 때 신뢰 구축 시퀀스를 설계해야 할 때 → `architect/strategy`
 - *빌드 시점* PreToolUse 차단 (PRD/spec 파일 작성을 게이트 미통과 시 막기) → `hooks/gate_guard.py` (hplan plugin). 이 skill의 hitl은 *agent 런타임* — 시점이 다름.
 
 ### Boundary Checks
@@ -182,7 +182,7 @@ You are helping design **Human-in-the-Loop controls** for: **$ARGUMENTS**
 모든 항목이 완료됐는지 검증
 
 **Step 7 — 다음 단계 연결**
-- `/agent-instruction-design`의 Failure Handling 섹션에 HITL 설계 반영
+- `deliver/agent-setup`의 Failure Handling 섹션에 HITL 설계 반영
 - `/agent-prd-template`의 Section 7에 Human-in-the-loop 트리거 명시
 
 ---

@@ -33,8 +33,8 @@ Running for: **$ARGUMENTS**
 ### Route to Other Skills When
 
 - 비용 시나리오 자체가 아직 명확하지 않을 때 → `discover/cost-sim` 먼저
-- 배포 후 실제 추적 → `measure/burn-rate`
-- 가격 모델 자체를 다시 짤 때 → `architect/biz-model`
+- 배포 후 실제 추적 → `operate/ops-review`
+- 가격 모델 자체를 다시 짤 때 → `architect/strategy`
 - COGS RED 결정이 났을 때 → `decision-log` (hold/pivot) 기록 후 routing
 
 ### Boundary Checks

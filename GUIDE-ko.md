@@ -79,7 +79,7 @@
 ```bash
 # 원하는 스킬만 복사
 cp -r discover/skills/cost-sim/ ~/.claude/skills/
-cp -r architect/skills/3-tier/ ~/.claude/skills/
+cp -r architect/skills/orchestration/ ~/.claude/skills/
 ```
 
 ### 다른 도구에서도 사용 가능
@@ -196,7 +196,7 @@ v0.9부터 `measure` + `learn`이 `operate`로 통합되어 **5-plugin 라이프
 | 게이트 ⭐ | **hplan** | "정말 만들 가치가 있을까?" | PRD 쓰기 전에 인터뷰·경쟁·COGS·과거 결정 확인 |
 | 발견 | **discover** | "어떤 에이전트를 만들까?" | 자동화할 업무를 찾고 있을 때, 비용이 맞는지 확인할 때 |
 | 설계 | **architect** | "어떤 구조로 만들까?" | 단일 에이전트 vs 멀티에이전트 결정, 아키텍처 설계 |
-| 딜리버리 | **deliver** | "어떻게 명세하고 만들까?" | PRD 작성, 인스트럭션 설계, OKR 설정, 4엔진 PPTX 라우터, 빌드 하네스 |
+| 딜리버리 | **deliver** | "어떻게 명세하고 만들까?" | PRD 작성, 인스트럭션 설계, 스프린트·QA 추적, UI 검증, 빌드 루프 |
 | 운영 | **operate** | "측정·학습·운영을 어떻게 할까?" | KPI 모니터링, 비용 추적, PM 암묵지 자산화, 포트폴리오 운영 |
 
 ---
@@ -300,11 +300,13 @@ TK-041: 긴급 트리거 검증 규칙
 경쟁사: 영어 단일 언어, 최근 출시, 범용 LLM 기반
 ```
 
-`moat` 스킬이 자동으로 불립니다. 데이터 해자, 프로세스 해자, 네트워크 해자 관점에서 분석합니다.
+`strategy` 스킬이 자동으로 불립니다 (경쟁 해자 분석은 strategy로 통합됐습니다). 데이터 해자, 프로세스 해자, 네트워크 해자 관점에서 분석합니다.
 
 ---
 
 ## 스킬 전체 목록 (34개)
+
+> 아래 표는 **디스크에 실제로 존재하는 34개 스킬만** 나열합니다. 플러그인별 합계: hplan 8 · discover 6 · architect 4 · deliver 10 · operate 6 = **34개**.
 
 ### hplan — 게이트 ⭐ (8개 스킬)
 
@@ -312,100 +314,66 @@ TK-041: 긴급 트리거 검증 규칙
 
 | 스킬 | 기능 |
 |------|------|
-| `evidence-rubric` | 8축 100점 evidence 루브릭으로 아이디어 점수화 |
+| `brainstorm` | Phase 0 Worth-Building Check + 대화형 설계 + Signal Gate Bootstrap — 아이디어를 validated 설계 문서로 전환, prd 진입 전 필수 단계 |
+| `evidence-rubric` | 8축 100점 evidence 루브릭으로 아이디어 점수화 → build/interview/pivot/hold 판정 |
 | `interview-synthesis` | AI 합성 결과 import → 인간 strength 태깅 강제 → 5/3 strong-Push 패턴 audit |
 | `exclusions` | Append-only Do-Not-Build 영구 메모리, 한국어 fuzzy match로 collision 자동 감지 |
-| `cogs-sentinel` | lognormal sampler가 p50/p90 월간 마진 계산 + free-user abuse blend |
+| `cogs-sentinel` | lognormal sampler가 p50/p90 월간 마진 계산 + free-user abuse blend → GREEN/CONDITIONAL_GO/RED |
 | `ost` | Teresa Torres 식 Opportunity Solution Tree를 Mermaid + `docs/OPPORTUNITY_TREE.md`로 생성 |
 | `decision-log` | build/interview/pivot/hold 결정 append-only 로그 + 3-6개월 self-eval audit |
 | `handoff` | Build Gate brief → Spec-Kit / Kiro / GStack / Claude Code 4개 ecosystem 동시 export |
-| `pmf-gate` | Post-launch PMF 신호 루프 — COGS 실시간 + 행동 지표 → 다음 Evidence Gate 입력 |
 
-### discover — 발견 (6개 스킬, 일부는 로드맵)
+### discover — 발견 (6개 스킬)
 
 | 스킬 | 하는 일 | 이럴 때 쓰세요 |
 |------|--------|-------------|
-| `opp-tree` | 에이전트 기회 트리 작성 | "뭘 자동화하면 좋을까?" |
-| `assumptions` | 4축 가정 검증 (가치/실현성/신뢰성/윤리) | "이거 진짜 만들어도 되나?" |
-| `build-or-buy` | 직접 구축 vs 외부 솔루션 판단 | "사서 쓸까 직접 만들까?" |
-| `hitl` | Human-in-the-loop 범위 설정 | "어디까지 자동화하고 어디서 사람이 개입?" |
-| `cost-sim` | 토큰 비용 시뮬레이션 | "한 달에 얼마 들어?" |
+| `opp-tree` | 에이전트 기회 트리 작성 (반복 빈도·자동화 적합도·판단 의존도 점수화) | "뭘 자동화하면 좋을까?" |
+| `assumptions` | 4축 가정 검증 (가치/실현성/신뢰성/윤리) + build-or-buy 판단 포함 | "이거 진짜 만들어도 되나? 사서 쓸까 직접 만들까?" |
+| `cost-sim` | 토큰 비용 시뮬레이션 (규모별 월간 운영 비용) | "한 달에 얼마 들어?" |
+| `hitl` | Human-in-the-loop 범위 설정 (자동화 레벨 + 에스컬레이션 기준) | "어디까지 자동화하고 어디서 사람이 개입?" |
 | `customer-reach` | 인터뷰 대상자 확보 + LinkedIn DM·커뮤니티 포스팅·설문 초안 생성 | "고객 인터뷰를 누구한테 어떻게 요청하지?" |
-| `agent-gtm` | 에이전트 Go-to-Market 전략 | "출시를 어떻게 해야 하지?" |
-| `design-reference` | UI/UX 레퍼런스 수집·구조화 + 공통 패턴 추출 | "경쟁사 레퍼런스에서 패턴을 뽑아 설계에 반영하고 싶어" |
 | `socratic-question` | 소크라테스식 질문으로 가정을 먼저 심문 — 숨은 리스크와 검증되지 않은 전제 드러내기 | "아이디어에 뛰어들기 전에 내 가정을 먼저 검증하고 싶어" |
 
-### architect — 설계 (5개 스킬, 일부는 로드맵)
+### architect — 설계 (4개 스킬)
+
+> 흡수: `router`는 v0.14.1에서 `orchestration --pattern router`로 흡수됐습니다. 경쟁 해자(moat)·비즈니스 모델(biz-model)·성장 루프(growth-loop)는 `strategy` 스킬로 통합됐습니다.
 
 | 스킬 | 하는 일 | 이럴 때 쓰세요 |
 |------|--------|-------------|
-| `3-tier` | 3계층 멀티에이전트 설계 | "에이전트 여러 개를 어떻게 엮지?" |
-| `orchestration` | 오케스트레이션 패턴 선택 | "Sequential? Parallel? Router?" |
-| `biz-model` | 에이전트 수익 모델 설계 | "이걸로 어떻게 돈 벌지?" |
-| `router` | 작업별 LLM 모델 라우팅 | "이 작업에 Haiku? Sonnet? Opus?" |
-| `memory-arch` | 에이전트 메모리 설계 | "대화 기록을 어떻게 관리하지?" |
-| `moat` | 경쟁 우위 분석 | "경쟁사가 따라오면 어쩌지?" |
-| `growth-loop` | 데이터 플라이휠 설계 | "사용할수록 똑똑해지게 만들려면?" |
-| `design-token` | 시맨틱 CSS 토큰 + DESIGN.md 자동 생성 | "디자인 시스템 토큰을 어떻게 정의하지?" |
+| `orchestration` | 오케스트레이션 패턴 선택 (Sequential/Parallel/Router/Hierarchical). `--pattern router`는 작업별 LLM 모델 라우팅까지 커버 | "Sequential? Parallel? Router? 이 작업에 Haiku? Sonnet? Opus?" |
+| `memory-arch` | 에이전트 메모리 설계 (Working/Episodic/Semantic/Procedural) | "대화 기록을 어떻게 관리하지?" |
+| `strategy` | 전략 설계 통합 — 비즈니스 모델 캔버스 + 경쟁 해자 분석 + 성장 루프 설계 | "이걸로 어떻게 돈 벌지? 경쟁사가 따라오면 어쩌지?" |
+| `design-token` | 2-step 디자인 파이프라인 (브리프 → 시맨틱 토큰 + DESIGN.md 자동 생성) | "디자인 시스템 토큰을 어떻게 정의하지?" |
 
-### deliver — 딜리버리 (13개 스킬 — 아래 표에는 로드맵 스킬도 섞여 있으니 실재 13개는 [README-ko.md](README-ko.md) 참조)
+### deliver — 딜리버리 (10개 스킬)
+
+> 흡수: `roadmap` → `prd --mode roadmap` · `stakeholder-review` → `ask-team --mode review`.
 
 | 스킬 | 하는 일 | 이럴 때 쓰세요 |
 |------|--------|-------------|
-| `claude-md` | CLAUDE.md 자동 생성 + hplan 추천 | "이 프로젝트에 hplan을 어떻게 깔지?" |
-| `instruction` | 에이전트 인스트럭션 7요소 설계 | "에이전트한테 뭐라고 말해줘야 하지?" |
-| `prd` ⭐ | 에이전트 전용 PRD + **mermaid 정합성 게이트** (workflow↔userflow↔requirements 결정론 검증) | "기획서를 쓰고 누락 없는지 자동 검증하고 싶어" |
-| `prompt` | PM 관점 프롬프트 설계 (CRISP) | "프롬프트를 어떻게 잘 짜지?" |
-| `ctx-budget` | 컨텍스트 윈도우 토큰 예산 | "128K 토큰을 어떻게 배분하지?" |
-| `okr` | 에이전트 OKR 설정 | "성공 기준을 어떻게 잡지?" |
-| `stakeholder-map` | 이해관계자 매핑 | "누가 찬성하고 누가 막지?" |
-| `agent-plan-review` | 설계 구현 전 4축 검증 | "이 설계 괜찮은지 구현 전에 봐줘" |
-| `gemini-image-flow` | AI 이미지 생성 파이프라인 | "이미지 생성 에이전트를 어떻게 만들지?" |
-| `infographic-gif-creator` | 인포그래픽 GIF/MP4 생성 | "이 아키텍처를 애니메이션으로 만들어줘" |
-| `pptx-ai-slide` ⭐ | **4엔진 라우터** (mckinsey/hifidelity/html-qa/video) — 입력에 맞는 엔진 자동 선택 | "투자자용 피치 5장 / 강의자료 40장 / 영상→슬라이드 다 다른 도구로 해줘" |
-| `agent-demo-video` | Remotion 기반 데모 영상 | "이해관계자용 데모 영상 만들어줘" |
-| `harness-design` ⭐ NEW | 빌드 하네스 (4명+ 팀 + Ralph Loop + 백업/dry-run) | "자율 모드로 큰 작업 진행하고 싶어" |
-| `parallel-team` ⭐ NEW | 독립 태스크 ≥2 → worktree 격리 병렬 디스패치 | "여러 모듈 동시에 작업해도 충돌 안 나게" |
-| `build-loop` ⭐ NEW | `/harness-build` 한 번으로 발견→리서치→설계→PRD→분해→구현 | "아이디어부터 구현까지 한 루프로" |
-| `ask-team` | 질문을 올바른 이해관계자 또는 에이전트 역할로 구조화하여 라우팅 | "이 트레이드오프를 누구에게 물어봐야 하지?" |
+| `agent-setup` ⭐ | 프로젝트 스캔 → CLAUDE.md/AGENTS.md 생성 + 7요소 인스트럭션 설계 통합 | "새 프로젝트에 Claude Code를 세팅하고 에이전트 인스트럭션을 짜고 싶어" |
+| `prd` ⭐ | 통합 15섹션 에이전트 PRD + **mermaid 정합성 게이트** (workflow↔userflow↔requirements 결정론 검증). `--mode roadmap`은 §6 Now/Next/Later → Mermaid gantt + RICE | "기획서를 쓰고 누락 없는지 자동 검증하고 싶어 / 백로그를 로드맵으로" |
+| `build-loop` ⭐ | `/harness-build` 한 번으로 발견→리서치→설계→PRD→분해→구현 | "아이디어부터 구현까지 한 루프로" |
+| `conductor` | 태스크별 fresh subagent 디스패치 + 2단계 게이트(spec→quality) 반복 실행 | "harness-plan 승인 후 구현 루프를 순차+게이트로 돌리고 싶어" |
+| `sprint` | 스프린트 계획-실행-추적 통합 (PRD → WBS 분해, predicted.json, probe/detect/report) | "스프린트 계획을 잡고 진척을 추적하고 싶어" |
+| `qa-checklist` | docs/PRD.md 파싱 → QA_CHECKLIST.md 자동 생성 (TC를 critical/major/minor 분류) | "PRD 기반으로 QA 체크리스트를 자동 생성하고 싶어" |
+| `respect` | 2-mode UI respect (brief = 코딩 전 RESPECT.md / checkpoint = ship 전 α/β/γ 게이트) | "ship 직전 사용자 존중 게이트를 강제하고 싶어" |
+| `ui-validate` | 통합 UI 검증 (hierarchy/motion/drift/mobile/tc-gate) — 각 check 독립 실행·실패 | "Playwright로 위계·모션·드리프트·모바일을 검증하고 싶어" |
+| `ask-team` | 질문을 올바른 이해관계자 또는 에이전트 역할로 구조화하여 라우팅. `--mode review`는 PRD 스테이크홀더 리뷰 | "이 트레이드오프를 누구에게 물어봐야 하지? / PRD 리뷰를 추적하고 싶어" |
 | `ticket-bridge` | PRD 결정·게이트 출력물 → 추적 가능한 티켓으로 변환 (Linear / Jira / GitHub Issues) | "게이트 판정 결과를 스프린트 티켓으로 자동 전환하고 싶어" |
-| `roadmap` | PRD §6(Now/Next/Later) → Mermaid gantt + RICE 우선순위화 | "백로그 우선순위를 시각화하고 싶어" |
-| `stakeholder-update` | 임원·팀·파트너 대상 업데이트 보고서 3종 자동 생성 | "진행 상황 임원 보고서 빠르게 만들어줘" |
-| `stakeholder-review` | PRD 리뷰어 배정 + 코멘트 수집 + Signoff audit trail 관리 | "PRD 리뷰 프로세스를 추적하고 싶어" |
 
-### operate — 측정·학습·운영 (6개 스킬 — 아래 표에는 로드맵 스킬도 섞여 있으니 실재 6개는 [README-ko.md](README-ko.md) 참조)
+### operate — 측정·학습·운영 (6개 스킬)
 
-v0.9에서 `measure`(측정) + `learn`(학습) + 기존 `operate`(포트폴리오 운영)가 하나로 통합되었습니다.
-
-**측정 (ex-measure)**
+v0.9에서 `measure`(측정) + `learn`(학습) + 기존 `operate`(포트폴리오 운영)가 하나로 통합되었습니다. 흡수: `stakeholder-update` → `ops-review`.
 
 | 스킬 | 하는 일 | 이럴 때 쓰세요 |
 |------|--------|-------------|
-| `kpi` | 운영 + 비즈니스 KPI 설계 | "어떤 지표를 봐야 하지?" |
-| `reliability` | 신뢰성 체계 점검 | "에이전트가 엉뚱한 답을 하면?" |
-| `premortem` | 사전 실패 모드 분석 (FMEA) | "출시 전에 뭐가 터질 수 있지?" |
-| `burn-rate` | 토큰 비용 추적/최적화 | "비용이 왜 이렇게 늘었지?" |
-| `north-star` | North Star Metric 정의 | "이 에이전트의 궁극적 성공 지표는?" |
-| `agent-ab-test` | A/B 테스트 설계/분석 | "프롬프트 변경 효과가 진짜야?" |
-| `cohort` | 코호트 분석 | "버전별 성능이 어떻게 변하지?" |
-| `incident` | 장애 대응 프로토콜 | "에이전트가 터졌는데 어떻게 하지?" |
-
-**학습 (ex-learn)**
-
-| 스킬 | 하는 일 | 이럴 때 쓰세요 |
-|------|--------|-------------|
-| `pm-framework` | PM 암묵지 → TK 유닛 구조화 | "내 경험을 체계적으로 정리하고 싶어" |
-| `pm-decision` | 6가지 의사결정 패턴 적용 | "이 상황에서 어떻게 판단하지?" |
-| `pm-engine` | PM-ENGINE-MEMORY 인터페이스 | "축적된 TK를 에이전트에 주입하고 싶어" |
-
-**포트폴리오 운영**
-
-| 스킬 | 하는 일 | 이럴 때 쓰세요 |
-|------|--------|-------------|
-| `agent-portfolio` | T1~T5 티어링 + 운영 주의력 분배 | "운영 중 에이전트가 5개 넘었는데 어디부터 손볼지" |
-| `scorecard-5axis` | Accuracy/Reliability/Cost/Velocity/Satisfaction 5축 가중 단일 점수 | "에이전트 N개를 헤드 투 헤드로 비교하고 싶어" |
-| `weekly-rollup` | 주차별 평균·Δ·Top 이동자·이상치 자동 요약 | "금요일 운영 회의 직전 5분 브리프" |
-| `cross-team-routing` | capability + 부하 + 티어 + handoff 점수 기반 라우팅 결정 | "이 요청을 어느 팀 에이전트가 받을지" |
+| `metrics-design` | 지표 위계 + OKR 설계 (North Star → KPI 도출 → OKR, `--step north-star\|kpi\|okr\|all`) | "어떤 지표를 봐야 하지? 성공 기준을 어떻게 잡지?" |
+| `reliability` | 신뢰성 체계 점검 (실패 패턴 식별 + 세이프가드 + 신뢰성 타겟) | "에이전트가 엉뚱한 답을 하면?" |
+| `incident` | 장애 대응 프로토콜 (트리아지 + 영향 범위 차단 + 포스트모템) | "에이전트가 터졌는데 어떻게 하지?" |
+| `pm-engine` | PM-ENGINE-MEMORY 인터페이스 — TK 추출/쿼리/인스트럭션 변환 + 의사결정 패턴 매칭 | "축적된 TK를 에이전트에 주입하고 싶어 / 이 상황에서 어떻게 판단하지?" |
+| `portfolio` | 에이전트 포트폴리오 관리 (T1~T5 티어링 + 크로스-에이전트 비용 비교 + 헬스 스코어) | "운영 중 에이전트가 5개 넘었는데 어디부터 손볼지" |
+| `ops-review` | 주간/월간 운영 리뷰 + 비용 추적(burn-rate) + 이해관계자 보고서 4종 (임원·팀·파트너·위키) | "운영 리뷰를 돌리고 진행 상황 임원 보고서를 빠르게 만들고 싶어" |
 
 ---
 
@@ -528,7 +496,7 @@ A: 아닙니다. 기존 PM 스킬은 일반 PM 업무(로드맵, 스테이크홀
 A: 커맨드와 프롬프트 모두 한국어로 입력하면 됩니다. 스킬 내부의 개념 설명은 한국어, 인스트럭션은 영어로 작성되어 있어 LLM 실행 품질과 사용자 이해도를 동시에 잡았습니다.
 
 **Q: TK-NNN이 뭔가요? 꼭 써야 하나요?**
-A: TK = Tacit Knowledge(암묵지), NNN = Never-ending Nuance Network(끝없이 쌓이는 뉘앙스의 네트워크). TK-001부터 TK-999까지 PM의 판단 기준을 축적합니다. 예: "고객이 긴급이라고 하면 80%는 가짜 긴급이다." 이걸 구조화해서 에이전트 인스트럭션에 넣으면, 당신의 경험이 에이전트의 판단 기준이 됩니다. 매일 1개씩 약 3년이면 999개 — 에이전트가 PM의 분신이 되는 시점입니다. `operate` 플러그인의 pm-framework/pm-decision/pm-engine 스킬이 이를 담당합니다. 선택사항이지만, 쓰면 쓸수록 에이전트가 강해집니다.
+A: TK = Tacit Knowledge(암묵지), NNN = Never-ending Nuance Network(끝없이 쌓이는 뉘앙스의 네트워크). TK-001부터 TK-999까지 PM의 판단 기준을 축적합니다. 예: "고객이 긴급이라고 하면 80%는 가짜 긴급이다." 이걸 구조화해서 에이전트 인스트럭션에 넣으면, 당신의 경험이 에이전트의 판단 기준이 됩니다. 매일 1개씩 약 3년이면 999개 — 에이전트가 PM의 분신이 되는 시점입니다. `operate` 플러그인의 `pm-engine` 스킬이 이를 담당합니다 (TK 추출·쿼리·인스트럭션 변환·의사결정 패턴 매칭 통합). 선택사항이지만, 쓰면 쓸수록 에이전트가 강해집니다.
 
 **Q: 에이전트를 만들어본 적이 없어도 되나요?**
 A: 네. `/harness-discover`부터 시작하면 "어떤 업무를 자동화할 수 있는지"부터 탐색합니다. 기술적 배경 없이 PM 관점에서 접근할 수 있도록 설계되었습니다.
@@ -566,7 +534,7 @@ A: 네. `/harness-discover`부터 시작하면 "어떤 업무를 자동화할 �
 | **검증 통과율** | **100%** | 88% | **+12%** |
 | **평균 실행 시간** | 62초 | 42초 | +20초 |
 
-특히 `pm-framework`(TK 유닛)과 `3-tier`(멀티에이전트 설계)는 스킬 없이는 Claude가 제대로 수행하지 못하는 **역량 게이팅(capability-gating)** 영역이었습니다.
+특히 `pm-engine`(TK 유닛)과 `orchestration`(멀티에이전트 설계 — Hierarchical 패턴)은 스킬 없이는 Claude가 제대로 수행하지 못하는 **역량 게이팅(capability-gating)** 영역이었습니다.
 
 > **참고:** 벤치마크는 v0.4 (32개 스킬) 기준 측정값입니다. v0.14.1 (34개 스킬, 5-plugin 구조) 기준 재측정은 차기 iteration에서 진행 예정입니다.
 

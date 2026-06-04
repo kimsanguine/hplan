@@ -9,7 +9,7 @@ Trigger eval은 각 SKILL.md의 description이 "이 쿼리에는 이 skill이 �
 
 - `trigger-evals.json` — 22 skills / 88 queries (should_trigger 44 + should_not 44)
   - 현존 34 스킬 중 trigger eval 대상 22종을 커버한다. 디스크에 없는 유령 스킬 항목은 제거됨.
-  - 통합 시 흡수된 스킬(roadmap → prd, stakeholder-review·stakeholder-update → orchestration, router → orchestration) 항목은 제거됨. customer-reach는 유지(4 queries).
+  - 통합 시 흡수된 스킬(roadmap → `prd --mode roadmap`, stakeholder-review → `ask-team --mode review`, stakeholder-update → `ops-review`, router → `orchestration --pattern router`) 항목은 제거됨. customer-reach는 유지(4 queries).
 - `baseline-results.json` — v0.6 측정 (24 skills / 96 queries / 97.9% pass rate, Haiku 4.5)
 
 ### 실행 방법

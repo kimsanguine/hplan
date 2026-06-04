@@ -192,7 +192,7 @@ This isn't a random collection of skills. It's a **complete lifecycle** — the 
 Other plugins are **prompt-driven thinking** — LLM ponders, you decide.
 `hplan` adds **deterministic measurement** — Python scripts calculate p50/p90 COGS margins, append-only registries persist exclusions and decisions across runs, an MCP server lets Cursor/Windsurf/Kiro/Codex call hplan primitives, and a PreToolUse hook blocks PRD/spec writes until the human approves the gate. It is paired with discover/architect/deliver/operate, not a replacement.
 
-Each skill **auto-loads from natural language** — describe your task and the right skill fires. Skills also **route across plugins**: burn-rate (operate) detects a cost spike → suggests orchestration `--pattern router` (architect) for model change → triggers cost-sim (discover) for re-simulation.
+Each skill **auto-loads from natural language** — describe your task and the right skill fires. Skills also **route across plugins**: ops-review (operate) detects a cost spike → suggests orchestration `--pattern router` (architect) for model change → triggers cost-sim (discover) for re-simulation.
 
 ---
 
@@ -278,7 +278,7 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 | `handoff` | Multi-target Build Gate brief → Spec-Kit / Kiro / GStack / Claude Code in one command | "Ready to start building — export the spec to my coding agent" |
 | `brainstorm` | Develop a vague idea into a product concept — structured question flow, tradeoff exploration, 2-3 approach proposals | "I want to crystallize a fuzzy idea before writing a PRD" |
 
-**Commands (12):** `/hplan` ⭐ · `/prd` · `/evidence-rubric` · `/cogs-sentinel` · `/harness-discover` · `/harness-plan` · `/harness-build` · `/harness-operate` · `/harness-exclude` · `/harness-handoff` · `/harness-verify` · `/harness-doctor`
+**Commands (12 total — 11 in `hplan/` + `/prd` from deliver):** `/hplan` ⭐ · `/prd` · `/evidence-rubric` · `/cogs-sentinel` · `/harness-discover` · `/harness-plan` · `/harness-build` · `/harness-operate` · `/harness-exclude` · `/harness-handoff` · `/harness-verify` · `/harness-doctor`
 
 **Cross-cutting assets:** MCP server (`hplan_mcp/`) for Cursor / Windsurf / Kiro / Codex / Goose · PreToolUse hook (`hooks/gate_guard.py`) · 4 role-locked reviewer agents (`agents/`)
 </details>
@@ -286,17 +286,15 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 <details>
 <summary><strong>2. discover</strong> — What agent to build? <code>(6 skills)</code></summary>
 
-> ⚠️ **Currently available (6):** `opp-tree` · `assumptions` · `cost-sim` · `hitl` · `socratic-question` · `customer-reach`
-> `build-or-buy` and `agent-gtm` in the table below are **roadmap** — treat only the 6 above as callable.
+> ✅ **All 6 are callable:** `opp-tree` · `assumptions` · `cost-sim` · `hitl` · `socratic-question` · `customer-reach`
+> `build-or-buy` and `agent-gtm` are **roadmap** — not shipped.
 
 | Skill | What it does | When to use |
 |-------|-------------|-------------|
 | `opp-tree` | Build an opportunity tree scored by repeat frequency, automation fit, and judgment dependency | "We have 10 automation candidates — which one first?" |
 | `assumptions` | Extract riskiest assumptions across 4 axes (Value/Feasibility/Reliability/Ethics) and design 2-day validation experiments | "What's the biggest risk before we start building?" |
-| `build-or-buy` | Score Build vs Buy vs No-code across 6 axes (differentiation, speed, cost, customization, maintenance, domain) | "Should we use Intercom's bot or build our own agent?" |
 | `hitl` | Set automation levels (1-5) and escalation triggers via reversibility × error-impact matrix | "Can the agent decide refunds, or must a human approve?" |
 | `cost-sim` | Simulate monthly costs at 1→10→100→1,000 users by model pricing × call patterns | "Sonnet at 500 calls/day — what's the monthly bill?" |
-| `agent-gtm` | Score beachhead segments (5 criteria) + design Shadow→Co-pilot→Auto→Delegation trust sequence | "How do we roll this agent out to B2B customers?" |
 | `socratic-question` | Interrogate your assumptions with Socratic questioning before committing to any idea — surfaces hidden risks and untested premises | "Challenge my thinking before I write the PRD" |
 | `customer-reach` | Find + contact interview candidates and design interview questions before the evidence gate. `--mode plan\|linkedin\|community\|survey\|interview-questions` | "Who do I talk to, and what do I say, to fill pain.md?" |
 
@@ -306,17 +304,14 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 <details>
 <summary><strong>3. architect</strong> — How to architect it? <code>(4 skills)</code></summary>
 
-> ⚠️ **Currently available (4):** `orchestration` · `memory-arch` · `design-token` · `strategy`
-> `biz-model`, `moat`, `growth-loop` in the table below are **roadmap** — treat only the 4 above as callable.
-> Router-style model routing is now a mode of `orchestration` (`--pattern router`).
+> ✅ **All 4 are callable:** `orchestration` · `memory-arch` · `design-token` · `strategy`
+> `biz-model`, `moat`, `growth-loop` are consolidated into `strategy` (`--focus`). Router-style model routing is now a mode of `orchestration` (`--pattern router`).
 
 | Skill | What it does | When to use |
 |-------|-------------|-------------|
 | `orchestration` | Compare Sequential/Parallel/Router/Hierarchical (Prometheus→Atlas→Worker) patterns by latency, error rate, and cost. `--pattern router` auto-routes tasks to T1-T4 models by complexity + fallback chains for 40-80% cost reduction | "Should my doc pipeline run serial or parallel?" / "I need 5 agents — who controls whom?" / "Simple FAQ → Haiku, complex analysis → Opus — auto?" |
-| `biz-model` | Design per-use / subscription / outcome-based pricing + variable cost analysis targeting >70% margin | "Per-API-call billing or monthly flat fee?" |
 | `memory-arch` | Design Working/Episodic/Semantic/Procedural memory layers + token-budget-aware retrieval | "How does today's session recall yesterday's context?" |
-| `moat` | Diagnose 6 moat types: data flywheel, workflow lock-in, network effects, switching costs, specialization, brand | "A competitor ships a GPT clone — what's our defense?" |
-| `growth-loop` | Design usage→data→improvement→re-use loops + cold-start solutions + anti-loop identification | "How do we make recommendations improve with every use?" |
+| `strategy` | Unified strategy design — business model canvas, competitive moat analysis (data flywheel, lock-in, network effects, switching costs), and growth-loop design. `--focus biz-model\|moat\|growth-loop\|all` | "A competitor ships a GPT clone — what's our defense and pricing?" |
 | `design-token` | Phase A: filter reference sites → DESIGN_BRIEF.md. Phase B: DESIGN_BRIEF.md → semantic CSS tokens (tokens.md) + DESIGN.md with breakpoint spec | "Set UI direction after ICP confirmation, then generate tokens" |
 
 **Commands:** `/harness-plan`
@@ -325,26 +320,20 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 <details>
 <summary><strong>4. deliver</strong> — How to spec, build, and ship it? <code>(10 skills)</code></summary>
 
-> ⚠️ **Currently available (10):** `agent-setup` · `prd` · `build-loop` · `conductor` · `sprint` · `qa-checklist` · `respect` · `ui-validate` · `ask-team` · `ticket-bridge`
-> Other skills (agent-instructions, ctx-budget, parallel-team, etc.) in the table below are **roadmap** — treat only the 10 above as callable.
-> Absorbed in v0.14.1: roadmap → `prd --mode roadmap` · stakeholder-review → `ask-team --mode review` · stakeholder-update → operate `ops-review`.
+> ✅ **All 10 are callable:** `agent-setup` · `prd` · `build-loop` · `conductor` · `sprint` · `qa-checklist` · `respect` · `ui-validate` · `ask-team` · `ticket-bridge`
+> Absorbed in v0.14.1: delivery-plan + track → `sprint` · roadmap → `prd --mode roadmap` · stakeholder-review → `ask-team --mode review` · stakeholder-update → operate `ops-review`. Earlier roadmap names (agent-instructions, ctx-budget, stakeholder-map, agent-plan-review, harness-design, parallel-team) are not shipped as standalone skills.
 
 | Skill | What it does | When to use |
 |-------|-------------|-------------|
 | `agent-setup` ⭐ | Scan project structure → auto-generate CLAUDE.md → recommend matching hplan plugins | "New project — set up Claude Code context" |
 | `prd` | **Unified 15-section PRD** — People/Problem/Decisions + Agent/Execution Spec + Metrics/Hypotheses/Failure + §15 QA Pool. `--mode roadmap` turns gate verdicts + sprint estimates into a prioritized timeline/milestone view | "Write a PRD for a solo-lawyer Korean case-law RAG agent" / "Turn our gate verdicts and sprint estimates into a shareable roadmap" |
-| `agent-instructions` | Draft (CRISP prompt design, 7 failure patterns) or full (system prompt + 7-element spec + tool list + memory_config). `--level draft\|full` | "What goes in (and out of) the system prompt?" / "Longer prompts make my agent behave worse" |
-| `ctx-budget` | Estimate per-file token usage → classify Essential/Conditional/Excluded → 70% threshold alerts | "How do I fit 5 RAG docs + chat history into 128K?" |
-| `stakeholder-map` | Power-Interest matrix + blocker response strategies + internal champion cultivation | "Legal is blocking the agent rollout" |
-| `agent-plan-review` | 4-axis review + failure mode matrix (5+ types) + Mermaid output | "Find the holes in this design before we start coding" |
-| `delivery-plan` | WBS decomposition + personal velocity baseline → p50/p90 time predictions. `--step estimate\|baseline\|both` | "Lock predicted scope before starting" / "Before estimating, learn how fast I actually code" |
-| `harness-design` | Design the build harness structure (decisions, evidence, gates) | "Set up the harness before coding starts" |
-| `parallel-team` | Spawn + coordinate parallel worktree agents | "Dispatch 3 agents on independent tasks simultaneously" |
 | `build-loop` | Autonomous build-loop orchestration with checkpoint gates | "Run the full build loop unattended" |
-| `track` | Progress probe (PostToolUse hook), blocker detection (50+ deterministic signals), status report, and 6-phase checkpoint gate. `--mode probe\|detect\|report\|checkpoint` | "Telemetry on every prompt cycle" / "Auto-detect when I'm stuck" / "Can't write impl code until design phase passes" |
+| `conductor` | Per-task fresh-subagent dispatch with a 2-stage gate (spec → quality) repeated each task — sequential task loop after `harness-plan` approval (vs `parallel-team`'s role parallelism) | "Run the implementation loop task-by-task with gates between each" |
+| `sprint` | Sprint plan-execute-track unified (absorbed delivery-plan + track) — PRD → WBS, predicted.json init, probe/detect/report/checkpoint. `--step plan\|init\|status\|retro\|codebase-status` | "Lock predicted scope, then track progress and auto-detect when I'm stuck" |
+| `qa-checklist` | Parse docs/PRD.md → auto-generate harness/QA_CHECKLIST.md, classifying test cases critical/major/minor by ICP + failure scenarios with device/environment links | "Turn PRD acceptance criteria into a graded QA checklist before the quality gate" |
 | `respect` | Brief (`--mode brief`): interview-driven RESPECT.md before any UI code. Checkpoint (`--mode checkpoint`): pre-ship α/β/γ gate enforcement | "Capture user-respect intent before coding" / "Ship-time user-respect gate" |
 | `ui-validate` | Playwright 375/768/1440px viewport gate + DOM saliency + WCAG AA + design-system drift detection | "Do not declare build complete until all viewports pass per DESIGN.md spec" |
-| `ask-team` | Structured question routing to the right stakeholder or agent role — prevents wrong-audience decisions. `--mode review` preps a structured stakeholder review (agenda, pre-read, decision items, follow-up capture) | "Who should I ask about this trade-off?" / "Run a clean stakeholder review without losing decisions in Slack threads" |
+| `ask-team` | Structured question routing to the right stakeholder or agent role — prevents wrong-audience decisions. `--mode review` runs a multi-stakeholder PRD review — assigns reviewers, collects comments, and keeps a signoff audit trail | "Who should I ask about this trade-off?" / "Run a PRD signoff review with reviewer assignment and an audit trail" |
 | `ticket-bridge` | Convert PRD decisions and gate outputs into trackable tickets (Linear / Jira / GitHub Issues) | "Turn the gate verdict into sprint tickets automatically" |
 
 **Commands:** `/harness-build`
@@ -353,23 +342,17 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 <details>
 <summary><strong>5. operate</strong> — How to run and improve agents over time? <code>(6 skills)</code></summary>
 
-> ⚠️ **Currently available (6):** `metrics-design` · `reliability` · `pm-engine` · `incident` · `ops-review` · `portfolio`
-> Other skills (agent-portfolio, burn-rate, premortem, agent-ab-test, cohort, pm-decision, portfolio-report, cross-team-routing) in the table below are **roadmap** — treat only the 6 above as callable.
+> ✅ **All 6 are callable:** `metrics-design` · `reliability` · `pm-engine` · `incident` · `ops-review` · `portfolio`
+> v0.14.1 consolidation: `agent-portfolio` + `portfolio-report` → `portfolio` · `burn-rate` → `ops-review` (cost mode) · `stakeholder-update` absorbed into `ops-review`. Earlier roadmap names (premortem, agent-ab-test, cohort, pm-decision, cross-team-routing) are not shipped.
 
 | Skill | What it does | When to use |
 |-------|-------------|-------------|
-| `agent-portfolio` | T1~T5 tiering by Reach × Reliability × Strategic value | "I run 5+ agents — which one deserves next quarter's investment?" |
-| `portfolio-report` | Weighted 5-axis scorecard comparison or weekly rollup brief with tier averages, top movers, and anomalies. `--view scorecard\|rollup` | "Head-to-head agent comparison" / "Monday morning — what changed across my fleet?" |
-| `cross-team-routing` | Score capability × load × tier × handoff cost to decide which agent serves a request | "3 different agents could handle this — which should take it?" |
 | `metrics-design` | North Star selection + KPI derivation + dual-axis OKRs (Business Impact + Operational Health). `--step north-star\|kpi\|okr\|all` | "Team doesn't know which KPI matters most" / "Is 95% accuracy enough, or do I need cost metrics?" |
 | `reliability` | Quantify P95/P99 worst cases + design safeguards + set SLA tiers | "3 out of 100 responses hallucinate — acceptable?" |
-| `premortem` | Score 10-15 failure modes by Severity × Likelihood × Detection Difficulty | "Give me a 'this must not break' list" |
-| `burn-rate` | Visualize token costs by model/task + spike detection + budget caps | "Token costs jumped 40% — what caused it?" |
-| `agent-ab-test` | Calculate MDE + concurrent experiments + control for LLM nondeterminism | "Prompt A vs B — real difference or noise?" |
-| `cohort` | Track performance by deployment cohort (4-week minimum, n≥100) | "Did v2.1 actually improve over v2.0?" |
-| `incident` | Detect silent failures + triage + contain blast radius + 5 Whys | "Agent silent for 30 min — no alerts fired" |
-| `pm-decision` | Build a pattern library of recurring PM decisions with context, criteria, and known failures | "I've seen this situation before — why did I decide that way?" |
 | `pm-engine` | Agents dynamically query TK knowledge graph at runtime + auto-extract 1 TK/day + auto-update instructions. `--mode extract` converts implicit judgment into TK-NNN units | "I want my agents to leverage my operational know-how automatically" / "3 years of ops experience stuck in my head" |
+| `incident` | Detect silent failures + triage + contain blast radius + 5 Whys | "Agent silent for 30 min — no alerts fired" |
+| `ops-review` | Weekly/monthly operational review + stakeholder updates — token-cost tracking, weekly rollup, real LLM cost vs COGS check, anomaly detection. `--mode cost\|weekly\|full\|exec-summary\|weekly-update\|partner-brief\|confluence-export` (absorbed stakeholder-update) | "Monday morning — what changed across my fleet?" / "Token costs jumped 40% — what caused it?" / "Send an exec 1-pager / weekly team update / partner brief / Confluence export" |
+| `portfolio` | T1~T5 tiering by Reach × Reliability × Strategic value + weighted 5-axis scorecard comparison | "I run 5+ agents — which one deserves next quarter's investment?" |
 
 **Commands:** `/harness-operate`
 
@@ -496,13 +479,13 @@ The Trigger Gate's "Route" field enables routing between plugins:
 | From | Trigger Condition | Route To |
 |------|------------------|----------|
 | `opp-tree` | "Validate assumptions for top opportunity" | `assumptions` |
-| `burn-rate` | "Need model routing change" | `orchestration --pattern router` |
+| `reliability` | "Need model routing change" | `orchestration --pattern router` |
 | `prd` | "Need instruction design" | `architect/strategy` |
 | `pm-engine --mode extract` | "Convert implicit judgment to TK units" | `pm-engine` |
 
 ### Command Chaining
 
-> ⚠️ **Some chain entries below reference roadmap skills** (e.g., `build-or-buy`, `agent-instructions`, `burn-rate`). Currently callable slash commands: `/hplan` · `/prd` · `/evidence-rubric` · `/cogs-sentinel` · `/harness-*` (8 harness commands; 12 total). Other chains in the table are aspirational.
+> ℹ️ All chain entries below reference shipped skills. Currently callable slash commands: `/hplan` · `/prd` · `/evidence-rubric` · `/cogs-sentinel` · `/harness-*` (8 harness commands; 12 total).
 
 | Command | Chained Skills | Plugin |
 |---------|---------------|--------|

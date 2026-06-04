@@ -32,7 +32,7 @@ model: sonnet
 
 - "TK를 구조화해서 라이브러리에 저장하고 싶어" → pm-engine --mode extract 사용
 - "이 TK가 의사결정에 어떻게 쓰이는지 실제 사례를 보고 싶어" → pm-decision의 패턴 라이브러리 참조
-- "에이전트 Instruction을 새 TK를 기반으로 업데이트하고 싶어" → deliver의 instruction, prd 스킬 사용
+- "에이전트 Instruction을 새 TK를 기반으로 업데이트하고 싶어" → deliver의 agent-setup, prd 스킬 사용
 - "TK를 기반으로 비용 시뮬레이션이나 시나리오 분석을 하고 싶어" → discover의 cost-sim, opp-tree 사용
 - "에이전트 실행 중 예측 vs 실측 deviation 을 TK 후보로 자동 추출" → track/retro-extract → /pm-tacit-from-retro 로 자동 promote
 
