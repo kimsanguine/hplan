@@ -14,6 +14,14 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)](CONTRIBUTING.md)
 [![English](https://img.shields.io/badge/lang-English-blue?style=flat-square)](README.md)
 
+**🇺🇸 [Read this in English →](README.md)**
+
+**⚡ `5 plugins · 34 skills · 12 commands` — 한 줄 설치:**
+
+```bash
+/plugin marketplace add kimsanguine/hplan && /plugin install hplan@hplan
+```
+
 **요구사항:** Claude Code v1.0+ · Python 3.9+ · Git 2.x+ · macOS / Linux (Windows: WSL2)
 
 > **Python 없이 시작 가능합니다.** 핵심 스킬(socratic-question, harness-discover, prd, conductor)은

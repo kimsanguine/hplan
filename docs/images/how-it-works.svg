@@ -92,7 +92,7 @@
     
     <!-- Layer label -->
     <text x="60" y="325" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="700" fill="#1E293B">SKILLS</text>
-    <text x="60" y="345" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#64748B">43 building blocks with domain knowledge</text>
+    <text x="60" y="345" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#64748B">34 building blocks with domain knowledge</text>
     
     <!-- Skill pills -->
     <g>
