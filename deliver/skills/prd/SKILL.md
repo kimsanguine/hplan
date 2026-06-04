@@ -1,7 +1,7 @@
 ---
 name: prd
-description: "Write a complete unified PRD covering user/JTBD/decisions/scope/agent-spec/metrics/hypotheses in 15 sections. Single source of truth for both customer-facing products and the LLM agents inside them. Replaces the older 7-section agent-only template. --mode design-shotgun reads §1+§11 from existing PRD and generates harness/design-variants/ (4 HTML variants + comparison.md)."
-argument-hint: "[product or agent name] | --mode design-shotgun"
+description: "Write a complete unified PRD covering user/JTBD/decisions/scope/agent-spec/metrics/hypotheses in 15 sections. Single source of truth for both customer-facing products and the LLM agents inside them. Replaces the older 7-section agent-only template. prd is the canonical owner of §6 Now/Next/Later. --mode design-shotgun reads §1+§11 from existing PRD and generates harness/design-variants/ (4 HTML variants + comparison.md). --mode roadmap is the §6 sub-mode: generate(Mermaid gantt + ROADMAP.md), rice(deterministic RICE scoring), prioritize(Now/Next/Later 재분류)."
+argument-hint: "[product or agent name] | --mode design-shotgun | --mode roadmap [generate|rice|prioritize]"
 allowed-tools: ["Read", "Write"]
 model: sonnet
 hooks:
@@ -40,6 +40,7 @@ hooks:
 - 내부용 LLM 에이전트 spec — Section 1·3에 페르소나 = 내부 사용자, Section 7-11에 에이전트 상세
 - 투자자·파트너·외부 엔지니어에게 제품 사양 공식 전달
 - PRD §11 Output Spec 작성 후 UI 변형 4개를 비교해 설계 방향을 결정할 때 → `--mode design-shotgun`
+- §6 Now/Next/Later를 시각적 로드맵으로 변환하거나 백로그를 RICE로 우선순위화할 때 → `--mode roadmap [generate|rice|prioritize]`
 
 ### Route to Other Skills When
 
@@ -65,6 +66,8 @@ hooks:
 - Section 7-11 (에이전트 사양)은 1인 빌더가 LLM 에이전트를 포함하지 않으면 "N/A — 일반 SaaS"로 간단 표기 가능
 - `--mode design-shotgun` 사용 시 `docs/PRD.md` 부재 → fail loud: "docs/PRD.md 없음. /prd [제품명] 먼저 실행하세요."
 - `--mode design-shotgun` 사용 시 §11 섹션 부재 → fail loud: "PRD §11 Output Specification 섹션이 필요합니다."
+- `--mode roadmap generate|prioritize` 사용 시 §6 Now/Next/Later 부재 → fail loud: "PRD §6 MVP 범위 섹션이 필요합니다."
+- prd는 §6 Now/Next/Later의 canonical 소유자다 — roadmap은 그 sub-mode로 §6을 시각화·우선순위화하며, 별도 스킬이 아니다.
 
 ---
 
@@ -691,6 +694,71 @@ mkdir -p harness/design-variants
 /prd [제품명] 먼저 실행하세요.
 ```
 실행 중단.
+
+---
+
+## `--mode roadmap` — §6 로드맵 + RICE 우선순위화
+
+prd는 §6 Now/Next/Later의 **canonical 소유자**다. roadmap은 별도 스킬이 아니라 §6을 시각적 로드맵과 우선순위 데이터로 변환하는 sub-mode다.
+
+`$ARGUMENTS`로 sub-mode를 받는다: `generate`(Mermaid gantt) / `rice`(RICE 점수 계산) / `prioritize`(Now/Next/Later 재분류). 미지정 시 fail loud + sub-mode 목록.
+
+| sub-mode | 입력 | 출력 |
+|---|---|---|
+| generate | PRD §6 | docs/ROADMAP.md (Mermaid gantt) |
+| rice | 백로그 항목 | docs/rice-scores.md |
+| prioritize | RICE 결과 | PRD §6 Now/Next/Later 갱신 제안 |
+
+### Rule 5 준수 경계
+
+| 작업 | LLM | 근거 |
+|---|---|---|
+| Mermaid gantt 코드 생성 | ✅ | 자연어 → 구조화 코드 변환 |
+| RICE 수치 계산 | ❌ 결정론 | Reach × Impact × Confidence ÷ Effort 공식 |
+| 우선순위 재분류 기준 | ❌ 결정론 | RICE 점수 임계치 lookup |
+
+### RICE 공식 (결정론)
+
+```
+RICE = (Reach × Impact × Confidence) / Effort
+
+Reach: 월간 영향받는 유저 수 (PM 입력)
+Impact: 0.25(최소) / 0.5(낮음) / 1(중간) / 2(높음) / 3(대규모)
+Confidence: 50%(낮음) / 80%(중간) / 100%(높음)
+Effort: 사람-주(person-week) 단위
+```
+
+### Instructions (--mode roadmap)
+
+#### sub-mode: generate
+1. `harness/PRD.md` 또는 `docs/PRD.md` §6 읽기 → Now/Next/Later 항목 파싱 (결정론 grep). §6 부재 → fail loud.
+2. 각 항목의 예상 기간을 PRD 또는 backlog에서 읽기
+3. Mermaid gantt 다이어그램 생성 (LLM):
+   - Now = 현재~4주
+   - Next = 4~12주
+   - Later = 12주+
+4. docs/ROADMAP.md 저장 (기존 파일 있으면 diff 기반 업데이트 제안)
+
+#### sub-mode: rice
+1. 백로그 항목 파싱 (harness/backlog.md 또는 $ARGUMENTS)
+2. 각 항목에 대해 Reach/Impact/Confidence/Effort를 PM에게 물어봄 (AskUserQuestion)
+3. RICE 점수 공식으로 계산 (결정론 — LLM 조정 0)
+4. docs/rice-scores.md 저장
+
+#### sub-mode: prioritize
+1. docs/rice-scores.md 로드 → RICE 점수 기준 정렬 (결정론)
+2. 임계치 기준 분류 (결정론 lookup):
+   - RICE > 50: Now 후보
+   - RICE 20-50: Next 후보
+   - RICE < 20: Later 후보
+3. 현재 PRD §6 Now/Next/Later와 비교 → 불일치 항목 표시
+4. PRD §6 갱신 제안 (확인 게이트 후 반영)
+
+### Quality Gate (--mode roadmap)
+- [ ] RICE 계산 = 공식 그대로 (LLM 조정 0)
+- [ ] gantt에 날짜 추측 0 (PRD/backlog 인용 또는 PM 입력)
+- [ ] 로드맵 갱신은 확인 게이트 후에만
+- [ ] §6 부재 시 (generate/prioritize) fail loud
 
 ---
 

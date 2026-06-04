@@ -1,14 +1,15 @@
 ---
 name: ask-team
-description: "PM이 사람에게 질문하고 답을 모으는 비동기 채널 — comms MCP(Gmail/Notion/Zoom/Slack)를 감싸는 번역기. --mode ask(질문 초안 작성), --mode pull-answers(스레드·회의록에서 답 수집), --mode digest(수집한 답 요약 → decision-log/ticket-bridge 라우팅), --mode solo(팀원 없을 때 Claude가 역할 대리 시뮬레이션), --mode init(팀 세팅 대화형 온보딩). 메시지를 자동 발송하지 않는다 — 초안/코멘트까지만. Use when a PM needs to ask teammates for status/decisions and collect their answers into hplan."
-argument-hint: "[--mode ask|pull-answers|digest|solo|init] [question or topic]"
+description: "PM이 사람에게 질문하고 답을 모으는 비동기 채널 — comms MCP(Gmail/Notion/Zoom/Slack)를 감싸는 번역기. --mode ask(질문 초안 작성), --mode pull-answers(스레드·회의록에서 답 수집), --mode digest(수집한 답 요약 → decision-log/ticket-bridge 라우팅), --mode review(PRD 스테이크홀더 리뷰 — 리뷰어 배정·코멘트 수집·Signoff audit trail), --mode solo(팀원 없을 때 Claude가 역할 대리 시뮬레이션), --mode init(팀 세팅 대화형 온보딩). 메시지를 자동 발송하지 않는다 — 초안/코멘트까지만. 솔로 유저는 solo, 기업 PM은 review로 분기. Use when a PM needs to ask teammates for status/decisions, run a multi-stakeholder PRD review, and collect answers into hplan."
+argument-hint: "[--mode ask|pull-answers|digest|review|solo|init] [question or topic | PRD version]"
 allowed-tools: ["Read", "Write",
   "mcp__gmail__create_draft", "mcp__gmail__search_threads", "mcp__gmail__get_thread",
   "mcp__notion__notion-create-comment", "mcp__notion__notion-get-comments",
   "mcp__notion__notion-create-pages", "mcp__notion__notion-update-page", "mcp__notion__notion-search",
   "mcp__zoom__search_meetings", "mcp__zoom__get_file_content",
   "mcp__zoom__get_recording_resource", "mcp__zoom__search_zoom", "mcp__zoom__get_meeting_assets",
-  "mcp__slack__post_message", "mcp__slack__search_messages", "mcp__slack__get_thread_replies"]
+  "mcp__slack__post_message", "mcp__slack__search_messages", "mcp__slack__get_thread_replies",
+  "mcp__github__create_or_update_file"]
 model: sonnet
 ---
 
@@ -22,9 +23,11 @@ ask-team은 **번역기**다 — 질문/요약 문구만 생성하고, 외부 co
 | `--mode ask` | 질문 초안 작성 (발송 X — 사람이 보냄) | 질문 + 대상 → Gmail `create_draft` / Notion 코멘트 / Slack 메시지 미리보기 |
 | `--mode pull-answers` | 스레드·회의록·코멘트에서 답 수집 | `search_threads`/Zoom transcript/`get-comments`/`get_thread_replies` → `harness/answers.md` |
 | `--mode digest` | 수집한 답 요약 → 라우팅 | `harness/answers.md` → `hplan/decision-log` 또는 `deliver/ticket-bridge` |
+| `--mode review` | PRD 스테이크홀더 리뷰 워크플로우 (리뷰어 배정 + 코멘트 수집 + Signoff audit trail) | PRD 버전 → `harness/review-request.md` · `harness/review-log.md` · `harness/signoff-record.md` |
 | `--mode solo` | Claude가 역할 대리 시뮬레이션 | 질문 + 역할 목록 → 역할별 답변 → `harness/answers.md` (simulated 태깅) |
 
 > **기본값**: `--mode` 미명시 → fail loud + 모드 목록. auto-run 금지.
+> **solo vs review 분기**: 팀원이 없는 솔로 유저는 `solo`(Claude가 역할 대리), 다수 이해관계자가 있는 기업 PM은 `review`(실제 리뷰어 배정 + Signoff)로 분기한다.
 
 ### 능력 차원의 안전장치
 Gmail MCP는 `create_draft`만 노출하고 **send 도구가 없다.** ask-team은 구조적으로 메일을 자동 발송할 수 없다 — 초안을 만들면 사람이 Gmail에서 검토 후 보낸다. Slack의 `post_message`는 preview-only로 처리하며 사용자 승인 후에만 호출한다. 확인 게이트가 정책이 아니라 능력으로 강제된다.
@@ -53,6 +56,7 @@ Gmail MCP는 `create_draft`만 노출하고 **send 도구가 없다.** ask-team�
 - "이거 팀에 물어봐줘" / "담당자한테 확인 요청" → `--mode ask`
 - "답변 왔는지 모아줘" → `--mode pull-answers`
 - "받은 답 정리해서 결정 로그/티켓에 붙여줘" → `--mode digest`
+- "PRD 리뷰 돌려야 해" / "리뷰어 배정하고 Signoff 받아줘" / "이해관계자 승인 추적" → `--mode review`
 - "팀원 없는데 혼자 검토해줘" / "CTO 관점으로 봐줘" → `--mode solo`
 - "ask-team 처음 세팅하고 싶어" / "팀원 연락처 등록" → `--mode init`
 
@@ -168,6 +172,85 @@ comms MCP 도구 가용성 확인. 하나도 없으면 fail loud.
 3. 태그로 라우팅 (결정론): `#decision` → decision-log 항목 초안, `#ticket:<n>` → ticket-bridge status 코멘트 후보.
 4. **확인 게이트**: 라우팅 대상 + 요약을 보여주고 승인받은 뒤 해당 스킬로 넘긴다.
 
+### mode: review
+
+> 다수 이해관계자의 PRD 리뷰를 추적하고 Signoff를 audit trail로 기록한다.
+> 솔로 유저는 `solo` 모드(Claude 역할 대리)를 쓰고, 실제 리뷰어가 있는 기업 PM이 `review`를 쓴다.
+> `$ARGUMENTS`로 sub-mode를 받는다: `assign`(리뷰어 배정) / `collect`(코멘트 수집) / `signoff`(승인 집계 + audit trail). 미지정 시 fail loud + sub-mode 목록.
+
+| sub-mode | 책임 | 출력 |
+|---|---|---|
+| assign | 리뷰어 배정 + 요청 초안 생성 | `harness/review-request.md` + Gmail draft |
+| collect | 코멘트 수집 + PRD 버전 변경 기록 | `harness/review-log.md` · `harness/prd-changelog.md` |
+| signoff | 승인 상태 집계 + audit trail | `harness/signoff-record.md` |
+
+#### 정보보안 / 접근 제어 정책
+
+리뷰가 다루는 PRD와 Signoff 기록은 조직 내 민감 문서다. 다음 원칙을 따른다:
+
+| 원칙 | 구체 행동 |
+|---|---|
+| **저장 위치 제어** | `harness/signoff-record.md` · `harness/review-log.md`는 **로컬 repo에만** 기록. 외부 서비스(Notion 등) write는 PM 명시 승인 후에만 실행. |
+| **전송 전 확인 게이트** | Gmail draft 생성, Notion 페이지 write 등 모든 외부 전송 전 코멘트 전문을 PM에게 보여주고 명시적 승인 수령. 자동 발송 0. |
+| **리뷰어 연락처 분리** | `harness/team-map.json`은 .gitignore 권장 대상. 공개 repo push 전 PM이 직접 확인해야 함. hplan은 경고만 출력, 강제 삭제 0. |
+| **Confluence 연동 부재** | 사내 Confluence를 사용하는 조직은 `signoff-record.md`를 수동으로 업로드하거나 `operate/ops-review --mode confluence-export` 출력물을 복사하는 방식을 사용. hplan은 Confluence API를 직접 호출하지 않아 자격증명 노출 위험 없음. |
+| **role-based 접근** | Git host의 branch protection / access control이 실제 권한 관리를 담당. hplan은 권한을 관리하지 않으며 기존 IAM에 위임. |
+
+**공개 repo 사용 시 권고:**
+```
+# .gitignore에 추가
+harness/signoff-record.md
+harness/review-log.md
+harness/review-request.md
+harness/team-map.json
+```
+
+#### harness/signoff-record.md 형식 (audit trail)
+
+```
+# PRD Signoff Record — v{VERSION}
+
+| 리뷰어 | 역할 | 상태 | 날짜 | 코멘트 참조 |
+|---|---|---|---|---|
+| 이서연 | Product | ✅ APPROVED | 2026-06-03 | review-log.md#L12 |
+| 법무팀 | Legal | ⏳ PENDING | — | — |
+
+Signoff 기준: 모든 필수 리뷰어 APPROVED → Gate 통과
+```
+
+#### sub-mode: assign
+1. `harness/PRD.md`에서 §14(실패 모드), §7(Anti-goals)를 읽어 필수 리뷰어 역할을 추론 (LLM)
+2. `harness/team-map.json`에서 리뷰어 연락처 lookup (결정론) — 미매핑 → fail loud
+3. 리뷰 요청 메일 초안 생성 (LLM) → Gmail `create_draft` (확인 게이트 후). **발송 아님 — 사람이 보냄.**
+4. `harness/review-request.md`에 리뷰어 목록 + 기한 기록
+
+#### sub-mode: collect
+1. 리뷰어로부터 받은 코멘트를 `harness/review-log.md`에 기록
+   포맷: {날짜, 리뷰어, 변경 대상 섹션, 코멘트, 반영여부}
+2. PRD 섹션 변경 시 → `harness/review-log.md`에 변경 이력 append
+   포맷: {날짜, 변경 섹션, 변경 전→후, 변경 이유}
+3. collect는 WRITE하지 않는다 — PM이 코멘트를 직접 전달하면 기록만 함
+
+**PRD 변경 이력 (audit trail — 결정론):**
+
+리뷰어 코멘트로 PRD 섹션이 변경될 때마다 다음을 `harness/prd-changelog.md`에 append한다:
+
+```
+| 날짜 | 변경 섹션 | 변경 전 (요약) | 변경 후 (요약) | 변경 사유 | 요청자 |
+|---|---|---|---|---|---|
+| 2026-06-03 | §4 ICP | "20-50대 일반인" | "법무팀 3-10인 스타트업" | 법무 리뷰 피드백 | 이서연 |
+```
+
+PRD 변경 이력은 decision-log와 별개다 — decision-log는 "만들지 말지" gate 결정, prd-changelog는 "무엇을 만들지" 변경 추적.
+
+#### sub-mode: signoff
+1. `harness/review-log.md`에서 리뷰어별 상태 집계 (결정론 grep)
+2. `harness/signoff-record.md` 생성/업데이트
+3. 모든 필수 리뷰어 APPROVED → "Signoff 완료 — Gate 진행 가능" 출력
+4. PENDING 있으면 → "미완료 리뷰어 X명 — Gate 차단" 출력 (Rule 8)
+
+> **자동 Signoff 금지**: 사람이 승인을 확인한 뒤에만 상태를 APPROVED로 기록한다. LLM이 "승인된 것 같다"고 판단하는 것은 금지 (Rule 5).
+
 ### mode: init
 
 > ask-team 최초 사용 시 `harness/team-map.json`을 대화형으로 생성합니다.
@@ -229,6 +312,8 @@ solo 모드 답변은 `evidence_type: "simulated"`로 태깅된다 — Signal Ga
 | `questions.jsonl` 없음 (pull) | file not found | fail loud — "ask 먼저" |
 | Zoom transcript 없음 | `get_file_content` 빈 결과 | "회의록 미생성 또는 미업로드 — Zoom 설정 확인 필요" + `get_meeting_assets`로 대체 자산 탐색 |
 | `answers.md` 없음 (digest) | file not found | fail loud — "pull-answers 먼저" |
+| review sub-mode 미지정 | `$ARGUMENTS`에 assign/collect/signoff 없음 | fail loud + sub-mode 목록 |
+| 필수 리뷰어 PENDING (signoff) | review-log 집계 결과 미승인 존재 | "미완료 리뷰어 X명 — Gate 차단" (Rule 8) |
 | 미응답 question | ref_id로 답 0건 | "미응답" 표시, 나머지 진행 (부분 성공 명시 — Rule 8) |
 | digest 태그 없음 | `#decision`/`#ticket` 부재 | answers.md에만 보존, 라우팅 보류 + 안내 |
 
@@ -260,6 +345,14 @@ solo 모드 답변은 `evidence_type: "simulated"`로 태깅된다 — Signal Ga
 - [ ] `evidence_type: "simulated"` 태깅
 - [ ] "AI 시뮬레이션" 경고 명시 후 저장
 - [ ] Signal Gate에 실제 증거로 전달 금지
+
+### review
+- [ ] sub-mode 미지정 → fail loud (assign/collect/signoff 목록)
+- [ ] signoff-record.md에 모든 리뷰어 상태 명시
+- [ ] 자동 Signoff 처리 0 (사람이 승인 확인 후 기록)
+- [ ] 코멘트 요약 = 원문 기반 (생성 0)
+- [ ] 외부 write(Gmail/Notion) 전 확인 게이트 통과
+- [ ] team-map.json이 공개 repo에 노출되지 않도록 .gitignore 여부 확인 (경고 출력)
 
 ---
 

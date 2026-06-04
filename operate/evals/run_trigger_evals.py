@@ -36,8 +36,13 @@ import sys
 import time
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
-PLUGINS = ["hplan", "discover", "architect", "deliver", "measure", "learn", "operate"]
+# 이 파일은 operate/evals/run_trigger_evals.py 에 위치하므로
+# repo root 는 parents[2] (operate/evals → operate → <repo root>).
+# v0.9.1에서 evals/ → operate/evals/ 이동 시 parent.parent(=operate) 로 잘못 남아
+# skills 디렉토리를 못 찾아 0 skills 로드되던 버그를 수정.
+EVALS_DIR = Path(__file__).resolve().parent
+REPO_ROOT = Path(__file__).resolve().parents[2]
+PLUGINS = ["hplan", "discover", "architect", "deliver", "operate"]
 
 
 def load_skill_catalog() -> dict[str, str]:
@@ -94,8 +99,8 @@ def call_claude(client, model: str, query: str, catalog_block: str) -> str:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", default="claude-haiku-4-5-20251001")
-    ap.add_argument("--input", default=str(REPO_ROOT / "evals" / "trigger-evals.json"))
-    ap.add_argument("--output", default=str(REPO_ROOT / "evals" / "baseline-results-v0.7.json"))
+    ap.add_argument("--input", default=str(EVALS_DIR / "trigger-evals.json"))
+    ap.add_argument("--output", default=str(EVALS_DIR / "baseline-results-v0.7.json"))
     ap.add_argument("--runs-per-query", type=int, default=1)
     ap.add_argument("--dry-run", action="store_true", help="catalog만 출력하고 종료")
     args = ap.parse_args()

@@ -17,7 +17,7 @@ model: sonnet
 ## 전체 루프 (6 단계)
 
 ```
-1. Discover  (discover/opp-tree, assumptions, build-or-buy)
+1. Discover  (discover/opp-tree, assumptions (--mode build-or-buy 포함))
 2. Research  (web/internal research, competitor 분석)
 3. Design    (architect/orchestration (Hierarchical pattern 포함), memory-arch)
 4. PRD       (deliver/prd + mermaid 정합성 게이트)
@@ -55,7 +55,7 @@ You are running build-loop for: **$ARGUMENTS**
 **Step 1 — Discover**
 - `discover/opp-tree`로 기회 정의
 - `discover/assumptions`로 리스크 가정 추출
-- `discover/build-or-buy`로 자체 빌드 정당성 확인
+- `discover/assumptions --mode build-or-buy`로 자체 빌드 정당성 확인
 
 **Step 2 — Research**
 - 도메인 문서 / 경쟁사 / 기존 유사 시도 조사

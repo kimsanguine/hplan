@@ -23,9 +23,9 @@ model: sonnet
 - 윤리/안전 위험(예: 잘못된 판단이 고객에게 영향)이 있을 수 있다고 생각할 때
 
 ### Route to Other Skills When
-- 검증 실험 설계 후 실제로 프롬프트/API를 테스트해야 할 때 → `hitl` 스킬 (Human-in-the-Loop으로 초기 신뢰도 측정) 또는 `build-or-buy` 스킬
+- 검증 실험 설계 후 실제로 프롬프트/API를 테스트해야 할 때 → `hitl` 스킬 (Human-in-the-Loop으로 초기 신뢰도 측정) 또는 본 스킬 `--mode build-or-buy`
 - 가정 검증 결과 위험도가 매우 높으면 → `hitl` 스킬로 에스컬레이션 전략 설계
-- 검증 통과 후 에이전트 설계 및 프롬프트/인스트럭션을 작성해야 할 때 → `agent-instruction-design` (deliver 플러그인)
+- 검증 통과 후 에이전트 설계 및 프롬프트/인스트럭션을 작성해야 할 때 → `deliver/agent-setup`
 - 8축 100점 evidence 루브릭으로 정량 채점이 필요할 때 → `evidence-rubric` (hplan plugin). V/F/R/E 4축과 상보적.
 
 ### Boundary Checks
@@ -176,7 +176,7 @@ You are helping identify and prioritize the riskiest assumptions for: **$ARGUMEN
 - Human-in-the-loop 설계가 필요한지 판단
 
 **Step 6 — 다음 단계 연결**
-- 검증 실험이 통과되면 `/agent-instruction-design`으로 연결
+- 검증 실험이 통과되면 `deliver/agent-setup`으로 연결
 - Ethics 위험이 높으면 `/human-in-loop-design`으로 먼저 연결
 - 검증 결과 실패 시 `agent-opportunity-tree`로 되돌아가 기회 재탐색
 

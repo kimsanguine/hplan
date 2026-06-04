@@ -13,6 +13,12 @@ profiles/*
 # Harness per-client/per-project profile registries (private — do not commit)
 harness/profiles/
 
+# Harness stakeholder/review artifacts (contain reviewer email/Slack PII — do not commit)
+harness/team-map.json
+harness/signoff-record.md
+harness/review-log.md
+harness/review-request.md
+
 # Worktree workspace (parallel-team skill)
 .worktrees/
 

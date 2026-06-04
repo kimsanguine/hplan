@@ -4,6 +4,36 @@ All notable changes to hplan (renamed from AI_PM_Skills in v0.5) are documented 
 
 ---
 
+## [0.14.1] — YYYY-MM-DD (unreleased)
+
+> **사용자 영향**: 스킬 수 38 → 34. 중복·근접 스킬 4종을 기존 스킬의 모드로 흡수. customer-reach(discover)는 정식 유지. README/CHANGELOG/문서 카운트 정합. 이번 릴리스의 핵심은 통합 + CRITICAL/HIGH 안정화 수정으로, 신규 사용자 표면(슬래시 커맨드·호출 가능 스킬)은 동일하게 유지된다.
+
+### Changed — 스킬 통합 (38 → 34, 4종 흡수)
+
+각 통합은 호출 표면을 줄이되 기능은 흡수 대상 스킬의 모드로 보존한다.
+
+- **`deliver/stakeholder-review` → `deliver/ask-team --mode review`** — 이해관계자 리뷰 세션 준비(아젠다·사전 읽기·결정 항목·후속 정리)를 ask-team의 리뷰 모드로 흡수.
+- **`deliver/stakeholder-update` → `operate/ops-review`** — 이해관계자별 비동기 업데이트 초안(Power-Interest 티어 정렬·Notion/email/Slack/Confluence export)을 operate의 ops-review로 흡수.
+- **`deliver/roadmap` → `deliver/prd --mode roadmap`** — 게이트 판정 + 스프린트 추정을 우선순위 타임라인·의존성·마일스톤 뷰로 변환하는 로드맵 생성을 prd의 모드로 흡수.
+- **`architect/router` → `architect/orchestration --pattern router`** — 복잡도별 T1~T4 모델 자동 라우팅 + 폴백 체인(40-80% 비용 절감)을 orchestration의 router 패턴으로 흡수.
+
+**플러그인별 스킬 수**: hplan 8 · discover 6 · architect 4 · deliver 10 · operate 6 = **34**. 커맨드는 12개(harness-* 8 + `/hplan` + `/cogs-sentinel` + `/evidence-rubric` + `/prd`)로 유지.
+
+### Fixed — CRITICAL / HIGH 안정화
+
+- **eval 러너** — `operate/evals/run_trigger_evals.py`의 repo-root 경로 해석 수정(`parent.parent`→`parents[2]`) + 폐기된 플러그인명(`measure`/`learn`) 제거. `evals/`→`operate/evals/` 이동 이후 skills 카탈로그를 0개 로드하던 버그를 고쳐 트리거 eval이 실제로 채점되도록 정상화.
+- **gate fail-closed** — Build Gate 미승인/오류 시 통과가 아닌 **차단(fail-closed)**으로 동작하도록 수정. checkpoint.json 부재·파싱 실패 시 PRD/spec 쓰기 차단.
+- **cogs 통화 처리** — COGS sentinel의 통화 단위 처리 정합화로 마진 오판정 경로 차단.
+- **CI 게이트** — CI 파이프라인에 정합성 게이트(`.github/workflows/ci-validate.yml`) 추가로 카운트·버전·링크 drift가 머지 전에 검출되도록 함.
+- **customer-reach 경로** — `discover/skills/customer-reach`의 interview-questions 입력 경로를 잘못된 `harness/brainstorm-assumptions.md`에서 실재 위치인 `docs/brainstorm-assumptions.md`로 정정.
+- **.gitignore** — harness 이해관계자/리뷰 산출물(`team-map.json`·`signoff-record.md`·`review-log.md`·`review-request.md`, 리뷰어 email/Slack PII 포함)을 ignore 목록에 추가해 우발적 커밋 차단.
+
+### Docs
+
+- `README.md` / `README-ko.md` — 버전 0.14.1, 스킬 수 34(+플러그인별 8/6/4/10/6) 통일. 흡수된 4종을 스킬 목록·표·라우팅 표·File Structure 트리에서 제거하고 흡수 위치(`--mode`/`--pattern`)를 반영. 죽은 내부 링크(`deliver/claude-md` → `deliver/agent-setup`) 수정. 커맨드 수 표기 정합(12개).
+
+---
+
 ## [0.14.0] — 2026-06-03
 
 > **사용자 영향**: 스킬 수 37 → 38. `discover/socratic-question` 신설(Phase 0 가정 심문). `deliver/roadmap`, `deliver/stakeholder-review`, `deliver/stakeholder-update`, `discover/customer-reach` 정식 추가. `harness-discover`에 Phase 0 진입점 추가. `sprint --step codebase-status` 신설(probe 없이 능동 코드베이스 탐색).

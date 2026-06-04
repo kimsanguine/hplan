@@ -1,6 +1,6 @@
 ---
-description: "deliver/prd 스킬 wrapper — 15-section 통합 PRD 작성 (사용자/JTBD/결정/스코프/에이전트 사양/지표/가설/§15 QA Pool 포함)"
-argument-hint: "[product or agent name]"
+description: "deliver/prd 스킬 wrapper — 15-section 통합 PRD 작성 (사용자/JTBD/결정/스코프/에이전트 사양/지표/가설/§15 QA Pool 포함). --mode design-shotgun(§11 UI 변형 4개), --mode roadmap(§6 Mermaid gantt + RICE 우선순위) sub-mode 지원."
+argument-hint: "[product or agent name] | --mode design-shotgun | --mode roadmap [generate|rice|prioritize]"
 allowed-tools: ["Read", "Write", "Bash"]
 ---
 
@@ -17,6 +17,12 @@ Running for: **$ARGUMENTS**
 3. 결과 산출물:
    - `docs/PRD.md` — 15-section PRD
    - `harness/QA_POOL.json` — §15 QA Pool (dev_roles 결정론 매핑)
+
+## 모드 (sub-mode)
+
+- 기본: 15-section PRD 작성.
+- `--mode design-shotgun`: 기존 PRD의 §1+§11을 읽어 `harness/design-variants/`에 HTML 변형 4개 + comparison.md 생성.
+- `--mode roadmap [generate|rice|prioritize]`: §6 Now/Next/Later 기반 로드맵. prd가 §6 canonical 소유자이며 roadmap은 그 sub-mode 다. generate=Mermaid gantt(`docs/ROADMAP.md`), rice=RICE 결정론 계산(`docs/rice-scores.md`), prioritize=Now/Next/Later 재분류 제안.
 
 ## 입력 가이드
 

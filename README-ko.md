@@ -8,9 +8,9 @@
 > 말의 고삐(harness)처럼, Claude Code · Cursor · Lovable 같은 AI 코딩 도구의 거친 동력에 **방향을 부여하는 사전 계획**입니다. 코드를 만드는 도구는 이미 충분히 강합니다. 부족한 건 *"어디로 향할지"*. hplan은 코드를 쓰기 전 7일 동안 시장조사·문제정의·COGS(AI 기능 제공 원가)를 강제로 묻습니다.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-38-blue?style=flat-square)](#에이전트-pm-여정--5-plugin)
+[![Skills](https://img.shields.io/badge/skills-34-blue?style=flat-square)](#에이전트-pm-여정--5-plugin)
 [![Plugins](https://img.shields.io/badge/plugins-5-purple?style=flat-square)](#에이전트-pm-여정--5-plugin)
-[![Version](https://img.shields.io/badge/version-0.13.0-green?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.14.1-green?style=flat-square)](CHANGELOG.md)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)](CONTRIBUTING.md)
 [![English](https://img.shields.io/badge/lang-English-blue?style=flat-square)](README.md)
 
@@ -36,7 +36,7 @@ AI가 먼저 당신의 가정을 심문합니다. "만들 가치가 있는가"�
 
 > 💡 **심화 내용** — 처음이라면 건너뛰어도 됩니다.
 >
-> **v0.13.1** — hplan 은 AI 도구가 HOW 로 달려가기 전에 **WHETHER 를 묻는 Product Build Gate** 입니다. ADK 5-Layer 완성: L1 Memory (CLAUDE.md) · L2 Skills (34개 PM 규율) · L3 Hooks (SessionStart · PreToolUse · PostToolUse) · L4 Subagents (8역할 병렬 팀) · L5 Plugins (마켓플레이스). `git clone` + `bash scripts/install-hooks.sh` 한 번으로 5개 레이어 전체 활성화. 자세한 변경 내역은 [CHANGELOG.md](CHANGELOG.md).
+> **v0.14.1** — hplan 은 AI 도구가 HOW 로 달려가기 전에 **WHETHER 를 묻는 Product Build Gate** 입니다. ADK 5-Layer 완성: L1 Memory (CLAUDE.md) · L2 Skills (34개 PM 규율) · L3 Hooks (SessionStart · PreToolUse · PostToolUse) · L4 Subagents (8역할 병렬 팀) · L5 Plugins (마켓플레이스). `git clone` + `bash scripts/install-hooks.sh` 한 번으로 5개 레이어 전체 활성화. 자세한 변경 내역은 [CHANGELOG.md](CHANGELOG.md).
 
 ### 📺 99초 소개 영상
 
@@ -284,12 +284,12 @@ bash <(curl -fsSL https://habix.ai/hplan/install.sh)
 ```bash
 # Claude 세션에서 복붙 (필요한 것만 선택해도 됩니다)
 /plugin install discover@kimsanguine-hplan   # 발견 — opportunity tree, assumptions, cost sim
-/plugin install architect@kimsanguine-hplan  # 설계 — orchestration, memory, moat
-/plugin install deliver@kimsanguine-hplan    # 실행 — agent PRD, instruction, prompt, harness, design
-/plugin install operate@kimsanguine-hplan    # 측정·학습·운영 — KPI, burn rate, PM 암묵지, 포트폴리오
+/plugin install architect@kimsanguine-hplan  # 설계 — orchestration, memory, strategy
+/plugin install deliver@kimsanguine-hplan    # 실행 — PRD, conductor, sprint, QA, UI 검증
+/plugin install operate@kimsanguine-hplan    # 측정·학습·운영 — metrics, 신뢰성, PM 암묵지, 포트폴리오
 ```
 
-스킬 이름을 외울 필요는 없습니다. 자연어로 질문하면 33개 스킬 중 맞는 게 auto-load 됩니다.
+스킬 이름을 외울 필요는 없습니다. 자연어로 질문하면 34개 스킬 중 맞는 게 auto-load 됩니다.
 
 ---
 
@@ -300,7 +300,7 @@ bash <(curl -fsSL https://habix.ai/hplan/install.sh)
 ```
 게이트 → 발견 → 설계 → 딜리버리 → 운영
 hplan   discover  architect  deliver   operate
-  8        5         5          10        6   skills
+  8        6         4          10        6   skills  (= 34 total)
 
    ↑                                            │
    └────── 축적된 TK가 다음 에이전트에 피드백 ─────┘
@@ -309,9 +309,9 @@ hplan   discover  architect  deliver   operate
 | 단계 | 플러그인 | 이 단계에서 부딪히는 질문 | 주요 스킬 |
 |------|---------|------------------------|----------|
 | **게이트** ⭐ | `hplan` | "정말 만들 가치가 있을까?" | brainstorm · evidence-rubric · interview-synthesis · exclusions · cogs-sentinel · ost · decision-log · handoff |
-| **발견** | `discover` | "어떤 에이전트를 만들어야 할까?" | opp-tree · assumptions · cost-sim · hitl |
-| **설계** | `architect` | "어떻게 구조를 잡을까?" | orchestration · router · memory-arch · design-token · strategy |
-| **실행** | `deliver` | "어떻게 스펙을 쓰고 출시할까?" | agent-setup · prd · conductor · sprint · build-loop · respect · qa-checklist · ui-validate |
+| **발견** | `discover` | "어떤 에이전트를 만들어야 할까?" | opp-tree · assumptions · cost-sim · hitl · socratic-question · customer-reach |
+| **설계** | `architect` | "어떻게 구조를 잡을까?" | orchestration · memory-arch · design-token · strategy |
+| **실행** | `deliver` | "어떻게 스펙을 쓰고 출시할까?" | agent-setup · prd · conductor · sprint · build-loop · qa-checklist · ui-validate · respect · ask-team · ticket-bridge |
 | **운영** | `operate` | "측정·학습·포트폴리오를 어떻게 할까?" | metrics-design · reliability · pm-engine · incident · ops-review · portfolio |
 
 ### hplan이 나머지 4개와 다른 점
@@ -321,7 +321,7 @@ hplan   discover  architect  deliver   operate
 
 특히 중요한 건 **마지막 단계인 operate → 첫 단계인 discover로 이어지는 순환 구조**입니다. operate에서 축적한 PM 운영 노하우(TK)가 다음 에이전트를 만들 때 자동으로 반영되기 때문에, 에이전트를 만들수록 다음 에이전트의 품질이 올라갑니다.
 
-스킬 간에는 **자동 라우팅**도 작동합니다. 예를 들어 burn-rate(operate)로 토큰 비용을 분석하다 급증이 감지되면, router(architect)에게 모델 변경을 제안하고, 다시 cost-sim(discover)에서 비용 재시뮬레이션까지 연결됩니다. PM이 직접 "다음 스킬을 불러줘"라고 말할 필요가 없습니다.
+스킬 간에는 **자동 라우팅**도 작동합니다. 예를 들어 ops-review(operate)로 토큰 비용을 분석하다 급증이 감지되면, orchestration `--pattern router`(architect)에게 모델 변경을 제안하고, 다시 cost-sim(discover)에서 비용 재시뮬레이션까지 연결됩니다. PM이 직접 "다음 스킬을 불러줘"라고 말할 필요가 없습니다.
 
 ---
 
@@ -335,9 +335,9 @@ hplan   discover  architect  deliver   operate
 
 ### ② 2레이어 아키텍처 — Platform과 Content의 분리
 
-스킬이 많아지면 반드시 생기는 문제가 있습니다: **"엉뚱한 스킬이 발동된다."** 33개 스킬이 서로 비슷한 키워드에 반응하면, Claude가 혼동을 일으키거든요.
+스킬이 많아지면 반드시 생기는 문제가 있습니다: **"엉뚱한 스킬이 발동된다."** 34개 스킬이 서로 비슷한 키워드에 반응하면, Claude가 혼동을 일으키거든요.
 
-이 문제를 해결하기 위해 **두 층을 분리**했습니다. Claude가 스킬을 찾는 메커니즘(Platform Layer — Skills 2.0 스펙의 frontmatter, auto-invocation 등)과, 각 스킬 안에서 "언제 나를 부르고, 언제 부르지 말아야 하는지"를 정의하는 내용(Content Layer — Trigger Gate 패턴)을 분리한 것입니다. 33개 스킬이 동시에 카탈로그에 있어도 routing 충돌이 안 나는 이유입니다.
+이 문제를 해결하기 위해 **두 층을 분리**했습니다. Claude가 스킬을 찾는 메커니즘(Platform Layer — Skills 2.0 스펙의 frontmatter, auto-invocation 등)과, 각 스킬 안에서 "언제 나를 부르고, 언제 부르지 말아야 하는지"를 정의하는 내용(Content Layer — Trigger Gate 패턴)을 분리한 것입니다. 34개 스킬이 동시에 카탈로그에 있어도 routing 충돌이 안 나는 이유입니다.
 
 ```
 ┌─ Platform Layer ──── Skills 2.0 Spec ──────────────────────┐
@@ -380,7 +380,7 @@ PM의 판단/경험 기록 → /extract 명령어 → TK-NNN으로 구조화
 |---|-----------|-----------|------|
 | **테스트 통과율** | **100%** | 88% | **+12%** |
 
-구체적으로 보면, `pm-framework` 스킬 없이 Claude에게 "운영 노하우를 구조화해줘"라고 하면 통과율이 40%까지 떨어집니다. `cost-sim` 스킬을 적용하면 비용 분석 산출량이 +46.6% 증가합니다. 이런 숫자가 있기 때문에, 어떤 스킬이 실제로 가치를 더하는지, 어떤 스킬을 개선해야 하는지를 **데이터로 판단**할 수 있습니다.
+구체적으로 보면, `pm-engine` 스킬 없이 Claude에게 "운영 노하우를 구조화해줘"라고 하면 통과율이 40%까지 떨어집니다. `cost-sim` 스킬을 적용하면 비용 분석 산출량이 +46.6% 증가합니다. 이런 숫자가 있기 때문에, 어떤 스킬이 실제로 가치를 더하는지, 어떤 스킬을 개선해야 하는지를 **데이터로 판단**할 수 있습니다.
 
 ### ⑤ Good/Bad 예시 — 스킬 품질을 지속적으로 개선하는 장치
 
@@ -399,7 +399,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 ## 플러그인 — 전체 스킬 목록
 
 <details>
-<summary><strong>1. hplan ⭐</strong> — 정말 만들 가치가 있을까? <code>(8 skills, 9 commands)</code></summary>
+<summary><strong>1. hplan ⭐</strong> — 정말 만들 가치가 있을까? <code>(8 skills, 11 commands)</code></summary>
 
 발견(discover)보다 *먼저* 돌아가는 게이트. LLM 추정이 아닌 결정론적 Python 측정, run 간 영구 누적되는 메모리 (exclusions + decisions), 사람 승인 전까지 PRD/spec 작성을 막는 hook까지.
 
@@ -419,7 +419,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 | 커맨드 | 단계 | 기능 |
 |--------|------|------|
 | `/harness-discover <idea>` | Discover | 기회 매핑 → 가정 분석 → 비용 시뮬 → 빌드/바이 결정 |
-| `/harness-plan <system>` | Plan | 오케스트레이션 → 3-tier → 메모리 → 모델 라우팅 |
+| `/harness-plan <system>` | Plan | 오케스트레이션 → 전략 → 메모리 → 모델 라우팅 |
 | `/harness-build <brief>` | Build | COGS gate + PRD 15-section 자동 작성 + W1 스프린트 |
 | `/harness-operate <agent>` | Operate | KPI · 신뢰성 · 비용 · 개선 계획 + 지식 추출 |
 
@@ -431,86 +431,56 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 <details>
 <summary><strong>2. discover</strong> — 어떤 에이전트를 만들까? <code>(6 skills)</code></summary>
 
-에이전트를 만들기 전에 반드시 답해야 할 질문들 — "어디에 기회가 있는지", "리스크는 뭔지", "직접 만들어야 하는지 사야 하는지", "비용은 얼마인지"를 체계적으로 분석합니다.
-
-> ⚠️ **현재 사용 가능 (6개):** `opp-tree` · `assumptions` · `cost-sim` · `hitl` · `socratic-question` · `customer-reach`
-> 아래 목록의 `build-or-buy`, `agent-gtm`, `design-reference`는 **로드맵 예정**입니다 — 표에 섞여 있으니 위 6개만 호출 가능한 것으로 간주하세요.
+에이전트를 만들기 전에 반드시 답해야 할 질문들 — "어디에 기회가 있는지", "리스크는 뭔지", "사람 개입은 어디까지 둘지", "비용은 얼마인지"를 체계적으로 분석합니다.
 
 | 스킬 | 기능 | 이런 상황에서 쓰세요 |
 |------|------|-------------------|
 | `opp-tree` | 반복 빈도·자동화 적합도·판단 의존도로 점수화한 기회 트리 구축 | "자동화 후보가 10개인데, 뭘 먼저 해야 할까?" |
 | `assumptions` | 4축(가치·실현가능성·신뢰성·윤리) 기준 최고 위험 가정 추출 + 2일 검증 실험 설계 | "개발 시작 전에 가장 큰 리스크부터 확인하고 싶어" |
-| `build-or-buy` | 6축 기준 Build vs Buy vs No-code 점수화 (차별화, 속도, 비용, 커스터마이징, 유지보수, 도메인) | "Intercom 봇을 쓸까, 우리가 직접 만들까?" |
 | `hitl` | 가역성 × 오류영향 매트릭스로 자동화 레벨(1~5)과 에스컬레이션 기준 설정 | "환불 결정을 에이전트에게 맡겨도 괜찮을까?" |
 | `cost-sim` | 1→10→100→1,000명 규모별 월간 운영 비용 시뮬레이션 (모델 가격 × 호출 패턴) | "Sonnet으로 하루 500콜이면 월 얼마 나올까?" |
-| `agent-gtm` | 비치헤드 세그먼트 5기준 점수 + Shadow→Co-pilot→Auto→Delegation 신뢰 시퀀스 설계 | "B2B 고객에게 이 에이전트를 어떤 순서로 내보내지?" |
-| `design-reference` | UI 레퍼런스 수집·구조화 + 디자인 언어 공통 패턴 추출 → 설계 시 참조 가능한 DESIGN-REFERENCE.md 생성 | "경쟁사·레퍼런스 앱에서 패턴을 뽑아 우리 설계에 반영하고 싶어" |
 | `socratic-question` | PRD 작성 전 소크라테스식 질문으로 가정을 심문 — 숨은 리스크와 검증되지 않은 전제를 먼저 드러냄 | "아이디어에 뛰어들기 전에 내 가정을 먼저 검증하고 싶어" |
+| `customer-reach` | evidence 게이트 전에 인터뷰 대상자 확보 + 컨택 초안 + 인터뷰 질문 설계. `--mode plan\|linkedin\|community\|survey\|interview-questions` | "pain.md를 채우려면 누구에게, 뭐라고 연락해야 하지?" |
 
 **커맨드:** `/harness-discover`
 </details>
 
 <details>
-<summary><strong>3. architect</strong> — 어떻게 설계할까? <code>(5 skills)</code></summary>
+<summary><strong>3. architect</strong> — 어떻게 설계할까? <code>(4 skills)</code></summary>
 
-에이전트의 구조를 잡는 단계입니다. 에이전트가 하나일 때는 괜찮지만, 여러 개가 협업해야 할 때 — 누가 전략을 짜고, 누가 실행하고, 비용은 어떻게 줄이고, 해자는 어떻게 만들지를 설계합니다.
+에이전트의 구조를 잡는 단계입니다. 에이전트가 하나일 때는 괜찮지만, 여러 개가 협업해야 할 때 — 어떻게 오케스트레이션하고, 메모리를 어떻게 쌓고, 디자인 토큰으로 UI를 어떻게 통일하고, 전략·해자를 어떻게 잡을지를 설계합니다.
 
-> ⚠️ **현재 사용 가능 (5개):** `orchestration` · `router` · `memory-arch` · `design-token` · `strategy`
-> 아래 목록의 `3-tier`, `biz-model`, `moat`, `growth-loop`는 **로드맵 예정**입니다 — 표에 섞여 있으니 위 5개만 호출 가능한 것으로 간주하세요.
+> v0.14.1에서 router는 `orchestration`의 모드(`--pattern router`)로 흡수됐습니다.
 
 | 스킬 | 기능 | 이런 상황에서 쓰세요 |
 |------|------|-------------------|
-| `3-tier` | Prometheus(전략) → Atlas(조율) → Worker(실행) 역할·통신·위임 설계 | "에이전트 5개가 필요한데, 누가 누구를 통제해야 하지?" |
-| `orchestration` | Sequential/Parallel/Router/Hierarchical 패턴을 레이턴시·오류율·비용으로 비교 | "문서 처리 파이프라인을 직렬로 돌릴까, 병렬로 돌릴까?" |
-| `biz-model` | 건당/구독/성과 기반 과금 설계 + 변동비 분석 (70% 이상 마진 타겟) | "API 호출당 과금? 월정액? 어떤 모델이 맞을까?" |
-| `router` | 복잡도별 T1~T4 모델 자동 라우팅 + 폴백 체인으로 40-80% 비용 절감 | "단순 FAQ는 Haiku, 복잡 분석은 Opus — 자동으로 나눠줘" |
+| `orchestration` | Sequential/Parallel/Router/Hierarchical 패턴을 레이턴시·오류율·비용으로 비교. `--pattern router`는 복잡도별 T1~T4 모델 자동 라우팅 + 폴백 체인으로 40-80% 비용 절감 | "문서 처리 파이프라인을 직렬로 돌릴까, 병렬로 돌릴까?" / "단순 FAQ는 Haiku, 복잡 분석은 Opus — 자동으로 나눠줘" |
 | `memory-arch` | Working/Episodic/Semantic/Procedural 메모리 레이어 + 토큰 예산 인식 검색 | "오늘 세션에서 어제 대화 맥락을 어떻게 기억시키지?" |
-| `moat` | 6가지 해자 진단: 데이터 플라이휠, 워크플로우 락인, 네트워크 효과, 전환비용, 전문화, 브랜드 | "경쟁사가 GPT로 비슷한 걸 만들면, 우리 방어선은?" |
-| `growth-loop` | 사용→데이터→개선→재사용 루프 설계 + 콜드스타트 해법 + 역루프(anti-loop) 식별 | "추천 결과가 쓸수록 좋아지게 만들려면?" |
 | `design-token` | 색상·타이포·간격·그림자 디자인 토큰 체계 정의 + DESIGN.md 생성 → 일관된 UI 시스템 강제 | "컴포넌트마다 색이 다르게 들어가 있어, 토큰으로 통일하고 싶어" |
+| `strategy` | 전략·해자(moat)·비즈니스 모델을 통합 진단 — 데이터 플라이휠·전환비용·네트워크 효과 등 방어선 설계 | "경쟁사가 GPT로 비슷한 걸 만들면, 우리 방어선은?" |
 
 **커맨드:** `/harness-plan`
 </details>
 
 <details>
-<summary><strong>4. deliver</strong> — 어떻게 스펙을 쓰고 출시할까? <code>(13 skills)</code></summary>
+<summary><strong>4. deliver</strong> — 어떻게 스펙을 쓰고 출시할까? <code>(10 skills)</code></summary>
 
-실제로 만들고 출시하는 단계입니다. 프로젝트 온보딩(CLAUDE.md 자동 생성)부터 에이전트 전용 PRD 작성, 시스템 프롬프트 설계, 토큰 예산 관리, 이해관계자 설득 자료 제작, 실행 진행 추적, 디자인 시스템 강제까지 포함합니다.
+실제로 만들고 출시하는 단계입니다. 프로젝트 온보딩(CLAUDE.md 자동 생성)부터 통합 15섹션 PRD 작성, 구현 루프 오케스트레이션, 스프린트 계획·추적, QA 체크리스트, UI 검증, 사용자 존중 게이트, 팀 질의·티켓 동기화까지 포함합니다.
 
-> ⚠️ **현재 사용 가능 (13개):** `agent-setup` · `prd` · `build-loop` · `qa-checklist` · `respect` · `sprint` · `ui-validate` · `conductor` · `ask-team` · `ticket-bridge` · `roadmap` · `stakeholder-update` · `stakeholder-review`
-> 아래 목록의 나머지 스킬(instruction, prompt, ctx-budget, parallel-team 등)은 **로드맵 예정**입니다 — 표에 섞여 있으니 위 13개만 호출 가능한 것으로 간주하세요.
+> v0.14.1 흡수: roadmap → `prd --mode roadmap` · stakeholder-review → `ask-team --mode review` · stakeholder-update → operate `ops-review`.
 
 | 스킬 | 기능 | 이런 상황에서 쓰세요 |
 |------|------|-------------------|
-| `agent-setup` ⭐ | 프로젝트 구조 스캔 → CLAUDE.md 자동 생성 → 맞춤형 hplan 플러그인 추천 | "새 프로젝트에 Claude Code를 세팅하고, 어떤 스킬을 쓸지 추천받고 싶어" |
-| `instruction` | Role/Context/Goal/Tools/Memory/Output/Failure 정의 + 최소 권한 도구 접근 설계 | "시스템 프롬프트에 뭘 넣고 뭘 빼야 하지?" |
-| `prd` | **통합 15섹션 PRD** — 사람/문제/결정 (1-6) + 에이전트·실행 사양 (7-11) + 지표/가설/실패 (12-14) + QA Pool (15). 제품과 그 안의 에이전트를 단일 PRD로. | "1인 변호사 한국 판례 RAG PRD 작성해줘" |
-| `prompt` | CRISP 프레임워크(Context/Role/Instruction/Scope/Parameters) + Why-First 원칙 + 7가지 실패 패턴 회피 | "프롬프트가 길어질수록 에이전트가 오히려 이상하게 동작해" |
-| `ctx-budget` | 파일별 토큰 사용량 추정 → Essential/Conditional/Excluded 분류 → 70% 임계값 알림 | "RAG 문서 5개 + 대화 히스토리를 128K 컨텍스트에 어떻게 넣지?" |
-| `okr` | 이중축 OKR: 비즈니스 임팩트 + 운영 건강도, 필수 비용 KR 포함 | "정확도 95%면 충분한가? 비용 지표도 넣어야 하는 거 아닌가?" |
-| `stakeholder-map` | Power-Interest 매트릭스 + 블로커 대응 전략 + 내부 챔피언 발굴 | "법무팀이 에이전트 출시를 막고 있어, 어떻게 설득하지?" |
-| `agent-plan-review` | 4축 리뷰 + 실패 모드 매트릭스(5+ 유형) + Mermaid 다이어그램 출력 | "코딩 시작 전에 이 설계의 허점을 찾아줘" |
-| `gemini-image-flow` | Gemini API 엔드투엔드 이미지 파이프라인 + 모델 티어 자동 선택 | "스케치→코드 변환 파이프라인을 만들고 싶어" |
-| `infographic-gif-creator` | 아키텍처/워크플로우 다이어그램 → HTML/CSS → GIF/MP4 애니메이션 | "멀티에이전트 흐름을 임원에게 시각적으로 보여줘야 해" |
-| `pptx-ai-slide` | 스토리 기반 슬라이드 (피치/리뷰/투자자 변형 자동 생성) | "이사회 발표용 10장짜리 덱이 필요해" |
-| `agent-demo-video` | 화면 녹화 + 애니메이션 + 나레이션 조합 (Remotion 기반) | "비기술 이해관계자에게 에이전트가 뭘 하는지 보여줘야 해" |
-| `harness-design` | Build Gate harness 설계 — checkpoint.json + gate_guard.py 연동, 단계별 승인 흐름 정의 | "사람 승인 없이 PRD 바로 코딩으로 넘어가는 걸 막고 싶어" |
-| `parallel-team` | 독립 태스크 분해 + 에이전트 팀 편성 → 병렬 실행 계획 + conflict 방지 설계 | "5개 태스크를 동시에 돌리고 싶은데 merge conflict가 걱정돼" |
-| `ask-team` | 질문을 올바른 이해관계자 또는 에이전트 역할로 구조화하여 라우팅 — 잘못된 대상에게 물어보는 결정을 방지 | "이 트레이드오프를 누구에게 물어봐야 하지?" |
-| `ticket-bridge` | PRD 결정과 게이트 출력물을 추적 가능한 티켓으로 변환 (Linear / Jira / GitHub Issues) | "게이트 판정 결과를 스프린트 티켓으로 자동 전환하고 싶어" |
-| `build-loop` | 반복 구현 루프 설계 — TDD 단계 + 체크포인트 + self-review + commit 리듬 | "에이전트 구현 중에 어디서 멈추고 검증해야 할지 모르겠어" |
-| `mobile-check` | 모바일 뷰포트 체크리스트 (터치 타겟·폰트 크기·safe area·스크롤 동작·landscape 레이아웃) | "PC에서 됐는데 모바일에서 깨져 — ship 전에 체크리스트 돌려줘" |
-| `velocity-baseline` | 직전 프로젝트 git log + token usage → complexity × percentile lookup table 결정론 추출 | "예측 전에 내 실제 작업 속도부터 학습" |
-| `estimate-tasks` | WBS 분해 + complexity 분류 (LLM) + loc/tokens/minutes 예측 (결정론 lookup) | "시작 전에 예측 scope lock — 얼마나 걸릴지 알고 싶어" |
-| `progress-probe` | PostToolUse Hook + shell fallback → 매 tool call을 `.track/actual_log.jsonl`에 append | "매 prompt cycle 텔레메트리 — silent fail 대비 이중 메커니즘" |
-| `blocker-detect` | 50+ 결정론 정규식·카운터 신호 (self-doubt / retry loops / test failures / context pressure / stalls) | "막힌 지점 자동 감지 — LLM 호출 0, 패턴+임계치만" |
-| `progress-report` | 7 event-driven 트리거가 현재 상태 보고 강제 (phase 전환·블로커 임계·context 70% 시점) | "블로커 임계 도달 시점에 자동으로 상태 snapshot 받고 싶어" |
-| `gate-checkpoint` | 6-phase 전환 게이트 (requirements → ship) PreToolUse Hook 차단 | "design phase 미통과 시 impl 코드 작성 기계적 차단" |
-| `respect-checkpoint` | AI가 (screen_type × traffic) 분류 → 결정론 매트릭스 lookup → α+β+γ 게이트 조합 | "ship 직전 사용자 존중 게이트 — '이 존중은 사람이 넣는 겁니다' 강제" |
-| `respect-brief` | 인터뷰 기반 RESPECT.md (5 섹션: three_second_rule / next_action / social_proof / hierarchy / motion) + 금지어 강제 | "UI 코드 작성 전 — 사용자 존중 의도를 YAML 제약으로 capture" |
-| `hierarchy-rules` | Playwright + DOM saliency + pixel KMeans + WCAG AA 런타임 측정 (fold density / type hierarchy / 60-30-10 색 / whitespace / CTA count) | "사람이 실제로 본 것을 측정 — 토큰의 약속이 아님" |
-| `motion-language` | 정규식 + framer-motion AST 스캔 → RESPECT motion_language 명세 대비 drift 보고 | "hover transition 200ms 일관? page easing 일관? ship 전 drift 감지" |
-| `ui-drift-detect` | 5+ 화면 pHash + KMeans palette + DOM tree edit distance → 5 차원 drift score | "디자인 시스템 회귀 감지 — 신규 화면이 design language 깼나?" |
+| `agent-setup` ⭐ | 7요소 에이전트 인스트럭션 작성 + CLAUDE.md/AGENTS.md 구성 통합 — 정체성·도구·제약·실패 모드부터 프로젝트 메모리 파일까지 | "새 프로젝트에 에이전트를 세팅하고 인스트럭션을 잡고 싶어" |
+| `prd` | **통합 15섹션 PRD** — 사람/JTBD/결정/스코프 + 에이전트·실행 사양 + 지표/가설 + §15 QA Pool. 제품과 그 안의 에이전트를 단일 PRD로. `--mode roadmap`은 §6 Now/Next/Later 서브모드(Mermaid gantt · RICE 점수 · 우선순위 재분류), `--mode design-shotgun`은 §1+§11에서 4개 HTML 변형 생성 | "1인 변호사 한국 판례 RAG PRD 작성해줘" / "게이트 판정과 스프린트 추정을 공유 가능한 로드맵으로" |
+| `conductor` | 태스크별 fresh subagent 디스패치 + 2단계 게이트(spec→quality) 반복 실행 — parallel은 역할 병렬, conductor는 태스크 순차+게이트 | "harness-plan 승인 후 구현 루프를 게이트 걸어 돌리고 싶어" |
+| `sprint` | 스프린트 계획-실행-추적 통합 — PRD → WBS 분해, predicted.json 초기화, probe/detect/report/checkpoint 실행 | "딜리버리 스프린트를 계획하고 진척을 추적하고 싶어" |
+| `build-loop` | 발견 → 리서치 → 설계 → PRD → 태스크 분해 → 팀 기반 구현을 한 세션에서 오케스트레이션 | "아이디어를 문제부터 출시까지 엔드투엔드로 돌리고 싶어" |
+| `qa-checklist` | docs/PRD.md 파싱 → harness/QA_CHECKLIST.md 자동 생성. ICP·실패 시나리오 기반 TC를 critical/major/minor 3등급 분류 + 디바이스·환경 링크 | "deliver 완료 후 / quality-gate 전에 QA 체크리스트 자동 생성" |
+| `ui-validate` | 통합 UI 검증 — hierarchy(Playwright DOM saliency + WCAG AA) · motion(transition drift) · drift(pHash N-screen) · mobile(375/768/1440px) · tc-gate(TC별 스크린샷 증거). 각 check는 `--check`로 독립 실행 | "ship 전 UI 위계·모션·드리프트·모바일을 측정으로 검증" |
+| `respect` | 2-mode 사용자 존중 게이트 — `--mode brief`는 코딩 전 RESPECT.md 설계 브리프, `--mode checkpoint`는 ship 직전 α/β/γ 매트릭스 게이트. RESPECT.md 부재 시 craft-lint 차단(exit 2) | "UI 화면 시작 전 존중 의도를 capture / ship 직전 존중 게이트" |
+| `ask-team` | PM이 사람에게 질문하고 답을 모으는 비동기 채널 — comms MCP(Gmail/Notion/Zoom/Slack) 래퍼. `--mode ask\|pull-answers\|digest\|solo\|init`. `--mode review`는 PRD 스테이크홀더 리뷰 — 리뷰어 배정·코멘트 수집·Signoff audit trail. 메시지를 자동 발송하지 않음(초안/코멘트까지) | "이 트레이드오프를 누구에게 물어봐야 하지?" / "멀티 스테이크홀더 PRD 리뷰 + 사인오프 추적" |
+| `ticket-bridge` | GitHub Issues / Linear / Jira ⇄ hplan 실행 레이어 번역기 — `--mode pull\|estimate\|status\|push`, `--system github\|linear\|jira`. sprint 산출물을 이슈로 전달만 (추정 직접 계산 안 함) | "게이트 판정·스프린트 추정·진척을 이슈에 자동 동기화하고 싶어" |
 
 **커맨드:** `/harness-build`
 </details>
@@ -518,28 +488,16 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 <details>
 <summary><strong>5. operate</strong> — 측정·학습·포트폴리오 운영 <code>(6 skills)</code></summary>
 
-출시 이후가 진짜 시작입니다. 에이전트는 "조용히 틀리는" 경우가 많아서, 운영 지표 설정·비용 추적·실패 감지·실험 설계와 함께 PM 암묵지 구조화·포트폴리오 우선순위까지 한 플러그인에서 처리합니다.
-
-> ⚠️ **현재 사용 가능 (6개):** `metrics-design` · `reliability` · `pm-engine` · `incident` · `ops-review` · `portfolio`
-> 아래 목록의 나머지 스킬(kpi, burn-rate, premortem, scorecard-5axis 등)은 **로드맵 예정**입니다 — 표에 섞여 있으니 위 6개만 호출 가능한 것으로 간주하세요.
+출시 이후가 진짜 시작입니다. 에이전트는 "조용히 틀리는" 경우가 많아서, 지표·OKR 설계, 신뢰성 검토, 장애 대응, 주간/월간 운영 리뷰와 함께 PM 암묵지 구조화·포트폴리오 관리까지 한 플러그인에서 처리합니다.
 
 | 스킬 | 기능 | 이런 상황에서 쓰세요 |
 |------|------|-------------------|
-| `kpi` | 운영 + 비즈니스 5~7개 지표 정의, 선행/후행 지표 구분 | "에이전트 대시보드에 어떤 지표를 넣어야 하지?" |
-| `reliability` | P95/P99 최악 케이스 정량화 + 세이프가드 설계 + SLA 티어 설정 | "100건 중 3건이 환각인데, 이게 허용 가능한 수준인가?" |
-| `premortem` | 10~15개 실패 모드를 심각도 × 가능성 × 탐지 난이도로 점수화 | "'절대 깨지면 안 되는' 항목 리스트를 뽑아줘" |
-| `burn-rate` | 모델·태스크별 토큰 비용 시각화 + 급증 감지 + 예산 상한 설정 | "이번 달 토큰 비용이 40% 올랐어 — 원인이 뭐야?" |
-| `north-star` | 5가지 기준으로 핵심 지표 1개 선택 + 안티메트릭 설정 | "팀원마다 다른 KPI를 보고 있어, 뭘 기준으로 맞추지?" |
-| `agent-ab-test` | MDE(최소 탐지 효과) 계산 + 동시 실험 설계 + LLM 비결정성 통제 | "프롬프트 A vs B — 진짜 차이가 있는 건지, 그냥 노이즈인지?" |
-| `cohort` | 배포 코호트별 성과 추적 (최소 4주, n≥100 기준) | "v2.1이 정말로 v2.0보다 나아졌는지 확인하고 싶어" |
-| `incident` | 무증상 장애 감지 + 트리아지 + 영향 범위 차단 + 5 Whys 분석 | "에이전트가 30분째 응답이 없는데 알림도 안 울려" |
-| `pm-framework` | 암묵적 판단을 TK-NNN 단위로 변환 + 활성화/비활성화 조건 + 지식 그래프 연결 | "에이전트 운영 3년치 경험이 내 머릿속에만 있어" |
-| `pm-decision` | 반복되는 PM 의사결정의 패턴 라이브러리 구축 (맥락, 기준, 실패 사례 포함) | "이 상황 전에도 겪었는데, 그때 왜 그렇게 결정했더라?" |
-| `pm-engine` | 런타임에 TK 지식 그래프 동적 쿼리 + 하루 1건 TK 자동 추출 + 인스트럭션 자동 업데이트 | "내 운영 노하우를 에이전트가 알아서 활용했으면 좋겠어" |
-| `agent-portfolio` | T1~T5 티어링 (Reach × Reliability × Strategic value) | "에이전트 5+ 개 운영 중 — 다음 분기에 어디 투자할까?" |
-| `scorecard-5axis` | 가중 점수 (Accuracy / Reliability / Cost / Velocity / User Satisfaction) → 단일 비교 가능한 숫자 | "주간 운영 회의에서 에이전트 간 직접 비교" |
-| `weekly-rollup` | Cron 기반 포트폴리오 rollup (trend + 이상 감지) | "월요일 아침 — 지난 주 fleet에 무슨 변화?" |
-| `cross-team-routing` | capability × load × tier × handoff cost 점수화로 요청 라우팅 결정 | "3개 에이전트가 처리 가능 — 어디로 보낼까?" |
+| `metrics-design` | 지표 위계 + OKR 통합 설계 — North Star, KPI 도출, OKR 설정. `--step north-star\|kpi\|okr\|all` | "에이전트 대시보드에 어떤 지표를 넣고 OKR을 어떻게 잡지?" |
+| `reliability` | 실패 패턴 식별 + 에러 핸들링 평가 + 세이프가드 설계 + 신뢰성 목표 설정 | "100건 중 3건이 환각인데, 이게 허용 가능한 수준인가?" |
+| `incident` | 심각도 트리아지 + 대응 조율 + 영향 범위 차단 + 포스트모템 작성 | "에이전트가 30분째 응답이 없는데 알림도 안 울려" |
+| `ops-review` | 주간/월간 운영 리뷰 + 이해관계자 업데이트 — 비용 추적·주간 롤업·실 LLM 비용 vs COGS 대조·이상 감지 + 보고서 4종(exec-summary·weekly-update·partner-brief·confluence-export). 수치 집계=결정론, 산문만 LLM | "이번 달 비용이 40% 올랐어 — 원인 분석 + 임원 보고서까지" |
+| `pm-engine` | PM-ENGINE-MEMORY 인터페이스 — TK(암묵지) 추출·쿼리·인스트럭션 변환(`--mode extract\|query\|build`), `--mode decide`(결정 패턴 매칭), `--mode save-decision`(PRD 연계 기술 결정 로그) | "내 운영 노하우를 에이전트가 알아서 활용했으면 좋겠어" |
+| `portfolio` | 에이전트 포트폴리오 관리 — 단일 에이전트 추적 + 포트폴리오 전체 리포트. 상태 카드·크로스-에이전트 비용 비교·헬스 스코어 | "에이전트 5+ 개 운영 중 — 다음 분기에 어디 투자할까?" |
 
 **커맨드:** `/harness-operate`
 
@@ -584,7 +542,7 @@ source ~/.zshrc
 /plugin install operate@kimsanguine-hplan
 ```
 
-> **Private repo 환경**: 마켓플레이스 설치가 "not found"로 실패하면, 방법 1(로컬 클론)을 사용하세요. 로컬 클론은 repo 공개 여부와 무관하게 동작합니다.
+> **Private repo 환경**: 마켓플레이스 설치가 "not found"로 실패하면, 방법 3(수동 로컬 클론)을 사용하세요. 로컬 클론은 repo 공개 여부와 무관하게 동작합니다.
 
 ---
 
@@ -639,7 +597,7 @@ claude \
 | 시작 스킬 | 이런 상황이 되면 | 넘어가는 스킬 |
 |----------|---------------|-------------|
 | `opp-tree` | "상위 기회의 가정을 검증해줘" | `assumptions` |
-| `reliability` | "비용 급증 → 모델 라우팅 변경이 필요" | `router` |
+| `reliability` | "비용 급증 → 모델 라우팅 변경이 필요" | `orchestration --pattern router` |
 | `prd` | "인스트럭션 설계가 필요해" | `architect/strategy` |
 | `pm-engine` | "TK를 에이전트 인스트럭션으로 변환" | `prd` |
 
@@ -674,10 +632,10 @@ Claude Code의 스킬 시스템은 2025년 1.0에서 2026년 2.0으로 크게 �
 
 ```
 hplan/                # repo 루트
-├── hplan/            # Gate ⭐ (8 skills, 9 commands) — Product Build Gate
+├── hplan/            # Gate ⭐ (8 skills, 11 commands) — Product Build Gate
 ├── discover/           # 발견 (6 skills)
-├── architect/            # 설계 (5 skills)
-├── deliver/            # 실행 (13 skills)
+├── architect/            # 설계 (4 skills)
+├── deliver/            # 실행 (10 skills)
 ├── operate/            # 운영·학습·포트폴리오 (6 skills)
 │   └── evals/        # 품질 + 트리거 평가
 ├── docs/images/      # 다이어그램
@@ -687,7 +645,7 @@ hplan/                # repo 루트
 
 ### 스킬 해부학 — 각 스킬 안에는 뭐가 들어 있나
 
-33개 스킬 모두 동일한 내부 구조를 따릅니다. 이것은 Skills 2.0 스펙 준수만이 아니라, **스킬 품질을 측정·테스트·개선하기 위해 설계된 콘텐츠 아키텍처**입니다.
+34개 스킬 모두 동일한 내부 구조를 따릅니다. 이것은 Skills 2.0 스펙 준수만이 아니라, **스킬 품질을 측정·테스트·개선하기 위해 설계된 콘텐츠 아키텍처**입니다.
 
 ```
 discover/skills/opp-tree/           ← 예시: opp-tree 스킬
@@ -716,7 +674,7 @@ discover/skills/opp-tree/           ← 예시: opp-tree 스킬
 
 | 구성 요소 | 왜 넣었는가 | 측정된 효과 |
 |-----------|-----------|-----------|
-| `SKILL.md`의 Trigger Gate | Use/Route/Boundary 3조건으로 33개 스킬의 충돌 방지 | 93.5% 트리거 정확도 |
+| `SKILL.md`의 Trigger Gate | Use/Route/Boundary 3조건으로 34개 스킬의 충돌 방지 | 93.5% 트리거 정확도 |
 | `context/domain.md` | Claude가 기본적으로 모르는 도메인 전문성 주입 | +12~46% 출력 품질 향상 |
 | `examples/good-01.md` | "이 수준이 정답"이라는 구체적 앵커 제공 | Claude 생성 품질 안정화 |
 | `examples/bad-01.md` | "이건 틀린 것"이라는 명시적 반면교사 | 흔한 실패 패턴 사전 차단 |

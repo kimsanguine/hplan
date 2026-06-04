@@ -30,7 +30,7 @@ Running for: **$ARGUMENTS**
 - 탐색 자체가 부족할 때 → `discover/opp-tree` (exploration mode)
 - OST 완성 후 PRD shape 정의 → `deliver/prd`
 - 가설 깊이 검증 → `discover/assumptions` (V/F/R/E 4축)
-- 운영 메트릭 정의 → `measure/north-star`
+- 운영 메트릭 정의 → `operate/metrics-design --step north-star`
 
 ### Boundary Checks
 

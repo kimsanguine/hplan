@@ -26,13 +26,13 @@ hooks:
 - "이거 비용 얼마 들어?" 류의 질문이 나올 때
 
 ### Route to Other Skills When
-- 비용이 아닌 모델 성능/품질 기준이면 → `router` (모델 라우팅)
-- 비용 **추적/최적화**(이미 운영 중)면 → `burn-rate`
-- 비용이 과다해서 직접 구축 vs 외부 솔루션을 비교한다면 → `build-or-buy`
+- 비용이 아닌 모델 성능/품질 기준이면 → `architect/orchestration --pattern router`
+- 비용 **추적/최적화**(이미 운영 중)면 → `operate/ops-review`
+- 비용이 과다해서 직접 구축 vs 외부 솔루션을 비교한다면 → `discover/assumptions --mode build-or-buy`
 - 결정론적 p50/p90 마진 + free-user abuse 시뮬레이션 수치가 필요할 때 → `cogs-sentinel` (hplan plugin)
 
 ### Boundary Checks
-- 이 스킬은 **사전 시뮬레이션** 전용이다. 실 비용 추적/모니터링은 `burn-rate` 범위.
+- 이 스킬은 **사전 시뮬레이션** 전용이다. 실 비용 추적/모니터링은 `operate/ops-review` 범위.
 - 모델 가격은 2026-03 기준이며 빠르게 변동함을 항상 명시한다.
 - 추정치를 확정 수치로 표현하지 않는다 — 범위(range)로 제시.
 
@@ -224,8 +224,8 @@ You are helping simulate the operating cost for: **$ARGUMENTS**
 - `operate/metrics-design --step okr`의 Operational Health KR로 연결
 
 **Step 8 — 다음 단계**
-- 비용이 수용 가능 → `/agent-instruction-design`으로 설계
-- 비용이 과다 → 모델 다운그레이드 또는 `/build-or-buy` 재검토
+- 비용이 수용 가능 → `deliver/agent-setup`으로 설계
+- 비용이 과다 → 모델 다운그레이드 또는 `discover/assumptions --mode build-or-buy` 재검토
 
 ---
 
@@ -245,7 +245,7 @@ You are helping simulate the operating cost for: **$ARGUMENTS**
 - [ ] 스케일 시나리오 3단계(1/10/100명)가 모두 포함되었는가 (3/3)
 - [ ] 최적화 전략이 최소 2개 이상 제안되었는가 (Yes/No)
 - [ ] 모든 단가에 기준일이 명시되었는가 (Yes/No)
-- [ ] 다음 단계 연결(metrics-design --step okr/instruction/build-or-buy)이 제안되었는가 (Yes/No)
+- [ ] 다음 단계 연결(operate/metrics-design --step okr / deliver/agent-setup / discover/assumptions --mode build-or-buy)이 제안되었는가 (Yes/No)
 
 ---
 

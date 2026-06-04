@@ -7,7 +7,7 @@ Usage:
 
 환경변수:
     HPLAN_EXPECTED_SKILLS  CI override용 기대 스킬 수. 설정 안 하면 실제 파일 수 사용.
-                           예: HPLAN_EXPECTED_SKILLS=38 python3 validate_plugins.py
+                           예: HPLAN_EXPECTED_SKILLS=34 python3 validate_plugins.py
 """
 
 import json

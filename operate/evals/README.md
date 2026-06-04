@@ -7,9 +7,9 @@ Trigger eval은 각 SKILL.md의 description이 "이 쿼리에는 이 skill이 �
 
 ### 데이터셋
 
-- `trigger-evals.json` — 31 skills / 124 queries (should_trigger 62 + should_not 62)
-  - v0.7 추가: harness-design, parallel-team, build-loop, agent-portfolio, scorecard-5axis,
-    weekly-rollup, cross-team-routing (각 4 queries)
+- `trigger-evals.json` — 22 skills / 88 queries (should_trigger 44 + should_not 44)
+  - 현존 34 스킬 중 trigger eval 대상 22종을 커버한다. 디스크에 없는 유령 스킬 항목은 제거됨.
+  - 통합 시 흡수된 스킬(roadmap → `prd --mode roadmap`, stakeholder-review → `ask-team --mode review`, stakeholder-update → `ops-review`, router → `orchestration --pattern router`) 항목은 제거됨. customer-reach는 유지(4 queries).
 - `baseline-results.json` — v0.6 측정 (24 skills / 96 queries / 97.9% pass rate, Haiku 4.5)
 
 ### 실행 방법
@@ -19,14 +19,14 @@ Trigger eval은 각 SKILL.md의 description이 "이 쿼리에는 이 skill이 �
 export ANTHROPIC_API_KEY=...
 pip install anthropic
 
-# 카탈로그 확인 (LLM 호출 없음)
-python3 evals/run_trigger_evals.py --dry-run
+# 카탈로그 확인 (LLM 호출 없음) — 34 skills 로드 확인
+python3 operate/evals/run_trigger_evals.py --dry-run
 
 # 전체 평가 (Haiku 4.5, 1 run per query, 약 2~3분 소요)
-python3 evals/run_trigger_evals.py
+python3 operate/evals/run_trigger_evals.py
 
 # 안정 평가 (다회 실행 후 다수결 — 비결정성 제어)
-python3 evals/run_trigger_evals.py --runs-per-query 3 --output evals/baseline-results-v0.7.json
+python3 operate/evals/run_trigger_evals.py --runs-per-query 3 --output operate/evals/baseline-results-v0.7.json
 ```
 
 ### 평가 모델 권고
@@ -42,11 +42,11 @@ python3 evals/run_trigger_evals.py --runs-per-query 3 --output evals/baseline-re
 ```jsonc
 {
   "summary": {
-    "total_skills": 31,
-    "total_queries": 124,
-    "total_passed": 121,
-    "pass_rate": "121/124 (97.6%)",
-    "elapsed_seconds": 158.3,
+    "total_skills": 22,
+    "total_queries": 88,
+    "total_passed": 0,      // pass_rate/elapsed 는 실제 실행 후 채워지는 예시값
+    "pass_rate": "0/88 (0.0%)",
+    "elapsed_seconds": 0.0,
     "model": "claude-haiku-4-5-20251001",
     "runs_per_query": 1
   },
@@ -55,7 +55,7 @@ python3 evals/run_trigger_evals.py --runs-per-query 3 --output evals/baseline-re
 ```
 
 - `pass_rate`가 v0.6 baseline(97.9%) 대비 큰 폭으로 떨어지면 신규 스킬 description이
-  기존 스킬과 겹치는지 점검 (특히 `agent-portfolio` ↔ `kpi`, `harness-design` ↔ `orchestration`)
+  기존 스킬과 겹치는지 점검 (특히 `customer-reach` ↔ `interview-synthesis`)
 - 한 스킬에서 should_trigger=true 쿼리가 모두 실패하면 description이 너무 추상적
 - should_trigger=false 쿼리가 자주 false-positive하면 description이 너무 넓음
 

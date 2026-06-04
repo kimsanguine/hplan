@@ -22,16 +22,16 @@
 ### Should NOT Trigger (5)
 
 1. "선택한 에이전트의 프롬프트와 인스트럭션을 작성해 줄 수 있어요?"
-   - 올바른 라우팅: AOT 완료 후 구현 → `deliver/instruction` [예정] (또는 `agent-plan-review` [예정])
+   - 올바른 라우팅: AOT 완료 후 구현 → `deliver/agent-setup`
 
 2. "이 에이전트의 기술 스택(Haiku vs Sonnet)을 결정해 줄 수 있어요?"
-   - 올바른 라우팅: 모델/비용 선택 → `architect/router` 또는 `discover/cost-sim`
+   - 올바른 라우팅: 모델/비용 선택 → `architect/orchestration --pattern router` 또는 `discover/cost-sim`
 
 3. "우리 전체 비즈니스 전략을 분석해 줄 수 있어요?"
    - 올바른 라우팅: 경영 전략 분석 → AOT 범위 밖 (에이전트 기회만 다룸)
 
 4. "어떤 에이전트가 기술적으로 구현 가능한지 평가해 줄 수 있어요?"
-   - 올바른 라우팅: 기술 타당성 검증 → `build-or-buy` (아키텍처 선택)
+   - 올바른 라우팅: 기술 타당성 검증 → `discover/assumptions --mode build-or-buy` (아키텍처 선택)
 
 5. "경쟁사들은 어떤 에이전트를 쓰고 있나요?"
    - 올바른 라우팅: 시장 조사 → AOT 범위 밖

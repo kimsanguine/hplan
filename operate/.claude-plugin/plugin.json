@@ -1,7 +1,7 @@
 {
   "name": "operate",
-  "version": "0.9.2",
-  "description": "Operate and continuously improve AI agents — portfolio tiering, scorecards, weekly rollups, cross-team routing, KPI/North Star/OKR design (metrics-design), reliability measurement, cost monitoring, cohort analysis, incident response, and PM knowledge capture (pm-engine). Use when running agents in production: measuring health, learning from outcomes, and feeding insights back into the next build cycle.",
+  "version": "0.14.1",
+  "description": "Operate and continuously improve AI agents — portfolio tiering, scorecards, weekly rollups, cross-team routing, KPI/North Star/OKR design (metrics-design), reliability measurement, cost monitoring, cohort analysis, incident response, stakeholder reporting (ops-review: exec-summary 임원 보고, weekly-update 팀 주간, partner-brief 외부 파트너, stakeholder update), and PM knowledge capture (pm-engine). Use when running agents in production: measuring health, communicating status to stakeholders, learning from outcomes, and feeding insights back into the next build cycle.",
   "author": {
     "name": "AI PM Skills Contributors",
     "url": "https://github.com/kimsanguine"
@@ -24,7 +24,12 @@
     "pm-engine",
     "knowledge",
     "pm",
-    "agent-ecosystem"
+    "agent-ecosystem",
+    "stakeholder",
+    "exec-summary",
+    "weekly-update",
+    "partner-brief",
+    "status-report"
   ],
   "skills": "./skills/",
   "commands": "./commands/"
