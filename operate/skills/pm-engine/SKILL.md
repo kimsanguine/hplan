@@ -100,7 +100,7 @@ decision: "[결정 내용]"
 alternatives: []          # 저장 후 사용자가 직접 채울 수 있음
 prd_link: "[PRD 섹션 + 가설 텍스트]"
 evidence: ""              # 관련 harness 파일 경로 (선택)
-outcome: null             # operate/ops-review --mode post-retro 에서 업데이트
+outcome: null             # 결정 실행 후 회고 시 직접 기입 (success|failure|partial)
 ```
 
 ### TD-NNN 번호 부여 (결정론)
