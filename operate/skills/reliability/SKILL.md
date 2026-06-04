@@ -35,9 +35,9 @@ hooks:
 ### Route to Other Skills When
 
 - **incident** → 실제 장애가 발생한 후 근본 원인 분석과 신뢰성 개선 연결
-- **premortem** → 신뢰성 개선 계획의 리스크를 사전 분석할 때
-- **kpi** → 신뢰성을 KPI 대시보드(Success Rate, Error Rate)에 포함
-- **cohort** → 신뢰성이 코호트(버전)별로 다르게 나타날 때 (버전 비교)
+- **이 스킬의 Pre-mortem 섹션** → 신뢰성 개선 계획의 리스크를 사전 분석할 때 (아래 "사전 위험 분석" 섹션)
+- **metrics-design --step kpi** → 신뢰성을 KPI 대시보드(Success Rate, Error Rate)에 포함
+- **metrics-design** (코호트 분석 섹션) → 신뢰성이 코호트(버전)별로 다르게 나타날 때 (버전 비교)
 
 ### Boundary Checks
 

@@ -1,6 +1,6 @@
 {
   "name": "deliver",
-  "version": "0.14.1",
+  "version": "0.14.2",
   "description": "Spec, build, and ship AI agents — PRD templates (prd --mode roadmap for roadmaps), instruction design, prompt engineering, sprint planning, context budget, stakeholder mapping, build-execution scaffolding (harness-design, parallel-team worktrees, build-loop), prompt-level progress tracking (velocity, estimate, blocker-detect, track --mode checkpoint), UI/UX design-system enforcement (DESIGN.md, RESPECT.md), and async stakeholder review via ask-team --mode review. Use when writing agent PRDs, building agents, communicating progress to stakeholders, or enforcing design quality during the build cycle.",
   "author": {
     "name": "AI PM Skills Contributors",

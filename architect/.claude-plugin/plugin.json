@@ -1,6 +1,6 @@
 {
   "name": "architect",
-  "version": "0.14.1",
+  "version": "0.14.2",
   "description": "Architect scalable, defensible AI agent systems — orchestration patterns (Sequential, Parallel, Router, Hierarchical/3-tier 계층 오케스트레이션 포함), business models, and competitive moats. Use when designing agent architecture, choosing orchestration patterns, planning memory systems, or analyzing competitive positioning.",
   "author": {
     "name": "AI PM Skills Contributors",

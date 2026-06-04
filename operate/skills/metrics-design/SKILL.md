@@ -29,9 +29,9 @@ model: sonnet
 
 ### Route to Other Skills When
 
-- **portfolio-report --view scorecard** → 정의된 KPI로 상대 비교 점수화
+- **portfolio --mode report --view scorecard** → 정의된 KPI로 상대 비교 점수화
 - **ops-review --mode cost** → North Star에 비용 효율 요소가 포함될 때
-- **cohort** → North Star 추이를 코호트별로 추적할 때
+- **이 스킬의 코호트 분석 기법** → North Star 추이를 코호트별로 추적할 때 (아래 "관련 기법 — 코호트 분석" 섹션)
 - **reliability** → A/B 테스트의 Primary 메트릭으로 North Star 사용 시
 
 ### Boundary Checks

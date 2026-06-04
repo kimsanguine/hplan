@@ -30,10 +30,10 @@ model: sonnet
 
 ### Route to Other Skills When
 
-- **premortem** → 장애 원인 분석 후 유사 실패 예방 메커니즘 설계
+- **reliability** (Pre-mortem 섹션) → 장애 원인 분석 후 유사 실패 예방 메커니즘 설계
 - **ops-review --mode cost** → 비용 폭증이 토큰 사용량 이상이라면 (비용 최적화 필요)
 - **reliability** → 장애 복구 후 신뢰성 개선 계획 수립
-- **cohort** → 특정 버전/세그먼트만 장애를 겪었다면 (코호트 분석)
+- **metrics-design** (코호트 분석 섹션) → 특정 버전/세그먼트만 장애를 겪었다면 (코호트 분석)
 
 ### Boundary Checks
 
@@ -208,7 +208,7 @@ TK Extracted: [TK-NNN title]
 - [ ] 긴급 대응 단계(격리, hotfix 또는 rollback)가 명확한가? (Yes/No)
 - [ ] 5 Whys 분석으로 근본 원인을 최소 3단계 이상 파악했는가? (Yes/No)
 - [ ] 영향받은 이해관계자에게 1시간 이내 1차 공지를 했는가? (Yes/No)
-- [ ] TK로 추출된 학습 내용이 기록되었으며 premortem과 연결되었는가? (Yes/No)
+- [ ] TK로 추출된 학습 내용이 기록되었으며 reliability의 Pre-mortem과 연결되었는가? (Yes/No)
 
 ---
 
@@ -266,7 +266,7 @@ TK 추출:
 - 설계자: AI PM Skills Contributors, 2026-03
 - 에이전트 장애 유형 분류: production agent 운영 장애 대응 경험 기반
 - Silent Failure 패턴: 환각이 "그럴듯한 답"이라 유저가 장애를 인지 못 하는 케이스
-- premortem 스킬과 상호 보완 (사전 예방 vs 사후 대응)
+- reliability 스킬의 Pre-mortem 섹션과 상호 보완 (사전 예방 vs 사후 대응)
 
 ---
 
