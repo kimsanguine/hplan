@@ -10,7 +10,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
 [![Skills](https://img.shields.io/badge/skills-34-blue?style=flat-square)](#에이전트-pm-여정--5-plugin)
 [![Plugins](https://img.shields.io/badge/plugins-5-purple?style=flat-square)](#에이전트-pm-여정--5-plugin)
-[![Version](https://img.shields.io/badge/version-0.14.2-green?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.0.0-green?style=flat-square)](CHANGELOG.md)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)](CONTRIBUTING.md)
 [![English](https://img.shields.io/badge/lang-English-blue?style=flat-square)](README.md)
 
@@ -36,7 +36,7 @@ AI가 먼저 당신의 가정을 심문합니다. "만들 가치가 있는가"�
 
 > 💡 **심화 내용** — 처음이라면 건너뛰어도 됩니다.
 >
-> **v0.14.2** — hplan 은 AI 도구가 HOW 로 달려가기 전에 **WHETHER 를 묻는 Product Build Gate** 입니다. ADK 5-Layer 완성: L1 Memory (CLAUDE.md) · L2 Skills (34개 PM 규율) · L3 Hooks (SessionStart · PreToolUse · PostToolUse) · L4 Subagents (8역할 병렬 팀) · L5 Plugins (마켓플레이스). `git clone` + `bash scripts/install-hooks.sh` 한 번으로 5개 레이어 전체 활성화. 자세한 변경 내역은 [CHANGELOG.md](CHANGELOG.md).
+> **v1.0.0** — hplan 은 AI 도구가 HOW 로 달려가기 전에 **WHETHER 를 묻는 Product Build Gate** 입니다. ADK 5-Layer 완성: L1 Memory (CLAUDE.md) · L2 Skills (34개 PM 규율) · L3 Hooks (SessionStart · PreToolUse · PostToolUse) · L4 Subagents (8역할 병렬 팀) · L5 Plugins (마켓플레이스). `git clone` + `bash scripts/install-hooks.sh` 한 번으로 5개 레이어 전체 활성화. 자세한 변경 내역은 [CHANGELOG.md](CHANGELOG.md).
 
 ### 📺 99초 소개 영상
 
