@@ -10,7 +10,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
 [![Skills](https://img.shields.io/badge/skills-34-blue?style=flat-square)](#에이전트-pm-여정--5-plugin)
 [![Plugins](https://img.shields.io/badge/plugins-5-purple?style=flat-square)](#에이전트-pm-여정--5-plugin)
-[![Version](https://img.shields.io/badge/version-1.0.0-green?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.0.1-green?style=flat-square)](CHANGELOG.md)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)](CONTRIBUTING.md)
 [![English](https://img.shields.io/badge/lang-English-blue?style=flat-square)](README.md)
 
@@ -36,7 +36,7 @@ AI가 먼저 당신의 가정을 심문합니다. "만들 가치가 있는가"�
 
 > 💡 **심화 내용** — 처음이라면 건너뛰어도 됩니다.
 >
-> **v1.0.0** — hplan 은 AI 도구가 HOW 로 달려가기 전에 **WHETHER 를 묻는 Product Build Gate** 입니다. ADK 5-Layer 완성: L1 Memory (CLAUDE.md) · L2 Skills (34개 PM 규율) · L3 Hooks (SessionStart · PreToolUse · PostToolUse) · L4 Subagents (8역할 병렬 팀) · L5 Plugins (마켓플레이스). `git clone` + `bash scripts/install-hooks.sh` 한 번으로 5개 레이어 전체 활성화. 자세한 변경 내역은 [CHANGELOG.md](CHANGELOG.md).
+> **v1.0.1** — hplan 은 AI 도구가 HOW 로 달려가기 전에 **WHETHER 를 묻는 Product Build Gate** 입니다. ADK 5-Layer 완성: L1 Memory (CLAUDE.md) · L2 Skills (34개 PM 규율) · L3 Hooks (SessionStart · PreToolUse · PostToolUse) · L4 Subagents (8역할 병렬 팀) · L5 Plugins (마켓플레이스). `git clone` + `bash scripts/install-hooks.sh` 한 번으로 5개 레이어 전체 활성화. 자세한 변경 내역은 [CHANGELOG.md](CHANGELOG.md).
 
 ### 📺 99초 소개 영상
 
@@ -247,12 +247,31 @@ bash <(curl -fsSL https://habix.ai/hplan/install.sh)
 
 이 명령은 private package를 `~/hplan`에 설치하고 로컬 Claude CLI alias를 등록합니다. 운영 방식은 [`docs/private-distribution.md`](docs/private-distribution.md)에 정리되어 있습니다.
 
+### 방법 0 — settings.json 한 파일로 5개 한 번에 (가장 빠름)
+
+아래를 프로젝트의 `.claude/settings.json`에 넣으면 (또는 동봉된 [`.claude/settings.json.example`](.claude/settings.json.example) 복사), 다음 `claude` 세션의 trust dialog 한 번으로 5개 플러그인이 전부 활성화됩니다 — `/plugin marketplace add`도, 5번의 `/plugin install`도 불필요합니다.
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "hplan": { "source": { "source": "github", "repo": "kimsanguine/hplan" } }
+  },
+  "enabledPlugins": {
+    "hplan@hplan": true,
+    "discover@hplan": true,
+    "architect@hplan": true,
+    "deliver@hplan": true,
+    "operate@hplan": true
+  }
+}
+```
+
 ### 방법 A — 라이프사이클 커맨드 (권장, hplan 1개만 설치)
 
 ```bash
 # Claude 세션에서 실행
 /plugin marketplace add kimsanguine/hplan
-/plugin install hplan@kimsanguine-hplan
+/plugin install hplan@hplan
 
 # 전체 라이프사이클을 5개 커맨드로
 # (harness-discover가 먼저 실행되는 이유: gate 판단에 필요한 evidence를 수집합니다)
@@ -283,10 +302,10 @@ bash <(curl -fsSL https://habix.ai/hplan/install.sh)
 
 ```bash
 # Claude 세션에서 복붙 (필요한 것만 선택해도 됩니다)
-/plugin install discover@kimsanguine-hplan   # 발견 — opportunity tree, assumptions, cost sim
-/plugin install architect@kimsanguine-hplan  # 설계 — orchestration, memory, strategy
-/plugin install deliver@kimsanguine-hplan    # 실행 — PRD, conductor, sprint, QA, UI 검증
-/plugin install operate@kimsanguine-hplan    # 측정·학습·운영 — metrics, 신뢰성, PM 암묵지, 포트폴리오
+/plugin install discover@hplan   # 발견 — opportunity tree, assumptions, cost sim
+/plugin install architect@hplan  # 설계 — orchestration, memory, strategy
+/plugin install deliver@hplan    # 실행 — PRD, conductor, sprint, QA, UI 검증
+/plugin install operate@hplan    # 측정·학습·운영 — metrics, 신뢰성, PM 암묵지, 포트폴리오
 ```
 
 스킬 이름을 외울 필요는 없습니다. 자연어로 질문하면 34개 스킬 중 맞는 게 auto-load 됩니다.
@@ -535,11 +554,11 @@ source ~/.zshrc
 /plugin marketplace add kimsanguine/hplan
 
 # 필요한 플러그인만 선택해서 설치
-/plugin install hplan@kimsanguine-hplan
-/plugin install discover@kimsanguine-hplan
-/plugin install architect@kimsanguine-hplan
-/plugin install deliver@kimsanguine-hplan
-/plugin install operate@kimsanguine-hplan
+/plugin install hplan@hplan
+/plugin install discover@hplan
+/plugin install architect@hplan
+/plugin install deliver@hplan
+/plugin install operate@hplan
 ```
 
 > **Private repo 환경**: 마켓플레이스 설치가 "not found"로 실패하면, 방법 3(수동 로컬 클론)을 사용하세요. 로컬 클론은 repo 공개 여부와 무관하게 동작합니다.

@@ -60,8 +60,9 @@ __pycache__/
 .env
 .env.local
 
-# Claude Code local state
-.claude/
+# Claude Code local state (settings.json.example is tracked as an install template)
+.claude/*
+!.claude/settings.json.example
 tools/intro-video/*.mp4
 
 # hplan 자동 생성 HTML (MD 옆에 생성됨, 버전 관리 제외)

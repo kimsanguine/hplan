@@ -1,0 +1,17 @@
+{
+  "extraKnownMarketplaces": {
+    "hplan": {
+      "source": {
+        "source": "github",
+        "repo": "kimsanguine/hplan"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "hplan@hplan": true,
+    "discover@hplan": true,
+    "architect@hplan": true,
+    "deliver@hplan": true,
+    "operate@hplan": true
+  }
+}
