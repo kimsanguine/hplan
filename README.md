@@ -10,11 +10,11 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
 [![Skills](https://img.shields.io/badge/skills-34-blue?style=flat-square)](#plugins--full-skill-list)
 [![Plugins](https://img.shields.io/badge/plugins-5-purple?style=flat-square)](#the-agent-pm-journey--5-plugins)
-[![Version](https://img.shields.io/badge/version-1.0.0-green?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.0.1-green?style=flat-square)](CHANGELOG.md)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)](CONTRIBUTING.md)
 [![한국어](https://img.shields.io/badge/lang-한국어-blue?style=flat-square)](README-ko.md)
 
-> **v1.0.0** — hplan now ships as a complete **ADK (Agent Development Kit)**: **L1 Memory** (`CLAUDE.md` — 9 behavioral rules auto-loaded every session) · **L2 Skills** (34 PM disciplines, auto-invoked) · **L3 Hooks** (`hooks/` — SessionStart gate status · PreToolUse gate enforcement · PostToolUse secret scanner + **MD→HTML auto-renderer**) · **L4 Subagents** (8-role parallel team) · **L5 Plugins** (marketplace). One `git clone` + `bash scripts/install-hooks.sh` activates all 5 layers. v0.9.4–v1.0.0 history: see [CHANGELOG.md](CHANGELOG.md).
+> **v1.0.1** — hplan now ships as a complete **ADK (Agent Development Kit)**: **L1 Memory** (`CLAUDE.md` — 9 behavioral rules auto-loaded every session) · **L2 Skills** (34 PM disciplines, auto-invoked) · **L3 Hooks** (`hooks/` — SessionStart gate status · PreToolUse gate enforcement · PostToolUse secret scanner + **MD→HTML auto-renderer**) · **L4 Subagents** (8-role parallel team) · **L5 Plugins** (marketplace). One `git clone` + `bash scripts/install-hooks.sh` activates all 5 layers. v0.9.4–v1.0.1 history: see [CHANGELOG.md](CHANGELOG.md).
 
 ### 📺 99-second intro
 
@@ -135,7 +135,7 @@ This installs the current private package to `~/hplan` and registers local Claud
 ```bash
 # 1. Install the marketplace
 /plugin marketplace add kimsanguine/hplan
-/plugin install hplan@kimsanguine-hplan
+/plugin install hplan@hplan
 
 # 2. Verify your install (hooks, gate_guard, exclusions registry)
 /harness-doctor
@@ -158,10 +158,10 @@ This installs the current private package to `~/hplan` and registers local Claud
 **Already past the gate?** Install by lifecycle stage:
 
 ```bash
-/plugin install discover@kimsanguine-hplan   # Discover — opportunity trees, assumptions, cost sim, customer-reach
-/plugin install architect@kimsanguine-hplan  # Architect — orchestration, memory, strategy, design-token
-/plugin install deliver@kimsanguine-hplan    # Deliver — PRD, instructions, build tracking, UI/UX enforcement
-/plugin install operate@kimsanguine-hplan    # Operate — KPI, reliability, portfolio, PM knowledge capture
+/plugin install discover@hplan   # Discover — opportunity trees, assumptions, cost sim, customer-reach
+/plugin install architect@hplan  # Architect — orchestration, memory, strategy, design-token
+/plugin install deliver@hplan    # Deliver — PRD, instructions, build tracking, UI/UX enforcement
+/plugin install operate@hplan    # Operate — KPI, reliability, portfolio, PM knowledge capture
 ```
 
 ---
@@ -367,7 +367,26 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 
 ```bash
 /plugin marketplace add kimsanguine/hplan
-/plugin install hplan@kimsanguine-hplan    # or discover · architect · deliver · operate
+/plugin install hplan@hplan    # or discover · architect · deliver · operate
+```
+
+### Option 1b: One file — all 5 plugins (no per-plugin install)
+
+Drop this into your project's `.claude/settings.json` (or copy the bundled [`.claude/settings.json.example`](.claude/settings.json.example)). On the next `claude` session the trust dialog activates all 5 plugins at once — no `/plugin marketplace add`, no five separate `/plugin install` commands:
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "hplan": { "source": { "source": "github", "repo": "kimsanguine/hplan" } }
+  },
+  "enabledPlugins": {
+    "hplan@hplan": true,
+    "discover@hplan": true,
+    "architect@hplan": true,
+    "deliver@hplan": true,
+    "operate@hplan": true
+  }
+}
 ```
 
 ### Option 2: Clone Locally (Full ADK Stack)

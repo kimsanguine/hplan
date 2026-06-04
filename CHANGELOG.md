@@ -4,6 +4,19 @@ All notable changes to hplan (renamed from AI_PM_Skills in v0.5) are documented 
 
 ---
 
+## [1.0.1] — 2026-06-04
+
+> **설치 정정 + 일괄 설치 지원.** marketplace 식별자 오류를 수정하고, settings.json 한 파일로 5개 플러그인을 한 번에 활성화하는 경로를 추가.
+
+### Fixed
+- **설치 명령 식별자 정정** — `README.md` / `README-ko.md` / `GUIDE-ko.md`의 `/plugin install <plugin>@kimsanguine-hplan` → `@hplan`. Claude Code의 marketplace 식별자는 `marketplace.json`의 `name` 필드(`"hplan"`)이며 owner-repo 자동생성(`kimsanguine-hplan`)이 아님 (공식 문서 `plugin-marketplaces.md#marketplace-schema` 2-소스 교차확인). 기존 명령은 설치 실패했음.
+
+### Added
+- **`.claude/settings.json.example`** — `extraKnownMarketplaces` + `enabledPlugins`로 5개 플러그인을 한 파일에 선언. `clone` + trust dialog만으로 `/plugin marketplace add` + 5× `/plugin install` 없이 전체 활성화. README 설치 섹션(Option 1b / 방법 0)에 안내 추가.
+- `.gitignore` — `.claude/*` + `!.claude/settings.json.example` 패턴으로 템플릿 파일만 추적 (git negation 함정 회피).
+
+---
+
 ## [1.0.0] — 2026-06-04
 
 > **첫 정식 안정 릴리스.** `AI_PM_Skills` 리네임(v0.5) 이후 v0.14.2까지의 검증을 거쳐 ADK 5-Layer가 안정화됨. 기능 변화 없이 v0.14.2를 1.0.0으로 승격.

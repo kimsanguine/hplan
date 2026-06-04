@@ -54,7 +54,7 @@
 ```
 # 한 줄로 5개 플러그인 전부 설치
 /plugin marketplace add kimsanguine/hplan
-/plugin install hplan@kimsanguine-hplan
+/plugin install hplan@hplan
 ```
 
 ### 방법 2: 개별 플러그인 설치
@@ -63,11 +63,11 @@
 
 ```
 # 필요한 플러그인만 선택해서 설치
-/plugin install hplan@kimsanguine-hplan      # 게이트 ⭐ (Should we build this?)
-/plugin install discover@kimsanguine-hplan   # 발견 (What to build?)
-/plugin install architect@kimsanguine-hplan  # 설계 (How to architect?)
-/plugin install deliver@kimsanguine-hplan    # 실행 (How to ship?)
-/plugin install operate@kimsanguine-hplan    # 측정·학습·운영 통합 (How to measure, learn & operate?)
+/plugin install hplan@hplan      # 게이트 ⭐ (Should we build this?)
+/plugin install discover@hplan   # 발견 (What to build?)
+/plugin install architect@hplan  # 설계 (How to architect?)
+/plugin install deliver@hplan    # 실행 (How to ship?)
+/plugin install operate@hplan    # 측정·학습·운영 통합 (How to measure, learn & operate?)
 ```
 
 만들지 말지부터 고민이라면 → `hplan`을 먼저 설치하세요 (evidence + COGS 게이트).
