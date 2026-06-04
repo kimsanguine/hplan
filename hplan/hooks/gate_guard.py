@@ -252,46 +252,95 @@ def gate_approved(project_dir: Path) -> tuple[bool, str, dict]:
     return False, f"checkpoint.json status = {status!r} (need 'approved')", data
 
 
-def check_conditional_scope(data: dict, target: str) -> tuple[str, str]:
+def _path_in_scope(target: str, allowed: list[str], project_dir: Path) -> bool:
+    """True iff `target` resolves to one of `allowed` (exact match or under an
+    allowed directory). Uses resolved paths + path-component boundaries so that
+    a substring like `docs/PRD.md` cannot match `archive/docs/PRD.md`, and an
+    allowed file cannot be escaped via `..` or symlink trickery.
+    """
+    def _resolve(p: str) -> Path:
+        pp = Path(p.replace("\\", "/"))
+        if not pp.is_absolute():
+            pp = project_dir / pp
+        # resolve() normalizes `..`/`.` and symlinks; strict=False so the
+        # target need not exist yet (writes create new files).
+        return pp.resolve()
+
+    tgt = _resolve(target)
+    for raw in allowed:
+        allow = _resolve(raw)
+        if tgt == allow:
+            return True
+        # Directory allowance: target must live *under* the allowed path,
+        # matched on full path components (not a string prefix), so
+        # `/a/docs` does not match `/a/docs-archive`.
+        if allow in tgt.parents:
+            return True
+    return False
+
+
+def check_conditional_scope(data: dict, target: str, project_dir: Path) -> tuple[str, str]:
     """Enforce CONDITIONAL_GO write-time restrictions.
 
     Returns ('ok', '') or ('block', reason).
     Absent decision field = treat as GO (backward-compatible).
+
+    Fail-closed posture for CONDITIONAL_GO:
+      - malformed/unset expires_at on a CONDITIONAL_GO blocks (date cannot be verified)
+      - missing/empty/non-list allowed_paths blocks (scope must be explicit)
     """
     decision = data.get("decision", "GO")
     if decision != "CONDITIONAL_GO":
         return "ok", ""
 
-    # Expiry check
-    expires_at = (data.get("expires_at") or "").strip()
+    # Expiry check — fail-closed. A CONDITIONAL_GO with a malformed expires_at
+    # (or one that won't parse) cannot be proven unexpired, so it must block.
+    expires_raw = data.get("expires_at")
+    expires_at = (expires_raw if isinstance(expires_raw, str) else "").strip()
     if expires_at:
         try:
-            if date.today() > date.fromisoformat(expires_at):
-                return "block", (
-                    f"CONDITIONAL_GO expired on {expires_at}.\n"
-                    "  Re-run /hplan to reassess or obtain full GO approval."
-                )
+            expires_date = date.fromisoformat(expires_at)
         except ValueError:
-            pass
-
-    # Scope check: if allowed_paths is non-empty, target must be in scope
-    allowed: list[str] = data.get("allowed_paths") or []
-    if allowed:
-        norm = target.replace("\\", "/")
-        in_scope = any(
-            norm.endswith(p.lstrip("/")) or p.lstrip("/") in norm
-            for p in allowed
-        )
-        if not in_scope:
-            conditions = data.get("conditions") or []
-            cond_str = "\n    ".join(conditions) if conditions else "(none listed)"
             return "block", (
-                f"CONDITIONAL_GO: write is outside allowed scope.\n"
-                f"  Allowed paths: {allowed}\n"
-                f"  Target:        {norm!r}\n"
-                f"  Outstanding conditions:\n    {cond_str}\n"
-                "  Resolve all conditions first or obtain full GO approval."
+                f"CONDITIONAL_GO has a malformed expires_at ({expires_raw!r}).\n"
+                "  An unverifiable expiry cannot be trusted — write blocked.\n"
+                "  Fix expires_at (YYYY-MM-DD) or obtain full GO approval."
             )
+        if date.today() > expires_date:
+            return "block", (
+                f"CONDITIONAL_GO expired on {expires_at}.\n"
+                "  Re-run /hplan to reassess or obtain full GO approval."
+            )
+
+    # Scope check — fail-closed. A CONDITIONAL_GO MUST declare an explicit,
+    # non-empty list of allowed_paths; an approval "with conditions" but without
+    # a stated write scope is treated as "no writes permitted".
+    allowed = data.get("allowed_paths")
+    if not isinstance(allowed, list) or not allowed or not all(
+        isinstance(p, str) for p in allowed
+    ):
+        conditions = data.get("conditions") or []
+        cond_str = "\n    ".join(conditions) if conditions else "(none listed)"
+        return "block", (
+            "CONDITIONAL_GO without a valid allowed_paths scope.\n"
+            f"  allowed_paths: {allowed!r}\n"
+            "  A conditional approval must list the exact files/dirs it permits "
+            "writing (a non-empty list of strings).\n"
+            f"  Outstanding conditions:\n    {cond_str}\n"
+            "  Add allowed_paths or obtain full GO approval."
+        )
+
+    if not _path_in_scope(target, allowed, project_dir):
+        norm = target.replace("\\", "/")
+        conditions = data.get("conditions") or []
+        cond_str = "\n    ".join(conditions) if conditions else "(none listed)"
+        return "block", (
+            f"CONDITIONAL_GO: write is outside allowed scope.\n"
+            f"  Allowed paths: {allowed}\n"
+            f"  Target:        {norm!r}\n"
+            f"  Outstanding conditions:\n    {cond_str}\n"
+            "  Resolve all conditions first or obtain full GO approval."
+        )
 
     return "ok", ""
 
@@ -388,7 +437,7 @@ def _run_gate(event: dict) -> int:
         return 2
 
     # --- CONDITIONAL_GO scope check (only when approved) ---
-    scope_verdict, scope_reason = check_conditional_scope(cp_data, target_norm)
+    scope_verdict, scope_reason = check_conditional_scope(cp_data, target_norm, project_dir)
     if scope_verdict == "block":
         print(
             f"hplan gate guard BLOCKED: CONDITIONAL_GO scope violation.\n{scope_reason}",

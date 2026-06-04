@@ -12,7 +12,7 @@ Agent Opportunity Discovery — 조직의 반복 업무, 병목 지점, 자동�
 
 **제외 범위:**
 - 이미 선택된 에이전트의 가정 검증 (assumptions 스킬)
-- 특정 에이전트의 구현 방식 결정 (build-or-buy 스킬)
+- 특정 에이전트의 구현 방식 결정 (assumptions --mode build-or-buy)
 - 제품 전체의 전략 기획 (별도 스킬)
 
 ---
@@ -66,7 +66,7 @@ Agent Opportunity Discovery — 조직의 반복 업무, 병목 지점, 자동�
 
 6. **다음 권장 액션**
    - "가장 높은 Score + 가장 낮은 구현 난이도" 조합 추천
-   - assumptions 스킬로 연결 또는 build-or-buy 결정
+   - assumptions 스킬로 연결 또는 assumptions --mode build-or-buy 결정
 
 ---
 
@@ -120,4 +120,4 @@ Agent Opportunity Discovery — 조직의 반복 업무, 병목 지점, 자동�
 - [ ] 각 Opportunity마다 2개 이상의 Agent Solutions 후보가 있고, 트리거/도구/종료조건이 정의되었는가?
 - [ ] 최우선 솔루션의 Value/Feasibility/Reliability/Ethics 4축 가정이 명시되었는가?
 - [ ] 검증 실험이 2일 이내에 가능한 수준으로 설계되었는가?
-- [ ] 다음 단계 연결(assumptions 또는 build-or-buy)이 명확한가?
+- [ ] 다음 단계 연결(assumptions 또는 assumptions --mode build-or-buy)이 명확한가?

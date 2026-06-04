@@ -11,7 +11,7 @@ Agent Assumption Analysis — 에이전트 구현 전 숨겨진 가정을 발굴
 
 **제외 범위:**
 - 이미 배포된 에이전트의 성능 개선 (별도 스킬)
-- 기술 스택 선택 (build-or-buy 스킬)
+- 기술 스택 선택 (assumptions --mode build-or-buy)
 - 비즈니스 기회 발굴 (opp-tree 스킬)
 
 ---
@@ -57,7 +57,7 @@ Agent Assumption Analysis — 에이전트 구현 전 숨겨진 가정을 발굴
    - Human-in-the-Loop 필요 여부 판단
 
 5. **다음 단계 권장**
-   - 검증 실험 통과 → agent-instruction-design
+   - 검증 실험 통과 → agent-setup
    - Ethics 위험 높음 → hitl 스킬
    - 검증 실패 → opp-tree로 돌아가 기회 재탐색
 
@@ -113,4 +113,4 @@ Agent Assumption Analysis — 에이전트 구현 전 숨겨진 가정을 발굴
 - [ ] Top 3 가정의 "틀렸을 시나리오" + "피벗 옵션"이 서술되었는가?
 - [ ] 검증 실험이 2일 이내에 가능한 수준인가?
 - [ ] Ethics 위험도 4점 이상 항목이 발견되었고, hitl 스킬 검토가 예정되었는가?
-- [ ] 다음 단계 (instruction-design / hitl / 기회 재탐색) 가 명확한가?
+- [ ] 다음 단계 (agent-setup / hitl / 기회 재탐색) 가 명확한가?

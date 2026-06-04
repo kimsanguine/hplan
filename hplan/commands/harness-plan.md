@@ -334,7 +334,7 @@ python3 hplan/scripts/decision_log.py hitl \
 ARCHITECTURE.md 작성 완료. 다음 실행 전략 중 하나를 선택한다:
 
 - A) **단독 실행** — `/harness-build [brief]`로 이 세션에서 직접 진행
-- B) **병렬 팀 구성** — `/deliver:parallel-team`으로 에이전트 팀을 배치한 후 병렬 실행
+- B) **팀 기반 실행** — `/deliver:conductor`로 태스크별 fresh subagent 디스패치 + 2단계 게이트 반복 실행
 - C) **단계적 실행** — Phase별 HITL 확인하며 `/harness-build --step` 순서대로 진행
 
 **선택 후 결정을 기록한다:**

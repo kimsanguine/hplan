@@ -30,14 +30,14 @@ model: sonnet
 ### Route to Other Skills When
 
 - **portfolio-report --view scorecard** → 정의된 KPI로 상대 비교 점수화
-- **burn-rate** → North Star에 비용 효율 요소가 포함될 때
+- **ops-review --mode cost** → North Star에 비용 효율 요소가 포함될 때
 - **cohort** → North Star 추이를 코호트별로 추적할 때
-- **agent-ab-test** → A/B 테스트의 Primary 메트릭으로 North Star 사용 시
+- **reliability** → A/B 테스트의 Primary 메트릭으로 North Star 사용 시
 
 ### Boundary Checks
 
 - **코드 배포해줘** → deliver 플러그인으로 라우팅
-- **UI 점검해줘** → craft 플러그인으로 라우팅
+- **UI 점검해줘** → deliver/ui-validate로 라우팅
 - 메트릭 선택의 주관성 → 5가지 기준(Actionable · Measurable · Understandable · Leading · Composite) 충족 여부 점검
 - Anti-metric 설정 → North Star 최적화로 인한 다른 지표 악화를 사전에 차단
 

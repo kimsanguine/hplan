@@ -33,9 +33,9 @@ model: sonnet
 
 ### Route to Other Skills When
 - 표준 토큰 (색·폰트·간격) 정의 → Google DESIGN.md (`npx @google/design.md`)
-- 픽셀 분석 (fold density / contrast) → `craft/hierarchy-rules` (Playwright)
-- 디자인 토큰·hierarchy 위반 → `craft/craft-lint` 또는 `craft/hierarchy-rules`
-- 게이트 통과의 자연어 보고 → `track/progress-report`
+- 픽셀 분석 (fold density / contrast) → `deliver/ui-validate --check hierarchy` (Playwright)
+- 디자인 토큰·hierarchy 위반 → `scripts/validate-craft-lint.py` (정적) 또는 `deliver/ui-validate --check hierarchy` (런타임)
+- 게이트 통과의 자연어 보고 → `operate/ops-review`
 
 ### Boundary Checks
 - DESIGN.md 부재 시 → "먼저 `npx @google/design.md init` 권유"
@@ -147,7 +147,7 @@ You are writing RESPECT.md for: **$ARGUMENTS**
 |---|---|---|---|---|
 | **α — 인간 7초 체크리스트** | 사용자 직접 답 + 응답시간 측정 | ship 직전 (동기) | 본인 의식적 검수 | 화면당 ~30초 |
 | **β — 72h 데이터 게이트** | PostHog/Plausible/GA4 metrics (scroll≥40%, CTR≥2%, bounce≤60%) | ship 후 72h (비동기) | 객관 데이터 100% | 인프라 셋업 1회 |
-| **γ — 합성 시뮬레이션** | Playwright + saliency map + WCAG AA + craft/hierarchy-rules 재사용 | ship 직전 (자동) | 60-70% (실제 인지 ≠ saliency) | 자동, 무료 |
+| **γ — 합성 시뮬레이션** | Playwright + saliency map + WCAG AA + `ui-validate --check hierarchy` 재사용 | ship 직전 (자동) | 60-70% (실제 인지 ≠ saliency) | 자동, 무료 |
 
 > γ가 가장 자동 & 0 비용이지만 신뢰도 중간 — α + γ 조합이 default 권고.
 
@@ -222,11 +222,11 @@ You are running respect --mode checkpoint for: **$ARGUMENTS**
 - Playwright 호출 → 화면 캡처
 - saliency map 계산 (CSS contrast/size/position 가중치)
 - WCAG AA contrast 검증
-- craft/hierarchy-rules (fold density / color_ratio / cta count) 재사용
+- `ui-validate --check hierarchy` (fold density / color_ratio / cta count) 재사용
 - 미달 항목 → 실패
 
 **Step 7 — 최종 판정 + ship 허용/차단**
-- 선택된 모든 게이트 pass → ship 허용 + progress-report trigger (phase_transition)
+- 선택된 모든 게이트 pass → ship 허용 + `operate/ops-review` trigger (phase_transition)
 - 1개라도 fail → ship 차단 + fix 권유 (β는 차단 안 함, 사후 issue만)
 
 ---
@@ -264,8 +264,8 @@ You are running respect --mode checkpoint for: **$ARGUMENTS**
 - [ ] 게이트 조합은 yaml lookup (정책은 인간이 yaml 편집)
 - [ ] α 응답시간 측정 + 7초 미만 warning
 - [ ] β analytics_endpoint 확인 + 비동기 cron 등록
-- [ ] γ Playwright + craft/hierarchy-rules 재사용
-- [ ] 모든 게이트 통과만 ship 허용 + progress-report trigger 발화
+- [ ] γ Playwright + `ui-validate --check hierarchy` 재사용
+- [ ] 모든 게이트 통과만 ship 허용 + `operate/ops-review` trigger 발화
 
 ---
 

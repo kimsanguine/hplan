@@ -3,7 +3,7 @@
 ## 1) Domain Scope
 에이전트 시스템에서 **2개 이상의 에이전트가 협력할 때** 어떤 패턴으로 조율할지 선택하고 설계하는 영역.
 - 포함: Sequential, Parallel, Router, Hierarchical, Event-Driven 패턴
-- 제외: 단일 에이전트 프롬프팅, 개별 에이전트 성능 최적화, 모델 선택 (router 스킬)
+- 제외: 단일 에이전트 프롬프팅, 개별 에이전트 성능 최적화 (모델 선택은 본 스킬 --pattern router 모드)
 
 ## 2) Primary Users
 - **제품 설계자**: 멀티 에이전트 워크플로우 구조 결정

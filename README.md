@@ -158,8 +158,8 @@ This installs the current private package to `~/hplan` and registers local Claud
 **Already past the gate?** Install by lifecycle stage:
 
 ```bash
-/plugin install discover@kimsanguine-hplan   # Discover — opportunity trees, assumptions, cost sim, agent-gtm
-/plugin install architect@kimsanguine-hplan  # Architect — orchestration, memory, moat, design-token
+/plugin install discover@kimsanguine-hplan   # Discover — opportunity trees, assumptions, cost sim, customer-reach
+/plugin install architect@kimsanguine-hplan  # Architect — orchestration, memory, strategy, design-token
 /plugin install deliver@kimsanguine-hplan    # Deliver — PRD, instructions, build tracking, UI/UX enforcement
 /plugin install operate@kimsanguine-hplan    # Operate — KPI, reliability, portfolio, PM knowledge capture
 ```
@@ -204,7 +204,7 @@ Each skill **auto-loads from natural language** — describe your task and the r
 
 ### ② Two-Layer Architecture — Platform and Content Separation
 
-We separate **how Claude finds skills** (Platform Layer — Skills 2.0 spec) from **what goes inside each skill** (Content Layer). The Content Layer defines the Trigger Gate (Use/Route/Boundary) pattern that prevents skill collisions, plus domain-specific context in each skill's `context/domain.md`. Result: **97.9% trigger accuracy** measured on v0.6 baseline (124 queries); v0.8 expands to 168 total queries (+44 for new 11 skills, re-measurement after API quota reset).
+We separate **how Claude finds skills** (Platform Layer — Skills 2.0 spec) from **what goes inside each skill** (Content Layer). The Content Layer defines the Trigger Gate (Use/Route/Boundary) pattern that prevents skill collisions, plus domain-specific context in each skill's `context/domain.md`. Result: **90.9% trigger accuracy** (v0.14.1, 80/88 queries, Haiku 4.5, single-run snapshot). The trigger eval currently covers 22 of 34 skills; because it is a 1-run snapshot the figure varies ±a few points between runs, and full 34-skill coverage is in progress. (Prior v0.6 baseline measured 97.9% on a smaller 24-skill/96-query set.)
 
 ```
 ┌─ Platform Layer ──── Skills 2.0 Spec ──────────────────────┐
@@ -234,7 +234,7 @@ Every skill is measured. 10 quality tests with 54 assertions prove what skills a
 |---|-----------|--------------|-------|
 | **Pass Rate** | **100%** | 88% | **+12%** |
 
-`pm-framework` without skill drops to 40%. `cost-sim` with skill adds +46.6% output. This is **data-driven proof** that the skills work.
+`pm-engine` without skill drops to 40%. `cost-sim` with skill adds +46.6% output. This is **data-driven proof** that the skills work.
 
 ### ⑤ Good/Bad Examples for Data-Driven Improvement
 
@@ -328,7 +328,7 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 | `agent-setup` ⭐ | Scan project structure → auto-generate CLAUDE.md → recommend matching hplan plugins | "New project — set up Claude Code context" |
 | `prd` | **Unified 15-section PRD** — People/Problem/Decisions + Agent/Execution Spec + Metrics/Hypotheses/Failure + §15 QA Pool. `--mode roadmap` turns gate verdicts + sprint estimates into a prioritized timeline/milestone view | "Write a PRD for a solo-lawyer Korean case-law RAG agent" / "Turn our gate verdicts and sprint estimates into a shareable roadmap" |
 | `build-loop` | Autonomous build-loop orchestration with checkpoint gates | "Run the full build loop unattended" |
-| `conductor` | Per-task fresh-subagent dispatch with a 2-stage gate (spec → quality) repeated each task — sequential task loop after `harness-plan` approval (vs `parallel-team`'s role parallelism) | "Run the implementation loop task-by-task with gates between each" |
+| `conductor` | Per-task fresh-subagent dispatch with a 2-stage gate (spec → quality) repeated each task — sequential task loop after `harness-plan` approval (vs `build-loop`'s role parallelism) | "Run the implementation loop task-by-task with gates between each" |
 | `sprint` | Sprint plan-execute-track unified (absorbed delivery-plan + track) — PRD → WBS, predicted.json init, probe/detect/report/checkpoint. `--step plan\|init\|status\|retro\|codebase-status` | "Lock predicted scope, then track progress and auto-detect when I'm stuck" |
 | `qa-checklist` | Parse docs/PRD.md → auto-generate harness/QA_CHECKLIST.md, classifying test cases critical/major/minor by ICP + failure scenarios with device/environment links | "Turn PRD acceptance criteria into a graded QA checklist before the quality gate" |
 | `respect` | Brief (`--mode brief`): interview-driven RESPECT.md before any UI code. Checkpoint (`--mode checkpoint`): pre-ship α/β/γ gate enforcement | "Capture user-respect intent before coding" / "Ship-time user-respect gate" |
@@ -395,7 +395,7 @@ hplan ships as a complete **Agent Development Kit** — five reinforcing layers 
 | **L1 Memory** | `CLAUDE.md` — 9 behavioral rules + hplan gate policy | Loaded by Claude Code at session start, every time |
 | **L2 Skills** | 34 PM discipline skills across 5 plugins | Auto-invoked when you describe a task in natural language |
 | **L3 Hooks** | `hooks/` — PreToolUse · PostToolUse · SessionStart | `scripts/install-hooks.sh` registers to `.claude/settings.json` |
-| **L4 Subagents** | 8-role parallel team (designer · engineer · critic · security…) | Dispatched by `deliver/skills/parallel-team` |
+| **L4 Subagents** | 8-role parallel team (designer · engineer · critic · security…) | Dispatched by `deliver/skills/conductor` |
 | **L5 Plugins** | Marketplace distribution (`/plugin install`) | Claude Code plugin registry |
 
 **What each hook does:**
@@ -470,7 +470,7 @@ For regulated environments (financial services, healthcare, government), the rec
 
 ### Auto-Invocation
 
-You don't call skills by name. Describe your task in natural language, and Claude matches it against each SKILL.md's `description` field to auto-load the best fit. Trigger accuracy: **97.9%** measured on v0.6 baseline (124 queries); v0.8 expands to 168 total queries (+44 for new 11 skills, re-measurement after API quota reset).
+You don't call skills by name. Describe your task in natural language, and Claude matches it against each SKILL.md's `description` field to auto-load the best fit. Trigger accuracy: **90.9%** (v0.14.1, 80/88 queries, Haiku 4.5, single-run snapshot). This covers 22 of 34 skills; as a 1-run snapshot the number drifts ±a few points run-to-run, and full 34-skill coverage is still being built out. (Prior v0.6 baseline: 97.9% on a 24-skill/96-query set.)
 
 ### Cross-Plugin Routing
 
@@ -499,12 +499,14 @@ The Trigger Gate's "Route" field enables routing between plugins:
 
 | Feature | 1.0 (2025) | 2.0 (2026) | hplan |
 |---------|-----------|-----------|-------------|
-| Auto-invocation | ❌ | ✅ | ✅ 97.9% |
+| Auto-invocation | ❌ | ✅ | ✅ 90.9%¹ |
 | Subagent (`context: fork`) | ❌ | ✅ | ✅ 5 skills |
 | Tool restriction | ❌ | ✅ | ✅ orchestration |
 | Marketplace + Evals | ❌ | ✅ | ✅ Full |
 | Dynamic injection | ❌ | ✅ | ✅ 5 skills |
 | Hooks | ❌ | ✅ | ⚠️ Spec-ready |
+
+> ¹ 90.9% = v0.14.1 trigger eval, 80/88 queries, Haiku 4.5, single-run snapshot covering 22 of 34 skills (varies ±a few points run-to-run; full 34-skill coverage in progress).
 
 > ⚠️ `hooks` have a known issue ([#17688](https://github.com/anthropics/claude-code/issues/17688)). Fallback `validate_*.sh` scripts available in `references/`.
 
@@ -548,7 +550,7 @@ discover/skills/opp-tree/           ← example skill
 
 | Component | Purpose | Impact |
 |-----------|---------|--------|
-| `SKILL.md` Trigger Gate | Use/Route/Boundary → prevents wrong skill from firing | 97.9% trigger accuracy |
+| `SKILL.md` Trigger Gate | Use/Route/Boundary → prevents wrong skill from firing | 90.9% trigger accuracy (v0.14.1 snapshot, 80/88) |
 | `context/domain.md` | Domain expertise Claude doesn't have natively | +12~46% output quality |
 | `examples/good-01.md` | Concrete "gold standard" output | Anchors Claude's generation |
 | `examples/bad-01.md` | Explicit anti-patterns with explanations | Prevents common failures |

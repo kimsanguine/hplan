@@ -15,10 +15,10 @@
 
 ## 올바른 라우팅
 
-**measure/skills/incident** (긴급 대응 필수)
+**operate/incident** (긴급 대응 필수)
 
 후속으로:
-- **measure/skills/premortem** (이 유형의 실패 예방 메커니즘)
+- **operate/reliability** (이 유형의 실패 예방 메커니즘 — Safeguard 설계)
 
 ## 수정 방향
 

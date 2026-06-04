@@ -10,7 +10,7 @@
 
 ## 올바른 라우팅
 - 추가 정보 수집 후 cost-sim 스킬 재실행
-- 또는 먼저 build-or-buy 스킬로 기술 선택지 명확화
+- 또는 먼저 assumptions --mode build-or-buy로 기술 선택지 명확화
 
 ## 수정 방향
 "고객 응대 에이전트를 Claude Sonnet으로 만들려는데, 하루 500건, 평균 3턴 기준으로 월 비용 추정해줄 수 있어?" → cost-sim으로 라우팅 가능

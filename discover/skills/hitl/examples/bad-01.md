@@ -6,10 +6,10 @@
 ## 거절 이유
 - 에이전트의 Human-in-the-Loop 설계가 아닌 프롬프트 최적화
 - hitl 스킬은 "어디에 인간 개입을 넣을지"를 설계하는 것
-- 프롬프트 개선은 instruction-design 스킬 범위
+- 프롬프트 개선은 agent-setup 스킬 범위
 
 ## 올바른 라우팅
-- 프롬프트 최적화: `deliver/instruction` [예정]
+- 프롬프트 최적화: `deliver/agent-setup`
 - HITL 설계 필요: `discover/hitl`
 
 ## 수정 방향

@@ -12,8 +12,8 @@ Human-in-the-Loop Design — 에이전트의 각 작업마다 자동화 레벨�
 
 **제외 범위:**
 - 이미 배포된 에이전트의 성능 개선 (별도 스킬)
-- 기술적 구현 (instruction-design 스킬)
-- 제품 신뢰 구축 전략만 필요한 경우 (agent-gtm 스킬)
+- 기술적 구현 (agent-setup 스킬)
+- 제품 신뢰 구축 전략만 필요한 경우 (strategy 스킬)
 
 ---
 

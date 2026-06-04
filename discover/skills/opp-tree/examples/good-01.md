@@ -14,4 +14,4 @@
 3. Top 3 선택 및 Agent Solutions 후보 (각 기회마다 2~3개 에이전트 유형)
 4. 최우선 솔루션에 대한 4축 가정 정의 (Value/Feasibility/Reliability/Ethics)
 5. 검증 실험 설계 (2일 이내 가능)
-6. 다음 단계 (assumptions 스킬로 연결 또는 build-or-buy)
+6. 다음 단계 (assumptions 스킬로 연결 또는 assumptions --mode build-or-buy)

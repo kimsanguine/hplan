@@ -10,7 +10,7 @@
 #   3. 완성된 moat 분석이 아니라 "18개월 안에 방어 가능한 포지션이 있는가" 판단
 #
 # 이 파일이 있으면 /hplan이 자동으로 읽어 Step 1(exclusions check) 직후 반영합니다.
-# architect/moat skill은 내 제품의 해자 설계용 (이 파일과 역할이 다릅니다).
+# architect/strategy --focus moat skill은 내 제품의 해자 설계용 (이 파일과 역할이 다릅니다).
 
 idea: ""    # context-intake.md의 idea 필드와 동일하게 작성
 

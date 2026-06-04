@@ -29,7 +29,7 @@ model: sonnet
 - 선택한 패턴의 세부 구현 (3-tier 위계 구조) → orchestration (Hierarchical pattern 상세 섹션 참조)
 - 작업별 LLM 모델 선택/비용 최적화 → orchestration --pattern router (Model Routing 상세 섹션 참조)
 - 멀티 에이전트 간 메모리 공유 → memory-arch (저장소 전략)
-- 패턴의 경제성 분석 → biz-model (비용 모델)
+- 패턴의 경제성 분석 → strategy --focus biz-model (비용 모델)
 
 ### Boundary Checks
 

@@ -15,7 +15,7 @@
 4. 각 작업에 HITL 패턴 매칭 (Approval Gate, Threshold, Audit 등)
 5. 구체적 개입 트리거 정의 (신뢰도 임계값, 에러 카운트 등)
 6. Shadow Mode 계획 (기간, 전환 기준)
-7. 다음 단계 (instruction-design에 HITL 설계 반영)
+7. 다음 단계 (agent-setup에 HITL 설계 반영)
 
 ---
 
@@ -195,7 +195,7 @@ Team Lead의 사후 검토:
 
 **다음 단계:**
 
-이제 이 설계를 instruction-design에 반영:
+이제 이 설계를 agent-setup에 반영:
 - 에이전트가 "이건 private team 권한 필요해" 감지하면, 자동으로 HITL gate 요청
 - Gate 승인 시 임시 권한(TTL) 자동 부여
 - TTL 만료 시 자동 철회 + remediation 체크

@@ -287,13 +287,13 @@ python3 hplan/scripts/decision_log.py hitl \
 - 이해관계자 및 제약 조건 파악
 - 검토 중인 옵션 목록
 
-#### Step 6-2: Pattern Matching (`pm-decision` 스킬)
+#### Step 6-2: Pattern Matching (`pm-engine --mode decide` 스킬)
 
 6가지 핵심 결정 패턴 중 가장 적합한 것을 선택:
 - 선택된 패턴 + 적용 근거
 - 인지 함정 점검: sunk cost / anchoring / availability bias
 
-#### Step 6-3: Pattern 적용 (`pm-framework` 스킬)
+#### Step 6-3: Pattern 적용 (`pm-engine --mode decide` 스킬)
 
 선택된 패턴을 현재 상황에 적용:
 - 추론 과정 문서화
@@ -317,7 +317,7 @@ TK(암묵지) 항목을 에이전트 인스트럭션 조각으로 변환한다.
 
 `$ARGUMENTS`에서 TK-NNN 식별자를 파싱한다. 특정 TK가 없으면 선택 가능한 항목 목록 제시.
 
-#### Step 7-2: Instruction 번역 (`pm-framework` 스킬)
+#### Step 7-2: Instruction 번역 (`pm-engine --mode build` 스킬)
 
 TK의 핵심 인사이트를 명령형 인스트럭션 언어로 변환:
 - 활성화/비활성화 조건 → if/when 절

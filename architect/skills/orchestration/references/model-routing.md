@@ -341,13 +341,13 @@ API 비용: $130 (위 시나리오)
 1. "여러 에이전트 중 어느 것을 호출할지 선택하고 싶다"
    - 올바른 라우팅: orchestration의 **Agent Routing** (Router 기본 다이어그램)
 2. "라우팅 결과의 비용 영향을 분석하고 싶다"
-   - 올바른 라우팅: `biz-model` (ROI 계산)
+   - 올바른 라우팅: `strategy --focus biz-model` (ROI 계산)
 3. "모델 성능을 비교하려면 어떤 테스트를 해야 할까?"
-   - 올바른 라우팅: measure의 `agent-ab-test` (A/B 테스트)
+   - 올바른 라우팅: operate의 `reliability` (A/B 테스트·성능 비교 검증)
 4. "T1 모델이 충분하지 않은 작업들을 찾으려면?"
    - 올바른 라우팅: measure의 `kpi` (메트릭 정의 및 분석)
 5. "우리 API 제공자가 모델 가격을 올렸다"
-   - 올바른 라우팅: `biz-model` (비용 재계산)
+   - 올바른 라우팅: `strategy --focus biz-model` (비용 재계산)
 
 ### Edge Cases (5)
 

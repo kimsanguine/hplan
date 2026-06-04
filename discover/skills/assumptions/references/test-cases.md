@@ -32,8 +32,8 @@
 
 1. **기존 에이전트 비용 리뷰**
    - Query: "이번 달 에이전트 토큰 비용 리뷰해줘. 예산 대비 초과된 것 같아."
-   - Reason: 이미 실행 중인 에이전트의 비용 추적 → burn-rate 스킬
-   - Correct Route: measure/burn-rate
+   - Reason: 이미 실행 중인 에이전트의 비용 추적 → ops-review 스킬
+   - Correct Route: operate/ops-review --mode cost
 
 2. **에이전트 아키텍처 설계**
    - Query: "에이전트 아키텍처를 3-tier로 설계하고 싶어. Prometheus-Atlas-Worker 패턴 적용해줘."
@@ -42,13 +42,13 @@
 
 3. **프롬프트 최적화**
    - Query: "이 프롬프트를 CRISP 프레임워크로 다시 작성해줘. 더 명확하게."
-   - Reason: 이미 기존 에이전트의 성능 개선 → instruction-design 스킬
-   - Correct Route: deliver/instruction [예정]
+   - Reason: 이미 기존 에이전트의 성능 개선 → agent-setup 스킬
+   - Correct Route: deliver/agent-setup
 
 4. **비즈니스 모델 설계**
    - Query: "에이전트 비즈니스 모델을 설계하고 싶어. 가격 전략이랑 수익 구조를 잡아줘."
-   - Reason: 비즈니스 모델 설계 → agent-gtm 스킬
-   - Correct Route: discover/agent-gtm [예정]
+   - Reason: 비즈니스 모델 설계 → strategy 스킬
+   - Correct Route: architect/strategy --focus biz-model
 
 5. **기회 탐색**
    - Query: "우리 회사에서 에이전트로 자동화할 수 있는 기회가 뭐가 있을까? 대략적인 아이디어만 줘."
@@ -143,9 +143,9 @@
 
 | # | 쿼리 | 판정 | 이유 |
 |---|------|------|------|
-| E1 | "우리 에이전트 가정을 리뷰하고 싶은데, 이미 기술적으로 구현이 다 돼있고 유저도 사용 중이야. 지금 가정 분석이 의미가 있을까?" | ⚠️ 경계 | 이미 배포된 에이전트는 assumptions보다 reliability/burn-rate 스킬이 맞을 수 있음. 하지만 "새로운 기능 추가"라면 trigger 가능 |
+| E1 | "우리 에이전트 가정을 리뷰하고 싶은데, 이미 기술적으로 구현이 다 돼있고 유저도 사용 중이야. 지금 가정 분석이 의미가 있을까?" | ⚠️ 경계 | 이미 배포된 에이전트는 assumptions보다 reliability/ops-review 스킬이 맞을 수 있음. 하지만 "새로운 기능 추가"라면 trigger 가능 |
 | E2 | "가정 3개만 분석하면 되지 않을까? 전부 다 검증할 여유가 없어." | ✅ Trigger | 사용자의 리소스 제약이 있어도 기술적으로는 assumptions 스킬. 단, Step 3에서 "Top 1" 가정만 선정 옵션 제시 |
-| E3 | "기술 스택 선택(Claude vs GPT-4)에 대한 가정을 검증하고 싶어. 어느 모델이 더 나을까?" | ❌ Route → deliver/prompt 또는 build-or-buy | 모델 선택은 기술 성능 비교 영역. assumptions는 "이 에이전트가 정말 필요한가"에 답함 |
+| E3 | "기술 스택 선택(Claude vs GPT-4)에 대한 가정을 검증하고 싶어. 어느 모델이 더 나을까?" | ❌ Route → architect/orchestration --pattern router 또는 assumptions --mode build-or-buy | 모델 선택은 기술 성능 비교 영역. assumptions는 "이 에이전트가 정말 필요한가"에 답함 |
 | E4 | "Competitor가 우리보다 빨리 만들어서 시장을 선점할 위험이 있어. 이것도 가정 위험도에 포함돼야 하지 않을까?" | ✅ Trigger | 경쟁 시간 압박은 Feasibility 축(개발 리소스 부족) 또는 Value 축(실제 고객이 존재하는가)과 연계 가능. 유효한 가정 |
 | E5 | "우리 팀이 이 에이전트를 만들 기술이 없어. 그래서 외부 팀에 아웃소싱하려고 하는데, 이 경우에도 assumptions 분석이 필요해?" | ✅ Trigger | Feasibility 축의 "인력 확보" 가정으로 유효. 아웃소싱 위험도(질 관리, 소유권, 일정) 모두 assumptions 범위 내 |
 

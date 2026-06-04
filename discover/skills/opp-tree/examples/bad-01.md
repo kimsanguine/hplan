@@ -9,7 +9,7 @@
 - 비즈니스 전략/OKR은 다른 스킬 범위
 
 ## 올바른 라우팅
-- OKR/전략 기획: 별도 스킬 (learn/strategy 플러그인)
+- OKR/전략 기획: architect/strategy
 - 에이전트 기회 발굴: opp-tree 스킬
 
 ## 수정 방향
