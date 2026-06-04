@@ -61,6 +61,6 @@ A: 도메인별 표.
 - L4 (notify after): 실행 후 알림 — 일반 SaaS
 - L5 (autonomous): 알림도 없이 자동 — 단순 자동화만
 
-## Q: Section 7-11이 deliver/instruction과 중복 아닌가?
+## Q: Section 7-11이 deliver/agent-setup과 중복 아닌가?
 
-A: Section 7-11은 PRD 본문 내 요약. 상세 spec이 더 필요하면 `deliver/instruction` [예정]으로 라우팅. 두 산출물이 같은 PRD 내에 inline될 수 있음 (큰 SaaS 의 핵심 에이전트).
+A: Section 7-11은 PRD 본문 내 요약. 상세 spec이 더 필요하면 `deliver/agent-setup`으로 라우팅. 두 산출물이 같은 PRD 내에 inline될 수 있음 (큰 SaaS 의 핵심 에이전트).

@@ -6,10 +6,10 @@
 ## 거절 이유
 - 기존에 이미 실행 중인 에이전트의 비용 추적/최적화 요청 (실시간 모니터링)
 - assumptions 스킬은 **구현 전 가정 검증**에 특화되어 있음
-- 이미 배포된 에이전트의 비용 리뷰는 다른 스킬(burn-rate) 범위
+- 이미 배포된 에이전트의 비용 리뷰는 다른 스킬(ops-review --mode cost) 범위
 
 ## 올바른 라우팅
-- 실시간 비용 추적/최적화: `measure/burn-rate`
+- 실시간 비용 추적/최적화: `operate/ops-review --mode cost`
 - 새로운 에이전트 구현 전 비용 예측: `discover/cost-sim`
 
 ## 수정 방향

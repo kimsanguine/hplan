@@ -11,9 +11,9 @@ Agent Operating Cost Simulation — 에이전트 운영 비용을 사전에 모�
 - 비용 KPI 설정 및 예산 결정
 
 **제외 범위:**
-- 실시간 비용 추적/모니터링 (burn-rate 스킬)
+- 실시간 비용 추적/모니터링 (ops-review --mode cost)
 - 이미 배포된 에이전트의 성능 최적화 (별도 스킬)
-- 비용 관계없이 기술 성능 기준만 필요한 경우 (router 스킬)
+- 비용 관계없이 기술 성능 기준만 필요한 경우 (orchestration --pattern router)
 
 ---
 
@@ -62,8 +62,8 @@ Agent Operating Cost Simulation — 에이전트 운영 비용을 사전에 모�
    - 비용 폭발 감지 임계값
 
 5. **다음 단계 연결**
-   - 비용 수용 가능 → instruction-design
-   - 비용 과다 → build-or-buy 재검토
+   - 비용 수용 가능 → agent-setup
+   - 비용 과다 → assumptions --mode build-or-buy 재검토
 
 ---
 
@@ -115,5 +115,5 @@ Agent Operating Cost Simulation — 에이전트 운영 비용을 사전에 모�
 - [ ] 스케일 시나리오 3단계(1/10/100명)가 모두 포함되었는가?
 - [ ] 최적화 전략이 최소 2개 이상 제안되었는가?
 - [ ] 모든 단가에 "2026-03 기준" 명시되었는가?
-- [ ] 다음 단계 연결(instruction/build-or-buy)이 명확한가?
-- [ ] 비용이 수용 불가능 수준이라면 build-or-buy 재검토 권장 여부가 언급되었는가?
+- [ ] 다음 단계 연결(agent-setup / assumptions --mode build-or-buy)이 명확한가?
+- [ ] 비용이 수용 불가능 수준이라면 assumptions --mode build-or-buy 재검토 권장 여부가 언급되었는가?

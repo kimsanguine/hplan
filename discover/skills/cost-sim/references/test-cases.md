@@ -37,23 +37,23 @@
 
 2. **경쟁사 분석**
    - Query: "경쟁사 분석 좀 해줘. 우리 에이전트 제품의 경쟁 우위가 뭔지 알고 싶어."
-   - Reason: 비용이 아닌 경쟁 포지셔닝 → agent-gtm 스킬
-   - Correct Route: discover/agent-gtm [예정]
+   - Reason: 비용이 아닌 경쟁 포지셔닝 → strategy 스킬
+   - Correct Route: architect/strategy --focus moat
 
 3. **이미 배포된 에이전트 비용 리뷰**
    - Query: "이번 달 에이전트 토큰 비용 리뷰해줘. 예산 대비 초과된 것 같아."
-   - Reason: 사전 시뮬레이션이 아닌 실시간 추적 → burn-rate 스킬
-   - Correct Route: measure/burn-rate
+   - Reason: 사전 시뮬레이션이 아닌 실시간 추적 → ops-review 스킬
+   - Correct Route: operate/ops-review --mode cost
 
 4. **가격 책정**
    - Query: "에이전트 제품 가격을 얼마로 책정하면 좋을까? 경쟁사는 월 $50~$100인데."
-   - Reason: 가격 모델/GTM → agent-gtm 스킬
-   - Correct Route: discover/agent-gtm [예정]
+   - Reason: 가격 모델/비즈니스 모델 → strategy 스킬
+   - Correct Route: architect/strategy --focus biz-model
 
 5. **모델 성능 비교**
    - Query: "Claude Opus vs GPT-4o 성능 비교해줄 수 있어? 어떤 게 더 나아?"
-   - Reason: 비용만이 아닌 기술 성능 검토 필요 → router 스킬
-   - Correct Route: routing/model-comparison 스킬
+   - Reason: 비용만이 아닌 기술 성능 검토 필요 → orchestration --pattern router
+   - Correct Route: architect/orchestration --pattern router
 
 ---
 
@@ -147,7 +147,7 @@
 | # | 쿼리 | 판정 | 이유 |
 |---|------|------|------|
 | E1 | "에이전트 비용 시뮬레이션을 하는데, 기준을 뭘로 잡아야 할까? 일일 호출 수가 날마다 다르거든." | ⚠️ 경계 | cost-sim은 "예측" 이지만 입력 가정이 불명확하면 정확도 떨어짐. "평균/피크/저점" 3가지 시나리오 시뮬레이션 권고 |
-| E2 | "이미 배포된 에이전트의 실제 비용을 추적하고 싶어. 비용 예측이 아니라 비용 리뷰야." | ❌ Route → measure/burn-rate | 예측(사전) vs 추적(사후) 구분. burn-rate는 실시간 비용 모니터링, cost-sim은 배포 전 시뮬레이션 |
+| E2 | "이미 배포된 에이전트의 실제 비용을 추적하고 싶어. 비용 예측이 아니라 비용 리뷰야." | ❌ Route → operate/ops-review --mode cost | 예측(사전) vs 추적(사후) 구분. ops-review --mode cost는 실시간 비용 모니터링, cost-sim은 배포 전 시뮬레이션 |
 | E3 | "모델을 Haiku에서 Sonnet으로 업그레이드하면 비용이 어떻게 달라질까? 정확도 개선도 고려해서." | ✅ Trigger | 모델 변경의 비용 영향 분석. 하지만 "정확도 개선 → 호출 횟수 감소"까지 계산하면 복잡. 단순 모델 가격 비교가 주 목적 |
 | E4 | "캐싱이나 배치 처리로 토큰 비용을 50% 줄일 수 있다면, 비용 시뮬레이션에 이미 반영해야 할까?" | ✅ Trigger | "최적화 전/후" 2개 시나리오 시뮬레이션 가능. cost-sim의 Step 4에서 "모델 라우팅/캐싱 전략" 대안 제시 가능 |
 | E5 | "외부 API 가격이 우리 계약에서만 특별 할인돼. 이걸 비용 시뮬레이션에 포함할 수 있을까?" | ⚠️ 경계 | 커스텀 가격은 비용 시뮬레이션의 가정에 영향. 하지만 cost-sim은 "공정한 가격"을 기준으로 하므로 주석으로 "실제 계약 가격 적용 필요" 명시 권고 |

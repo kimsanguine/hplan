@@ -50,7 +50,7 @@ model: sonnet
 - 비용 시뮬레이션 (lognormal) → `discover/cost-sim`
 - WBS 30 task 초과 → `deliver/conductor`로 태스크 순차 실행
 - UI 디자인 확인 → `deliver/ui-validate`
-- 주간 운영 회고 → `operate/weekly-rollup`
+- 주간 운영 회고 → `operate/ops-review`
 
 ### Boundary Checks
 - PRD vague (Section 6 누락) → fail loud, PRD 보강 요청

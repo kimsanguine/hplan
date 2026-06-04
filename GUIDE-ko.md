@@ -471,7 +471,7 @@ AI 헬스케어 복약 알림 앱 COGS를 계산해줘.
 | 커맨드 | 단계 | 하는 일 |
 |--------|------|--------|
 | `/harness-discover <idea>` | Discover | 기회 매핑 → 가정 분석 → 비용 시뮬 → 빌드/바이 결정 |
-| `/harness-plan <system>` | Plan | 오케스트레이션 → 3-tier → 메모리 → 모델 라우팅 → 디자인 토큰 |
+| `/harness-plan <system>` | Plan | 오케스트레이션 → 전략 → 메모리 → 모델 라우팅 → 디자인 토큰 |
 | `/harness-build <brief>` | Build | COGS gate + PRD 15-section 자동 작성 + W1 스프린트 |
 | `/harness-verify` | Verify | 구현물 검증 게이트 (테스트·체크포인트·드리프트) |
 | `/harness-operate <agent>` | Operate | KPI · 신뢰성 · 비용 · 개선 계획 + 지식 추출(TK) |

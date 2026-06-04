@@ -31,7 +31,7 @@ model: sonnet
 ### Route to Other Skills When
 
 - **premortem** → 장애 원인 분석 후 유사 실패 예방 메커니즘 설계
-- **burn-rate** → 비용 폭증이 토큰 사용량 이상이라면 (비용 최적화 필요)
+- **ops-review --mode cost** → 비용 폭증이 토큰 사용량 이상이라면 (비용 최적화 필요)
 - **reliability** → 장애 복구 후 신뢰성 개선 계획 수립
 - **cohort** → 특정 버전/세그먼트만 장애를 겪었다면 (코호트 분석)
 

@@ -1,6 +1,6 @@
 ---
 name: conductor
-description: "태스크별 fresh subagent 디스패치 + 2단계 게이트(spec→quality) 반복 실행. harness-plan 승인 후 구현 루프를 돌릴 때 사용. parallel-team이 역할 병렬이라면, conductor는 태스크 순차+게이트다."
+description: "태스크별 fresh subagent 디스패치 + 2단계 게이트(spec→quality) 반복 실행. harness-plan 승인 후 구현 루프를 돌릴 때 사용. 기존 parallel-team(현 conductor에 통합)의 역할 병렬 방식과 달리, conductor는 태스크 순차+게이트다."
 argument-hint: "[plan source: PRD path or delivery brief]"
 allowed-tools: ["Read", "Write", "Edit", "Bash"]
 model: sonnet
@@ -21,9 +21,9 @@ Running for: **$ARGUMENTS**
 
 ---
 
-## parallel-team과의 차이
+## 기존 parallel-team(현 conductor에 통합)과의 차이
 
-| 구분 | parallel-team (기존) | conductor (신규) |
+| 구분 | parallel-team (현 conductor에 통합된 기존 방식) | conductor (신규) |
 |---|---|---|
 | 실행 방식 | 역할별 동시 병렬 | 태스크별 순차 + 2단계 게이트 |
 | 검토 시점 | 까칠이가 마지막 한 번 | 태스크마다 spec-review → quality-gate |

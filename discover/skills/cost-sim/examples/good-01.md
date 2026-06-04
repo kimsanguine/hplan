@@ -16,4 +16,4 @@
    - 월간 토큰 비용 산출
 3. 스케일 시나리오 (1명 → 10명 → 100명)
 4. 비용 최적화 전략 제안 (모델 라우팅, 캐싱 등)
-5. 비용 KPI 및 build-or-buy 결정 연결
+5. 비용 KPI 및 assumptions --mode build-or-buy 결정 연결

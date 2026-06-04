@@ -21,8 +21,8 @@ model: sonnet
 2. Research  (web/internal research, competitor 분석)
 3. Design    (architect/orchestration (Hierarchical pattern 포함), memory-arch)
 4. PRD       (deliver/prd + mermaid 정합성 게이트)
-5. Decompose (deliver/parallel-team — 작업 분해 + worktree)
-6. Implement (deliver/harness-design — 자율 모드 + 검증)
+5. Decompose (deliver/conductor — 작업 분해 + worktree)
+6. Implement (deliver/conductor — 자율 모드 + 검증)
 ```
 
 각 단계는 hplan 기존 스킬을 직렬 호출한다. 단계 간 산출물은 표준 경로에 저장.
@@ -38,7 +38,7 @@ model: sonnet
 - 4명+ 팀 + 자율 모드를 사용한 큰 스코프 작업
 
 ### Route to Other Skills When
-- 이미 PRD 있으면 → 5단계부터 시작 → `deliver/parallel-team`
+- 이미 PRD 있으면 → 5단계부터 시작 → `deliver/conductor`
 - 빌드 게이트 통과 안 한 상태면 → `hplan/evidence-rubric` 먼저
 - 한 단계만 필요하면 해당 스킬 직접 호출
 
@@ -71,11 +71,11 @@ You are running build-loop for: **$ARGUMENTS**
 - `scripts/validate-mermaid.py`로 정합성 검증 (P0-1 게이트)
 
 **Step 5 — Decompose**
-- `deliver/parallel-team`로 작업 분해
+- `deliver/conductor`로 작업 분해
 - 독립 작업 ≥2면 worktree 격리
 
 **Step 6 — Implement**
-- `deliver/harness-design`로 하네스 구성
+- `deliver/conductor`로 하네스 구성
 - 자율 모드 승인 받았으면 Ralph Loop 활성
 - 백업 + dry-run + pending_inputs 표준
 
@@ -87,7 +87,7 @@ You are running build-loop for: **$ARGUMENTS**
 |---|---|---|
 | 빌드 게이트 미통과 | hplan checkpoint != approved | 즉시 중단 → `/evidence-rubric` 안내 |
 | PRD mermaid 정합성 실패 | validate-mermaid.py exit≠0 | Step 4 재실행, missing requirements 보강 |
-| 작업 분해 시 파일 충돌 | parallel-team Step 2 fail | 직렬 처리로 fallback |
+| 작업 분해 시 파일 충돌 | conductor Step 2 fail | 직렬 처리로 fallback |
 | 자율 모드 미승인인데 진입 | "ralph loop" 키워드 부재 | 사용자 확인 필요 → 단계별 컨펌 모드 |
 
 ---
@@ -109,7 +109,7 @@ You are running build-loop for: **$ARGUMENTS**
 
 **기대 흐름:**
 1. Discover: 비용 추적 OST → opp 1개 선정
-2. Research: 기존 burn-rate 스킬 + GCP/Anthropic billing API 조사
+2. Research: 기존 ops-review --mode cost 스킬 + GCP/Anthropic billing API 조사
 3. Design: orchestration Hierarchical(트리거→집계→리포트), Cron 트리거, Telegram 출력
 4. PRD: workflow + userflow 다이어그램 정합성 통과
 5. Decompose: API 어댑터 / 집계 / 리포트 3개 worktree

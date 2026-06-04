@@ -5,11 +5,11 @@
 
 ## 거절 이유
 - pm-engine의 역할: PM-ENGINE-MEMORY에서 TK를 참조하여 "판단"의 품질을 높이는 것
-- 프롬프트 엔지니어링은 deliver 스킬 영역 (instruction, prd 스킬)
+- 프롬프트 엔지니어링은 deliver 스킬 영역 (agent-setup, prd 스킬)
 - TK 검색, 조회, 적용과 무관한 일반 기술 조언 요청
 
 ## 올바른 라우팅
-- deliver 영역: `/instruction-design` (prompt engineering)
+- deliver 영역: `/deliver:agent-setup` (prompt engineering)
 - discover 영역: `/prompt-chain` (프롬프트 체이닝 최적화)
 
 ## 수정 방향

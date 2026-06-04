@@ -31,10 +31,10 @@ model: sonnet
 ### Route to Other Skills When
 
 - "TK를 구조화해서 라이브러리에 저장하고 싶어" → pm-engine --mode extract 사용
-- "이 TK가 의사결정에 어떻게 쓰이는지 실제 사례를 보고 싶어" → pm-decision의 패턴 라이브러리 참조
+- "이 TK가 의사결정에 어떻게 쓰이는지 실제 사례를 보고 싶어" → pm-engine --mode decide의 패턴 라이브러리 참조
 - "에이전트 Instruction을 새 TK를 기반으로 업데이트하고 싶어" → deliver의 agent-setup, prd 스킬 사용
 - "TK를 기반으로 비용 시뮬레이션이나 시나리오 분석을 하고 싶어" → discover의 cost-sim, opp-tree 사용
-- "에이전트 실행 중 예측 vs 실측 deviation 을 TK 후보로 자동 추출" → track/retro-extract → /pm-tacit-from-retro 로 자동 promote
+- "에이전트 실행 중 예측 vs 실측 deviation 을 TK 후보로 자동 추출" → sprint --step retro → /pm-tacit-from-retro 로 자동 promote
 
 > **Note:** `--mode save`는 다른 스킬로 라우팅하지 않고 직접 TK 항목을 저장한다.
 
@@ -515,7 +515,7 @@ Step 5 — 기존 Instruction과의 충돌 여부 검토
 
 **[/pm-tacit-from-retro 실행 시]**
 
-track/retro-extract 출력 (예측 vs 실측 deviation log) 에서 TK 후보 자동 promote: **$ARGUMENTS**
+sprint --step retro 출력 (예측 vs 실측 deviation log) 에서 TK 후보 자동 promote: **$ARGUMENTS**
 
 Step 1 — track 산출물 `.track/retro-deviation.jsonl` 로드 (deviation_pct, blocker_pattern, recurrence_count)
 Step 2 — Auto-promote 결정론 기준 검증: deviation_pct ≥ 50% OR recurrence_count ≥ 3 (LLM 호출 0)

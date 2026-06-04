@@ -30,7 +30,7 @@ Running for: **$ARGUMENTS**
 - COLLISION 감지 + reopen_trigger 충족 가능 → `evidence-rubric` 재실행 (수정된 wedge로)
 - COLLISION 감지 + reopen_trigger 충족 불가 → `decision-log` 에 `hold` 또는 `pivot` 기록
 - CLEAR 결과 → Evidence Gate 정상 진행
-- 경쟁 자체를 깊이 분석해야 할 때 → `discover/build-or-buy` [예정] 또는 `references/competitive-landscape-superpowers-gstack.md`
+- 경쟁 자체를 깊이 분석해야 할 때 → `architect/strategy --focus moat` 또는 `references/competitive-landscape-superpowers-gstack.md`
 
 ### Boundary Checks
 

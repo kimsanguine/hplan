@@ -4,7 +4,26 @@ All notable changes to hplan (renamed from AI_PM_Skills in v0.5) are documented 
 
 ---
 
-## [0.14.1] — YYYY-MM-DD (unreleased)
+## [0.14.2] — 2026-06-04
+
+> **사용자 영향**: 표면 변화 없음. v0.14.1 머지 후 리뷰에서 발견된 MED/LOW 항목 정리 — gate_guard 보안 강화, 죽은 라우팅 참조 제거, 문서 메트릭 실측 정정, 문서 동기화.
+
+### Security
+
+- **gate_guard fail-closed 강화** — `gate_guard.py`의 CONDITIONAL_GO 처리와 `allowed_paths` 검증을 fail-closed로 강화. 게이트 상태가 모호하거나 경로 검증 정보가 불완전할 때 통과 대신 차단되도록 보강.
+
+### Fixed
+
+- **죽은 라우팅 정리** — 통합으로 흡수된 스킬을 가리키던 잔존 라우팅/참조를 제거·정정해 실재하지 않는 라우팅 타깃을 더 이상 가리키지 않도록 정리.
+
+### Docs
+
+- **트리거 정확도 실측 정정** — README.md / README-ko.md / `operate/evals/README.md`의 트리거 정확도 헤드라인을 과거 baseline(97.9% / 93.5% 등)에서 v0.14.1 실측 **90.9% (80/88, Haiku 4.5, 1-run 스냅샷)**으로 교체. 현재 34개 스킬 중 22개 커버, 1-run 스냅샷이라 ±변동, 전체 34-skill 커버는 진행 중임을 명시. 과거 v0.6 baseline 수치는 명확히 과거 baseline으로 라벨링해 보존.
+- **CHANGELOG 날짜 정정** — `[0.14.1]` 헤더의 `YYYY-MM-DD (unreleased)` placeholder를 실제 머지 날짜(2026-06-04)로 갱신하고 `(unreleased)` 표기 제거.
+
+---
+
+## [0.14.1] — 2026-06-04
 
 > **사용자 영향**: 스킬 수 38 → 34. 중복·근접 스킬 4종을 기존 스킬의 모드로 흡수. customer-reach(discover)는 정식 유지. README/CHANGELOG/문서 카운트 정합. 이번 릴리스의 핵심은 통합 + CRITICAL/HIGH 안정화 수정으로, 신규 사용자 표면(슬래시 커맨드·호출 가능 스킬)은 동일하게 유지된다.
 

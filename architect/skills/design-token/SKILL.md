@@ -154,7 +154,7 @@ references/token-patterns.md 구조와 references/design-wisdom.md 원칙 적용
 
 ### 4. DESIGN.md 초안 생성
 tokens.md 기반으로 DESIGN.md를 생성한다.
-craft/mobile-check가 파싱할 수 있도록 브레이크포인트 섹션을 반드시 포함:
+`deliver/ui-validate --check mobile`가 파싱할 수 있도록 브레이크포인트 섹션을 반드시 포함:
 
 ```markdown
 ## Breakpoints
@@ -164,4 +164,4 @@ craft/mobile-check가 파싱할 수 있도록 브레이크포인트 섹션을 �
 ```
 
 ## 게이트 완료 선언
-> "✅ tokens.md + DESIGN.md 생성됨. `/mobile-check`로 검증을 진행하세요."
+> "✅ tokens.md + DESIGN.md 생성됨. `ui-validate --check mobile`로 검증을 진행하세요."

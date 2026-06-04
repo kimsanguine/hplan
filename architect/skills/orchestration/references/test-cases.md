@@ -22,19 +22,19 @@
 ### Should NOT Trigger (5)
 
 1. "라우팅 결정을 에이전트로 만들고 싶은데 복잡해 보인다"
-   - 올바른 라우팅: `router` (모델 선택 및 라우팅 규칙)
+   - 올바른 라우팅: `orchestration --pattern router` (모델 선택 및 라우팅 규칙)
 
 2. "에이전트 간에 메모리를 공유해야 한다"
    - 올바른 라우팅: `memory-arch` (메모리 저장소 및 검색)
 
 3. "여러 에이전트를 조합했을 때 비용이 얼마나 드나?"
-   - 올바른 라우팅: `biz-model` (비용 계산)
+   - 올바른 라우팅: `strategy --focus biz-model` (비용 계산)
 
 4. "Master-worker 계층 구조를 만들려면 통신 프로토콜이 뭘까?"
-   - 올바른 라우팅: `3-tier` (기술 구현 아키텍처)
+   - 올바른 라우팅: `harness-plan --mode 3-tier` (기술 구현 아키텍처)
 
 5. "각 에이전트가 다른 모델을 써야 한다"
-   - 올바른 라우팅: `router` (모델 선택)
+   - 올바른 라우팅: `orchestration --pattern router` (모델 선택)
 
 ## 2) Edge Cases
 

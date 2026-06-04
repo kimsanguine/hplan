@@ -15,10 +15,10 @@
 
 ## 올바른 라우팅
 
-**measure/skills/reliability** (기준선 측정 → 실패 분류 → Safeguard 설계 필요)
+**operate/reliability** (기준선 측정 → 실패 분류 → Safeguard 설계 필요)
 
 또는 구체적 장애 상황이라면:
-- **measure/skills/incident** (실제 발생한 장애의 원인 분석과 즉시 대응)
+- **operate/incident** (실제 발생한 장애의 원인 분석과 즉시 대응)
 
 ## 수정 방향
 

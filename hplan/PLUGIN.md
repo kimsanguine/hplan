@@ -69,7 +69,7 @@ hplan is **Stage 0**. The other 4 plugins inherit decisions from hplan's gates.
 | `discover/assumptions` (V/F/R/E) | `hplan/evidence-rubric` (100-pt) | Same intent, different axes — complement |
 | `discover/assumptions` build-or-buy mode (vendor) | `hplan/exclusions` (do-not-build) | Vendor decision vs permanent exclusion memory |
 | `deliver/prd` (agent PRD shape) | `hplan/handoff` (multi-target export) | deliver canonicalizes shape, hplan exports across 4 ecosystems |
-| `operate/burn-rate` (post-deploy) | `hplan/cogs-sentinel` (pre-deploy) | Sequential — predict → track |
+| `operate/ops-review --mode cost` (post-deploy) | `hplan/cogs-sentinel` (pre-deploy) | Sequential — predict → track |
 
 ## Install
 
