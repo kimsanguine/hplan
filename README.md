@@ -16,6 +16,12 @@
 
 **🇰🇷 [한국어 README는 여기 →](README-ko.md)**
 
+**⚡ `5 plugins · 34 skills · 12 commands` — install in one line:**
+
+```bash
+/plugin marketplace add kimsanguine/hplan && /plugin install hplan@hplan
+```
+
 > **v1.0.1** — hplan now ships as a complete **ADK (Agent Development Kit)**: **L1 Memory** (`CLAUDE.md` — 9 behavioral rules auto-loaded every session) · **L2 Skills** (34 PM disciplines, auto-invoked) · **L3 Hooks** (`hooks/` — SessionStart gate status · PreToolUse gate enforcement · PostToolUse secret scanner + **MD→HTML auto-renderer**) · **L4 Subagents** (8-role parallel team) · **L5 Plugins** (marketplace). One `git clone` + `bash scripts/install-hooks.sh` activates all 5 layers. v0.9.4–v1.0.1 history: see [CHANGELOG.md](CHANGELOG.md).
 
 ### 📺 99-second intro
@@ -23,21 +29,6 @@
 https://github.com/kimsanguine/hplan/releases/download/v0.9.0-video-preview/v9-core-16x9.mp4
 
 > _5-plugin lifecycle: hplan (gate) → discover → architect → deliver → operate. [v0.9.0-video-preview release](https://github.com/kimsanguine/hplan/releases/tag/v0.9.0-video-preview)._
-
-## Install
-
-```bash
-# Option 1 — GitHub Marketplace (Recommended)
-/plugin marketplace add kimsanguine/hplan
-/plugin install hplan@hplan    # or discover · architect · deliver · operate
-
-# Option 2 — Clone Locally (Full ADK Stack)
-git clone https://github.com/kimsanguine/hplan.git
-cd hplan
-bash scripts/install-hooks.sh   # L3 hooks + git pre-commit
-```
-
-See [Installation](#installation) for all options (Option 1b · full Option 2 details).
 
 ## The Problem hplan Solves
 

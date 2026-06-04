@@ -41,7 +41,7 @@
   </g>
   <g class="row2">
     <text class="prompt" x="20" y="128">❯</text>
-    <text class="cmd" x="40" y="128">/hplan-evidence "AI marketing copy generator"</text>
+    <text class="cmd" x="40" y="128">/harness-exclude "AI marketing copy generator"</text>
     <text class="arrow" x="40" y="152">→</text>
     <text class="skill-tag" x="60" y="152">exclusions</text>
     <text class="output" x="155" y="152">check ... COLLISION (overlap 0.42)</text>
@@ -50,7 +50,7 @@
   </g>
   <g class="row3">
     <text class="prompt" x="20" y="218">❯</text>
-    <text class="cmd" x="40" y="218">/hplan-cogs --provider anthropic --model sonnet-4-6 \</text>
+    <text class="cmd" x="40" y="218">/cogs-sentinel --provider anthropic --model sonnet-4-6 \</text>
     <text class="cmd" x="40" y="234">          --tokens-in 8000 --calls 120 --arpu 19 --abuse 8x</text>
     <text class="arrow" x="40" y="258">→</text>
     <text class="skill-tag" x="60" y="258">cogs-sentinel</text>
@@ -63,7 +63,7 @@
   </g>
   <g class="row5">
     <text class="prompt" x="20" y="354">❯</text>
-    <text class="cmd" x="40" y="354">/hplan-build</text>
+    <text class="cmd" x="40" y="354">/harness-build</text>
     <text class="arrow" x="40" y="378">→</text>
     <text class="skill-tag" x="60" y="378">decision-log</text>
     <text class="output" x="153" y="378">log --decision hold --reason "collision + RED COGS"</text>

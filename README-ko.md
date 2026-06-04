@@ -16,6 +16,12 @@
 
 **🇺🇸 [Read this in English →](README.md)**
 
+**⚡ `5 plugins · 34 skills · 12 commands` — 한 줄 설치:**
+
+```bash
+/plugin marketplace add kimsanguine/hplan && /plugin install hplan@hplan
+```
+
 **요구사항:** Claude Code v1.0+ · Python 3.9+ · Git 2.x+ · macOS / Linux (Windows: WSL2)
 
 > **Python 없이 시작 가능합니다.** 핵심 스킬(socratic-question, harness-discover, prd, conductor)은
@@ -108,23 +114,6 @@ https://github.com/kimsanguine/hplan/releases/download/v0.9.0-video-preview/v9-c
 </p>
 
 > 🎬 **99초 소개 영상** — 5-plugin 라이프사이클 전체 흐름. 영상이 재생되지 않으면 [여기서 시청](https://github.com/kimsanguine/hplan/releases/tag/v0.9.0-video-preview).
-
-## ⚡ 설치
-
-Claude 세션에서 마켓플레이스로 설치 (가장 빠름):
-
-```bash
-/plugin marketplace add kimsanguine/hplan
-/plugin install hplan@hplan
-```
-
-전체 ADK 스택이 필요하면 로컬 클론:
-
-```bash
-git clone https://github.com/kimsanguine/hplan ~/.claude/plugins/hplan
-```
-
-> 전체 설치 옵션(settings.json 일괄 활성화, private 설치 등)은 아래 [빠른 시작 (60초)](#빠른-시작-60초) 섹션 참조.
 
 ## 하루 동안 hplan은 이렇게 끼어듭니다
 
