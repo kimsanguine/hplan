@@ -51,7 +51,7 @@
   <g class="row3">
     <text class="prompt" x="20" y="218">❯</text>
     <text class="cmd" x="40" y="218">/cogs-sentinel --provider anthropic --model sonnet-4-6 \</text>
-    <text class="cmd" x="40" y="234">          --tokens-in 8000 --calls 120 --arpu 19 --abuse 8x</text>
+    <text class="cmd" x="40" y="234">          --tokens-in 8000 --tokens-out 2000 --calls 120 --arpu 19 --paid-conv 0.04 --abuse 8x</text>
     <text class="arrow" x="40" y="258">→</text>
     <text class="skill-tag" x="60" y="258">cogs-sentinel</text>
     <text class="output" x="160" y="258">deterministic lognormal sampler</text>
@@ -59,7 +59,7 @@
   <g class="row4">
     <text class="output" x="40" y="284">  monthly COGS p50:  $6.63       gross margin p50:  64%</text>
     <text class="warn"   x="40" y="302">  monthly COGS p90:  $13.90      gross margin p90:  25%  ⚠</text>
-    <text class="bad"    x="40" y="320">  with free-user abuse (24x):                   -1961%  ✗</text>
+    <text class="bad"    x="40" y="320">  with free-user abuse (8x):                    -1961%  ✗</text>
   </g>
   <g class="row5">
     <text class="prompt" x="20" y="354">❯</text>

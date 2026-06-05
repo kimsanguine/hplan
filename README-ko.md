@@ -16,35 +16,59 @@
 
 **🇺🇸 [Read this in English →](README.md)**
 
-**⚡ `5 plugins · 34 skills · 12 commands` — 한 줄 설치:**
+**⚡ `5 plugins · 34 skills · 12 commands` — 이것만 따라하세요 (5개 플러그인 일괄):**
 
-```bash
-/plugin marketplace add kimsanguine/hplan && /plugin install hplan@hplan
+프로젝트의 `.claude/settings.json`에 아래를 넣으면 (또는 동봉된 [`.claude/settings.json.example`](.claude/settings.json.example) 복사), 다음 `claude` 세션의 trust dialog 한 번으로 5개 플러그인이 전부 활성화됩니다 — `/plugin install`을 5번 칠 필요가 없습니다.
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "hplan": { "source": { "source": "github", "repo": "kimsanguine/hplan" } }
+  },
+  "enabledPlugins": {
+    "hplan@hplan": true,
+    "discover@hplan": true,
+    "architect@hplan": true,
+    "deliver@hplan": true,
+    "operate@hplan": true
+  }
+}
 ```
 
 **요구사항:** Claude Code v1.0+ · Python 3.9+ · Git 2.x+ · macOS / Linux (Windows: WSL2)
 
-> **Python 없이 시작 가능합니다.** 핵심 스킬(socratic-question, harness-discover, prd, conductor)은
-> Python 없이 동작합니다. Python이 필요한 기능: cogs-sentinel, evidence-rubric, track-probe.sh
-> 나중에 필요해지면 설치해도 됩니다.
+> **자연어 탐색은 Python 없이 시작할 수 있습니다.** 아이디어를 자연어로 말하면 발동하는
+> 스킬(socratic-question, prd, conductor 루프)은 Python 없이 동작합니다.
+> 단, **`/hplan` 게이트는 Python이 필요합니다** — exclusions collision 체크와 COGS 측정이
+> Python 스크립트로 돌아갑니다(`exclusions_registry.py`, `cogs_sentinel.py`). `harness-discover`도
+> HITL 결정 기록 단계에서 `decision_log.py`를 호출합니다. Python이 필요한 측정 기능:
+> cogs-sentinel, evidence-rubric, exclusions, track-probe.sh. 나중에 필요해지면 설치해도 됩니다.
+
+<details>
+<summary><strong>다른 설치 경로</strong> — 데스크탑 앱 마켓플레이스 · 개별 플러그인 · 로컬 클론</summary>
+
+마켓플레이스에서 플러그인을 하나씩 고르거나, 저장소를 직접 클론하는 방법은 아래 [설치](#설치) 섹션을 참고하세요. 로컬 클론 목적지는 전부 `~/hplan`로 통일돼 있습니다.
 
 ```bash
-git clone https://github.com/kimsanguine/hplan ~/.claude/plugins/hplan
+# 로컬 클론 (CLI)
+git clone https://github.com/kimsanguine/hplan.git ~/hplan
 ```
+
+</details>
 
 ## 5분 빠른 시작
 
-설치 완료 후 Claude 세션에서:
+설치 완료 후 Claude 세션에서 **아이디어를 자연어로 말하면** 됩니다 (별도 명령 불필요):
 
 ```
-/socratic-question [내 아이디어]
+"[내 아이디어]를 만들어볼까 하는데"
 ```
 
-AI가 먼저 당신의 가정을 심문합니다. "만들 가치가 있는가"가 명확해지면 `/harness-discover`로 넘어가세요.
+그러면 `socratic-question` 스킬이 자동으로 발동해 AI가 먼저 당신의 가정을 심문합니다. (`socratic-question`은 슬래시 명령이 아니라 자연어로 트리거되는 스킬입니다.) 가정이 정리되면 `/hplan` 게이트(exclusions + evidence + COGS)로 "만들지 말지"를 판정하고, GO가 나오면 `/harness-discover`부터 라이프사이클로 넘어가세요.
 
 > 💡 **심화 내용** — 처음이라면 건너뛰어도 됩니다.
 >
-> **v1.0.1** — hplan 은 AI 도구가 HOW 로 달려가기 전에 **WHETHER 를 묻는 Product Build Gate** 입니다. ADK 5-Layer 완성: L1 Memory (CLAUDE.md) · L2 Skills (34개 PM 규율) · L3 Hooks (SessionStart · PreToolUse · PostToolUse) · L4 Subagents (8역할 병렬 팀) · L5 Plugins (마켓플레이스). `git clone` + `bash scripts/install-hooks.sh` 한 번으로 5개 레이어 전체 활성화. 자세한 변경 내역은 [CHANGELOG.md](CHANGELOG.md).
+> **v1.0.1** — hplan 은 AI 도구가 HOW 로 달려가기 전에 **WHETHER 를 묻는 Product Build Gate** 입니다. ADK 5-Layer 완성: L1 Memory (CLAUDE.md) · L2 Skills (34개 PM 규율) · L3 Hooks (SessionStart · PreToolUse · PostToolUse) · L4 Subagents (conductor — 태스크 순차 디스패치 + spec→quality 게이트) · L5 Plugins (마켓플레이스). `git clone` + `bash scripts/install-hooks.sh` 한 번으로 5개 레이어 전체 활성화. 자세한 변경 내역은 [CHANGELOG.md](CHANGELOG.md).
 
 ### 📺 99초 소개 영상
 
@@ -131,7 +155,7 @@ hplan을 설치한 뒤에도 Claude와 평소대로 대화하면 됩니다. 단,
 
 핵심: **hplan을 일부러 부르지 않아도 됩니다.** "만들자", "팔자", "출시하자", "spec 짜자" 같은 말이 나오는 순간 자동 발동.
 
-> 🆕 **Claude Code가 처음이라면?** → [`deliver/agent-setup`](deliver/skills/agent-setup/SKILL.md)가 프로젝트를 스캔하고, CLAUDE.md를 자동 생성하고, 맞는 hplan 플러그인을 추천해줍니다. 가장 빠른 온보딩 방법입니다.
+> 🆕 **Claude Code가 처음이라면?** → [`deliver/agent-setup`](deliver/skills/agent-setup/SKILL.md)가 프로젝트를 스캔해 CLAUDE.md / AGENTS.md를 생성하고, 7요소 에이전트 인스트럭션 세트를 작성해줍니다. 가장 빠른 온보딩 방법입니다.
 
 ---
 
@@ -154,9 +178,7 @@ Day 50-60   매출·성과 구조
             ★ 30명 paying user (= ₩570,000 MRR)
 ```
 
-**이 흐름이 패스트캠퍼스 25차시 강의의 백본이기도 합니다.** 강의에서는 Ethan이 PMFlow (PM의 1일 통합 AI Agent, ₩19,000/월)를 라이브 빌딩하면서 모든 결정에 "PM은 이렇게 한다"를 보여주고, 수강생은 본인 SaaS를 본인 분야로 만듭니다.
-
-> 강의 정보 (D-day 2026년 6월 말 OT 촬영): [패스트캠퍼스 — 추후 업데이트]
+각 단계에서 hplan의 게이트와 스킬이 결정의 근거를 강제합니다 — Evidence Gate가 ICP/JTBD를, COGS sentinel이 가격 마진을, decision-log가 결정 이력을 남깁니다. 도구만 깔면 이 흐름을 자기 분야에 그대로 적용할 수 있습니다.
 
 ---
 
@@ -255,42 +277,25 @@ bash <(curl -fsSL https://habix.ai/hplan/install.sh)
 
 이 명령은 private package를 `~/hplan`에 설치하고 로컬 Claude CLI alias를 등록합니다. 운영 방식은 [`docs/private-distribution.md`](docs/private-distribution.md)에 정리되어 있습니다.
 
-### 방법 0 — settings.json 한 파일로 5개 한 번에 (가장 빠름)
+> **설치는 맨 위 "이것만 따라하세요"(settings.json 5개 일괄) 하나면 됩니다.** 마켓플레이스에서 하나씩 고르거나 로컬 클론하는 방법은 아래 [설치](#설치) 섹션에 정리돼 있습니다.
 
-아래를 프로젝트의 `.claude/settings.json`에 넣으면 (또는 동봉된 [`.claude/settings.json.example`](.claude/settings.json.example) 복사), 다음 `claude` 세션의 trust dialog 한 번으로 5개 플러그인이 전부 활성화됩니다 — `/plugin marketplace add`도, 5번의 `/plugin install`도 불필요합니다.
+### 첫 실행 — 게이트가 먼저, 그다음 라이프사이클
 
-```json
-{
-  "extraKnownMarketplaces": {
-    "hplan": { "source": { "source": "github", "repo": "kimsanguine/hplan" } }
-  },
-  "enabledPlugins": {
-    "hplan@hplan": true,
-    "discover@hplan": true,
-    "architect@hplan": true,
-    "deliver@hplan": true,
-    "operate@hplan": true
-  }
-}
-```
-
-### 방법 A — 라이프사이클 커맨드 (권장, hplan 1개만 설치)
+설치가 끝났으면 Claude 세션에서 이 순서로 실행하세요. **`/hplan` 게이트가 먼저입니다** — WHETHER(만들지 말지)가 GO여야 라이프사이클로 넘어갑니다.
 
 ```bash
 # Claude 세션에서 실행
-/plugin marketplace add kimsanguine/hplan
-/plugin install hplan@hplan
-
-# 전체 라이프사이클을 5개 커맨드로
-# (harness-discover가 먼저 실행되는 이유: gate 판단에 필요한 evidence를 수집합니다)
+/hplan "AI 마케팅 카피 생성기"            # WHETHER gate — exclusions + evidence + COGS → GO / HOLD / INVESTIGATE
 /harness-discover "AI 마케팅 카피 생성기"   # 기회 매핑 + 가정 분석 + 비용 추정
-/hplan "AI 마케팅 카피 생성기"            # WHETHER gate — GO / HOLD / INVESTIGATE
 /harness-plan "마케팅 카피 에이전트"        # 아키텍처 설계 + W1 Done Criteria
 /harness-build "마케팅 카피 에이전트"       # COGS gate → PRD 자동 작성 → W1 스프린트
 /harness-operate "마케팅 카피 에이전트"     # 주간 KPI · 비용 · 개선 계획
 ```
 
-### 방법 B — 게이트 세밀 제어 (전체 플러그인 설치 시)
+스킬 이름을 외울 필요는 없습니다. 자연어로 질문하면 34개 스킬 중 맞는 게 auto-load 됩니다.
+
+<details>
+<summary><strong>게이트 세밀 제어</strong> — 개별 게이트로 깊은 분석</summary>
 
 ```bash
 # Claude 세션에서 실행
@@ -306,17 +311,7 @@ bash <(curl -fsSL https://habix.ai/hplan/install.sh)
 # → p50 마진 95%, p90 90%, blended 49% → GREEN
 ```
 
-**Gate 통과 후** — VERDICT: GO가 나오면 추가 플러그인을 설치해 더 깊은 스킬을 활용할 수 있습니다:
-
-```bash
-# Claude 세션에서 복붙 (필요한 것만 선택해도 됩니다)
-/plugin install discover@hplan   # 발견 — opportunity tree, assumptions, cost sim
-/plugin install architect@hplan  # 설계 — orchestration, memory, strategy
-/plugin install deliver@hplan    # 실행 — PRD, conductor, sprint, QA, UI 검증
-/plugin install operate@hplan    # 측정·학습·운영 — metrics, 신뢰성, PM 암묵지, 포트폴리오
-```
-
-스킬 이름을 외울 필요는 없습니다. 자연어로 질문하면 34개 스킬 중 맞는 게 auto-load 됩니다.
+</details>
 
 ---
 
@@ -409,6 +404,8 @@ PM의 판단/경험 기록 → /extract 명령어 → TK-NNN으로 구조화
 
 구체적으로 보면, `pm-engine` 스킬 없이 Claude에게 "운영 노하우를 구조화해줘"라고 하면 통과율이 40%까지 떨어집니다. `cost-sim` 스킬을 적용하면 비용 분석 산출량이 +46.6% 증가합니다. 이런 숫자가 있기 때문에, 어떤 스킬이 실제로 가치를 더하는지, 어떤 스킬을 개선해야 하는지를 **데이터로 판단**할 수 있습니다.
 
+> **측정 caveat (트리거 정확도 수치와 같은 정직성):** 이 ROI 수치(100% vs 88%, pm-engine 40%, cost-sim +46.6%)는 v0.4 (당시 32개 스킬) 기준 측정값입니다([CHANGELOG 0.4.0](CHANGELOG.md), 2026-03-06). v1.0.1 (34개 스킬, 5-plugin 구조) 기준으로는 *직접적인 v1.0.1 비교가 아니라 이전 baseline*입니다. **아직 v1.0.1 기준 재측정되지 않았습니다(별도 후속).**
+
 ### ⑤ Good/Bad 예시 — 스킬 품질을 지속적으로 개선하는 장치
 
 모든 스킬에는 `examples/good-01.md`(이상적인 출력)와 `examples/bad-01.md`(피해야 할 출력)가 포함됩니다. 여기에 `references/test-cases.md`의 엣지 케이스 테이블까지 있습니다.
@@ -435,7 +432,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 | `evidence-rubric` | 8축 100점 evidence 루브릭으로 점수화 — ICP, 최근 통증 이벤트, 현재 우회법, 반복도, 경제적 손실, 전환 트리거, MVP 좁힘, 첫 5명 획득 경로 | "이 아이디어 인터뷰까지라도 갈 가치가 있나?" |
 | `interview-synthesis` | BuildBetter / Perspective 등 AI 합성 결과 import → 인간이 strength + Push/Pull/Habit/Anxiety 축 태깅 강제 → 5명 중 3명 강한 Push 패턴 audit | "고객 인터뷰 5건 끝났는데 패턴이 충분한가?" |
 | `exclusions` | Append-only Do-Not-Build 영구 메모리. 한국어 fuzzy match로 collision 자동 감지 + reopen_trigger 보존 | "지난 분기 했던 거랑 비슷한데 — 그때 왜 죽였더라?" |
-| `cogs-sentinel` | 실행 가능한 COGS 게이트 — lognormal sampler가 p50/p90 월간 마진 계산, free-user abuse blend, GREEN/CONDITIONAL_GO/RED 결정 | "월 $19에 팔면 p90 마진이 살아남나?" |
+| `cogs-sentinel` | 실행 가능한 COGS 게이트 — lognormal sampler가 p50/p90 월간 마진 계산, free-user abuse blend, GREEN/CONDITIONAL_GO/RED 결정 | "월 ₩19,000에 팔면 p90 마진이 살아남나?" |
 | `ost` | Teresa Torres 식 Opportunity Solution Tree를 `docs/OPPORTUNITY_TREE.md`로 Mermaid 다이어그램과 함께 생성 | "PRD 쓰기 전에 opportunity → solution → experiment 트리 잠그기" |
 | `decision-log` | Append-only build/interview/pivot/hold 로그 + 3-6개월 뒤 self-eval audit (hit_rate, false_holds, missed_builds) | "6개월 전 내 제품 결정이 실제로 맞았나?" |
 | `brainstorm` | 아이디어를 제품 컨셉으로 발전시키는 브레인스토밍 — 질문 흐름 구조화, 트레이드오프 탐색, 접근법 2~3가지 제안 | "막연한 아이디어를 PRD 이전에 구체화하고 싶어" |
@@ -500,7 +497,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 |------|------|-------------------|
 | `agent-setup` ⭐ | 7요소 에이전트 인스트럭션 작성 + CLAUDE.md/AGENTS.md 구성 통합 — 정체성·도구·제약·실패 모드부터 프로젝트 메모리 파일까지 | "새 프로젝트에 에이전트를 세팅하고 인스트럭션을 잡고 싶어" |
 | `prd` | **통합 15섹션 PRD** — 사람/JTBD/결정/스코프 + 에이전트·실행 사양 + 지표/가설 + §15 QA Pool. 제품과 그 안의 에이전트를 단일 PRD로. `--mode roadmap`은 §6 Now/Next/Later 서브모드(Mermaid gantt · RICE 점수 · 우선순위 재분류), `--mode design-shotgun`은 §1+§11에서 4개 HTML 변형 생성 | "1인 변호사 한국 판례 RAG PRD 작성해줘" / "게이트 판정과 스프린트 추정을 공유 가능한 로드맵으로" |
-| `conductor` | 태스크별 fresh subagent 디스패치 + 2단계 게이트(spec→quality) 반복 실행 — parallel은 역할 병렬, conductor는 태스크 순차+게이트 | "harness-plan 승인 후 구현 루프를 게이트 걸어 돌리고 싶어" |
+| `conductor` | 태스크별 fresh subagent 디스패치 + 2단계 게이트(spec→quality) 반복 실행 — 태스크를 순차로 돌리며 각 태스크마다 게이트를 통과시킴 | "harness-plan 승인 후 구현 루프를 게이트 걸어 돌리고 싶어" |
 | `sprint` | 스프린트 계획-실행-추적 통합 — PRD → WBS 분해, predicted.json 초기화, probe/detect/report/checkpoint 실행 | "딜리버리 스프린트를 계획하고 진척을 추적하고 싶어" |
 | `build-loop` | 발견 → 리서치 → 설계 → PRD → 태스크 분해 → 팀 기반 구현을 한 세션에서 오케스트레이션 | "아이디어를 문제부터 출시까지 엔드투엔드로 돌리고 싶어" |
 | `qa-checklist` | docs/PRD.md 파싱 → harness/QA_CHECKLIST.md 자동 생성. ICP·실패 시나리오 기반 TC를 critical/major/minor 3등급 분류 + 디바이스·환경 링크 | "deliver 완료 후 / quality-gate 전에 QA 체크리스트 자동 생성" |
@@ -537,8 +534,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 
 ## 설치
 
-> **처음 설치라면 → 방법 2 (GitHub Marketplace, 데스크탑 앱 + CLI)만 하면 됩니다.**
-> 자동 설치 스크립트(CLI)는 방법 1, 수동 로컬 클론은 방법 3을 사용하세요.
+> **권장 설치는 맨 위 "이것만 따라하세요"(settings.json 5개 일괄) 하나입니다.** 아래 방법 1~3은 그 외의 선택지입니다 — CLI 자동 스크립트(방법 1), 마켓플레이스에서 하나씩(방법 2), 수동 로컬 클론(방법 3). 클론 목적지는 모두 `~/hplan`로 통일돼 있습니다.
 
 ### 방법 1: 자동 설치 스크립트 (CLI 권장)
 
@@ -594,7 +590,7 @@ claude \
 
 **어디서부터 시작할지 모르겠다면?**
 **어떤 AI 제품을 만들지 결정 못 하셨다면** → `hplan`으로 시작 — evidence 게이트가 먼저.
-**Claude Code가 처음이라면** → `deliver/agent-setup`을 돌리면 프로젝트를 스캔하고 맞는 플러그인을 추천해줍니다.
+**Claude Code가 처음이라면** → `deliver/agent-setup`을 돌리면 프로젝트를 스캔해 CLAUDE.md / AGENTS.md를 생성하고 7요소 인스트럭션 세트를 작성해줍니다.
 **이미 게이트 통과했다면** → 라이프사이클 순서대로 (discover → architect → deliver → operate) 골라서 설치.
 
 ### 다른 AI 도구에서도 쓸 수 있습니다
@@ -709,7 +705,7 @@ discover/skills/opp-tree/           ← 예시: opp-tree 스킬
 | `examples/bad-01.md` | "이건 틀린 것"이라는 명시적 반면교사 | 흔한 실패 패턴 사전 차단 |
 | `references/test-cases.md` | 엣지 케이스 + 어설션 정의 | eval 시스템 구동 (54개 어설션) |
 
-이 패턴이 34개 스킬 전체에 일관되게 적용됩니다. 총 **200개 이상의 보조 파일**이 각 스킬을 측정 가능하고, 테스트 가능하고, 개선 가능하게 만듭니다.
+이 패턴은 **핵심 스킬에 먼저 적용되어 점차 나머지 스킬로 확장 중입니다.** 5종 풀세트(domain · good · bad · test-cases · troubleshooting)를 갖춘 스킬부터 채워가고 있으며, 이 보조 파일들이 각 스킬을 측정 가능하고, 테스트 가능하고, 개선 가능하게 만듭니다.
 
 </details>
 

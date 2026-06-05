@@ -11,22 +11,26 @@
     <text x="60" y="65" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">PLUGINS</text>
     <text x="60" y="85" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#CBD5E1">Installable packages</text>
     
-    <!-- Plugin pills -->
+    <!-- Plugin pills (5 plugins, evenly distributed) -->
     <g>
       <!-- hplan ⭐ (highlighted as flagship) -->
-      <rect x="180" y="48" width="75" height="32" rx="6" fill="#DC2626"/>
-      <text x="217.5" y="68" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">hplan ⭐</text>
-      <!-- oracle -->
-      <rect x="260" y="48" width="75" height="32" rx="6" fill="#334155"/>
-      <text x="297.5" y="68" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">discover</text>
-      
-      <!-- forge -->
-      <rect x="360" y="48" width="75" height="32" rx="6" fill="#334155"/>
-      <text x="397.5" y="68" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">deliver</text>
-      
-      <!-- muse -->
-      <rect x="460" y="48" width="75" height="32" rx="6" fill="#334155"/>
-      <text x="497.5" y="68" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">learn</text>
+      <rect x="175" y="48" width="75" height="32" rx="6" fill="#DC2626"/>
+      <text x="212.5" y="68" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">hplan ⭐</text>
+      <!-- discover -->
+      <rect x="284" y="48" width="75" height="32" rx="6" fill="#334155"/>
+      <text x="321.5" y="68" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">discover</text>
+
+      <!-- architect -->
+      <rect x="393" y="48" width="75" height="32" rx="6" fill="#334155"/>
+      <text x="430.5" y="68" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">architect</text>
+
+      <!-- deliver -->
+      <rect x="502" y="48" width="75" height="32" rx="6" fill="#334155"/>
+      <text x="539.5" y="68" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">deliver</text>
+
+      <!-- operate -->
+      <rect x="611" y="48" width="75" height="32" rx="6" fill="#334155"/>
+      <text x="648.5" y="68" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">operate</text>
     </g>
     
     <!-- Right annotation -->
@@ -56,17 +60,17 @@
     
     <!-- Command pills -->
     <g>
-      <!-- /discover -->
-      <rect x="260" y="178" width="75" height="32" rx="6" fill="#4F46E5"/>
-      <text x="297.5" y="198" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">/discover</text>
-      
-      <!-- /write-prd -->
-      <rect x="360" y="178" width="75" height="32" rx="6" fill="#4F46E5"/>
-      <text x="397.5" y="198" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">/write-prd</text>
-      
-      <!-- /health-check -->
-      <rect x="460" y="178" width="85" height="32" rx="6" fill="#4F46E5"/>
-      <text x="502.5" y="198" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">/health-check</text>
+      <!-- /harness-discover -->
+      <rect x="240" y="178" width="135" height="32" rx="6" fill="#4F46E5"/>
+      <text x="307.5" y="198" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">/harness-discover</text>
+
+      <!-- /prd -->
+      <rect x="385" y="178" width="55" height="32" rx="6" fill="#4F46E5"/>
+      <text x="412.5" y="198" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">/prd</text>
+
+      <!-- /harness-doctor -->
+      <rect x="450" y="178" width="125" height="32" rx="6" fill="#4F46E5"/>
+      <text x="512.5" y="198" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">/harness-doctor</text>
     </g>
     
     <!-- Right annotation -->
@@ -104,9 +108,9 @@
       <rect x="360" y="308" width="75" height="32" rx="6" fill="#CBD5E1"/>
       <text x="397.5" y="328" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#1E293B" text-anchor="middle">prd</text>
       
-      <!-- pm-framework -->
+      <!-- pm-engine -->
       <rect x="460" y="308" width="85" height="32" rx="6" fill="#CBD5E1"/>
-      <text x="502.5" y="328" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#1E293B" text-anchor="middle">pm-framework</text>
+      <text x="502.5" y="328" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#1E293B" text-anchor="middle">pm-engine</text>
     </g>
     
     <!-- Right annotation -->

@@ -34,9 +34,9 @@
 | **Git** | 2.x+ | pre-commit hook 사용 시 필요 (선택) |
 | **OS** | macOS / Linux | Windows는 WSL2 권장 |
 
-> **Python 없이 시작 가능합니다.** 핵심 스킬(socratic-question, harness-discover, prd, conductor)은
-> Python 없이 동작합니다. Python이 필요한 기능: cogs-sentinel, evidence-rubric, track-probe.sh
-> 나중에 필요해지면 설치해도 됩니다.
+> **자연어 탐색은 Python 없이 시작할 수 있습니다.** 자연어로 트리거되는 스킬(socratic-question, prd, conductor 루프)은
+> Python 없이 동작합니다. 다만 `/hplan` 게이트(exclusions·COGS)와 `harness-discover`의 HITL 단계는 Python이 필요합니다
+> (cogs-sentinel, evidence-rubric, `decision_log.py` 등). 나중에 필요해지면 설치해도 됩니다.
 >
 > **Python이 없다면?** Evidence Gate(`generate_report.py`, `gate_guard.py`)를 포함한 일부 스킬이 동작하지 않습니다. 나머지 스킬(SKILL.md 기반)은 Python 없이도 사용 가능합니다.
 
@@ -67,7 +67,7 @@
 /plugin install discover@hplan   # 발견 (What to build?)
 /plugin install architect@hplan  # 설계 (How to architect?)
 /plugin install deliver@hplan    # 실행 (How to ship?)
-/plugin install operate@hplan    # 측정·학습·운영 통합 (How to measure, learn & operate?)
+/plugin install operate@hplan    # 운영 (How to operate?) — KPI·신뢰성·포트폴리오·PM 암묵지 자산화
 ```
 
 만들지 말지부터 고민이라면 → `hplan`을 먼저 설치하세요 (evidence + COGS 게이트).
@@ -197,7 +197,7 @@ v0.9부터 `measure` + `learn`이 `operate`로 통합되어 **5-plugin 라이프
 | 발견 | **discover** | "어떤 에이전트를 만들까?" | 자동화할 업무를 찾고 있을 때, 비용이 맞는지 확인할 때 |
 | 설계 | **architect** | "어떤 구조로 만들까?" | 단일 에이전트 vs 멀티에이전트 결정, 아키텍처 설계 |
 | 딜리버리 | **deliver** | "어떻게 명세하고 만들까?" | PRD 작성, 인스트럭션 설계, 스프린트·QA 추적, UI 검증, 빌드 루프 |
-| 운영 | **operate** | "측정·학습·운영을 어떻게 할까?" | KPI 모니터링, 비용 추적, PM 암묵지 자산화, 포트폴리오 운영 |
+| 운영 | **operate** | "측정·학습·포트폴리오를 어떻게 할까?" | KPI · 신뢰성 · 포트폴리오 · PM 암묵지 자산화 |
 
 ---
 
@@ -362,7 +362,7 @@ TK-041: 긴급 트리거 검증 규칙
 | `ask-team` | 질문을 올바른 이해관계자 또는 에이전트 역할로 구조화하여 라우팅. `--mode review`는 PRD 스테이크홀더 리뷰 | "이 트레이드오프를 누구에게 물어봐야 하지? / PRD 리뷰를 추적하고 싶어" |
 | `ticket-bridge` | PRD 결정·게이트 출력물 → 추적 가능한 티켓으로 변환 (Linear / Jira / GitHub Issues) | "게이트 판정 결과를 스프린트 티켓으로 자동 전환하고 싶어" |
 
-### operate — 측정·학습·운영 (6개 스킬)
+### operate — 측정·학습·포트폴리오 운영 (6개 스킬)
 
 v0.9에서 `measure`(측정) + `learn`(학습) + 기존 `operate`(포트폴리오 운영)가 하나로 통합되었습니다. 흡수: `stakeholder-update` → `ops-review`.
 
@@ -499,7 +499,7 @@ A: 커맨드와 프롬프트 모두 한국어로 입력하면 됩니다. 스킬 
 A: TK = Tacit Knowledge(암묵지), NNN = Never-ending Nuance Network(끝없이 쌓이는 뉘앙스의 네트워크). TK-001부터 TK-999까지 PM의 판단 기준을 축적합니다. 예: "고객이 긴급이라고 하면 80%는 가짜 긴급이다." 이걸 구조화해서 에이전트 인스트럭션에 넣으면, 당신의 경험이 에이전트의 판단 기준이 됩니다. 매일 1개씩 약 3년이면 999개 — 에이전트가 PM의 분신이 되는 시점입니다. `operate` 플러그인의 `pm-engine` 스킬이 이를 담당합니다 (TK 추출·쿼리·인스트럭션 변환·의사결정 패턴 매칭 통합). 선택사항이지만, 쓰면 쓸수록 에이전트가 강해집니다.
 
 **Q: 에이전트를 만들어본 적이 없어도 되나요?**
-A: 네. `/harness-discover`부터 시작하면 "어떤 업무를 자동화할 수 있는지"부터 탐색합니다. 기술적 배경 없이 PM 관점에서 접근할 수 있도록 설계되었습니다.
+A: 네. 먼저 `/hplan` 게이트로 "정말 만들 가치가 있는가(WHETHER)"를 확인한 뒤, `/harness-discover`로 "어떤 업무를 자동화할 수 있는지"를 탐색합니다. 기술적 배경 없이 PM 관점에서 접근할 수 있도록 설계되었습니다.
 
 ---
 
@@ -508,13 +508,13 @@ A: 네. `/harness-discover`부터 시작하면 "어떤 업무를 자동화할 �
 ### PM이라면
 
 ```
-/harness-discover → /harness-plan → /prd → /harness-build → /harness-verify
+/hplan → /harness-discover → /harness-plan → /prd → /harness-build → /harness-verify
 ```
 
 ### 마케터라면
 
 ```
-/harness-discover [마케팅 자동화 업무] → /prd → /harness-operate
+/hplan [마케팅 자동화 업무] → /harness-discover → /prd → /harness-operate
 ```
 
 ### 이미 에이전트를 운영 중이라면
@@ -536,7 +536,7 @@ A: 네. `/harness-discover`부터 시작하면 "어떤 업무를 자동화할 �
 
 특히 `pm-engine`(TK 유닛)과 `orchestration`(멀티에이전트 설계 — Hierarchical 패턴)은 스킬 없이는 Claude가 제대로 수행하지 못하는 **역량 게이팅(capability-gating)** 영역이었습니다.
 
-> **참고:** 벤치마크는 v0.4 (32개 스킬) 기준 측정값입니다. v1.0.1 (34개 스킬, 5-plugin 구조) 기준 재측정은 차기 iteration에서 진행 예정입니다.
+> **측정 caveat:** 이 수치(100% vs 88% 등)는 v0.4 (당시 32개 스킬) 기준 측정값입니다([CHANGELOG 0.4.0](CHANGELOG.md), 2026-03-06). v1.0.1 (34개 스킬, 5-plugin 구조) 기준 재측정은 아직 끝나지 않았으므로 *직접적인 v1.0.1 비교가 아니라 이전 baseline*입니다. v1.0.1 재측정은 진행 중입니다.
 
 ---
 

@@ -17,7 +17,7 @@ This project uses **hplan** — the Product Build Gate for AI Agents.
 | L1 Memory | Project rules (this file) | `CLAUDE.md` |
 | L2 Skills | Auto-invoked PM disciplines | `hplan/`, `discover/`, `architect/`, `deliver/`, `operate/` |
 | L3 Hooks | Gate enforcement at tool time | `hooks/` → `.claude/settings.json` |
-| L4 Subagents | 8-role parallel team | `deliver/skills/parallel-team/` |
+| L4 Subagents | Task-sequential subagent dispatch + gates | `deliver/skills/conductor/` |
 | L5 Plugins | Marketplace distribution | `hplan/PLUGIN.md` |
 
 **Active harness directory:** `harness/`
