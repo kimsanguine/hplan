@@ -22,7 +22,7 @@
 /plugin marketplace add kimsanguine/hplan && /plugin install hplan@hplan
 ```
 
-> **v1.0.1** — hplan now ships as a complete **ADK (Agent Development Kit)**: **L1 Memory** (`CLAUDE.md` — 9 behavioral rules auto-loaded every session) · **L2 Skills** (34 PM disciplines, auto-invoked) · **L3 Hooks** (`hooks/` — SessionStart gate status · PreToolUse gate enforcement · PostToolUse secret scanner + **MD→HTML auto-renderer**) · **L4 Subagents** (8-role parallel team) · **L5 Plugins** (marketplace). One `git clone` + `bash scripts/install-hooks.sh` activates all 5 layers. v0.9.4–v1.0.1 history: see [CHANGELOG.md](CHANGELOG.md).
+> **v1.0.1** — hplan now ships as a complete **ADK (Agent Development Kit)**: **L1 Memory** (`CLAUDE.md` — 9 behavioral rules auto-loaded every session) · **L2 Skills** (34 PM disciplines, auto-invoked) · **L3 Hooks** (`hooks/` — SessionStart gate status · PreToolUse gate enforcement · PostToolUse secret scanner + **MD→HTML auto-renderer**) · **L4 Subagents** (task-sequential subagent dispatch + spec→quality gates, via `deliver/skills/conductor`) · **L5 Plugins** (marketplace). One `git clone` + `bash scripts/install-hooks.sh` activates all 5 layers. v0.9.4–v1.0.1 history: see [CHANGELOG.md](CHANGELOG.md).
 
 ### 📺 99-second intro
 
@@ -85,6 +85,14 @@ WHETHER is bigger than WHY. WHY answers the reason ("why would users pay?"). WHE
 | **All 3 combined** | — | **GO / HOLD / INVESTIGATE** |
 
 Other tools handle **HOW** (Claude Code plugins → how to work with Claude Code), **WHERE** (GSD → where in the workflow). hplan handles **WHETHER** — the decision that comes before all other decisions.
+
+> **Is hplan the right tool for you?**
+>
+> **A good fit when** — you're deciding *whether* to build an **AI agent or AI-powered feature** (model-call economics, hallucination recovery, multi-agent orchestration). That's the case the full lifecycle was designed around.
+>
+> **Probably overkill when** — you just want a faster PRD template or OKR generator with no build/no-build decision at stake, or you've already committed and only need execution help. hplan's value is the gate *before* you commit.
+>
+> **Note:** the three gate skills — `evidence-rubric`, `cogs-sentinel`, and `exclusions` — are **not AI-specific**. Demand proof, unit-economics, and a do-not-repeat registry apply to *any* product. Even if your product isn't an agent, these three are usable on their own.
 
 ### hplan's 3 Principles vs Opposing Assumptions
 
@@ -243,6 +251,8 @@ Every skill is measured. 10 quality tests with 54 assertions prove what skills a
 | **Pass Rate** | **100%** | 88% | **+12%** |
 
 `pm-engine` without skill drops to 40%. `cost-sim` with skill adds +46.6% output. This is **data-driven proof** that the skills work.
+
+> **Measurement caveat (same honesty as the trigger-accuracy number):** these ROI figures (100% vs 88%, pm-engine 40%, cost-sim +46.6%) were measured at **v0.4 on the then-32-skill set** ([CHANGELOG 0.4.0](CHANGELOG.md), 2026-03-06). They have **not yet been re-measured against the current v1.0.1 / 34-skill build**, so they are an earlier baseline — *not a direct v1.0.1 comparison*. A v1.0.1 re-run is in progress.
 
 ### ⑤ Good/Bad Examples for Data-Driven Improvement
 
@@ -422,7 +432,7 @@ hplan ships as a complete **Agent Development Kit** — five reinforcing layers 
 | **L1 Memory** | `CLAUDE.md` — 9 behavioral rules + hplan gate policy | Loaded by Claude Code at session start, every time |
 | **L2 Skills** | 34 PM discipline skills across 5 plugins | Auto-invoked when you describe a task in natural language |
 | **L3 Hooks** | `hooks/` — PreToolUse · PostToolUse · SessionStart | `scripts/install-hooks.sh` registers to `.claude/settings.json` |
-| **L4 Subagents** | 8-role parallel team (designer · engineer · critic · security…) | Dispatched by `deliver/skills/conductor` |
+| **L4 Subagents** | Task-sequential subagent dispatch with spec→quality gates per task | Run by `deliver/skills/conductor` after `harness-plan` approval |
 | **L5 Plugins** | Marketplace distribution (`/plugin install`) | Claude Code plugin registry |
 
 **What each hook does:**
@@ -583,7 +593,7 @@ discover/skills/opp-tree/           ← example skill
 | `examples/bad-01.md` | Explicit anti-patterns with explanations | Prevents common failures |
 | `references/test-cases.md` | Edge cases + assertions | Powers eval system (54 assertions) |
 
-This pattern repeats across all 34 skills — **200+ supporting files** that make each skill measurable, testable, and improvable.
+This is the target structure, applied to the core skills and expanding outward. As of v1.0.1: **82 supporting files** on disk; **10 of 34 skills** carry the full 5-part set (`context/domain.md` + good/bad examples + test-cases + troubleshooting), with `context/domain.md` present on those same 10. The rest are being filled in skill by skill — the supporting files make each skill measurable, testable, and improvable.
 
 </details>
 

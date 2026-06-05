@@ -536,7 +536,7 @@ A: 네. `/harness-discover`부터 시작하면 "어떤 업무를 자동화할 �
 
 특히 `pm-engine`(TK 유닛)과 `orchestration`(멀티에이전트 설계 — Hierarchical 패턴)은 스킬 없이는 Claude가 제대로 수행하지 못하는 **역량 게이팅(capability-gating)** 영역이었습니다.
 
-> **참고:** 벤치마크는 v0.4 (32개 스킬) 기준 측정값입니다. v1.0.1 (34개 스킬, 5-plugin 구조) 기준 재측정은 차기 iteration에서 진행 예정입니다.
+> **측정 caveat:** 이 수치(100% vs 88% 등)는 v0.4 (당시 32개 스킬) 기준 측정값입니다([CHANGELOG 0.4.0](CHANGELOG.md), 2026-03-06). v1.0.1 (34개 스킬, 5-plugin 구조) 기준 재측정은 아직 끝나지 않았으므로 *직접적인 v1.0.1 비교가 아니라 이전 baseline*입니다. v1.0.1 재측정은 진행 중입니다.
 
 ---
 

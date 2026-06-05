@@ -34,17 +34,17 @@ git clone https://github.com/kimsanguine/hplan ~/.claude/plugins/hplan
 
 ## 5분 빠른 시작
 
-설치 완료 후 Claude 세션에서:
+설치 완료 후 Claude 세션에서 **아이디어를 자연어로 말하면** 됩니다 (별도 명령 불필요):
 
 ```
-/socratic-question [내 아이디어]
+"[내 아이디어]를 만들어볼까 하는데"
 ```
 
-AI가 먼저 당신의 가정을 심문합니다. "만들 가치가 있는가"가 명확해지면 `/harness-discover`로 넘어가세요.
+그러면 `socratic-question` 스킬이 자동으로 발동해 AI가 먼저 당신의 가정을 심문합니다. (`socratic-question`은 슬래시 명령이 아니라 자연어로 트리거되는 스킬입니다.) "만들 가치가 있는가"가 명확해지면 `/harness-discover`로 넘어가세요.
 
 > 💡 **심화 내용** — 처음이라면 건너뛰어도 됩니다.
 >
-> **v1.0.1** — hplan 은 AI 도구가 HOW 로 달려가기 전에 **WHETHER 를 묻는 Product Build Gate** 입니다. ADK 5-Layer 완성: L1 Memory (CLAUDE.md) · L2 Skills (34개 PM 규율) · L3 Hooks (SessionStart · PreToolUse · PostToolUse) · L4 Subagents (8역할 병렬 팀) · L5 Plugins (마켓플레이스). `git clone` + `bash scripts/install-hooks.sh` 한 번으로 5개 레이어 전체 활성화. 자세한 변경 내역은 [CHANGELOG.md](CHANGELOG.md).
+> **v1.0.1** — hplan 은 AI 도구가 HOW 로 달려가기 전에 **WHETHER 를 묻는 Product Build Gate** 입니다. ADK 5-Layer 완성: L1 Memory (CLAUDE.md) · L2 Skills (34개 PM 규율) · L3 Hooks (SessionStart · PreToolUse · PostToolUse) · L4 Subagents (conductor — 태스크 순차 디스패치 + spec→quality 게이트) · L5 Plugins (마켓플레이스). `git clone` + `bash scripts/install-hooks.sh` 한 번으로 5개 레이어 전체 활성화. 자세한 변경 내역은 [CHANGELOG.md](CHANGELOG.md).
 
 ### 📺 99초 소개 영상
 
@@ -435,7 +435,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 | `evidence-rubric` | 8축 100점 evidence 루브릭으로 점수화 — ICP, 최근 통증 이벤트, 현재 우회법, 반복도, 경제적 손실, 전환 트리거, MVP 좁힘, 첫 5명 획득 경로 | "이 아이디어 인터뷰까지라도 갈 가치가 있나?" |
 | `interview-synthesis` | BuildBetter / Perspective 등 AI 합성 결과 import → 인간이 strength + Push/Pull/Habit/Anxiety 축 태깅 강제 → 5명 중 3명 강한 Push 패턴 audit | "고객 인터뷰 5건 끝났는데 패턴이 충분한가?" |
 | `exclusions` | Append-only Do-Not-Build 영구 메모리. 한국어 fuzzy match로 collision 자동 감지 + reopen_trigger 보존 | "지난 분기 했던 거랑 비슷한데 — 그때 왜 죽였더라?" |
-| `cogs-sentinel` | 실행 가능한 COGS 게이트 — lognormal sampler가 p50/p90 월간 마진 계산, free-user abuse blend, GREEN/CONDITIONAL_GO/RED 결정 | "월 $19에 팔면 p90 마진이 살아남나?" |
+| `cogs-sentinel` | 실행 가능한 COGS 게이트 — lognormal sampler가 p50/p90 월간 마진 계산, free-user abuse blend, GREEN/CONDITIONAL_GO/RED 결정 | "월 ₩19,000에 팔면 p90 마진이 살아남나?" |
 | `ost` | Teresa Torres 식 Opportunity Solution Tree를 `docs/OPPORTUNITY_TREE.md`로 Mermaid 다이어그램과 함께 생성 | "PRD 쓰기 전에 opportunity → solution → experiment 트리 잠그기" |
 | `decision-log` | Append-only build/interview/pivot/hold 로그 + 3-6개월 뒤 self-eval audit (hit_rate, false_holds, missed_builds) | "6개월 전 내 제품 결정이 실제로 맞았나?" |
 | `brainstorm` | 아이디어를 제품 컨셉으로 발전시키는 브레인스토밍 — 질문 흐름 구조화, 트레이드오프 탐색, 접근법 2~3가지 제안 | "막연한 아이디어를 PRD 이전에 구체화하고 싶어" |
@@ -500,7 +500,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 |------|------|-------------------|
 | `agent-setup` ⭐ | 7요소 에이전트 인스트럭션 작성 + CLAUDE.md/AGENTS.md 구성 통합 — 정체성·도구·제약·실패 모드부터 프로젝트 메모리 파일까지 | "새 프로젝트에 에이전트를 세팅하고 인스트럭션을 잡고 싶어" |
 | `prd` | **통합 15섹션 PRD** — 사람/JTBD/결정/스코프 + 에이전트·실행 사양 + 지표/가설 + §15 QA Pool. 제품과 그 안의 에이전트를 단일 PRD로. `--mode roadmap`은 §6 Now/Next/Later 서브모드(Mermaid gantt · RICE 점수 · 우선순위 재분류), `--mode design-shotgun`은 §1+§11에서 4개 HTML 변형 생성 | "1인 변호사 한국 판례 RAG PRD 작성해줘" / "게이트 판정과 스프린트 추정을 공유 가능한 로드맵으로" |
-| `conductor` | 태스크별 fresh subagent 디스패치 + 2단계 게이트(spec→quality) 반복 실행 — parallel은 역할 병렬, conductor는 태스크 순차+게이트 | "harness-plan 승인 후 구현 루프를 게이트 걸어 돌리고 싶어" |
+| `conductor` | 태스크별 fresh subagent 디스패치 + 2단계 게이트(spec→quality) 반복 실행 — 태스크를 순차로 돌리며 각 태스크마다 게이트를 통과시킴 | "harness-plan 승인 후 구현 루프를 게이트 걸어 돌리고 싶어" |
 | `sprint` | 스프린트 계획-실행-추적 통합 — PRD → WBS 분해, predicted.json 초기화, probe/detect/report/checkpoint 실행 | "딜리버리 스프린트를 계획하고 진척을 추적하고 싶어" |
 | `build-loop` | 발견 → 리서치 → 설계 → PRD → 태스크 분해 → 팀 기반 구현을 한 세션에서 오케스트레이션 | "아이디어를 문제부터 출시까지 엔드투엔드로 돌리고 싶어" |
 | `qa-checklist` | docs/PRD.md 파싱 → harness/QA_CHECKLIST.md 자동 생성. ICP·실패 시나리오 기반 TC를 critical/major/minor 3등급 분류 + 디바이스·환경 링크 | "deliver 완료 후 / quality-gate 전에 QA 체크리스트 자동 생성" |
@@ -709,7 +709,7 @@ discover/skills/opp-tree/           ← 예시: opp-tree 스킬
 | `examples/bad-01.md` | "이건 틀린 것"이라는 명시적 반면교사 | 흔한 실패 패턴 사전 차단 |
 | `references/test-cases.md` | 엣지 케이스 + 어설션 정의 | eval 시스템 구동 (54개 어설션) |
 
-이 패턴이 34개 스킬 전체에 일관되게 적용됩니다. 총 **200개 이상의 보조 파일**이 각 스킬을 측정 가능하고, 테스트 가능하고, 개선 가능하게 만듭니다.
+이 패턴은 핵심 스킬에 먼저 적용되어 점차 확장 중입니다. 현재 34개 스킬에 걸쳐 **82개의 보조 파일**이 적용돼 있고, 5종 풀세트(domain · good · bad · test-cases · troubleshooting)를 모두 갖춘 스킬은 10개입니다. 이 파일들이 각 스킬을 측정 가능하고, 테스트 가능하고, 개선 가능하게 만듭니다.
 
 </details>
 

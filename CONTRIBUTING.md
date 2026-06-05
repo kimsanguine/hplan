@@ -6,18 +6,18 @@ Thank you for your interest in contributing!
 
 ```
 hplan/                         # repo root
-├── hplan/                     # Gate ⭐ — should we build this? (8 skills, 9 commands)
+├── hplan/                     # Gate ⭐ — should we build this? (8 skills, 11 commands)
 │   ├── .claude-plugin/
 │   │   └── plugin.json
 │   ├── skills/                # evidence-rubric, interview-synthesis, exclusions,
 │   │   └── ...                # cogs-sentinel, ost, decision-log, handoff
-│   ├── commands/              # hplan · harness-discover · harness-plan · harness-build · harness-operate · harness-doctor · harness-exclude · harness-handoff · harness-verify
+│   ├── commands/              # hplan · evidence-rubric · cogs-sentinel · harness-discover · harness-plan · harness-build · harness-operate · harness-doctor · harness-exclude · harness-handoff · harness-verify
 │   ├── scripts/               # 9 deterministic Python modules
 │   ├── hplan_mcp/             # MCP server for Cursor/Windsurf/Kiro/Codex/Goose
 │   ├── hooks/                 # PreToolUse gate_guard.py
 │   ├── agents/                # 4 role-locked reviewer agents
 │   └── references/            # 14 playbooks + provider_pricing.json
-├── discover/                    # Discovery — what agent to build (7 skills)
+├── discover/                    # Discovery — what agent to build (6 skills)
 │   ├── .claude-plugin/
 │   │   └── plugin.json        # Plugin manifest (required)
 │   ├── skills/
@@ -26,9 +26,9 @@ hplan/                         # repo root
 │   │   └── ...
 │   └── commands/
 │       └── harness-discover.md
-├── architect/                     # Strategy — how to architect it (8 skills)
-├── deliver/                     # Execution — spec and ship (32 skills)
-├── operate/                     # Operations — KPI, reliability, PM knowledge (17 skills)
+├── architect/                     # Strategy — how to architect it (4 skills)
+├── deliver/                     # Execution — spec and ship (10 skills)
+├── operate/                     # Operations — KPI, reliability, PM knowledge (6 skills)
 │   └── evals/                 # Trigger eval queries + benchmark data
 │       ├── evals.json         # Quality eval definitions
 │       ├── trigger-evals.json # Trigger accuracy queries

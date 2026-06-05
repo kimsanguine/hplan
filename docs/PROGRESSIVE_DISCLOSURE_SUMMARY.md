@@ -1,18 +1,23 @@
 # Progressive Disclosure Supplementary Files — Complete Summary
 
 **Generated**: 2026-03-07
-**Project**: 260306_AgentSkills / measure plugin skills
-**Base Path**: `/measure/skills/[skill-name]/`
+**Project**: hplan / operate plugin skills
+**Base Path**: `operate/skills/[skill-name]/`
 
 ---
 
 ## Overview
 
-Progressive Disclosure supplementary files have been generated for all 8 measure skills following the tier classification system:
+Progressive Disclosure supplementary files have been generated for the operate-plugin
+reliability skills following the tier classification system:
 
-- **Tier 1 (Full)**: 5 files — premortem, reliability
-- **Tier 2 (Standard)**: 3 files — cohort, incident
-- **Tier 3 (Lite)**: 2 files — kpi, north-star, burn-rate, agent-ab-test
+- **Tier 1 (Full)**: 5 files each — reliability, incident
+
+> **Note:** The two skills below were originally drafted under a separate `measure`
+> plugin. That plugin was merged into `operate`, so the live skills now ship under
+> `operate/skills/`. Only `reliability` and `incident` carry these supplementary
+> files; the other measure-era drafts (premortem, cohort, burn-rate, kpi, north-star,
+> agent-ab-test) are not part of the deployed structure.
 
 ---
 
@@ -20,14 +25,14 @@ Progressive Disclosure supplementary files have been generated for all 8 measure
 
 ### Tier 1: Full Disclosure (5 Files Each)
 
-#### 1. premortem
+#### 1. reliability
 - ✅ `context/domain.md` — Domain Context (Scope, Users, Inputs, Outputs, Guardrails, Working Facts, Checklist)
 - ✅ `examples/good-01.md` — Good Example (사용자 요청, 승인 이유, 예상 처리)
 - ✅ `examples/bad-01.md` — Bad Example (사용자 요청, 거절 이유, 올바른 라우팅, 수정 방향)
 - ✅ `references/test-cases.md` — Test Cases (Trigger Tests 5+5, Functional Tests 3, Error Cases 2, With/Without Skill 비교)
 - ✅ `references/troubleshooting.md` — Troubleshooting (7 Common Issues with Symptoms, Root Causes, Fixes)
 
-#### 2. reliability
+#### 2. incident
 - ✅ `context/domain.md` — Domain Context
 - ✅ `examples/good-01.md` — Good Example
 - ✅ `examples/bad-01.md` — Bad Example
@@ -36,55 +41,10 @@ Progressive Disclosure supplementary files have been generated for all 8 measure
 
 ---
 
-### Tier 2: Standard Disclosure (3 Files Each)
-
-#### 3. cohort
-- ✅ `context/domain.md` — Domain Context
-- ✅ `examples/good-01.md` — Good Example
-- ✅ `examples/bad-01.md` — Bad Example
-
-#### 4. incident
-- ✅ `context/domain.md` — Domain Context
-- ✅ `examples/good-01.md` — Good Example
-- ✅ `examples/bad-01.md` — Bad Example
-
----
-
-### Tier 3: Lite Disclosure (2 Files Each)
-
-#### 5. kpi
-- ✅ `examples/good-01.md` — Good Example
-- ✅ `examples/bad-01.md` — Bad Example
-
-#### 6. north-star
-- ✅ `examples/good-01.md` — Good Example
-- ✅ `examples/bad-01.md` — Bad Example
-
-#### 7. burn-rate
-- ✅ `examples/good-01.md` — Good Example
-- ✅ `examples/bad-01.md` — Bad Example
-
-#### 8. agent-ab-test
-- ✅ `examples/good-01.md` — Good Example
-- ✅ `examples/bad-01.md` — Bad Example
-
----
-
 ## File Structure
 
 ```
-measure/skills/
-├── premortem/
-│   ├── SKILL.md (existing)
-│   ├── context/
-│   │   └── domain.md ✨
-│   ├── examples/
-│   │   ├── good-01.md ✨
-│   │   └── bad-01.md ✨
-│   └── references/
-│       ├── test-cases.md ✨
-│       └── troubleshooting.md ✨
-│
+operate/skills/
 ├── reliability/
 │   ├── SKILL.md (existing)
 │   ├── context/
@@ -96,45 +56,16 @@ measure/skills/
 │       ├── test-cases.md ✨
 │       └── troubleshooting.md ✨
 │
-├── cohort/
-│   ├── SKILL.md (existing)
-│   ├── context/
-│   │   └── domain.md ✨
-│   └── examples/
-│       ├── good-01.md ✨
-│       └── bad-01.md ✨
-│
-├── incident/
-│   ├── SKILL.md (existing)
-│   ├── context/
-│   │   └── domain.md ✨
-│   └── examples/
-│       ├── good-01.md ✨
-│       └── bad-01.md ✨
-│
-├── kpi/
-│   ├── SKILL.md (existing)
-│   └── examples/
-│       ├── good-01.md ✨
-│       └── bad-01.md ✨
-│
-├── north-star/
-│   ├── SKILL.md (existing)
-│   └── examples/
-│       ├── good-01.md ✨
-│       └── bad-01.md ✨
-│
-├── burn-rate/
-│   ├── SKILL.md (existing)
-│   └── examples/
-│       ├── good-01.md ✨
-│       └── bad-01.md ✨
-│
-└── agent-ab-test/
+└── incident/
     ├── SKILL.md (existing)
-    └── examples/
-        ├── good-01.md ✨
-        └── bad-01.md ✨
+    ├── context/
+    │   └── domain.md ✨
+    ├── examples/
+    │   ├── good-01.md ✨
+    │   └── bad-01.md ✨
+    └── references/
+        ├── test-cases.md ✨
+        └── troubleshooting.md ✨
 ```
 
 ✨ = Newly generated supplementary files
@@ -143,7 +74,7 @@ measure/skills/
 
 ## Content Standards Applied
 
-### Domain Context (Tier 1 & 2)
+### Domain Context (Tier 1)
 
 Each `context/domain.md` includes:
 1. **Domain Scope** — 스킬의 범위와 핵심 활동
@@ -204,15 +135,11 @@ Each `references/troubleshooting.md`:
 
 ### Generated Files Count
 - **Tier 1**: 2 skills × 5 files = 10 files
-- **Tier 2**: 2 skills × 3 files = 6 files
-- **Tier 3**: 4 skills × 2 files = 8 files
-- **Total**: 24 supplementary files ✅
+- **Total**: 10 supplementary files ✅
 
 ### File Locations
 All files are placed in correct directory structure per tier classification:
 - ✅ Tier 1: context/, examples/, references/ (all 3)
-- ✅ Tier 2: context/, examples/ (2 out of 3)
-- ✅ Tier 3: examples/ only (1 out of 3)
 
 ### Language Consistency
 - ✅ All Korean content properly formatted
@@ -226,10 +153,8 @@ All files are placed in correct directory structure per tier classification:
 1. **evals/ Reference**: Test Cases in `references/test-cases.md` should be validated against existing `evals/per-skill/{skill}.json` files
 2. **SKILL.md Alignment**: Examples in supplementary files should cross-reference SKILL.md's "Examples" section
 3. **TK Framework**: incident 스킬의 TK Extraction 부분과 TK-NNN 프레임워크 연결 필요
-4. **Premortem-Incident Loop**: Premortem의 예방 메커니즘과 Incident의 TK 추출이 상호 보완되도록 설계
 
 ---
 
 Generated by: Claude Code Agent
 Date: 2026-03-07 17:45 KST
-Skill Framework: LangGraph Agent Framework
