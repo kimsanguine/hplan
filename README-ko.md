@@ -16,24 +16,21 @@
 
 **🇺🇸 [Read this in English →](README.md)**
 
-**⚡ `5 plugins · 34 skills · 12 commands` — 이것만 따라하세요 (5개 플러그인 일괄):**
+**⚡ `5 plugins · 34 skills · 12 commands` — 빠른 설치:**
 
-프로젝트의 `.claude/settings.json`에 아래를 넣으면 (또는 동봉된 [`.claude/settings.json.example`](.claude/settings.json.example) 복사), 다음 `claude` 세션의 trust dialog 한 번으로 5개 플러그인이 전부 활성화됩니다 — `/plugin install`을 5번 칠 필요가 없습니다.
+```bash
+# 1) 마켓플레이스 추가 (한 번만)
+/plugin marketplace add kimsanguine/hplan
 
-```json
-{
-  "extraKnownMarketplaces": {
-    "hplan": { "source": { "source": "github", "repo": "kimsanguine/hplan" } }
-  },
-  "enabledPlugins": {
-    "hplan@hplan": true,
-    "discover@hplan": true,
-    "architect@hplan": true,
-    "deliver@hplan": true,
-    "operate@hplan": true
-  }
-}
+# 2) 5개 플러그인 설치
+/plugin install hplan@hplan
+/plugin install discover@hplan
+/plugin install architect@hplan
+/plugin install deliver@hplan
+/plugin install operate@hplan
 ```
+
+> 명령 다섯 줄 대신 설정 파일 하나로 일괄 활성화를 원하면 `.claude/settings.json`에 5-플러그인 블록을 넣으세요 — 아래 설치 섹션 참조.
 
 **요구사항:** Claude Code v1.0+ · Python 3.9+ · Git 2.x+ · macOS / Linux (Windows: WSL2)
 

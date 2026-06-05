@@ -16,26 +16,21 @@
 
 **🇰🇷 [한국어 README는 여기 →](README-ko.md)**
 
-**⚡ `5 plugins · 34 skills · 12 commands` — recommended install (all 5 plugins at once):**
+**⚡ `5 plugins · 34 skills · 12 commands` — quick install:**
 
-Drop this into your project's `.claude/settings.json` (or copy the bundled [`.claude/settings.json.example`](.claude/settings.json.example)). The next `claude` session's trust dialog activates all 5 plugins — no `/plugin marketplace add`, no five separate `/plugin install` commands:
+```bash
+# 1) add the marketplace (once)
+/plugin marketplace add kimsanguine/hplan
 
-```json
-{
-  "extraKnownMarketplaces": {
-    "hplan": { "source": { "source": "github", "repo": "kimsanguine/hplan" } }
-  },
-  "enabledPlugins": {
-    "hplan@hplan": true,
-    "discover@hplan": true,
-    "architect@hplan": true,
-    "deliver@hplan": true,
-    "operate@hplan": true
-  }
-}
+# 2) install the 5 plugins
+/plugin install hplan@hplan
+/plugin install discover@hplan
+/plugin install architect@hplan
+/plugin install deliver@hplan
+/plugin install operate@hplan
 ```
 
-> Prefer one plugin at a time? `/plugin marketplace add kimsanguine/hplan && /plugin install hplan@hplan`. See [Installation](#installation) for all paths.
+> Prefer one config file over five commands? Drop the 5-plugin block into `.claude/settings.json` — see [Installation](#installation) for that and other paths.
 
 > **v1.0.1** — hplan now ships as a complete **ADK (Agent Development Kit)**: **L1 Memory** (`CLAUDE.md` — 9 behavioral rules auto-loaded every session) · **L2 Skills** (34 PM disciplines, auto-invoked) · **L3 Hooks** (`hooks/` — SessionStart gate status · PreToolUse gate enforcement · PostToolUse secret scanner + **MD→HTML auto-renderer**) · **L4 Subagents** (task-sequential subagent dispatch + spec→quality gates, via `deliver/skills/conductor`) · **L5 Plugins** (marketplace). One `git clone` + `bash scripts/install-hooks.sh` activates all 5 layers. v0.9.4–v1.0.1 history: see [CHANGELOG.md](CHANGELOG.md).
 
