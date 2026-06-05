@@ -16,16 +16,14 @@ hplan/                         # repo root
 │   ├── hplan_mcp/             # MCP server for Cursor/Windsurf/Kiro/Codex/Goose
 │   ├── hooks/                 # PreToolUse gate_guard.py
 │   ├── agents/                # 4 role-locked reviewer agents
-│   └── references/            # 14 playbooks + provider_pricing.json
+│   └── references/            # 15 playbooks + provider_pricing.json
 ├── discover/                    # Discovery — what agent to build (6 skills)
 │   ├── .claude-plugin/
 │   │   └── plugin.json        # Plugin manifest (required)
-│   ├── skills/
-│   │   ├── opp-tree/SKILL.md
-│   │   ├── assumptions/SKILL.md
-│   │   └── ...
-│   └── commands/
-│       └── harness-discover.md
+│   └── skills/
+│       ├── opp-tree/SKILL.md
+│       ├── assumptions/SKILL.md
+│       └── ...
 ├── architect/                     # Strategy — how to architect it (4 skills)
 ├── deliver/                     # Execution — spec and ship (10 skills)
 ├── operate/                     # Operations — KPI, reliability, PM knowledge (6 skills)
@@ -37,7 +35,6 @@ hplan/                         # repo root
 ├── README.md                  # English
 ├── README-ko.md               # Korean (한국어)
 ├── CHANGELOG.md               # Version history
-├── progress.md                # Phase-by-phase progress log
 └── CONTRIBUTING.md            # This file
 ```
 

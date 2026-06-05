@@ -67,7 +67,7 @@
 /plugin install discover@hplan   # 발견 (What to build?)
 /plugin install architect@hplan  # 설계 (How to architect?)
 /plugin install deliver@hplan    # 실행 (How to ship?)
-/plugin install operate@hplan    # 측정·학습·운영 통합 (How to measure, learn & operate?)
+/plugin install operate@hplan    # 운영 (How to operate?) — KPI·신뢰성·포트폴리오·PM 암묵지 자산화
 ```
 
 만들지 말지부터 고민이라면 → `hplan`을 먼저 설치하세요 (evidence + COGS 게이트).
@@ -499,7 +499,7 @@ A: 커맨드와 프롬프트 모두 한국어로 입력하면 됩니다. 스킬 
 A: TK = Tacit Knowledge(암묵지), NNN = Never-ending Nuance Network(끝없이 쌓이는 뉘앙스의 네트워크). TK-001부터 TK-999까지 PM의 판단 기준을 축적합니다. 예: "고객이 긴급이라고 하면 80%는 가짜 긴급이다." 이걸 구조화해서 에이전트 인스트럭션에 넣으면, 당신의 경험이 에이전트의 판단 기준이 됩니다. 매일 1개씩 약 3년이면 999개 — 에이전트가 PM의 분신이 되는 시점입니다. `operate` 플러그인의 `pm-engine` 스킬이 이를 담당합니다 (TK 추출·쿼리·인스트럭션 변환·의사결정 패턴 매칭 통합). 선택사항이지만, 쓰면 쓸수록 에이전트가 강해집니다.
 
 **Q: 에이전트를 만들어본 적이 없어도 되나요?**
-A: 네. `/harness-discover`부터 시작하면 "어떤 업무를 자동화할 수 있는지"부터 탐색합니다. 기술적 배경 없이 PM 관점에서 접근할 수 있도록 설계되었습니다.
+A: 네. 먼저 `/hplan` 게이트로 "정말 만들 가치가 있는가(WHETHER)"를 확인한 뒤, `/harness-discover`로 "어떤 업무를 자동화할 수 있는지"를 탐색합니다. 기술적 배경 없이 PM 관점에서 접근할 수 있도록 설계되었습니다.
 
 ---
 
@@ -508,13 +508,13 @@ A: 네. `/harness-discover`부터 시작하면 "어떤 업무를 자동화할 �
 ### PM이라면
 
 ```
-/harness-discover → /harness-plan → /prd → /harness-build → /harness-verify
+/hplan → /harness-discover → /harness-plan → /prd → /harness-build → /harness-verify
 ```
 
 ### 마케터라면
 
 ```
-/harness-discover [마케팅 자동화 업무] → /prd → /harness-operate
+/hplan [마케팅 자동화 업무] → /harness-discover → /prd → /harness-operate
 ```
 
 ### 이미 에이전트를 운영 중이라면

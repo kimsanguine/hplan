@@ -593,7 +593,7 @@ discover/skills/opp-tree/           ← example skill
 | `examples/bad-01.md` | Explicit anti-patterns with explanations | Prevents common failures |
 | `references/test-cases.md` | Edge cases + assertions | Powers eval system (54 assertions) |
 
-This is the target structure, applied to the core skills and expanding outward. As of v1.0.1: **82 supporting files** on disk; **10 of 34 skills** carry the full 5-part set (`context/domain.md` + good/bad examples + test-cases + troubleshooting), with `context/domain.md` present on those same 10. The rest are being filled in skill by skill — the supporting files make each skill measurable, testable, and improvable.
+This is the target structure, applied to the core skills first and expanding outward. The full 5-part set (`context/domain.md` + good/bad examples + test-cases + troubleshooting) lands on the highest-traffic skills first, and the rest are being filled in skill by skill — the supporting files make each skill measurable, testable, and improvable.
 
 </details>
 

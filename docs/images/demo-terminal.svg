@@ -59,7 +59,7 @@
   <g class="row4">
     <text class="output" x="40" y="284">  monthly COGS p50:  $6.63       gross margin p50:  64%</text>
     <text class="warn"   x="40" y="302">  monthly COGS p90:  $13.90      gross margin p90:  25%  ⚠</text>
-    <text class="bad"    x="40" y="320">  with free-user abuse (24x):                   -1961%  ✗</text>
+    <text class="bad"    x="40" y="320">  with free-user abuse (8x):                    -1961%  ✗</text>
   </g>
   <g class="row5">
     <text class="prompt" x="20" y="354">❯</text>

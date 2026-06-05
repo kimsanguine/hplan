@@ -16,10 +16,23 @@
 
 **🇺🇸 [Read this in English →](README.md)**
 
-**⚡ `5 plugins · 34 skills · 12 commands` — 한 줄 설치:**
+**⚡ `5 plugins · 34 skills · 12 commands` — 이것만 따라하세요 (5개 플러그인 일괄):**
 
-```bash
-/plugin marketplace add kimsanguine/hplan && /plugin install hplan@hplan
+프로젝트의 `.claude/settings.json`에 아래를 넣으면 (또는 동봉된 [`.claude/settings.json.example`](.claude/settings.json.example) 복사), 다음 `claude` 세션의 trust dialog 한 번으로 5개 플러그인이 전부 활성화됩니다 — `/plugin install`을 5번 칠 필요가 없습니다.
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "hplan": { "source": { "source": "github", "repo": "kimsanguine/hplan" } }
+  },
+  "enabledPlugins": {
+    "hplan@hplan": true,
+    "discover@hplan": true,
+    "architect@hplan": true,
+    "deliver@hplan": true,
+    "operate@hplan": true
+  }
+}
 ```
 
 **요구사항:** Claude Code v1.0+ · Python 3.9+ · Git 2.x+ · macOS / Linux (Windows: WSL2)
@@ -28,9 +41,17 @@
 > Python 없이 동작합니다. Python이 필요한 기능: cogs-sentinel, evidence-rubric, track-probe.sh
 > 나중에 필요해지면 설치해도 됩니다.
 
+<details>
+<summary><strong>다른 설치 경로</strong> — 데스크탑 앱 마켓플레이스 · 개별 플러그인 · 로컬 클론</summary>
+
+마켓플레이스에서 플러그인을 하나씩 고르거나, 저장소를 직접 클론하는 방법은 아래 [설치](#설치) 섹션을 참고하세요. 로컬 클론 목적지는 전부 `~/hplan`로 통일돼 있습니다.
+
 ```bash
-git clone https://github.com/kimsanguine/hplan ~/.claude/plugins/hplan
+# 로컬 클론 (CLI)
+git clone https://github.com/kimsanguine/hplan.git ~/hplan
 ```
+
+</details>
 
 ## 5분 빠른 시작
 
@@ -40,7 +61,7 @@ git clone https://github.com/kimsanguine/hplan ~/.claude/plugins/hplan
 "[내 아이디어]를 만들어볼까 하는데"
 ```
 
-그러면 `socratic-question` 스킬이 자동으로 발동해 AI가 먼저 당신의 가정을 심문합니다. (`socratic-question`은 슬래시 명령이 아니라 자연어로 트리거되는 스킬입니다.) "만들 가치가 있는가"가 명확해지면 `/harness-discover`로 넘어가세요.
+그러면 `socratic-question` 스킬이 자동으로 발동해 AI가 먼저 당신의 가정을 심문합니다. (`socratic-question`은 슬래시 명령이 아니라 자연어로 트리거되는 스킬입니다.) 가정이 정리되면 `/hplan` 게이트(exclusions + evidence + COGS)로 "만들지 말지"를 판정하고, GO가 나오면 `/harness-discover`부터 라이프사이클로 넘어가세요.
 
 > 💡 **심화 내용** — 처음이라면 건너뛰어도 됩니다.
 >
@@ -154,9 +175,7 @@ Day 50-60   매출·성과 구조
             ★ 30명 paying user (= ₩570,000 MRR)
 ```
 
-**이 흐름이 패스트캠퍼스 25차시 강의의 백본이기도 합니다.** 강의에서는 Ethan이 PMFlow (PM의 1일 통합 AI Agent, ₩19,000/월)를 라이브 빌딩하면서 모든 결정에 "PM은 이렇게 한다"를 보여주고, 수강생은 본인 SaaS를 본인 분야로 만듭니다.
-
-> 강의 정보 (D-day 2026년 6월 말 OT 촬영): [패스트캠퍼스 — 추후 업데이트]
+각 단계에서 hplan의 게이트와 스킬이 결정의 근거를 강제합니다 — Evidence Gate가 ICP/JTBD를, COGS sentinel이 가격 마진을, decision-log가 결정 이력을 남깁니다. 도구만 깔면 이 흐름을 자기 분야에 그대로 적용할 수 있습니다.
 
 ---
 
@@ -255,42 +274,25 @@ bash <(curl -fsSL https://habix.ai/hplan/install.sh)
 
 이 명령은 private package를 `~/hplan`에 설치하고 로컬 Claude CLI alias를 등록합니다. 운영 방식은 [`docs/private-distribution.md`](docs/private-distribution.md)에 정리되어 있습니다.
 
-### 방법 0 — settings.json 한 파일로 5개 한 번에 (가장 빠름)
+> **설치는 맨 위 "이것만 따라하세요"(settings.json 5개 일괄) 하나면 됩니다.** 마켓플레이스에서 하나씩 고르거나 로컬 클론하는 방법은 아래 [설치](#설치) 섹션에 정리돼 있습니다.
 
-아래를 프로젝트의 `.claude/settings.json`에 넣으면 (또는 동봉된 [`.claude/settings.json.example`](.claude/settings.json.example) 복사), 다음 `claude` 세션의 trust dialog 한 번으로 5개 플러그인이 전부 활성화됩니다 — `/plugin marketplace add`도, 5번의 `/plugin install`도 불필요합니다.
+### 첫 실행 — 게이트가 먼저, 그다음 라이프사이클
 
-```json
-{
-  "extraKnownMarketplaces": {
-    "hplan": { "source": { "source": "github", "repo": "kimsanguine/hplan" } }
-  },
-  "enabledPlugins": {
-    "hplan@hplan": true,
-    "discover@hplan": true,
-    "architect@hplan": true,
-    "deliver@hplan": true,
-    "operate@hplan": true
-  }
-}
-```
-
-### 방법 A — 라이프사이클 커맨드 (권장, hplan 1개만 설치)
+설치가 끝났으면 Claude 세션에서 이 순서로 실행하세요. **`/hplan` 게이트가 먼저입니다** — WHETHER(만들지 말지)가 GO여야 라이프사이클로 넘어갑니다.
 
 ```bash
 # Claude 세션에서 실행
-/plugin marketplace add kimsanguine/hplan
-/plugin install hplan@hplan
-
-# 전체 라이프사이클을 5개 커맨드로
-# (harness-discover가 먼저 실행되는 이유: gate 판단에 필요한 evidence를 수집합니다)
+/hplan "AI 마케팅 카피 생성기"            # WHETHER gate — exclusions + evidence + COGS → GO / HOLD / INVESTIGATE
 /harness-discover "AI 마케팅 카피 생성기"   # 기회 매핑 + 가정 분석 + 비용 추정
-/hplan "AI 마케팅 카피 생성기"            # WHETHER gate — GO / HOLD / INVESTIGATE
 /harness-plan "마케팅 카피 에이전트"        # 아키텍처 설계 + W1 Done Criteria
 /harness-build "마케팅 카피 에이전트"       # COGS gate → PRD 자동 작성 → W1 스프린트
 /harness-operate "마케팅 카피 에이전트"     # 주간 KPI · 비용 · 개선 계획
 ```
 
-### 방법 B — 게이트 세밀 제어 (전체 플러그인 설치 시)
+스킬 이름을 외울 필요는 없습니다. 자연어로 질문하면 34개 스킬 중 맞는 게 auto-load 됩니다.
+
+<details>
+<summary><strong>게이트 세밀 제어</strong> — 개별 게이트로 깊은 분석</summary>
 
 ```bash
 # Claude 세션에서 실행
@@ -306,17 +308,7 @@ bash <(curl -fsSL https://habix.ai/hplan/install.sh)
 # → p50 마진 95%, p90 90%, blended 49% → GREEN
 ```
 
-**Gate 통과 후** — VERDICT: GO가 나오면 추가 플러그인을 설치해 더 깊은 스킬을 활용할 수 있습니다:
-
-```bash
-# Claude 세션에서 복붙 (필요한 것만 선택해도 됩니다)
-/plugin install discover@hplan   # 발견 — opportunity tree, assumptions, cost sim
-/plugin install architect@hplan  # 설계 — orchestration, memory, strategy
-/plugin install deliver@hplan    # 실행 — PRD, conductor, sprint, QA, UI 검증
-/plugin install operate@hplan    # 측정·학습·운영 — metrics, 신뢰성, PM 암묵지, 포트폴리오
-```
-
-스킬 이름을 외울 필요는 없습니다. 자연어로 질문하면 34개 스킬 중 맞는 게 auto-load 됩니다.
+</details>
 
 ---
 
@@ -408,6 +400,8 @@ PM의 판단/경험 기록 → /extract 명령어 → TK-NNN으로 구조화
 | **테스트 통과율** | **100%** | 88% | **+12%** |
 
 구체적으로 보면, `pm-engine` 스킬 없이 Claude에게 "운영 노하우를 구조화해줘"라고 하면 통과율이 40%까지 떨어집니다. `cost-sim` 스킬을 적용하면 비용 분석 산출량이 +46.6% 증가합니다. 이런 숫자가 있기 때문에, 어떤 스킬이 실제로 가치를 더하는지, 어떤 스킬을 개선해야 하는지를 **데이터로 판단**할 수 있습니다.
+
+> **측정 caveat (트리거 정확도 수치와 같은 정직성):** 이 ROI 수치(100% vs 88%, pm-engine 40%, cost-sim +46.6%)는 v0.4 (당시 32개 스킬) 기준 측정값입니다([CHANGELOG 0.4.0](CHANGELOG.md), 2026-03-06). v1.0.1 (34개 스킬, 5-plugin 구조) 기준 재측정은 아직 끝나지 않았으므로 *직접적인 v1.0.1 비교가 아니라 이전 baseline*입니다. v1.0.1 재측정은 진행 중입니다.
 
 ### ⑤ Good/Bad 예시 — 스킬 품질을 지속적으로 개선하는 장치
 
@@ -537,8 +531,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 
 ## 설치
 
-> **처음 설치라면 → 방법 2 (GitHub Marketplace, 데스크탑 앱 + CLI)만 하면 됩니다.**
-> 자동 설치 스크립트(CLI)는 방법 1, 수동 로컬 클론은 방법 3을 사용하세요.
+> **권장 설치는 맨 위 "이것만 따라하세요"(settings.json 5개 일괄) 하나입니다.** 아래 방법 1~3은 그 외의 선택지입니다 — CLI 자동 스크립트(방법 1), 마켓플레이스에서 하나씩(방법 2), 수동 로컬 클론(방법 3). 클론 목적지는 모두 `~/hplan`로 통일돼 있습니다.
 
 ### 방법 1: 자동 설치 스크립트 (CLI 권장)
 
@@ -709,7 +702,7 @@ discover/skills/opp-tree/           ← 예시: opp-tree 스킬
 | `examples/bad-01.md` | "이건 틀린 것"이라는 명시적 반면교사 | 흔한 실패 패턴 사전 차단 |
 | `references/test-cases.md` | 엣지 케이스 + 어설션 정의 | eval 시스템 구동 (54개 어설션) |
 
-이 패턴은 핵심 스킬에 먼저 적용되어 점차 확장 중입니다. 현재 34개 스킬에 걸쳐 **82개의 보조 파일**이 적용돼 있고, 5종 풀세트(domain · good · bad · test-cases · troubleshooting)를 모두 갖춘 스킬은 10개입니다. 이 파일들이 각 스킬을 측정 가능하고, 테스트 가능하고, 개선 가능하게 만듭니다.
+이 패턴은 **핵심 스킬에 먼저 적용되어 점차 나머지 스킬로 확장 중입니다.** 5종 풀세트(domain · good · bad · test-cases · troubleshooting)를 갖춘 스킬부터 채워가고 있으며, 이 보조 파일들이 각 스킬을 측정 가능하고, 테스트 가능하고, 개선 가능하게 만듭니다.
 
 </details>
 
