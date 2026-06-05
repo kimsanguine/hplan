@@ -16,7 +16,7 @@ hplan/                         # repo root
 │   ├── hplan_mcp/             # MCP server for Cursor/Windsurf/Kiro/Codex/Goose
 │   ├── hooks/                 # PreToolUse gate_guard.py
 │   ├── agents/                # 4 role-locked reviewer agents
-│   └── references/            # 15 playbooks + provider_pricing.json
+│   └── references/            # playbooks + provider_pricing.json
 ├── discover/                    # Discovery — what agent to build (6 skills)
 │   ├── .claude-plugin/
 │   │   └── plugin.json        # Plugin manifest (required)

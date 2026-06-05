@@ -16,11 +16,26 @@
 
 **🇰🇷 [한국어 README는 여기 →](README-ko.md)**
 
-**⚡ `5 plugins · 34 skills · 12 commands` — install in one line:**
+**⚡ `5 plugins · 34 skills · 12 commands` — recommended install (all 5 plugins at once):**
 
-```bash
-/plugin marketplace add kimsanguine/hplan && /plugin install hplan@hplan
+Drop this into your project's `.claude/settings.json` (or copy the bundled [`.claude/settings.json.example`](.claude/settings.json.example)). The next `claude` session's trust dialog activates all 5 plugins — no `/plugin marketplace add`, no five separate `/plugin install` commands:
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "hplan": { "source": { "source": "github", "repo": "kimsanguine/hplan" } }
+  },
+  "enabledPlugins": {
+    "hplan@hplan": true,
+    "discover@hplan": true,
+    "architect@hplan": true,
+    "deliver@hplan": true,
+    "operate@hplan": true
+  }
+}
 ```
+
+> Prefer one plugin at a time? `/plugin marketplace add kimsanguine/hplan && /plugin install hplan@hplan`. See [Installation](#installation) for all paths.
 
 > **v1.0.1** — hplan now ships as a complete **ADK (Agent Development Kit)**: **L1 Memory** (`CLAUDE.md` — 9 behavioral rules auto-loaded every session) · **L2 Skills** (34 PM disciplines, auto-invoked) · **L3 Hooks** (`hooks/` — SessionStart gate status · PreToolUse gate enforcement · PostToolUse secret scanner + **MD→HTML auto-renderer**) · **L4 Subagents** (task-sequential subagent dispatch + spec→quality gates, via `deliver/skills/conductor`) · **L5 Plugins** (marketplace). One `git clone` + `bash scripts/install-hooks.sh` activates all 5 layers. v0.9.4–v1.0.1 history: see [CHANGELOG.md](CHANGELOG.md).
 
@@ -106,7 +121,7 @@ Other tools handle **HOW** (Claude Code plugins → how to work with Claude Code
   <img src="docs/images/demo-terminal.svg" alt="hplan demo — exclusion collision + RED COGS catch a bad idea before any PRD is written" width="800"/>
 </p>
 
-> 🆕 **New to Claude Code?** → [`deliver/agent-setup`](deliver/skills/agent-setup/SKILL.md) scans your project, auto-generates CLAUDE.md, and recommends the right hplan plugins. The fastest way to onboard.
+> 🆕 **New to Claude Code?** → [`deliver/agent-setup`](deliver/skills/agent-setup/SKILL.md) scans your project, auto-generates CLAUDE.md / AGENTS.md, and writes a 7-element agent instruction set. The fastest way to onboard.
 
 ## Under the Hood
 
@@ -252,7 +267,7 @@ Every skill is measured. 10 quality tests with 54 assertions prove what skills a
 
 `pm-engine` without skill drops to 40%. `cost-sim` with skill adds +46.6% output. This is **data-driven proof** that the skills work.
 
-> **Measurement caveat (same honesty as the trigger-accuracy number):** these ROI figures (100% vs 88%, pm-engine 40%, cost-sim +46.6%) were measured at **v0.4 on the then-32-skill set** ([CHANGELOG 0.4.0](CHANGELOG.md), 2026-03-06). They have **not yet been re-measured against the current v1.0.1 / 34-skill build**, so they are an earlier baseline — *not a direct v1.0.1 comparison*. A v1.0.1 re-run is in progress.
+> **Measurement caveat (same honesty as the trigger-accuracy number):** these ROI figures (100% vs 88%, pm-engine 40%, cost-sim +46.6%) were measured at **v0.4 on the then-32-skill set** ([CHANGELOG 0.4.0](CHANGELOG.md), 2026-03-06). They have **not yet been re-measured against the current v1.0.1 / 34-skill build**, so they are an earlier baseline — *not a direct v1.0.1 comparison* (a v1.0.1 re-measurement is a separate follow-up).
 
 ### ⑤ Good/Bad Examples for Data-Driven Improvement
 
@@ -343,7 +358,7 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 
 | Skill | What it does | When to use |
 |-------|-------------|-------------|
-| `agent-setup` ⭐ | Scan project structure → auto-generate CLAUDE.md → recommend matching hplan plugins | "New project — set up Claude Code context" |
+| `agent-setup` ⭐ | Write a 7-element agent instruction set + scan project structure → generate/improve CLAUDE.md & AGENTS.md | "New project — set up Claude Code context" |
 | `prd` | **Unified 15-section PRD** — People/Problem/Decisions + Agent/Execution Spec + Metrics/Hypotheses/Failure + §15 QA Pool. `--mode roadmap` turns gate verdicts + sprint estimates into a prioritized timeline/milestone view | "Write a PRD for a solo-lawyer Korean case-law RAG agent" / "Turn our gate verdicts and sprint estimates into a shareable roadmap" |
 | `build-loop` | Autonomous build-loop orchestration with checkpoint gates | "Run the full build loop unattended" |
 | `conductor` | Per-task fresh-subagent dispatch with a 2-stage gate (spec → quality) repeated each task — sequential task loop after `harness-plan` approval (vs `build-loop`'s role parallelism) | "Run the implementation loop task-by-task with gates between each" |
@@ -381,14 +396,7 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 
 ## Installation
 
-### Option 1: GitHub Marketplace (Recommended)
-
-```bash
-/plugin marketplace add kimsanguine/hplan
-/plugin install hplan@hplan    # or discover · architect · deliver · operate
-```
-
-### Option 1b: One file — all 5 plugins (no per-plugin install)
+### Option 1: One file — all 5 plugins (Recommended)
 
 Drop this into your project's `.claude/settings.json` (or copy the bundled [`.claude/settings.json.example`](.claude/settings.json.example)). On the next `claude` session the trust dialog activates all 5 plugins at once — no `/plugin marketplace add`, no five separate `/plugin install` commands:
 
@@ -407,6 +415,15 @@ Drop this into your project's `.claude/settings.json` (or copy the bundled [`.cl
 }
 ```
 
+### Option 1b: GitHub Marketplace (per-plugin)
+
+If you'd rather add the marketplace and pick plugins one at a time:
+
+```bash
+/plugin marketplace add kimsanguine/hplan
+/plugin install hplan@hplan    # or discover · architect · deliver · operate
+```
+
 ### Option 2: Clone Locally (Full ADK Stack)
 
 ```bash
@@ -420,7 +437,7 @@ claude --plugin-dir ./hplan     # L2 Skills — pick what you need (hplan, disco
 ```
 
 **Not sure which AI product to commit to?** → Start with `hplan` — evidence gate first.
-**First time with Claude Code?** → Run `deliver/agent-setup` — it scans your project and recommends the right plugins.
+**First time with Claude Code?** → Run `deliver/agent-setup` — it scans your project and generates CLAUDE.md / AGENTS.md + a 7-element instruction set.
 **Already past the gate?** → Pick by lifecycle stage (discover → architect → deliver → operate).
 
 ### ADK 5-Layer Architecture

@@ -34,9 +34,9 @@
 | **Git** | 2.x+ | pre-commit hook 사용 시 필요 (선택) |
 | **OS** | macOS / Linux | Windows는 WSL2 권장 |
 
-> **Python 없이 시작 가능합니다.** 핵심 스킬(socratic-question, harness-discover, prd, conductor)은
-> Python 없이 동작합니다. Python이 필요한 기능: cogs-sentinel, evidence-rubric, track-probe.sh
-> 나중에 필요해지면 설치해도 됩니다.
+> **자연어 탐색은 Python 없이 시작할 수 있습니다.** 자연어로 트리거되는 스킬(socratic-question, prd, conductor 루프)은
+> Python 없이 동작합니다. 다만 `/hplan` 게이트(exclusions·COGS)와 `harness-discover`의 HITL 단계는 Python이 필요합니다
+> (cogs-sentinel, evidence-rubric, `decision_log.py` 등). 나중에 필요해지면 설치해도 됩니다.
 >
 > **Python이 없다면?** Evidence Gate(`generate_report.py`, `gate_guard.py`)를 포함한 일부 스킬이 동작하지 않습니다. 나머지 스킬(SKILL.md 기반)은 Python 없이도 사용 가능합니다.
 
@@ -197,7 +197,7 @@ v0.9부터 `measure` + `learn`이 `operate`로 통합되어 **5-plugin 라이프
 | 발견 | **discover** | "어떤 에이전트를 만들까?" | 자동화할 업무를 찾고 있을 때, 비용이 맞는지 확인할 때 |
 | 설계 | **architect** | "어떤 구조로 만들까?" | 단일 에이전트 vs 멀티에이전트 결정, 아키텍처 설계 |
 | 딜리버리 | **deliver** | "어떻게 명세하고 만들까?" | PRD 작성, 인스트럭션 설계, 스프린트·QA 추적, UI 검증, 빌드 루프 |
-| 운영 | **operate** | "측정·학습·운영을 어떻게 할까?" | KPI 모니터링, 비용 추적, PM 암묵지 자산화, 포트폴리오 운영 |
+| 운영 | **operate** | "측정·학습·포트폴리오를 어떻게 할까?" | KPI · 신뢰성 · 포트폴리오 · PM 암묵지 자산화 |
 
 ---
 
@@ -362,7 +362,7 @@ TK-041: 긴급 트리거 검증 규칙
 | `ask-team` | 질문을 올바른 이해관계자 또는 에이전트 역할로 구조화하여 라우팅. `--mode review`는 PRD 스테이크홀더 리뷰 | "이 트레이드오프를 누구에게 물어봐야 하지? / PRD 리뷰를 추적하고 싶어" |
 | `ticket-bridge` | PRD 결정·게이트 출력물 → 추적 가능한 티켓으로 변환 (Linear / Jira / GitHub Issues) | "게이트 판정 결과를 스프린트 티켓으로 자동 전환하고 싶어" |
 
-### operate — 측정·학습·운영 (6개 스킬)
+### operate — 측정·학습·포트폴리오 운영 (6개 스킬)
 
 v0.9에서 `measure`(측정) + `learn`(학습) + 기존 `operate`(포트폴리오 운영)가 하나로 통합되었습니다. 흡수: `stakeholder-update` → `ops-review`.
 

@@ -37,9 +37,12 @@
 
 **요구사항:** Claude Code v1.0+ · Python 3.9+ · Git 2.x+ · macOS / Linux (Windows: WSL2)
 
-> **Python 없이 시작 가능합니다.** 핵심 스킬(socratic-question, harness-discover, prd, conductor)은
-> Python 없이 동작합니다. Python이 필요한 기능: cogs-sentinel, evidence-rubric, track-probe.sh
-> 나중에 필요해지면 설치해도 됩니다.
+> **자연어 탐색은 Python 없이 시작할 수 있습니다.** 아이디어를 자연어로 말하면 발동하는
+> 스킬(socratic-question, prd, conductor 루프)은 Python 없이 동작합니다.
+> 단, **`/hplan` 게이트는 Python이 필요합니다** — exclusions collision 체크와 COGS 측정이
+> Python 스크립트로 돌아갑니다(`exclusions_registry.py`, `cogs_sentinel.py`). `harness-discover`도
+> HITL 결정 기록 단계에서 `decision_log.py`를 호출합니다. Python이 필요한 측정 기능:
+> cogs-sentinel, evidence-rubric, exclusions, track-probe.sh. 나중에 필요해지면 설치해도 됩니다.
 
 <details>
 <summary><strong>다른 설치 경로</strong> — 데스크탑 앱 마켓플레이스 · 개별 플러그인 · 로컬 클론</summary>
@@ -152,7 +155,7 @@ hplan을 설치한 뒤에도 Claude와 평소대로 대화하면 됩니다. 단,
 
 핵심: **hplan을 일부러 부르지 않아도 됩니다.** "만들자", "팔자", "출시하자", "spec 짜자" 같은 말이 나오는 순간 자동 발동.
 
-> 🆕 **Claude Code가 처음이라면?** → [`deliver/agent-setup`](deliver/skills/agent-setup/SKILL.md)가 프로젝트를 스캔하고, CLAUDE.md를 자동 생성하고, 맞는 hplan 플러그인을 추천해줍니다. 가장 빠른 온보딩 방법입니다.
+> 🆕 **Claude Code가 처음이라면?** → [`deliver/agent-setup`](deliver/skills/agent-setup/SKILL.md)가 프로젝트를 스캔해 CLAUDE.md / AGENTS.md를 생성하고, 7요소 에이전트 인스트럭션 세트를 작성해줍니다. 가장 빠른 온보딩 방법입니다.
 
 ---
 
@@ -401,7 +404,7 @@ PM의 판단/경험 기록 → /extract 명령어 → TK-NNN으로 구조화
 
 구체적으로 보면, `pm-engine` 스킬 없이 Claude에게 "운영 노하우를 구조화해줘"라고 하면 통과율이 40%까지 떨어집니다. `cost-sim` 스킬을 적용하면 비용 분석 산출량이 +46.6% 증가합니다. 이런 숫자가 있기 때문에, 어떤 스킬이 실제로 가치를 더하는지, 어떤 스킬을 개선해야 하는지를 **데이터로 판단**할 수 있습니다.
 
-> **측정 caveat (트리거 정확도 수치와 같은 정직성):** 이 ROI 수치(100% vs 88%, pm-engine 40%, cost-sim +46.6%)는 v0.4 (당시 32개 스킬) 기준 측정값입니다([CHANGELOG 0.4.0](CHANGELOG.md), 2026-03-06). v1.0.1 (34개 스킬, 5-plugin 구조) 기준 재측정은 아직 끝나지 않았으므로 *직접적인 v1.0.1 비교가 아니라 이전 baseline*입니다. v1.0.1 재측정은 진행 중입니다.
+> **측정 caveat (트리거 정확도 수치와 같은 정직성):** 이 ROI 수치(100% vs 88%, pm-engine 40%, cost-sim +46.6%)는 v0.4 (당시 32개 스킬) 기준 측정값입니다([CHANGELOG 0.4.0](CHANGELOG.md), 2026-03-06). v1.0.1 (34개 스킬, 5-plugin 구조) 기준으로는 *직접적인 v1.0.1 비교가 아니라 이전 baseline*입니다. **아직 v1.0.1 기준 재측정되지 않았습니다(별도 후속).**
 
 ### ⑤ Good/Bad 예시 — 스킬 품질을 지속적으로 개선하는 장치
 
@@ -587,7 +590,7 @@ claude \
 
 **어디서부터 시작할지 모르겠다면?**
 **어떤 AI 제품을 만들지 결정 못 하셨다면** → `hplan`으로 시작 — evidence 게이트가 먼저.
-**Claude Code가 처음이라면** → `deliver/agent-setup`을 돌리면 프로젝트를 스캔하고 맞는 플러그인을 추천해줍니다.
+**Claude Code가 처음이라면** → `deliver/agent-setup`을 돌리면 프로젝트를 스캔해 CLAUDE.md / AGENTS.md를 생성하고 7요소 인스트럭션 세트를 작성해줍니다.
 **이미 게이트 통과했다면** → 라이프사이클 순서대로 (discover → architect → deliver → operate) 골라서 설치.
 
 ### 다른 AI 도구에서도 쓸 수 있습니다
