@@ -16,7 +16,15 @@
 
 **🇰🇷 [한국어 README는 여기 →](README-ko.md)**
 
-**⚡ `5 plugins · 34 skills · 12 commands` — recommended install (all 5 plugins at once):**
+**⚡ Quick install — one command:**
+
+```bash
+bash <(curl -fsSL https://habix.ai/hplan/install.sh)
+```
+
+Installs hplan to `~/hplan` and adds a `claude-hplan` launcher. No token required.
+
+**Or as Claude Code plugins** — `5 plugins · 34 skills · 12 commands`, all 5 at once via `.claude/settings.json`:
 
 Drop this into your project's `.claude/settings.json` (or copy the bundled [`.claude/settings.json.example`](.claude/settings.json.example)). The next `claude` session's trust dialog activates all 5 plugins — no `/plugin marketplace add`, no five separate `/plugin install` commands:
 
