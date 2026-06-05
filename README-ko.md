@@ -16,7 +16,15 @@
 
 **🇺🇸 [Read this in English →](README.md)**
 
-**⚡ `5 plugins · 34 skills · 12 commands` — 이것만 따라하세요 (5개 플러그인 일괄):**
+**⚡ 빠른 설치 — 한 줄:**
+
+```bash
+bash <(curl -fsSL https://habix.ai/hplan/install.sh)
+```
+
+`~/hplan`에 설치하고 `claude-hplan` 실행 alias를 추가합니다. 토큰 불필요.
+
+**또는 Claude Code 플러그인으로** — `5 plugins · 34 skills · 12 commands`, 아래를 `.claude/settings.json`에 추가하면 5개 일괄 활성화:
 
 프로젝트의 `.claude/settings.json`에 아래를 넣으면 (또는 동봉된 [`.claude/settings.json.example`](.claude/settings.json.example) 복사), 다음 `claude` 세션의 trust dialog 한 번으로 5개 플러그인이 전부 활성화됩니다 — `/plugin install`을 5번 칠 필요가 없습니다.
 
