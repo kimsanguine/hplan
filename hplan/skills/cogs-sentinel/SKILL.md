@@ -39,7 +39,8 @@ Running for: **$ARGUMENTS**
 
 ### Boundary Checks
 
-- ❌ 이 skill은 finance 모델이 아니다 — CAC/LTV/payback은 다루지 않음.
+- ℹ️ `--cac`와 `--monthly-churn`을 함께 전달하면 LTV/CAC/Payback + overall_verdict(BUILD/HOLD/INVESTIGATE)를 **추가로** 산출한다. 두 인자를 생략하면 무시되어 하위호환이 유지된다. (`--mau` 추가 시 Business Report 블록 — 매출/COGS/cost_ratio/blended — 도 포함됨.)
+- ℹ️ 이 skill은 sanity-check(빌드 게이트)이지 회계 보고서가 아니다 — 법인세·감가상각 등 전산 회계 항목은 다루지 않는다.
 - ❌ Provider 단가는 `references/provider_pricing.json` 스냅샷 기준이다. 최신 단가는 사용자가 verify해야 함.
 - ❌ lognormal sampling이라 결정론적이지만 실제 분포와 다를 수 있다 — sanity check 용도지 회계 보고서 아님.
 

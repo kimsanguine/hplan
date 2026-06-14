@@ -132,6 +132,28 @@ def _validate_params(params: dict) -> None:
     if not (0 < target_margin <= 1):
         errors.append(f"target_gross_margin={target_margin} must be in (0, 1]")
 
+    # v2 optional inputs — validated only when supplied (absent → legacy unchanged).
+    if params.get("arppu") is not None:
+        arppu = float(params["arppu"])
+        if arppu <= 0:
+            errors.append(f"arppu={arppu} must be > 0")
+    if params.get("cac") is not None:
+        cac = float(params["cac"])
+        if cac <= 0:
+            errors.append(f"cac={cac} must be > 0")
+    if params.get("monthly_churn") is not None:
+        monthly_churn = float(params["monthly_churn"])
+        if not (0 < monthly_churn <= 1):
+            errors.append(f"monthly_churn={monthly_churn} must be in (0, 1]")
+    if params.get("mau") is not None:
+        mau = float(params["mau"])
+        if mau <= 0:
+            errors.append(f"mau={mau} must be > 0")
+    if params.get("free_usage_ratio") is not None:
+        free_usage_ratio = float(params["free_usage_ratio"])
+        if free_usage_ratio < 0:
+            errors.append(f"free_usage_ratio={free_usage_ratio} must be >= 0")
+
     if errors:
         msg = (
             "COGS Sentinel: invalid parameters — refusing to produce economic verdict:\n"
@@ -329,6 +351,81 @@ def run(params: dict) -> dict:
     if not reasons:
         reasons.append("All scenarios within target margin.")
 
+    # --- v2 additive (backward-compatible): ARPPU/ARPU, count-based blended,
+    #     unit economics (LTV/CAC/Payback), report totals. All optional inputs;
+    #     when absent the legacy fields above are unchanged. ---
+    arppu = float(params.get("arppu", arpu))           # paid-user revenue (alias of arpu)
+    net_arppu = arppu * (1 - payment_fee_pct)
+    arpu_all_users = arppu * paid_conversion           # revenue per ALL users (incl. free)
+    free_usage_ratio = float(params.get("free_usage_ratio", 0.3))
+    free_cogs_per_user = median_call * calls_per_user_month * free_usage_ratio * free_abuse_multiplier
+
+    report_block = None
+    mau = params.get("mau")
+    if mau is not None:
+        mau = float(mau)
+        paid_users = round(mau * paid_conversion)
+        free_users = max(0.0, mau - paid_users)
+        gross_revenue = paid_users * arppu
+        total_net_revenue = paid_users * net_arppu
+        total_cogs = paid_users * cogs_p50 + free_users * free_cogs_per_user
+        blended_margin_by_count = (total_net_revenue - total_cogs) / total_net_revenue if total_net_revenue else -1
+        cost_ratio = (total_cogs / gross_revenue) if gross_revenue else -1
+        report_block = {
+            "mau": mau,
+            "paid_users": paid_users,
+            "free_users": free_users,
+            "arppu_usd": round(arppu, 4),
+            "arpu_all_users_usd": round(arpu_all_users, 6),
+            "gross_revenue_usd": round(gross_revenue, 2),
+            "net_revenue_usd": round(total_net_revenue, 2),
+            "total_cogs_usd": round(total_cogs, 2),
+            "gross_profit_usd": round(gross_revenue - total_cogs, 2),
+            "blended_margin_by_count": round(blended_margin_by_count, 4),
+            "cost_ratio": round(cost_ratio, 4),
+        }
+
+    unit_economics = None
+    cac = params.get("cac")
+    monthly_churn = params.get("monthly_churn")
+    if cac is not None and monthly_churn is not None:
+        cac = float(cac); monthly_churn = float(monthly_churn)
+        lifetime = (1.0 / monthly_churn) if monthly_churn > 0 else 0.0
+        # Monthly net contribution = net revenue per paid user − COGS. Use net_arppu
+        # (payment-fee adjusted) so LTV/payback are fee-consistent. Computed directly
+        # rather than as net_arppu*margin_p90 because margin_p90 is anchored on arpu,
+        # not arppu, so the product would mix revenue bases when arppu != arpu.
+        monthly_net_contribution = net_arppu - cogs_p90
+        ltv = monthly_net_contribution * lifetime
+        ltv_cac = (ltv / cac) if cac > 0 else 0.0
+        payback = (cac / monthly_net_contribution) if monthly_net_contribution > 0 else float("inf")
+        unit_economics = {
+            "cac_usd": round(cac, 2),
+            "monthly_churn": round(monthly_churn, 4),
+            "avg_lifetime_months": round(lifetime, 2),
+            "ltv_usd": round(ltv, 2),
+            "ltv_cac": round(ltv_cac, 2),
+            "payback_months": (round(payback, 2) if payback != float("inf") else None),
+            "ltv_cac_verdict": "PASS" if ltv_cac >= 3 else ("WATCH" if ltv_cac >= 1 else "FAIL"),
+        }
+
+    overall_verdict = None
+    if unit_economics is not None:
+        _pb = unit_economics["payback_months"]
+        company_in_deficit = report_block is not None and (
+            report_block["gross_profit_usd"] < 0 or report_block["blended_margin_by_count"] < 0
+        )
+        if company_in_deficit:
+            # Paid-unit economics may look fine, but a company-wide loss overrides
+            # any BUILD/INVESTIGATE — hold until the blended picture turns positive.
+            overall_verdict = "HOLD"
+        elif decision == "GREEN" and unit_economics["ltv_cac"] >= 3 and (_pb is not None and _pb <= 12):
+            overall_verdict = "BUILD"
+        elif decision == "RED" or unit_economics["ltv_cac"] < 1:
+            overall_verdict = "HOLD"
+        else:
+            overall_verdict = "INVESTIGATE"
+
     return {
         "generated": date.today().isoformat(),
         "provider": provider,
@@ -359,6 +456,14 @@ def run(params: dict) -> dict:
         },
         "decision": decision,
         "reasons": reasons,
+        "arppu_arpu": {
+            "arppu_usd": round(arppu, 4),
+            "arpu_all_users_usd": round(arpu_all_users, 6),
+            "paid_conversion": paid_conversion,
+        },
+        "report": report_block,
+        "unit_economics": unit_economics,
+        "overall_verdict": overall_verdict,
     }
 
 
@@ -394,6 +499,29 @@ def markdown_report(result: dict) -> str:
         "## Inputs",
         *[f"- {k}: {v}" for k, v in result["inputs"].items()],
     ]
+    if result.get("report"):
+        rp = result["report"]
+        lines += [
+            "",
+            "## Business Report (전체 기준)",
+            f"- MAU: {rp['mau']:,.0f}  (paid {rp['paid_users']:,.0f} / free {rp['free_users']:,.0f})",
+            f"- ARPPU: ${rp['arppu_usd']}  ·  ARPU(all users): ${rp['arpu_all_users_usd']}",
+            f"- Gross revenue: ${rp['gross_revenue_usd']:,.2f}  ·  Total COGS: ${rp['total_cogs_usd']:,.2f}",
+            f"- Gross profit: ${rp['gross_profit_usd']:,.2f}  ·  Cost ratio (COGS/revenue): {rp['cost_ratio']:.1%}",
+            f"- Blended margin (by user count): {rp['blended_margin_by_count']:.1%}",
+        ]
+    if result.get("unit_economics"):
+        ue = result["unit_economics"]
+        pb = ue["payback_months"]
+        lines += [
+            "",
+            "## Unit Economics",
+            f"- CAC: ${ue['cac_usd']}  ·  Monthly churn: {ue['monthly_churn']:.1%}  ·  Avg lifetime: {ue['avg_lifetime_months']} mo",
+            f"- LTV: ${ue['ltv_usd']}  ·  LTV:CAC: {ue['ltv_cac']}x ({ue['ltv_cac_verdict']})  ·  Payback: {pb if pb is not None else 'n/a'} mo",
+        ]
+    if result.get("overall_verdict"):
+        lines += ["", f"## Overall Verdict", f"**{result['overall_verdict']}**  (COGS {result['decision']} + LTV:CAC + Payback)"]
+
     if mode == "realtime" and "realtime" in result:
         rt = result["realtime"]
         threshold_label = "⚠️ EXCEEDED (±15pp threshold)" if rt["threshold_exceeded"] else "✅ within threshold"
@@ -425,6 +553,11 @@ def parse_args():
     p.add_argument("--free-abuse-multiplier", type=float, default=5)
     p.add_argument("--target-gross-margin", type=float, default=0.70)
     p.add_argument("--payment-fee-pct", type=float, default=0.03)
+    p.add_argument("--mau", type=float, help="[report] total monthly active users (enables business report block)")
+    p.add_argument("--arppu", type=float, help="paid-user revenue (alias of --arpu); ARPU(all)=ARPPU*paid_conversion")
+    p.add_argument("--free-usage-ratio", type=float, help="free user's call fraction vs paid (default 0.3)")
+    p.add_argument("--cac", type=float, help="[unit-econ] customer acquisition cost per paid user")
+    p.add_argument("--monthly-churn", type=float, help="[unit-econ] monthly paid churn (enables LTV/CAC/Payback)")
     p.add_argument("--actual-calls-per-user-month", type=float,
                    help="[realtime mode] Measured calls/user/month from production logs")
     p.add_argument("--actual-tokens-in", type=int,
@@ -455,6 +588,18 @@ def main():
             "target_gross_margin": args.target_gross_margin,
             "payment_fee_pct": args.payment_fee_pct,
         }
+        for _k, _v in (("mau", args.mau), ("arppu", args.arppu),
+                       ("free_usage_ratio", args.free_usage_ratio),
+                       ("cac", args.cac), ("monthly_churn", args.monthly_churn)):
+            if _v is not None:
+                params[_k] = _v
+
+        # LTV/Payback needs both --cac and --monthly-churn. If exactly one is given,
+        # skip the calc (run() already requires both) and warn so the user knows why
+        # unit economics is absent from the report.
+        if (args.cac is None) != (args.monthly_churn is None):
+            print("[warn] LTV/Payback 생략 — --cac 와 --monthly-churn 둘 다 필요",
+                  file=sys.stderr)
 
     if args.mode == "realtime":
         if args.actual_calls_per_user_month is not None:
