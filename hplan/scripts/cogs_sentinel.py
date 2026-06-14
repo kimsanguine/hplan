@@ -132,6 +132,28 @@ def _validate_params(params: dict) -> None:
     if not (0 < target_margin <= 1):
         errors.append(f"target_gross_margin={target_margin} must be in (0, 1]")
 
+    # v2 optional inputs — validated only when supplied (absent → legacy unchanged).
+    if params.get("arppu") is not None:
+        arppu = float(params["arppu"])
+        if arppu <= 0:
+            errors.append(f"arppu={arppu} must be > 0")
+    if params.get("cac") is not None:
+        cac = float(params["cac"])
+        if cac <= 0:
+            errors.append(f"cac={cac} must be > 0")
+    if params.get("monthly_churn") is not None:
+        monthly_churn = float(params["monthly_churn"])
+        if not (0 < monthly_churn <= 1):
+            errors.append(f"monthly_churn={monthly_churn} must be in (0, 1]")
+    if params.get("mau") is not None:
+        mau = float(params["mau"])
+        if mau <= 0:
+            errors.append(f"mau={mau} must be > 0")
+    if params.get("free_usage_ratio") is not None:
+        free_usage_ratio = float(params["free_usage_ratio"])
+        if free_usage_ratio < 0:
+            errors.append(f"free_usage_ratio={free_usage_ratio} must be >= 0")
+
     if errors:
         msg = (
             "COGS Sentinel: invalid parameters — refusing to produce economic verdict:\n"
@@ -369,9 +391,14 @@ def run(params: dict) -> dict:
     if cac is not None and monthly_churn is not None:
         cac = float(cac); monthly_churn = float(monthly_churn)
         lifetime = (1.0 / monthly_churn) if monthly_churn > 0 else 0.0
-        ltv = arppu * margin_p90 * lifetime
+        # Monthly net contribution = net revenue per paid user − COGS. Use net_arppu
+        # (payment-fee adjusted) so LTV/payback are fee-consistent. Computed directly
+        # rather than as net_arppu*margin_p90 because margin_p90 is anchored on arpu,
+        # not arppu, so the product would mix revenue bases when arppu != arpu.
+        monthly_net_contribution = net_arppu - cogs_p90
+        ltv = monthly_net_contribution * lifetime
         ltv_cac = (ltv / cac) if cac > 0 else 0.0
-        payback = (cac / (arppu * margin_p90)) if (arppu * margin_p90) > 0 else float("inf")
+        payback = (cac / monthly_net_contribution) if monthly_net_contribution > 0 else float("inf")
         unit_economics = {
             "cac_usd": round(cac, 2),
             "monthly_churn": round(monthly_churn, 4),
@@ -385,7 +412,14 @@ def run(params: dict) -> dict:
     overall_verdict = None
     if unit_economics is not None:
         _pb = unit_economics["payback_months"]
-        if decision == "GREEN" and unit_economics["ltv_cac"] >= 3 and (_pb is not None and _pb <= 12):
+        company_in_deficit = report_block is not None and (
+            report_block["gross_profit_usd"] < 0 or report_block["blended_margin_by_count"] < 0
+        )
+        if company_in_deficit:
+            # Paid-unit economics may look fine, but a company-wide loss overrides
+            # any BUILD/INVESTIGATE — hold until the blended picture turns positive.
+            overall_verdict = "HOLD"
+        elif decision == "GREEN" and unit_economics["ltv_cac"] >= 3 and (_pb is not None and _pb <= 12):
             overall_verdict = "BUILD"
         elif decision == "RED" or unit_economics["ltv_cac"] < 1:
             overall_verdict = "HOLD"
@@ -559,6 +593,13 @@ def main():
                        ("cac", args.cac), ("monthly_churn", args.monthly_churn)):
             if _v is not None:
                 params[_k] = _v
+
+        # LTV/Payback needs both --cac and --monthly-churn. If exactly one is given,
+        # skip the calc (run() already requires both) and warn so the user knows why
+        # unit economics is absent from the report.
+        if (args.cac is None) != (args.monthly_churn is None):
+            print("[warn] LTV/Payback 생략 — --cac 와 --monthly-churn 둘 다 필요",
+                  file=sys.stderr)
 
     if args.mode == "realtime":
         if args.actual_calls_per_user_month is not None:
