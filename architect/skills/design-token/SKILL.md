@@ -3,7 +3,7 @@ name: design-token
 description: "2-step 디자인 파이프라인: --step brief (타겟 분석 → DESIGN_BRIEF.md 생성) → --step token (토큰/DESIGN.md 생성). --step all이 기본값."
 argument-hint: "[타겟 또는 DESIGN_BRIEF.md 경로] [--step brief|token|all]"
 allowed-tools: ["Read", "Write"]
-model: sonnet
+model: inherit
 ---
 
 # design-token

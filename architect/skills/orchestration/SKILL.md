@@ -3,7 +3,7 @@ name: orchestration
 description: "Select and design the right orchestration pattern for multi-agent systems. Evaluate Sequential, Parallel, Router, and Hierarchical patterns against your use case requirements. The Router pattern covers both agent selection (classify input to the right specialist) and model selection (route tasks to the right LLM by complexity to balance cost, latency, quality, and fallback chains). Use when deciding how multiple agents should coordinate, share context, delegate tasks, or which model each task should run on."
 argument-hint: "[multi-agent scenario] [--pattern router]"
 allowed-tools: ["Read", "Write"]
-model: sonnet
+model: inherit
 ---
 
 # Orchestration Pattern

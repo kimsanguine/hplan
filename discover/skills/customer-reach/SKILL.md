@@ -3,7 +3,7 @@ name: customer-reach
 description: "인터뷰 대상자 확보 + 컨택 초안 생성 + 인터뷰 질문 설계. --mode plan(확보 전략), --mode linkedin(LinkedIn cold DM 초안), --mode community(커뮤니티 포스팅 초안), --mode survey(설문 초안), --mode interview-questions(인터뷰 질문 세트 설계). harness/pain.md를 채우기 위한 선행 단계. Use when a PM needs to find and contact interview candidates before evidence-gate."
 argument-hint: "[--mode plan|linkedin|community|survey|interview-questions] [target ICP description]"
 allowed-tools: ["Read", "Write"]
-model: sonnet
+model: inherit
 ---
 
 ## Core Goal

@@ -3,7 +3,7 @@ name: socratic-question
 description: "어떤 결정·아이디어든 AI에게 시키기 전에, AI가 나를 먼저 심문하게 만드는 소크라테스 질문법 도구. 6 질문유형 + 소크라테스식 루프 + 3 심화질문 + CoT 판단구조로 '사고 검증 질문 세트' 1장을 만든다. Use when 정답이 하나가 아닌 판단(기획·가격·채용·투자·제품 범위 등)을 앞두고, 작은 PRD/기획서/리서치를 쓰기 전에 가정을 먼저 점검하고 싶을 때. 단순 사실 질문엔 쓰지 않음."
 argument-hint: "[검토할 아이디어 또는 결정]"
 allowed-tools: ["Read", "Write", "AskUserQuestion"]
-model: opus
+model: inherit
 ---
 
 ## Core Goal

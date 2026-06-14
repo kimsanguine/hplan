@@ -3,7 +3,7 @@ name: strategy
 description: "전략 설계 통합 — 비즈니스 모델 캔버스(biz-model), 경쟁 해자 분석(moat), 성장 루프 설계(growth-loop) 통합. Use when defining business strategy, competitive positioning, or growth mechanics for an AI product."
 argument-hint: "[product/agent] [--focus biz-model|moat|growth-loop|all]"
 allowed-tools: ["Read", "Write"]
-model: sonnet
+model: inherit
 ---
 
 # Strategy — 비즈니스 모델 · 경쟁 해자 · 성장 루프 통합 설계

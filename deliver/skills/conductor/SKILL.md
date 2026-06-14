@@ -3,7 +3,7 @@ name: conductor
 description: "태스크별 fresh subagent 디스패치 + 2단계 게이트(spec→quality) 반복 실행. harness-plan 승인 후 구현 루프를 돌릴 때 사용. 기존 parallel-team(현 conductor에 통합)의 역할 병렬 방식과 달리, conductor는 태스크 순차+게이트다."
 argument-hint: "[plan source: PRD path or delivery brief]"
 allowed-tools: ["Read", "Write", "Edit", "Bash"]
-model: sonnet
+model: inherit
 ---
 
 # /deliver:conductor — 태스크 순차 실행 + 2단계 게이트

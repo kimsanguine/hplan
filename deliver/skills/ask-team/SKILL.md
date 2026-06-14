@@ -10,7 +10,7 @@ allowed-tools: ["Read", "Write",
   "mcp__zoom__get_recording_resource", "mcp__zoom__search_zoom", "mcp__zoom__get_meeting_assets",
   "mcp__slack__post_message", "mcp__slack__search_messages", "mcp__slack__get_thread_replies",
   "mcp__github__create_or_update_file"]
-model: sonnet
+model: inherit
 ---
 
 ## Core Goal

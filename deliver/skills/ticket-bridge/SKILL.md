@@ -10,7 +10,7 @@ allowed-tools: ["Read", "Write", "Bash",
   "mcp__linear__list_issues", "mcp__linear__get_issue", "mcp__linear__create_comment",
   "mcp__linear__update_issue", "mcp__linear__create_issue",
   "mcp__jira__list_issues", "mcp__jira__add_comment", "mcp__jira__create_issue"]
-model: sonnet
+model: inherit
 ---
 
 ## Core Goal

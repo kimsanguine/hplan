@@ -3,7 +3,7 @@ name: cost-sim
 description: "Simulate and forecast agent operating costs before building. Model token consumption, API call frequency, and monthly burn rate across different models and usage patterns. Use when evaluating agent feasibility, setting cost KPIs, or comparing build vs buy economics. Prevents the 'it's just API calls' cost surprise."
 argument-hint: "[agent to model costs for]"
 allowed-tools: ["Read", "Write", "WebSearch", "WebFetch"]
-model: sonnet
+model: inherit
 hooks:
   Stop:
     - type: command

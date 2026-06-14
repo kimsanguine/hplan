@@ -3,7 +3,7 @@ name: ost
 description: "Generate a Teresa Torres-style Opportunity Solution Tree as docs/OPPORTUNITY_TREE.md with auto-rendered Mermaid diagram. Forces the discipline: opportunities are unmet user needs (not solutions), each solution links to exactly one experiment with a decision rule, and opportunities backed by fewer than 3 strong-Push interviews are flagged or pruned. Use as the Product Gate's primary artifact, after interview-synthesis has tagged enough strong-push quotes."
 argument-hint: "[path to ost.json]"
 allowed-tools: ["Read", "Write", "Bash"]
-model: sonnet
+model: inherit
 ---
 
 # Opportunity Solution Tree — Product Gate Primary Artifact

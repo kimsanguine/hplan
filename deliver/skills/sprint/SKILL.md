@@ -3,7 +3,7 @@ name: sprint
 description: "스프린트 계획-실행-추적 통합 — 딜리버리 플랜 작성(delivery-plan)과 진척 추적(track) 통합. PRD → WBS 분해, predicted.json 초기화, probe/detect/report/checkpoint 실행. Use when planning or tracking a delivery sprint."
 argument-hint: "[brief] [--step plan|init|status|retro|codebase-status]"
 allowed-tools: ["Read", "Write", "Bash"]
-model: sonnet
+model: inherit
 ---
 
 ## Core Goal

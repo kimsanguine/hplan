@@ -3,7 +3,7 @@ name: respect
 description: "2-mode UI respect skill — brief (generate RESPECT.md design brief before coding) and checkpoint (final pre-ship gate enforcing user-respect via α/β/γ gate matrix). Use --mode brief when starting any UI screen; use --mode checkpoint before shipping. RESPECT.md absence blocks craft-lint (exit 2)."
 argument-hint: "[screen-name] [--mode brief|checkpoint]"
 allowed-tools: ["Read", "Write", "Bash"]
-model: sonnet
+model: inherit
 ---
 
 ## Core Goal

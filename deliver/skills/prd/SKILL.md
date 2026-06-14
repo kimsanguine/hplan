@@ -3,7 +3,7 @@ name: prd
 description: "Write a complete unified PRD covering user/JTBD/decisions/scope/agent-spec/metrics/hypotheses in 15 sections. Single source of truth for both customer-facing products and the LLM agents inside them. Replaces the older 7-section agent-only template. prd is the canonical owner of §6 Now/Next/Later. --mode design-shotgun reads §1+§11 from existing PRD and generates harness/design-variants/ (4 HTML variants + comparison.md). --mode roadmap is the §6 sub-mode: generate(Mermaid gantt + ROADMAP.md), rice(deterministic RICE scoring), prioritize(Now/Next/Later 재분류)."
 argument-hint: "[product or agent name] | --mode design-shotgun | --mode roadmap [generate|rice|prioritize]"
 allowed-tools: ["Read", "Write"]
-model: sonnet
+model: inherit
 hooks:
   Stop:
     - type: command

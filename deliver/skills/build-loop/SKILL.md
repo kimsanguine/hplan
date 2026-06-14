@@ -3,7 +3,7 @@ name: build-loop
 description: "Run a full product build loop in one orchestrated session — discover → research → design → PRD → task decomposition → team-based implementation. Use when the user invokes /build, when an idea needs end-to-end execution from problem to shipped change, or when a feature crosses discover/architect/deliver boundaries that would otherwise require manual hand-offs."
 argument-hint: "[idea or feature to build]"
 allowed-tools: ["Read", "Write", "Edit", "Bash"]
-model: sonnet
+model: inherit
 ---
 
 ## Core Goal
