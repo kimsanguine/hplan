@@ -3,7 +3,7 @@ name: handoff
 description: "Export an approved Build Gate brief to the downstream coding ecosystem you actually use — Spec-Kit (specs/NNN-slug/{spec,plan,tasks}.md), Kiro (.kiro/specs/<slug>/{requirements,design,tasks}.md), GStack (/office-hours brief), or Claude Code (AGENTS.md + CLAUDE.md). Use when Evidence + Product + Build Gate have all been approved and you're ready to start implementation in your coding agent of choice."
 argument-hint: "[brief.json] [--target spec-kit|kiro|gstack|claude|all]"
 allowed-tools: ["Read", "Write", "Bash"]
-model: sonnet
+model: inherit
 ---
 
 # Handoff — Build Gate → Downstream Coding Ecosystem

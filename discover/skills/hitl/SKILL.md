@@ -3,7 +3,7 @@ name: hitl
 description: "Design where and how humans should intervene in agent workflows. Define automation boundaries, escalation triggers, and approval gates. Use when building agents that make consequential decisions, handle sensitive data, or operate in domains where errors have high impact. Prevents the 'fully autonomous' default trap."
 argument-hint: "[agent workflow to design]"
 allowed-tools: ["Read", "Write"]
-model: sonnet
+model: inherit
 ---
 
 ## Core Goal

@@ -3,7 +3,7 @@ name: portfolio
 description: "에이전트 포트폴리오 관리 — 단일 에이전트 추적(agent-portfolio)과 포트폴리오 전체 리포트(portfolio-report) 통합. 에이전트 상태 카드, 크로스-에이전트 비용 비교, 포트폴리오 헬스 스코어. Use when managing multiple deployed agents."
 argument-hint: "[--mode single|report|health]"
 allowed-tools: ["Read", "Write", "Edit"]
-model: sonnet
+model: inherit
 ---
 
 # Portfolio

@@ -3,7 +3,7 @@ name: ui-validate
 description: "Unified UI validation skill — hierarchy (Playwright DOM saliency + WCAG AA), motion (CSS transition vs RESPECT.md drift), drift (pHash N-screen consistency), mobile (375/768/1440px breakpoint). Each check is independently runnable and independently failable. --check 인자 미명시 시 에러 출력 후 사용 가능한 check 목록 안내 — auto-run 절대 금지., tc-gate (QA_CHECKLIST.md TC-ID별 Playwright 스크린샷 증거 생성 → harness/ui-evidence/)"
 argument-hint: "--check hierarchy|motion|drift|mobile|tc-gate [url or path or src dir]"
 allowed-tools: ["Read", "Write", "Bash"]
-model: sonnet
+model: inherit
 ---
 
 ## Core Goal

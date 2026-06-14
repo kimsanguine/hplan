@@ -3,7 +3,7 @@ name: interview-synthesis
 description: "Import AI synthesis output (BuildBetter MCP, Perspective AI, and similar AI synthesis tools) into hplan, then force a human to tag each quote with strength (strong/medium/weak) and Push/Pull/Habit/Anxiety/workaround/trigger axes. AI extracts quotes; humans assign evidence strength. Audits the SKILL.md rule: 5 interviews with 3 distinct strong-Push signals → proceed to Product Gate."
 argument-hint: "[import|tag|audit|list] <path or id>"
 allowed-tools: ["Read", "Write", "Bash"]
-model: sonnet
+model: inherit
 ---
 
 # Interview Synthesis — AI Extracts, Human Tags

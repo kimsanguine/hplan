@@ -3,7 +3,7 @@ name: evidence-rubric
 description: "Score a product idea against the 100-point evidence rubric before any PRD work. Eight axes: ICP specificity, recent painful event, current workaround, repetition, economic pain, switching trigger, MVP narrowness, and acquisition path to first 5 users. Returns build/interview/pivot/hold decision plus the specific axes that are weak. Use when a founder or PM is excited about an idea but evidence is thin, or before approving any spec-driven coding workflow (Spec-Kit, Kiro, GStack, Superpowers)."
 argument-hint: "[idea to score]"
 allowed-tools: ["Read", "Write", "Bash"]
-model: sonnet
+model: inherit
 hooks:
   Stop:
     - type: command

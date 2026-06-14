@@ -3,7 +3,7 @@ name: brainstorm
 description: "Phase 0 Worth-Building Check + Phase 1 대화형 설계 + Phase 2 Signal Gate Bootstrap. 아이디어를 validated 설계 문서로 전환. deliver/prd 스킬 진입 전 필수 단계. 3문 PROCEED/WARN 판정으로 만들 가치를 먼저 확인한다."
 argument-hint: "[아이디어 또는 문제 설명]"
 allowed-tools: ["Read", "Write"]
-model: sonnet
+model: inherit
 ---
 
 # /hplan:brainstorm — Validated Brainstorming

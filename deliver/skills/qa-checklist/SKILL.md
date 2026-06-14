@@ -3,7 +3,7 @@ name: qa-checklist
 description: "docs/PRD.md를 파싱해 harness/QA_CHECKLIST.md를 자동 생성. ICP/실패 시나리오 기반으로 TC를 critical/major/minor 3등급으로 분류하고 디바이스·환경 링크. deliver 완료 후 또는 harness-build --step quality-gate 전에 실행."
 argument-hint: "[--regenerate | --append]"
 allowed-tools: ["Read", "Write", "Bash"]
-model: sonnet
+model: inherit
 ---
 
 ## Core Goal

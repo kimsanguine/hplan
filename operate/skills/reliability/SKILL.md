@@ -4,7 +4,7 @@ description: "Systematically review and improve AI agent reliability — identif
 argument-hint: "[agent to assess]"
 allowed-tools: ["Read", "Write"]
 context: fork
-model: sonnet
+model: inherit
 hooks:
   Stop:
     - type: command

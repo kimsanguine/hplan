@@ -3,7 +3,7 @@ name: exclusions
 description: "Append-only Do-Not-Build registry. Each exclusion carries a reason, an owning competitor, and a reopen_trigger that says what evidence would unblock it. Future runs auto-check new ideas against the registry with Korean-aware char-bigram fuzzy match. Use when an idea overlaps with an established competitor (any established competitor in your space), when a previous pivot was killed, or when you want a project's institutional memory to survive across PMs."
 argument-hint: "[add|check|list] <idea or phrase>"
 allowed-tools: ["Read", "Write", "Bash"]
-model: sonnet
+model: inherit
 ---
 
 # Exclusions Registry — Do Not Build, with Reason

@@ -3,7 +3,7 @@ name: agent-setup
 description: "에이전트 환경 설정 통합 — 7요소 인스트럭션 작성(agent-instructions)과 CLAUDE.md/AGENTS.md 구성(claude-md) 통합. 에이전트 정체성·도구·제약·실패 모드 정의부터 프로젝트 메모리 파일까지 한 스킬로. Use when setting up a new agent or updating agent instructions."
 argument-hint: "[agent name] [--focus instructions|claude-md|both]"
 allowed-tools: ["Read", "Write"]
-model: sonnet
+model: inherit
 ---
 
 ## Core Goal

@@ -3,7 +3,7 @@ name: opp-tree
 description: "Analyze where AI agents can add value and which tasks to automate — systematically map repetitive workflows, manual processes, and operational bottlenecks to identify the best agent opportunities. Build an Agent Opportunity Tree from desired outcomes to solvable problems, agent solution candidates, and validation experiments. Use when exploring where AI agents could add value to a platform or service, finding automation opportunities in workflows, identifying repetitive tasks worth automating, prioritizing which agent to build first, or mapping the full opportunity space before committing to development. Applicable to any domain — customer support, edtech, SaaS, operations, and more."
 argument-hint: "[product or domain to explore]"
 allowed-tools: ["Read", "Write"]
-model: sonnet
+model: inherit
 ---
 
 ## Core Goal

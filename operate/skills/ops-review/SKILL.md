@@ -3,7 +3,7 @@ name: ops-review
 description: "주간/월간 운영 리뷰 + 이해관계자 업데이트 보고. 비용 추적(burn-rate)·주간 롤업(weekly-rollup)·실제 LLM 비용 vs COGS 대조·이상 감지·예산 권고. 추가로 이해관계자 보고서 4종: exec-summary(임원 1-pager), weekly-update(팀 주간), partner-brief(외부 파트너), confluence-export(사내 위키 포맷 변환). 수치 집계=결정론, 산문 생성만 LLM. Use when running regular operational reviews or communicating project status to stakeholders."
 argument-hint: "[--mode cost|weekly|full|exec-summary|weekly-update|partner-brief|confluence-export] [--source exec-summary|weekly-update|partner-brief]"
 allowed-tools: ["Read", "Write", "mcp__notion__notion-create-pages", "mcp__notion__notion-fetch"]
-model: sonnet
+model: inherit
 ---
 
 # Ops Review

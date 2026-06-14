@@ -3,7 +3,7 @@ name: metrics-design
 description: "Design the metrics hierarchy and OKRs for an AI agent — North Star, KPI derivation, and OKR setting. Supports --step north-star | kpi | okr | all (default)."
 argument-hint: "[agent or product] [--step north-star|kpi|okr|all]"
 allowed-tools: ["Read", "Write"]
-model: sonnet
+model: inherit
 ---
 
 # metrics-design

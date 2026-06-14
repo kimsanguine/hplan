@@ -3,7 +3,7 @@ name: cogs-sentinel
 description: "Executable COGS gate for AI products. Runs a deterministic Python sampler (lognormal token-cost distribution) to compute p50/p90 per-paid-user monthly COGS, gross margin scenarios, and free-user abuse blend. Returns GREEN / CONDITIONAL_GO / RED before any paid AI product is greenlit. Use when promising a paid AI feature, comparing providers (Anthropic/OpenAI/Google), or when discover/cost-sim has produced a usage hypothesis and you need real numbers."
 argument-hint: "[provider, model, usage params or path to JSON]"
 allowed-tools: ["Read", "Write", "Bash"]
-model: sonnet
+model: inherit
 hooks:
   Stop:
     - type: command

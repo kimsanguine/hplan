@@ -3,7 +3,7 @@ name: pm-engine
 description: "Interface with the PM-ENGINE-MEMORY file — the operator's accumulated PM tacit knowledge database. Enables agents to reference, search, and apply TK (Tacit Knowledge) entries, and supports TK extraction from experience (--mode extract), TK querying and referencing (--mode query), and TK-to-instruction conversion (--mode build). The core of the pm-engine competitive moat. --mode decide for pattern-matching against stored PM decision patterns. --mode save-decision for PRD-linked tech decision logging (harness/tech-decisions/TD-NNN.yaml). --mode index-codebase for scanning project files and surfacing unrecorded decision candidates."
 argument-hint: "[TK query or operation] [--mode extract|query|build|save|decide|save-decision|index-codebase]"
 allowed-tools: ["Read", "Write"]
-model: sonnet
+model: inherit
 ---
 
 ## Core Goal
