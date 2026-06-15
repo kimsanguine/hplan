@@ -4,6 +4,24 @@ All notable changes to hplan (renamed from AI_PM_Skills in v0.5) are documented 
 
 ---
 
+## [1.1.0] — 2026-06-15
+
+> **cogs 단위경제·적응형 변동성 확장 + 구독 호환.** COGS Sentinel을 보고서 수준으로 끌어올리고, 비용 변동성을 워크로드별로 도출하며, 스킬 모델 핀을 풀어 구독 환경에서 동작하게 함.
+
+### Added
+- **cogs ARPPU/ARPU + 단위경제** — count 기반 blended margin, LTV/CAC/Payback, cost ratio, overall_verdict(BUILD/INVESTIGATE/HOLD). 전부 옵션 입력, 하위호환.
+- **cogs 적응형 cost-variance** — `--workload {chat,rag,agent,batch}`(리서치 보정 prior) · `--p90-p50-ratio`(분포 직접) · realtime 측정 · 2.2 fallback의 레이어드 해소. 출처 `references/cost-variance.md`.
+- **cogs 캐싱/배치 + freshness** — `--cached-tokens-in`(0.1x) · `--batch`(0.5x) · 단가 스냅샷 30일 초과 시 stderr 경고.
+
+### Fixed
+- **cogs P0/P1 하드닝** — 신규 입력 검증(거짓 양성 차단) · 부분 입력 경고 · 적자 가드 · payment-fee 일관 LTV.
+- **스킬 model 핀 → inherit** — 34개 SKILL.md의 `model: sonnet/opus`를 `inherit`로. 구독(API 키 없는) 환경에서 강제 모델 전환 실패로 스킬이 에러나던 문제 해소.
+
+### Note
+- 단가 숫자(`references/provider_pricing.json`)는 정본 검증 전까지 미변경 — freshness 경고만 추가.
+
+---
+
 ## [1.0.1] — 2026-06-04
 
 > **설치 정정 + 일괄 설치 지원.** marketplace 식별자 오류를 수정하고, settings.json 한 파일로 5개 플러그인을 한 번에 활성화하는 경로를 추가.
