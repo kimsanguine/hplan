@@ -71,10 +71,20 @@ def load_pricing(skill_root: Path | None = None) -> dict:
     return PRICING_FALLBACK
 
 
-def cost_per_call(prices: dict, tokens_in: int, tokens_out: int) -> float:
-    return (tokens_in / 1_000_000) * prices["input_per_mtok"] + (
-        tokens_out / 1_000_000
-    ) * prices["output_per_mtok"]
+def cost_per_call(prices: dict, tokens_in: int, tokens_out: int,
+                  cached_tokens_in: int = 0, batch: bool = False) -> float:
+    # Backward-compatible: cached_tokens_in=0 / batch=False reproduces the legacy
+    # full-price calculation exactly. Cached input bills at 0.1x (Anthropic prompt
+    # caching read rate); Batch API bills all tokens at 0.5x.
+    uncached_in = max(0, tokens_in - cached_tokens_in)
+    cost = (
+        (uncached_in / 1_000_000) * prices["input_per_mtok"]
+        + (cached_tokens_in / 1_000_000) * prices["input_per_mtok"] * 0.1
+        + (tokens_out / 1_000_000) * prices["output_per_mtok"]
+    )
+    if batch:
+        cost *= 0.5
+    return cost
 
 
 def lognormal_samples(median: float, p90: float, n: int = 1000, seed: int = 7) -> list[float]:
@@ -153,6 +163,14 @@ def _validate_params(params: dict) -> None:
         free_usage_ratio = float(params["free_usage_ratio"])
         if free_usage_ratio < 0:
             errors.append(f"free_usage_ratio={free_usage_ratio} must be >= 0")
+    if params.get("p90_p50_ratio") is not None:
+        p90r = float(params["p90_p50_ratio"])
+        if p90r <= 0:
+            errors.append(f"p90_p50_ratio={p90r} must be > 0")
+    if params.get("cached_tokens_in") is not None:
+        cti = int(params["cached_tokens_in"])
+        if cti < 0:
+            errors.append(f"cached_tokens_in={cti} must be >= 0")
 
     if errors:
         msg = (
@@ -288,6 +306,47 @@ def run_realtime(params: dict, baseline_path: Path | None = None) -> dict:
     return result
 
 
+# Research-calibrated p90/p50 per-call cost-variance ratios by workload archetype.
+# Sources: arXiv:2604.00499 (LMSYS-Chat p90/p50≈4.62), VIDUR/MLSys'24 (agent≈4.0),
+# CASTILLO/arXiv:2505.16881, DynamoLLM/HPCA'25. See references/cost-variance.md.
+# These are the "workload prior" layer; the fallback stays 2.2 for backward
+# compatibility (legacy callers that pass no workload/ratio are unchanged).
+WORKLOAD_P90_RATIO = {"chat": 2.3, "rag": 3.0, "agent": 5.0, "batch": 1.8}
+
+
+def _resolve_p90_ratio(params: dict) -> tuple[float, str]:
+    """Layered resolution: direct distribution > workload prior > fallback (2.2).
+    (The 'measured' layer is realtime mode, which uses actual production tokens.)"""
+    ratio = params.get("p90_p50_ratio")
+    if ratio is not None:
+        return float(ratio), "distribution"
+    workload = params.get("workload")
+    if workload in WORKLOAD_P90_RATIO:
+        return WORKLOAD_P90_RATIO[workload], f"workload:{workload}"
+    return 2.2, "fallback"
+
+
+def _warn_stale_pricing(pricing: dict, max_age_days: int = 30) -> None:
+    """Warn (stderr) when the loaded pricing snapshot is older than max_age_days.
+    Does not change any pricing number or stdout — informational only."""
+    if not isinstance(pricing, dict):
+        return
+    meta = pricing.get("_meta") if isinstance(pricing.get("_meta"), dict) else {}
+    snap = meta.get("snapshot_date") or pricing.get("snapshot_date")
+    if not snap:
+        return
+    try:
+        age = (date.today() - date.fromisoformat(str(snap))).days
+    except ValueError:
+        return
+    if age > max_age_days:
+        print(
+            f"[warn] pricing snapshot {snap} is {age}d old (>{max_age_days}d) — "
+            "verify references/provider_pricing.json against current provider rates.",
+            file=sys.stderr,
+        )
+
+
 def run(params: dict) -> dict:
     _validate_params(params)
     pricing = params.get("pricing") or load_pricing()
@@ -309,9 +368,12 @@ def run(params: dict) -> dict:
     free_abuse_multiplier = float(params.get("free_abuse_multiplier", 5))
     target_margin = float(params.get("target_gross_margin", 0.70))
     payment_fee_pct = float(params.get("payment_fee_pct", 0.03))
+    cached_tokens_in = int(params.get("cached_tokens_in", 0))
+    batch = bool(params.get("batch", False))
 
-    median_call = cost_per_call(prices, tokens_in, tokens_out)
-    p90_call = median_call * 2.2  # realistic variance for token-heavy calls
+    median_call = cost_per_call(prices, tokens_in, tokens_out, cached_tokens_in, batch)
+    p90_ratio, p90_ratio_source = _resolve_p90_ratio(params)
+    p90_call = median_call * p90_ratio
     samples = lognormal_samples(median_call, p90_call)
     samples.sort()
 
@@ -444,6 +506,10 @@ def run(params: dict) -> dict:
             "p50": round(median_call, 6),
             "p90": round(p90_call, 6),
         },
+        "variance": {
+            "p90_p50_ratio": round(p90_ratio, 2),
+            "source": p90_ratio_source,
+        },
         "monthly_cogs_per_paid_user_usd": {
             "p50": round(cogs_p50, 4),
             "p90": round(cogs_p90, 4),
@@ -499,6 +565,13 @@ def markdown_report(result: dict) -> str:
         "## Inputs",
         *[f"- {k}: {v}" for k, v in result["inputs"].items()],
     ]
+    _var = result.get("variance") or {}
+    if _var.get("source", "fallback") != "fallback":
+        lines += [
+            "",
+            "## Cost Variance",
+            f"- p90/p50 ratio: {_var['p90_p50_ratio']} (source: {_var['source']})",
+        ]
     if result.get("report"):
         rp = result["report"]
         lines += [
@@ -553,6 +626,14 @@ def parse_args():
     p.add_argument("--free-abuse-multiplier", type=float, default=5)
     p.add_argument("--target-gross-margin", type=float, default=0.70)
     p.add_argument("--payment-fee-pct", type=float, default=0.03)
+    p.add_argument("--workload", choices=["chat", "rag", "agent", "batch"],
+                   help="[variance] workload archetype -> research-calibrated p90/p50 cost ratio")
+    p.add_argument("--p90-p50-ratio", type=float,
+                   help="[variance] direct p90/p50 cost ratio from your own token distribution (overrides --workload)")
+    p.add_argument("--cached-tokens-in", type=int, default=0,
+                   help="[caching] input tokens served from prompt cache (billed at 0.1x)")
+    p.add_argument("--batch", action="store_true",
+                   help="[caching] price all tokens at Batch API 0.5x")
     p.add_argument("--mau", type=float, help="[report] total monthly active users (enables business report block)")
     p.add_argument("--arppu", type=float, help="paid-user revenue (alias of --arpu); ARPU(all)=ARPPU*paid_conversion")
     p.add_argument("--free-usage-ratio", type=float, help="free user's call fraction vs paid (default 0.3)")
@@ -573,6 +654,7 @@ def parse_args():
 
 def main():
     args = parse_args()
+    _warn_stale_pricing(load_pricing())
     if args.params:
         params = json.loads(Path(args.params).read_text(encoding="utf-8"))
     else:
@@ -587,10 +669,13 @@ def main():
             "free_abuse_multiplier": args.free_abuse_multiplier,
             "target_gross_margin": args.target_gross_margin,
             "payment_fee_pct": args.payment_fee_pct,
+            "cached_tokens_in": args.cached_tokens_in,
+            "batch": args.batch,
         }
         for _k, _v in (("mau", args.mau), ("arppu", args.arppu),
                        ("free_usage_ratio", args.free_usage_ratio),
-                       ("cac", args.cac), ("monthly_churn", args.monthly_churn)):
+                       ("cac", args.cac), ("monthly_churn", args.monthly_churn),
+                       ("workload", args.workload), ("p90_p50_ratio", args.p90_p50_ratio)):
             if _v is not None:
                 params[_k] = _v
 
