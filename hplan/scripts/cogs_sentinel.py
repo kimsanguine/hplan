@@ -44,17 +44,17 @@ OVERRIDE_CHEAP_RATIO = 0.1
 
 PRICING_FALLBACK = {
     "anthropic": {
-        "claude-opus-4-7": {"input_per_mtok": 15.0, "output_per_mtok": 75.0},
+        "claude-opus-4-7": {"input_per_mtok": 5.0, "output_per_mtok": 25.0},
         "claude-sonnet-4-6": {"input_per_mtok": 3.0, "output_per_mtok": 15.0},
-        "claude-haiku-4-5": {"input_per_mtok": 0.80, "output_per_mtok": 4.0},
+        "claude-haiku-4-5": {"input_per_mtok": 1.0, "output_per_mtok": 5.0},
     },
     "openai": {
-        "gpt-5": {"input_per_mtok": 5.0, "output_per_mtok": 20.0},
-        "gpt-5-mini": {"input_per_mtok": 0.25, "output_per_mtok": 1.5},
+        "gpt-5": {"input_per_mtok": 1.25, "output_per_mtok": 10.0},
+        "gpt-5-mini": {"input_per_mtok": 0.25, "output_per_mtok": 2.0},
     },
     "google": {
         "gemini-2.5-pro": {"input_per_mtok": 1.25, "output_per_mtok": 10.0},
-        "gemini-2.5-flash": {"input_per_mtok": 0.10, "output_per_mtok": 0.40},
+        "gemini-2.5-flash": {"input_per_mtok": 0.30, "output_per_mtok": 2.50},
     },
 }
 
