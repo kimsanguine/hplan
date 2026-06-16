@@ -171,6 +171,10 @@ def _validate_params(params: dict) -> None:
         cti = int(params["cached_tokens_in"])
         if cti < 0:
             errors.append(f"cached_tokens_in={cti} must be >= 0")
+        elif cti > tokens_in:
+            # Cached input cannot exceed total input — an impossible cache state would
+            # otherwise be priced as discounted input and understate COGS (false GREEN).
+            errors.append(f"cached_tokens_in={cti} must be <= tokens_in={tokens_in}")
 
     if errors:
         msg = (
@@ -362,7 +366,17 @@ def run(params: dict) -> dict:
     tokens_in = int(params.get("tokens_in", 4000))
     tokens_out = int(params.get("tokens_out", 1000))
     calls_per_user_month = float(params.get("calls_per_user_month", 60))
-    arpu = float(params.get("arpu", 19))
+    # --arppu is documented as an alias of --arpu. When arppu is supplied without an
+    # explicit arpu, it must drive the margin/decision base too — otherwise the gate
+    # silently scores a low-priced product against the default $19 ARPU (false GREEN).
+    _explicit_arpu = params.get("arpu")
+    _arppu_param = params.get("arppu")
+    if _explicit_arpu is not None:
+        arpu = float(_explicit_arpu)
+    elif _arppu_param is not None:
+        arpu = float(_arppu_param)
+    else:
+        arpu = 19.0
     _warn_currency(arpu)
     paid_conversion = float(params.get("paid_conversion", 0.05))
     free_abuse_multiplier = float(params.get("free_abuse_multiplier", 5))
@@ -488,20 +502,26 @@ def run(params: dict) -> dict:
         else:
             overall_verdict = "INVESTIGATE"
 
+    inputs_dict = {
+        "tokens_in": tokens_in,
+        "tokens_out": tokens_out,
+        "calls_per_user_month": calls_per_user_month,
+        "arpu": arpu,
+        "paid_conversion": paid_conversion,
+        "free_abuse_multiplier": free_abuse_multiplier,
+        "target_gross_margin": target_margin,
+    }
+    # Surface caching/batch only when actually used — keeps legacy output unchanged.
+    if cached_tokens_in or batch:
+        inputs_dict["cached_tokens_in"] = cached_tokens_in
+        inputs_dict["batch"] = batch
+
     return {
         "generated": date.today().isoformat(),
         "provider": provider,
         "model": model,
         "pricing_source": pricing_source,
-        "inputs": {
-            "tokens_in": tokens_in,
-            "tokens_out": tokens_out,
-            "calls_per_user_month": calls_per_user_month,
-            "arpu": arpu,
-            "paid_conversion": paid_conversion,
-            "free_abuse_multiplier": free_abuse_multiplier,
-            "target_gross_margin": target_margin,
-        },
+        "inputs": inputs_dict,
         "per_call_cost_usd": {
             "p50": round(median_call, 6),
             "p90": round(p90_call, 6),
@@ -621,7 +641,8 @@ def parse_args():
     p.add_argument("--tokens-in", type=int, default=4000)
     p.add_argument("--tokens-out", type=int, default=1000)
     p.add_argument("--calls-per-user-month", type=float, default=60)
-    p.add_argument("--arpu", type=float, default=19)
+    p.add_argument("--arpu", type=float, default=None,
+                   help="ARPU (all users, default 19). If omitted and --arppu is given, --arppu drives it.")
     p.add_argument("--paid-conversion", type=float, default=0.05)
     p.add_argument("--free-abuse-multiplier", type=float, default=5)
     p.add_argument("--target-gross-margin", type=float, default=0.70)
@@ -664,7 +685,6 @@ def main():
             "tokens_in": args.tokens_in,
             "tokens_out": args.tokens_out,
             "calls_per_user_month": args.calls_per_user_month,
-            "arpu": args.arpu,
             "paid_conversion": args.paid_conversion,
             "free_abuse_multiplier": args.free_abuse_multiplier,
             "target_gross_margin": args.target_gross_margin,
@@ -672,7 +692,7 @@ def main():
             "cached_tokens_in": args.cached_tokens_in,
             "batch": args.batch,
         }
-        for _k, _v in (("mau", args.mau), ("arppu", args.arppu),
+        for _k, _v in (("arpu", args.arpu), ("mau", args.mau), ("arppu", args.arppu),
                        ("free_usage_ratio", args.free_usage_ratio),
                        ("cac", args.cac), ("monthly_churn", args.monthly_churn),
                        ("workload", args.workload), ("p90_p50_ratio", args.p90_p50_ratio)):
