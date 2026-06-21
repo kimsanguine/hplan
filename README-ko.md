@@ -342,7 +342,7 @@ hplan   discover  architect  deliver   operate
 | **발견** | `discover` | "어떤 에이전트를 만들어야 할까?" | opp-tree · assumptions · cost-sim · hitl · socratic-question · customer-reach |
 | **설계** | `architect` | "어떻게 구조를 잡을까?" | orchestration · memory-arch · design-token · strategy |
 | **실행** | `deliver` | "어떻게 스펙을 쓰고 출시할까?" | agent-setup · prd · conductor · sprint · build-loop · qa-checklist · ui-validate · respect · ask-team · ticket-bridge |
-| **운영** | `operate` | "측정·학습·포트폴리오를 어떻게 할까?" | metrics-design · reliability · pm-engine · incident · ops-review · portfolio |
+| **운영** | `operate` | "측정·학습·포트폴리오를 어떻게 할까?" | metrics-design · reliability · govern · pm-engine · incident · ops-review · portfolio |
 
 ### hplan이 나머지 4개와 다른 점
 
@@ -518,7 +518,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 </details>
 
 <details>
-<summary><strong>5. operate</strong> — 측정·학습·포트폴리오 운영 <code>(6 skills)</code></summary>
+<summary><strong>5. operate</strong> — 측정·학습·포트폴리오 운영 <code>(7 skills)</code></summary>
 
 출시 이후가 진짜 시작입니다. 에이전트는 "조용히 틀리는" 경우가 많아서, 지표·OKR 설계, 신뢰성 검토, 장애 대응, 주간/월간 운영 리뷰와 함께 PM 암묵지 구조화·포트폴리오 관리까지 한 플러그인에서 처리합니다.
 
@@ -526,6 +526,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 |------|------|-------------------|
 | `metrics-design` | 지표 위계 + OKR 통합 설계 — North Star, KPI 도출, OKR 설정. `--step north-star\|kpi\|okr\|all` | "에이전트 대시보드에 어떤 지표를 넣고 OKR을 어떻게 잡지?" |
 | `reliability` | 실패 패턴 식별 + 에러 핸들링 평가 + 세이프가드 설계 + 신뢰성 목표 설정 | "100건 중 3건이 환각인데, 이게 허용 가능한 수준인가?" |
+| `govern` | 배포 거버넌스 게이트 — DLP·데이터 유출, 감사 로그, 킬스위치·롤백 권한, 최소권한 도구 감사, orphaned 에이전트 인벤토리. `--check dlp\|audit\|killswitch\|permissions\|orphaned\|all` → GO/CONDITIONAL/NO-GO | "이 에이전트를 누가 멈출 수 있고 뭘 만질 수 있지?" / "런칭 전 감사 추적이 필요해" / "프로젝트 끝났는데 에이전트가 계속 돌아" |
 | `incident` | 심각도 트리아지 + 대응 조율 + 영향 범위 차단 + 포스트모템 작성 | "에이전트가 30분째 응답이 없는데 알림도 안 울려" |
 | `ops-review` | 주간/월간 운영 리뷰 + 이해관계자 업데이트 — 비용 추적·주간 롤업·실 LLM 비용 vs COGS 대조·이상 감지 + 보고서 4종(exec-summary·weekly-update·partner-brief·confluence-export). 수치 집계=결정론, 산문만 LLM | "이번 달 비용이 40% 올랐어 — 원인 분석 + 임원 보고서까지" |
 | `pm-engine` | PM-ENGINE-MEMORY 인터페이스 — TK(암묵지) 추출·쿼리·인스트럭션 변환(`--mode extract\|query\|build`), `--mode decide`(결정 패턴 매칭), `--mode save-decision`(PRD 연계 기술 결정 로그) | "내 운영 노하우를 에이전트가 알아서 활용했으면 좋겠어" |

@@ -224,7 +224,7 @@ This isn't a random collection of skills. It's a **complete lifecycle** — the 
 | **Discover** `discover` | "What agent should we build?" | opp-tree · assumptions · cost-sim · hitl · socratic-question · customer-reach |
 | **Architect** `architect` | "How should we structure it?" | orchestration · memory-arch · design-token · strategy |
 | **Deliver** `deliver` | "How to spec, build, and ship it?" | agent-setup · prd · build-loop · conductor · sprint · qa-checklist · respect · ui-validate · ask-team · ticket-bridge |
-| **Operate** `operate` | "How to run and improve agents over time?" | metrics-design · reliability · pm-engine · incident · ops-review · portfolio |
+| **Operate** `operate` | "How to run and improve agents over time?" | metrics-design · reliability · govern · pm-engine · incident · ops-review · portfolio |
 
 ### What makes hplan different from the other 4
 
@@ -381,15 +381,16 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 </details>
 
 <details>
-<summary><strong>5. operate</strong> — How to run and improve agents over time? <code>(6 skills)</code></summary>
+<summary><strong>5. operate</strong> — How to run and improve agents over time? <code>(7 skills)</code></summary>
 
-> ✅ **All 6 are callable:** `metrics-design` · `reliability` · `pm-engine` · `incident` · `ops-review` · `portfolio`
+> ✅ **All 7 are callable:** `metrics-design` · `reliability` · `govern` · `pm-engine` · `incident` · `ops-review` · `portfolio`
 > v0.14.1 consolidation: `agent-portfolio` + `portfolio-report` → `portfolio` · `burn-rate` → `ops-review` (cost mode) · `stakeholder-update` absorbed into `ops-review`. Earlier roadmap names (premortem, agent-ab-test, cohort, pm-decision, cross-team-routing) are not shipped.
 
 | Skill | What it does | When to use |
 |-------|-------------|-------------|
 | `metrics-design` | North Star selection + KPI derivation + dual-axis OKRs (Business Impact + Operational Health). `--step north-star\|kpi\|okr\|all` | "Team doesn't know which KPI matters most" / "Is 95% accuracy enough, or do I need cost metrics?" |
 | `reliability` | Quantify P95/P99 worst cases + design safeguards + set SLA tiers | "3 out of 100 responses hallucinate — acceptable?" |
+| `govern` | Deployment governance gate — DLP/data-exposure, audit logging, kill-switch & rollback authority, least-privilege tool permissions, orphaned-agent inventory. `--check dlp\|audit\|killswitch\|permissions\|orphaned\|all` → GO/CONDITIONAL/NO-GO | "Who can stop this agent and what can it touch?" / "We need an audit trail before launch" / "An agent kept running after the project ended" |
 | `pm-engine` | Agents dynamically query TK knowledge graph at runtime + auto-extract 1 TK/day + auto-update instructions. `--mode extract` converts implicit judgment into TK-NNN units | "I want my agents to leverage my operational know-how automatically" / "3 years of ops experience stuck in my head" |
 | `incident` | Detect silent failures + triage + contain blast radius + 5 Whys | "Agent silent for 30 min — no alerts fired" |
 | `ops-review` | Weekly/monthly operational review + stakeholder updates — token-cost tracking, weekly rollup, real LLM cost vs COGS check, anomaly detection. `--mode cost\|weekly\|full\|exec-summary\|weekly-update\|partner-brief\|confluence-export` (absorbed stakeholder-update) | "Monday morning — what changed across my fleet?" / "Token costs jumped 40% — what caused it?" / "Send an exec 1-pager / weekly team update / partner brief / Confluence export" |
