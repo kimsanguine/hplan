@@ -24,7 +24,7 @@ bash <(curl -fsSL https://habix.ai/hplan/install.sh)
 
 `~/hplan`에 설치하고 `claude-hplan` 실행 alias를 추가합니다. 토큰 불필요.
 
-**또는 Claude Code 플러그인으로** — `5 plugins · 34 skills · 12 commands`, 아래를 `.claude/settings.json`에 추가하면 5개 일괄 활성화:
+**또는 Claude Code 플러그인으로** — `5 plugins · 36 skills · 12 commands`, 아래를 `.claude/settings.json`에 추가하면 5개 일괄 활성화:
 
 프로젝트의 `.claude/settings.json`에 아래를 넣으면 (또는 동봉된 [`.claude/settings.json.example`](.claude/settings.json.example) 복사), 다음 `claude` 세션의 trust dialog 한 번으로 5개 플러그인이 전부 활성화됩니다 — `/plugin install`을 5번 칠 필요가 없습니다.
 
@@ -300,7 +300,7 @@ bash <(curl -fsSL https://habix.ai/hplan/install.sh)
 /harness-operate "마케팅 카피 에이전트"     # 주간 KPI · 비용 · 개선 계획
 ```
 
-스킬 이름을 외울 필요는 없습니다. 자연어로 질문하면 34개 스킬 중 맞는 게 auto-load 됩니다.
+스킬 이름을 외울 필요는 없습니다. 자연어로 질문하면 36개 스킬 중 맞는 게 auto-load 됩니다.
 
 <details>
 <summary><strong>게이트 세밀 제어</strong> — 개별 게이트로 깊은 분석</summary>
@@ -325,7 +325,7 @@ bash <(curl -fsSL https://habix.ai/hplan/install.sh)
 
 ## 에이전트 PM 여정 — 5-plugin
 
-이 프로젝트의 34개 스킬은 무작위 모음이 아닙니다. 에이전트 제품을 만드는 PM이 반드시 거치는 **5-plugin 라이프사이클** — v0.11.0부터 대규모 통합을 거쳐 더 단순하고 명확한 구조가 됐습니다.
+이 프로젝트의 36개 스킬은 무작위 모음이 아닙니다. 에이전트 제품을 만드는 PM이 반드시 거치는 **5-plugin 라이프사이클** — v0.11.0부터 대규모 통합을 거쳐 더 단순하고 명확한 구조가 됐습니다.
 
 ```
 게이트 → 발견 → 설계 → 딜리버리 → 운영
@@ -340,9 +340,9 @@ hplan   discover  architect  deliver   operate
 |------|---------|------------------------|----------|
 | **게이트** ⭐ | `hplan` | "정말 만들 가치가 있을까?" | brainstorm · evidence-rubric · interview-synthesis · exclusions · cogs-sentinel · ost · decision-log · handoff |
 | **발견** | `discover` | "어떤 에이전트를 만들어야 할까?" | opp-tree · assumptions · cost-sim · hitl · socratic-question · customer-reach |
-| **설계** | `architect` | "어떻게 구조를 잡을까?" | orchestration · memory-arch · design-token · strategy |
+| **설계** | `architect` | "어떻게 구조를 잡을까?" | orchestration · memory-arch · interop · design-token · strategy |
 | **실행** | `deliver` | "어떻게 스펙을 쓰고 출시할까?" | agent-setup · prd · conductor · sprint · build-loop · qa-checklist · ui-validate · respect · ask-team · ticket-bridge |
-| **운영** | `operate` | "측정·학습·포트폴리오를 어떻게 할까?" | metrics-design · reliability · pm-engine · incident · ops-review · portfolio |
+| **운영** | `operate` | "측정·학습·포트폴리오를 어떻게 할까?" | metrics-design · reliability · govern · pm-engine · incident · ops-review · portfolio |
 
 ### hplan이 나머지 4개와 다른 점
 
@@ -361,13 +361,13 @@ hplan   discover  architect  deliver   operate
 
 시중의 PM 스킬셋은 대부분 "AI로 뭔가를 빠르게 하는 도구"입니다. PRD 자동생성, OKR 작성기, 경쟁사 분석기 같은 것들이죠. 하지만 에이전트를 제품으로 만들 때는 "어떤 에이전트를 만들지 → 어떻게 설계할지 → 어떻게 스펙을 쓸지 → 어떻게 운영할지 → 어떻게 학습시킬지"라는 **연속된 흐름**이 필요합니다.
 
-이 마켓플레이스의 34개 스킬은 5-plugin에 정확히 매핑됩니다. 발견부터 자기개선 에이전트, 그리고 harness 기반 빌드와 포트폴리오 운영까지, **에이전트를 제품으로 만드는 구조화된 방법론**입니다.
+이 마켓플레이스의 36개 스킬은 5-plugin에 정확히 매핑됩니다. 발견부터 자기개선 에이전트, 그리고 harness 기반 빌드와 포트폴리오 운영까지, **에이전트를 제품으로 만드는 구조화된 방법론**입니다.
 
 ### ② 2레이어 아키텍처 — Platform과 Content의 분리
 
-스킬이 많아지면 반드시 생기는 문제가 있습니다: **"엉뚱한 스킬이 발동된다."** 34개 스킬이 서로 비슷한 키워드에 반응하면, Claude가 혼동을 일으키거든요.
+스킬이 많아지면 반드시 생기는 문제가 있습니다: **"엉뚱한 스킬이 발동된다."** 36개 스킬이 서로 비슷한 키워드에 반응하면, Claude가 혼동을 일으키거든요.
 
-이 문제를 해결하기 위해 **두 층을 분리**했습니다. Claude가 스킬을 찾는 메커니즘(Platform Layer — Skills 2.0 스펙의 frontmatter, auto-invocation 등)과, 각 스킬 안에서 "언제 나를 부르고, 언제 부르지 말아야 하는지"를 정의하는 내용(Content Layer — Trigger Gate 패턴)을 분리한 것입니다. 34개 스킬이 동시에 카탈로그에 있어도 routing 충돌이 안 나는 이유입니다.
+이 문제를 해결하기 위해 **두 층을 분리**했습니다. Claude가 스킬을 찾는 메커니즘(Platform Layer — Skills 2.0 스펙의 frontmatter, auto-invocation 등)과, 각 스킬 안에서 "언제 나를 부르고, 언제 부르지 말아야 하는지"를 정의하는 내용(Content Layer — Trigger Gate 패턴)을 분리한 것입니다. 36개 스킬이 동시에 카탈로그에 있어도 routing 충돌이 안 나는 이유입니다.
 
 ```
 ┌─ Platform Layer ──── Skills 2.0 Spec ──────────────────────┐
@@ -384,7 +384,7 @@ Trigger Gate의 핵심은 세 가지입니다:
 - **Route**: "이런 상황이면 다른 스킬에게 넘겨라" (플러그인 간 라우팅)
 - **Boundary**: "이런 상황에서는 절대 나를 부르지 마라" (오발동 방지)
 
-이 패턴으로 측정한 트리거 정확도는 **90.9%**입니다 (v0.14.1, 88개 쿼리 중 80개, Haiku 4.5, 1-run 스냅샷). 현재 34개 스킬 중 22개를 커버하며, 1-run 스냅샷이라 실행마다 ±몇 %p 변동하고 전체 34개 스킬 커버는 진행 중입니다. (이전 v0.6 baseline은 24개 스킬·96개 쿼리 기준 97.9%였습니다.)
+이 패턴으로 측정한 트리거 정확도는 **90.9%**입니다 (v0.14.1, 88개 쿼리 중 80개, Haiku 4.5, 1-run 스냅샷). 현재 36개 스킬 중 22개를 커버하며, 1-run 스냅샷이라 실행마다 ±몇 %p 변동하고 전체 36개 스킬 커버는 진행 중입니다. (이전 v0.6 baseline은 24개 스킬·96개 쿼리 기준 97.9%였습니다.)
 
 ### ③ 데이터 플라이휠 — 쓸수록 쌓이는 PM 암묵지
 
@@ -478,7 +478,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 </details>
 
 <details>
-<summary><strong>3. architect</strong> — 어떻게 설계할까? <code>(4 skills)</code></summary>
+<summary><strong>3. architect</strong> — 어떻게 설계할까? <code>(5 skills)</code></summary>
 
 에이전트의 구조를 잡는 단계입니다. 에이전트가 하나일 때는 괜찮지만, 여러 개가 협업해야 할 때 — 어떻게 오케스트레이션하고, 메모리를 어떻게 쌓고, 디자인 토큰으로 UI를 어떻게 통일하고, 전략·해자를 어떻게 잡을지를 설계합니다.
 
@@ -488,6 +488,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 |------|------|-------------------|
 | `orchestration` | Sequential/Parallel/Router/Hierarchical 패턴을 레이턴시·오류율·비용으로 비교. `--pattern router`는 복잡도별 T1~T4 모델 자동 라우팅 + 폴백 체인으로 40-80% 비용 절감 | "문서 처리 파이프라인을 직렬로 돌릴까, 병렬로 돌릴까?" / "단순 FAQ는 Haiku, 복잡 분석은 Opus — 자동으로 나눠줘" |
 | `memory-arch` | Working/Episodic/Semantic/Procedural 메모리 레이어 + 토큰 예산 인식 검색 | "오늘 세션에서 어제 대화 맥락을 어떻게 기억시키지?" |
+| `interop` | 에이전트 연결 표준(MCP/A2A/신생) 선택 + 하네스 간 이식성(Claude Code·Codex·Cursor) 설계 + 파일=durable state로 표준·벤더 변화에 면역. `--mode select\|portability\|durable-state` | "MCP로 갈까 A2A로 갈까?" / "같은 스킬셋을 Claude Code랑 Codex 양쪽에서 유지" / "단일 벤더 전송 lock-in이 위험한가?" |
 | `design-token` | 색상·타이포·간격·그림자 디자인 토큰 체계 정의 + DESIGN.md 생성 → 일관된 UI 시스템 강제 | "컴포넌트마다 색이 다르게 들어가 있어, 토큰으로 통일하고 싶어" |
 | `strategy` | 전략·해자(moat)·비즈니스 모델을 통합 진단 — 데이터 플라이휠·전환비용·네트워크 효과 등 방어선 설계 | "경쟁사가 GPT로 비슷한 걸 만들면, 우리 방어선은?" |
 
@@ -518,7 +519,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 </details>
 
 <details>
-<summary><strong>5. operate</strong> — 측정·학습·포트폴리오 운영 <code>(6 skills)</code></summary>
+<summary><strong>5. operate</strong> — 측정·학습·포트폴리오 운영 <code>(7 skills)</code></summary>
 
 출시 이후가 진짜 시작입니다. 에이전트는 "조용히 틀리는" 경우가 많아서, 지표·OKR 설계, 신뢰성 검토, 장애 대응, 주간/월간 운영 리뷰와 함께 PM 암묵지 구조화·포트폴리오 관리까지 한 플러그인에서 처리합니다.
 
@@ -526,6 +527,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 |------|------|-------------------|
 | `metrics-design` | 지표 위계 + OKR 통합 설계 — North Star, KPI 도출, OKR 설정. `--step north-star\|kpi\|okr\|all` | "에이전트 대시보드에 어떤 지표를 넣고 OKR을 어떻게 잡지?" |
 | `reliability` | 실패 패턴 식별 + 에러 핸들링 평가 + 세이프가드 설계 + 신뢰성 목표 설정 | "100건 중 3건이 환각인데, 이게 허용 가능한 수준인가?" |
+| `govern` | 배포 거버넌스 게이트 — DLP·데이터 유출, 감사 로그, 킬스위치·롤백 권한, 최소권한 도구 감사, orphaned 에이전트 인벤토리. `--check dlp\|audit\|killswitch\|permissions\|orphaned\|all` → GO/CONDITIONAL/NO-GO | "이 에이전트를 누가 멈출 수 있고 뭘 만질 수 있지?" / "런칭 전 감사 추적이 필요해" / "프로젝트 끝났는데 에이전트가 계속 돌아" |
 | `incident` | 심각도 트리아지 + 대응 조율 + 영향 범위 차단 + 포스트모템 작성 | "에이전트가 30분째 응답이 없는데 알림도 안 울려" |
 | `ops-review` | 주간/월간 운영 리뷰 + 이해관계자 업데이트 — 비용 추적·주간 롤업·실 LLM 비용 vs COGS 대조·이상 감지 + 보고서 4종(exec-summary·weekly-update·partner-brief·confluence-export). 수치 집계=결정론, 산문만 LLM | "이번 달 비용이 40% 올랐어 — 원인 분석 + 임원 보고서까지" |
 | `pm-engine` | PM-ENGINE-MEMORY 인터페이스 — TK(암묵지) 추출·쿼리·인스트럭션 변환(`--mode extract\|query\|build`), `--mode decide`(결정 패턴 매칭), `--mode save-decision`(PRD 연계 기술 결정 로그) | "내 운영 노하우를 에이전트가 알아서 활용했으면 좋겠어" |
@@ -619,7 +621,7 @@ claude \
 
 ### 자동 호출 (Auto-Invocation)
 
-스킬을 이름으로 부를 필요가 없습니다. "우리 CS팀 업무 중 에이전트가 맡을 수 있는 건 뭘까?"처럼 자연어로 질문하면, Claude가 각 SKILL.md의 `description` 필드와 매칭하여 가장 적합한 스킬을 자동으로 로드합니다. 트리거 정확도 **90.9%** (v0.14.1, 88개 쿼리 중 80개, Haiku 4.5, 1-run 스냅샷, 34개 스킬 중 22개 커버, 전체 커버는 진행 중).
+스킬을 이름으로 부를 필요가 없습니다. "우리 CS팀 업무 중 에이전트가 맡을 수 있는 건 뭘까?"처럼 자연어로 질문하면, Claude가 각 SKILL.md의 `description` 필드와 매칭하여 가장 적합한 스킬을 자동으로 로드합니다. 트리거 정확도 **90.9%** (v0.14.1, 88개 쿼리 중 80개, Haiku 4.5, 1-run 스냅샷, 36개 스킬 중 22개 커버, 전체 커버는 진행 중).
 
 ### 크로스 플러그인 라우팅
 
@@ -657,7 +659,7 @@ Claude Code의 스킬 시스템은 2025년 1.0에서 2026년 2.0으로 크게 �
 | Dynamic injection (동적 주입) | ❌ | ✅ | ✅ 5개 스킬 적용 |
 | Hooks | ❌ | ✅ | ⚠️ Spec-ready |
 
-> ¹ 90.9% = v0.14.1 트리거 eval, 88개 쿼리 중 80개, Haiku 4.5, 34개 스킬 중 22개를 커버하는 1-run 스냅샷 (실행마다 ±몇 %p 변동, 전체 34개 스킬 커버는 진행 중).
+> ¹ 90.9% = v0.14.1 트리거 eval, 88개 쿼리 중 80개, Haiku 4.5, 36개 스킬 중 22개를 커버하는 1-run 스냅샷 (실행마다 ±몇 %p 변동, 전체 36개 스킬 커버는 진행 중).
 
 > ⚠️ `hooks`에 알려진 이슈가 있습니다 ([#17688](https://github.com/anthropics/claude-code/issues/17688)). 대체용 `validate_*.sh` 스크립트가 `references/`에 준비되어 있습니다.
 
@@ -667,9 +669,9 @@ Claude Code의 스킬 시스템은 2025년 1.0에서 2026년 2.0으로 크게 �
 hplan/                # repo 루트
 ├── hplan/            # Gate ⭐ (8 skills, 11 commands) — Product Build Gate
 ├── discover/           # 발견 (6 skills)
-├── architect/            # 설계 (4 skills)
+├── architect/            # 설계 (5 skills)
 ├── deliver/            # 실행 (10 skills)
-├── operate/            # 운영·학습·포트폴리오 (6 skills)
+├── operate/            # 운영·학습·포트폴리오 (7 skills)
 │   └── evals/        # 품질 + 트리거 평가
 ├── docs/images/      # 다이어그램
 ├── validate_plugins.py
@@ -678,7 +680,7 @@ hplan/                # repo 루트
 
 ### 스킬 해부학 — 각 스킬 안에는 뭐가 들어 있나
 
-34개 스킬 모두 동일한 내부 구조를 따릅니다. 이것은 Skills 2.0 스펙 준수만이 아니라, **스킬 품질을 측정·테스트·개선하기 위해 설계된 콘텐츠 아키텍처**입니다.
+36개 스킬 모두 동일한 내부 구조를 따릅니다. 이것은 Skills 2.0 스펙 준수만이 아니라, **스킬 품질을 측정·테스트·개선하기 위해 설계된 콘텐츠 아키텍처**입니다.
 
 ```
 discover/skills/opp-tree/           ← 예시: opp-tree 스킬
@@ -707,7 +709,7 @@ discover/skills/opp-tree/           ← 예시: opp-tree 스킬
 
 | 구성 요소 | 왜 넣었는가 | 측정된 효과 |
 |-----------|-----------|-----------|
-| `SKILL.md`의 Trigger Gate | Use/Route/Boundary 3조건으로 34개 스킬의 충돌 방지 | 90.9% 트리거 정확도 (v0.14.1 스냅샷, 80/88) |
+| `SKILL.md`의 Trigger Gate | Use/Route/Boundary 3조건으로 36개 스킬의 충돌 방지 | 90.9% 트리거 정확도 (v0.14.1 스냅샷, 80/88) |
 | `context/domain.md` | Claude가 기본적으로 모르는 도메인 전문성 주입 | +12~46% 출력 품질 향상 |
 | `examples/good-01.md` | "이 수준이 정답"이라는 구체적 앵커 제공 | Claude 생성 품질 안정화 |
 | `examples/bad-01.md` | "이건 틀린 것"이라는 명시적 반면교사 | 흔한 실패 패턴 사전 차단 |
