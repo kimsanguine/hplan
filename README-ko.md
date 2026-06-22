@@ -340,7 +340,7 @@ hplan   discover  architect  deliver   operate
 |------|---------|------------------------|----------|
 | **게이트** ⭐ | `hplan` | "정말 만들 가치가 있을까?" | brainstorm · evidence-rubric · interview-synthesis · exclusions · cogs-sentinel · ost · decision-log · handoff |
 | **발견** | `discover` | "어떤 에이전트를 만들어야 할까?" | opp-tree · assumptions · cost-sim · hitl · socratic-question · customer-reach |
-| **설계** | `architect` | "어떻게 구조를 잡을까?" | orchestration · memory-arch · design-token · strategy |
+| **설계** | `architect` | "어떻게 구조를 잡을까?" | orchestration · memory-arch · interop · design-token · strategy |
 | **실행** | `deliver` | "어떻게 스펙을 쓰고 출시할까?" | agent-setup · prd · conductor · sprint · build-loop · qa-checklist · ui-validate · respect · ask-team · ticket-bridge |
 | **운영** | `operate` | "측정·학습·포트폴리오를 어떻게 할까?" | metrics-design · reliability · pm-engine · incident · ops-review · portfolio |
 
@@ -478,7 +478,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 </details>
 
 <details>
-<summary><strong>3. architect</strong> — 어떻게 설계할까? <code>(4 skills)</code></summary>
+<summary><strong>3. architect</strong> — 어떻게 설계할까? <code>(5 skills)</code></summary>
 
 에이전트의 구조를 잡는 단계입니다. 에이전트가 하나일 때는 괜찮지만, 여러 개가 협업해야 할 때 — 어떻게 오케스트레이션하고, 메모리를 어떻게 쌓고, 디자인 토큰으로 UI를 어떻게 통일하고, 전략·해자를 어떻게 잡을지를 설계합니다.
 
@@ -488,6 +488,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 |------|------|-------------------|
 | `orchestration` | Sequential/Parallel/Router/Hierarchical 패턴을 레이턴시·오류율·비용으로 비교. `--pattern router`는 복잡도별 T1~T4 모델 자동 라우팅 + 폴백 체인으로 40-80% 비용 절감 | "문서 처리 파이프라인을 직렬로 돌릴까, 병렬로 돌릴까?" / "단순 FAQ는 Haiku, 복잡 분석은 Opus — 자동으로 나눠줘" |
 | `memory-arch` | Working/Episodic/Semantic/Procedural 메모리 레이어 + 토큰 예산 인식 검색 | "오늘 세션에서 어제 대화 맥락을 어떻게 기억시키지?" |
+| `interop` | 에이전트 연결 표준(MCP/A2A/신생) 선택 + 하네스 간 이식성(Claude Code·Codex·Cursor) 설계 + 파일=durable state로 표준·벤더 변화에 면역. `--mode select\|portability\|durable-state` | "MCP로 갈까 A2A로 갈까?" / "같은 스킬셋을 Claude Code랑 Codex 양쪽에서 유지" / "단일 벤더 전송 lock-in이 위험한가?" |
 | `design-token` | 색상·타이포·간격·그림자 디자인 토큰 체계 정의 + DESIGN.md 생성 → 일관된 UI 시스템 강제 | "컴포넌트마다 색이 다르게 들어가 있어, 토큰으로 통일하고 싶어" |
 | `strategy` | 전략·해자(moat)·비즈니스 모델을 통합 진단 — 데이터 플라이휠·전환비용·네트워크 효과 등 방어선 설계 | "경쟁사가 GPT로 비슷한 걸 만들면, 우리 방어선은?" |
 

@@ -222,7 +222,7 @@ This isn't a random collection of skills. It's a **complete lifecycle** — the 
 |--------|-------------|------------|
 | **Gate** ⭐ `hplan` | "Should we build this at all?" | brainstorm · evidence-rubric · interview-synthesis · exclusions · cogs-sentinel · ost · decision-log · handoff |
 | **Discover** `discover` | "What agent should we build?" | opp-tree · assumptions · cost-sim · hitl · socratic-question · customer-reach |
-| **Architect** `architect` | "How should we structure it?" | orchestration · memory-arch · design-token · strategy |
+| **Architect** `architect` | "How should we structure it?" | orchestration · memory-arch · interop · design-token · strategy |
 | **Deliver** `deliver` | "How to spec, build, and ship it?" | agent-setup · prd · build-loop · conductor · sprint · qa-checklist · respect · ui-validate · ask-team · ticket-bridge |
 | **Operate** `operate` | "How to run and improve agents over time?" | metrics-design · reliability · pm-engine · incident · ops-review · portfolio |
 
@@ -343,15 +343,16 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 </details>
 
 <details>
-<summary><strong>3. architect</strong> — How to architect it? <code>(4 skills)</code></summary>
+<summary><strong>3. architect</strong> — How to architect it? <code>(5 skills)</code></summary>
 
-> ✅ **All 4 are callable:** `orchestration` · `memory-arch` · `design-token` · `strategy`
+> ✅ **All 5 are callable:** `orchestration` · `memory-arch` · `interop` · `design-token` · `strategy`
 > `biz-model`, `moat`, `growth-loop` are consolidated into `strategy` (`--focus`). Router-style model routing is now a mode of `orchestration` (`--pattern router`).
 
 | Skill | What it does | When to use |
 |-------|-------------|-------------|
 | `orchestration` | Compare Sequential/Parallel/Router/Hierarchical (Prometheus→Atlas→Worker) patterns by latency, error rate, and cost. `--pattern router` auto-routes tasks to T1-T4 models by complexity + fallback chains for 40-80% cost reduction | "Should my doc pipeline run serial or parallel?" / "I need 5 agents — who controls whom?" / "Simple FAQ → Haiku, complex analysis → Opus — auto?" |
 | `memory-arch` | Design Working/Episodic/Semantic/Procedural memory layers + token-budget-aware retrieval | "How does today's session recall yesterday's context?" |
+| `interop` | Choose an agent connection standard (MCP/A2A/emerging) and design portability across harnesses (Claude Code, Codex, Cursor) + file-as-durable-state to survive standard/vendor change. `--mode select\|portability\|durable-state` | "MCP or A2A — which standard do I bet on?" / "Keep the same skillset running on Claude Code AND Codex" / "Is single-vendor transport lock-in a risk?" |
 | `strategy` | Unified strategy design — business model canvas, competitive moat analysis (data flywheel, lock-in, network effects, switching costs), and growth-loop design. `--focus biz-model\|moat\|growth-loop\|all` | "A competitor ships a GPT clone — what's our defense and pricing?" |
 | `design-token` | Phase A: filter reference sites → DESIGN_BRIEF.md. Phase B: DESIGN_BRIEF.md → semantic CSS tokens (tokens.md) + DESIGN.md with breakpoint spec | "Set UI direction after ICP confirmation, then generate tokens" |
 
