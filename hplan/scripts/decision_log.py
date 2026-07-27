@@ -16,15 +16,18 @@ Schema (one JSON object per line in `harness/decisions.jsonl`):
     "decision": "build" | "interview" | "pivot" | "hold" | "CONDITIONAL_GO",
     "score": 78,
     "reasons": ["...", "..."],
-    "outcome": null            // back-filled later: "shipped" | "killed" | "alive_no_revenue" | "pivoted" | "external_success"
+    "outcome": null,           // back-filled later: "shipped" | "killed" | "alive_no_revenue" | "pivoted" | "external_success"
+    "from_hitl": null          // optional: id of a prior HITL decision this gate decision promotes
   }
 
 Subcommands:
-- log:     append a gate decision (build/interview/pivot/hold)
+- log:     append a gate decision (build/interview/pivot/hold), optionally
+           promoting a prior HITL decision via --from-hitl <hitl id>
 - hitl:    append a HITL decision (options → chosen, any phase)
 - list:    print decisions (optionally filtered by --phase or --project)
 - update:  back-fill outcome on an existing gate decision (id-keyed)
-- audit:   print hit/miss/false-hold counts and reopen suggestions
+- audit:   print hit/miss/false-hold counts and reopen suggestions; pass
+           --root multiple times to aggregate calibration across projects
 
 HITL schema (type=hitl):
   {"id": ..., "ts": ..., "type": "hitl", "phase": "discover|architect|build|operate",
@@ -68,6 +71,12 @@ def append(root: Path, entry: dict) -> dict:
         raise SystemExit(f"invalid decision: {payload['decision']}")
     if payload["outcome"] not in VALID_OUTCOMES:
         raise SystemExit(f"invalid outcome: {payload['outcome']}")
+    from_hitl = entry.get("from_hitl")
+    if from_hitl:
+        hitl_ids = {e["id"] for e in read_all(root) if e.get("type") == "hitl"}
+        if from_hitl not in hitl_ids:
+            raise SystemExit(f"from_hitl id not found among logged HITL decisions: {from_hitl}")
+        payload["from_hitl"] = from_hitl
     with path.open("a", encoding="utf-8") as f:
         f.write(json.dumps(payload, ensure_ascii=False) + "\n")
     return payload
@@ -133,7 +142,18 @@ def update_outcome(root: Path, entry_id: str, outcome: str) -> dict:
 
 
 def audit(root: Path) -> dict:
-    all_entries = read_all(root)
+    return audit_entries(read_all(root))
+
+
+def audit_multi(roots: list[Path]) -> dict:
+    """Aggregate calibration across several projects' harness/decisions.jsonl."""
+    all_entries: list[dict] = []
+    for root in roots:
+        all_entries.extend(read_all(root))
+    return audit_entries(all_entries)
+
+
+def audit_entries(all_entries: list[dict]) -> dict:
     entries = [e for e in all_entries if e.get("type") != "hitl"]
     by_decision = Counter(e["decision"] for e in entries)
     resolved = [e for e in entries if e.get("outcome")]
@@ -155,9 +175,9 @@ def audit(root: Path) -> dict:
             correct += 1
         elif d == "build" and o == "killed":
             wrong += 1
-        elif d == "CONDITIONAL_GO" and o == "shipped":
+        elif d == "CONDITIONAL_GO" and o in {"shipped", "external_success", "pivoted"}:
             correct += 1
-        elif d == "CONDITIONAL_GO" and o == "killed":
+        elif d == "CONDITIONAL_GO" and o in {"killed", "alive_no_revenue"}:
             wrong += 1
         elif d == "pivot" and o in {"pivoted", "shipped"}:
             correct += 1
@@ -226,6 +246,10 @@ def parse_args():
     p_log.add_argument("--decision", choices=sorted(VALID_DECISIONS), required=True)
     p_log.add_argument("--score", type=int, default=None)
     p_log.add_argument("--reason", action="append", default=[])
+    p_log.add_argument(
+        "--from-hitl", default=None, dest="from_hitl",
+        help="id of a previously logged HITL decision this gate decision promotes",
+    )
     p_log.add_argument("--root", default=".")
 
     p_up = sub.add_parser("update", help="Back-fill an outcome")
@@ -256,14 +280,19 @@ def parse_args():
     p_list.add_argument("--root", default=".")
 
     p_audit = sub.add_parser("audit", help="Calibration audit")
-    p_audit.add_argument("--root", default=".")
+    p_audit.add_argument(
+        "--root", action="append", dest="roots", default=None,
+        help="Project root containing harness/decisions.jsonl. Repeat --root to "
+             "aggregate calibration across multiple projects.",
+    )
 
     return p.parse_args()
 
 
 def main():
     args = parse_args()
-    root = Path(args.root).resolve()
+    if args.cmd != "audit":
+        root = Path(args.root).resolve()
     if args.cmd == "hitl":
         entry = append_hitl(root, {
             "phase": args.phase,
@@ -282,6 +311,7 @@ def main():
             "decision": args.decision,
             "score": args.score,
             "reasons": args.reason,
+            "from_hitl": args.from_hitl,
         })
         print(json.dumps(entry, ensure_ascii=False, indent=2))
     elif args.cmd == "update":
@@ -299,7 +329,8 @@ def main():
             entries = [e for e in entries if e.get("project") == args.project]
         print(json.dumps(entries, ensure_ascii=False, indent=2))
     elif args.cmd == "audit":
-        print(json.dumps(audit(root), ensure_ascii=False, indent=2))
+        roots = [Path(r).resolve() for r in (args.roots or ["."])]
+        print(json.dumps(audit_multi(roots), ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":
