@@ -155,8 +155,14 @@ def audit(root: Path) -> dict:
             correct += 1
         elif d == "build" and o == "killed":
             wrong += 1
-        elif d == "pivot" and o == "pivoted":
+        elif d == "CONDITIONAL_GO" and o == "shipped":
             correct += 1
+        elif d == "CONDITIONAL_GO" and o == "killed":
+            wrong += 1
+        elif d == "pivot" and o in {"pivoted", "shipped"}:
+            correct += 1
+        elif d == "pivot" and o == "killed":
+            wrong += 1
         elif d == "interview" and o in {"shipped", "killed", "pivoted"}:
             correct += 1
         else:
