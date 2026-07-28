@@ -35,6 +35,8 @@ Running for: **$ARGUMENTS**
 
 - ❌ 영구 삭제 불가 (append-only). 잘못된 entry는 새 entry로 supersede.
 - ❌ outcome backfill 없으면 audit이 의미 없음 — 잊지 말 것.
+- ❌ `--from-hitl`은 이미 기록된 HITL id만 허용. 없는 id를 주면 거부된다 (끊어진 승격 링크 방지).
+- ⚠️ `--root`는 `harness/` 자체가 아니라 그 **부모 디렉터리**를 가리킨다.
 
 ## Inputs
 
@@ -44,11 +46,19 @@ python3 hplan/scripts/decision_log.py log \
   --project alpha-app --gate build --decision build --score 78 \
   --reason "5/5 강한 신호" --reason "COGS GREEN"
 
+# Promote an earlier HITL decision into a gate decision
+python3 hplan/scripts/decision_log.py log \
+  --project alpha-app --gate build --decision build --score 78 \
+  --from-hitl hitl-2026-07-28-ab12c
+
 # Backfill outcome (3-6 months later)
 python3 hplan/scripts/decision_log.py update --id dec-XXX --outcome shipped
 
-# Audit
+# Audit — single project
 python3 hplan/scripts/decision_log.py audit
+
+# Audit — aggregate calibration across several projects
+python3 hplan/scripts/decision_log.py audit --root ../alpha --root ../beta
 ```
 
 ## Steps
