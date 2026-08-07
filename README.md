@@ -24,7 +24,7 @@ bash <(curl -fsSL https://habix.ai/hplan/install.sh)
 
 Installs hplan to `~/hplan` and adds a `claude-hplan` launcher. No token required.
 
-**Or as Claude Code plugins** — `5 plugins · 34 skills · 12 commands`, all 5 at once via `.claude/settings.json`:
+**Or as Claude Code plugins** — `5 plugins · 36 skills · 12 commands`, all 5 at once via `.claude/settings.json`:
 
 Drop this into your project's `.claude/settings.json` (or copy the bundled [`.claude/settings.json.example`](.claude/settings.json.example)). The next `claude` session's trust dialog activates all 5 plugins — no `/plugin marketplace add`, no five separate `/plugin install` commands:
 
@@ -222,9 +222,9 @@ This isn't a random collection of skills. It's a **complete lifecycle** — the 
 |--------|-------------|------------|
 | **Gate** ⭐ `hplan` | "Should we build this at all?" | brainstorm · evidence-rubric · interview-synthesis · exclusions · cogs-sentinel · ost · decision-log · handoff |
 | **Discover** `discover` | "What agent should we build?" | opp-tree · assumptions · cost-sim · hitl · socratic-question · customer-reach |
-| **Architect** `architect` | "How should we structure it?" | orchestration · memory-arch · design-token · strategy |
+| **Architect** `architect` | "How should we structure it?" | orchestration · memory-arch · interop · design-token · strategy |
 | **Deliver** `deliver` | "How to spec, build, and ship it?" | agent-setup · prd · build-loop · conductor · sprint · qa-checklist · respect · ui-validate · ask-team · ticket-bridge |
-| **Operate** `operate` | "How to run and improve agents over time?" | metrics-design · reliability · pm-engine · incident · ops-review · portfolio |
+| **Operate** `operate` | "How to run and improve agents over time?" | metrics-design · reliability · govern · pm-engine · incident · ops-review · portfolio |
 
 ### What makes hplan different from the other 4
 
@@ -343,15 +343,16 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 </details>
 
 <details>
-<summary><strong>3. architect</strong> — How to architect it? <code>(4 skills)</code></summary>
+<summary><strong>3. architect</strong> — How to architect it? <code>(5 skills)</code></summary>
 
-> ✅ **All 4 are callable:** `orchestration` · `memory-arch` · `design-token` · `strategy`
+> ✅ **All 5 are callable:** `orchestration` · `memory-arch` · `interop` · `design-token` · `strategy`
 > `biz-model`, `moat`, `growth-loop` are consolidated into `strategy` (`--focus`). Router-style model routing is now a mode of `orchestration` (`--pattern router`).
 
 | Skill | What it does | When to use |
 |-------|-------------|-------------|
 | `orchestration` | Compare Sequential/Parallel/Router/Hierarchical (Prometheus→Atlas→Worker) patterns by latency, error rate, and cost. `--pattern router` auto-routes tasks to T1-T4 models by complexity + fallback chains for 40-80% cost reduction | "Should my doc pipeline run serial or parallel?" / "I need 5 agents — who controls whom?" / "Simple FAQ → Haiku, complex analysis → Opus — auto?" |
 | `memory-arch` | Design Working/Episodic/Semantic/Procedural memory layers + token-budget-aware retrieval | "How does today's session recall yesterday's context?" |
+| `interop` | Choose an agent connection standard (MCP/A2A/emerging) and design portability across harnesses (Claude Code, Codex, Cursor) + file-as-durable-state to survive standard/vendor change. `--mode select\|portability\|durable-state` | "MCP or A2A — which standard do I bet on?" / "Keep the same skillset running on Claude Code AND Codex" / "Is single-vendor transport lock-in a risk?" |
 | `strategy` | Unified strategy design — business model canvas, competitive moat analysis (data flywheel, lock-in, network effects, switching costs), and growth-loop design. `--focus biz-model\|moat\|growth-loop\|all` | "A competitor ships a GPT clone — what's our defense and pricing?" |
 | `design-token` | Phase A: filter reference sites → DESIGN_BRIEF.md. Phase B: DESIGN_BRIEF.md → semantic CSS tokens (tokens.md) + DESIGN.md with breakpoint spec | "Set UI direction after ICP confirmation, then generate tokens" |
 
@@ -381,15 +382,16 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 </details>
 
 <details>
-<summary><strong>5. operate</strong> — How to run and improve agents over time? <code>(6 skills)</code></summary>
+<summary><strong>5. operate</strong> — How to run and improve agents over time? <code>(7 skills)</code></summary>
 
-> ✅ **All 6 are callable:** `metrics-design` · `reliability` · `pm-engine` · `incident` · `ops-review` · `portfolio`
+> ✅ **All 7 are callable:** `metrics-design` · `reliability` · `govern` · `pm-engine` · `incident` · `ops-review` · `portfolio`
 > v0.14.1 consolidation: `agent-portfolio` + `portfolio-report` → `portfolio` · `burn-rate` → `ops-review` (cost mode) · `stakeholder-update` absorbed into `ops-review`. Earlier roadmap names (premortem, agent-ab-test, cohort, pm-decision, cross-team-routing) are not shipped.
 
 | Skill | What it does | When to use |
 |-------|-------------|-------------|
 | `metrics-design` | North Star selection + KPI derivation + dual-axis OKRs (Business Impact + Operational Health). `--step north-star\|kpi\|okr\|all` | "Team doesn't know which KPI matters most" / "Is 95% accuracy enough, or do I need cost metrics?" |
 | `reliability` | Quantify P95/P99 worst cases + design safeguards + set SLA tiers | "3 out of 100 responses hallucinate — acceptable?" |
+| `govern` | Deployment governance gate — DLP/data-exposure, audit logging, kill-switch & rollback authority, least-privilege tool permissions, orphaned-agent inventory. `--check dlp\|audit\|killswitch\|permissions\|orphaned\|all` → GO/CONDITIONAL/NO-GO | "Who can stop this agent and what can it touch?" / "We need an audit trail before launch" / "An agent kept running after the project ended" |
 | `pm-engine` | Agents dynamically query TK knowledge graph at runtime + auto-extract 1 TK/day + auto-update instructions. `--mode extract` converts implicit judgment into TK-NNN units | "I want my agents to leverage my operational know-how automatically" / "3 years of ops experience stuck in my head" |
 | `incident` | Detect silent failures + triage + contain blast radius + 5 Whys | "Agent silent for 30 min — no alerts fired" |
 | `ops-review` | Weekly/monthly operational review + stakeholder updates — token-cost tracking, weekly rollup, real LLM cost vs COGS check, anomaly detection. `--mode cost\|weekly\|full\|exec-summary\|weekly-update\|partner-brief\|confluence-export` (absorbed stakeholder-update) | "Monday morning — what changed across my fleet?" / "Token costs jumped 40% — what caused it?" / "Send an exec 1-pager / weekly team update / partner brief / Confluence export" |
