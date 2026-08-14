@@ -1,5 +1,6 @@
 {
   "contract_version": "1.0.0",
+  "core_source_sha256": "aa5a43827a850892d4b3dab4c2520104cbade9529e835b8bd933ae462d7e263d",
   "files": [
     "hplan-core.lock",
     "hplan-capability-matrix.json",
