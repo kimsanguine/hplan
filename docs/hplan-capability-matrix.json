@@ -1,0 +1,376 @@
+{
+  "aliases": [
+    {
+      "alias_id": "roadmap",
+      "expiry": "2027-08-14",
+      "target": "prd"
+    },
+    {
+      "alias_id": "router",
+      "expiry": "2027-08-14",
+      "target": "orchestration"
+    },
+    {
+      "alias_id": "stakeholder-update",
+      "expiry": "2027-08-14",
+      "target": "ops-review"
+    }
+  ],
+  "capabilities": [
+    {
+      "canonical_owner": "hplan-core",
+      "capability_id": "agent-setup",
+      "entrypoint": "capability:agent-setup",
+      "fallback_artifact": "agent-setup-checklist",
+      "lifecycle": "active",
+      "smoke_fixture_id": "smoke.agent-setup",
+      "support_state": "native"
+    },
+    {
+      "canonical_owner": "hplan-core",
+      "capability_id": "ask-team",
+      "entrypoint": "capability:ask-team",
+      "fallback_artifact": "team-question-brief",
+      "lifecycle": "active",
+      "smoke_fixture_id": "smoke.ask-team",
+      "support_state": "native"
+    },
+    {
+      "canonical_owner": "hplan-core",
+      "capability_id": "assumptions",
+      "entrypoint": "capability:assumptions",
+      "fallback_artifact": "assumption-register",
+      "lifecycle": "active",
+      "smoke_fixture_id": "smoke.assumptions",
+      "support_state": "native"
+    },
+    {
+      "canonical_owner": "hplan-core",
+      "capability_id": "brainstorm",
+      "entrypoint": "capability:brainstorm",
+      "fallback_artifact": "idea-set",
+      "lifecycle": "active",
+      "smoke_fixture_id": "smoke.brainstorm",
+      "support_state": "native"
+    },
+    {
+      "canonical_owner": "hplan-core",
+      "capability_id": "build-loop",
+      "entrypoint": "capability:build-loop",
+      "fallback_artifact": "build-checklist",
+      "lifecycle": "active",
+      "smoke_fixture_id": "smoke.build-loop",
+      "support_state": "native"
+    },
+    {
+      "canonical_owner": "hplan-core",
+      "capability_id": "cogs-sentinel",
+      "entrypoint": "capability:cogs-sentinel",
+      "fallback_artifact": "cost-risk-report",
+      "lifecycle": "active",
+      "smoke_fixture_id": "smoke.cogs-sentinel",
+      "support_state": "native"
+    },
+    {
+      "canonical_owner": "hplan-core",
+      "capability_id": "conductor",
+      "entrypoint": "capability:conductor",
+      "fallback_artifact": "delivery-plan",
+      "lifecycle": "active",
+      "smoke_fixture_id": "smoke.conductor",
+      "support_state": "native"
+    },
+    {
+      "canonical_owner": "hplan-core",
+      "capability_id": "cost-sim",
+      "entrypoint": "capability:cost-sim",
+      "fallback_artifact": "cost-simulation",
+      "lifecycle": "active",
+      "smoke_fixture_id": "smoke.cost-sim",
+      "support_state": "native"
+    },
+    {
+      "canonical_owner": "hplan-core",
+      "capability_id": "customer-reach",
+      "entrypoint": "capability:customer-reach",
+      "fallback_artifact": "outreach-brief",
+      "lifecycle": "active",
+      "smoke_fixture_id": "smoke.customer-reach",
+      "support_state": "native"
+    },
+    {
+      "canonical_owner": "hplan-core",
+      "capability_id": "decision-log",
+      "entrypoint": "capability:decision-log",
+      "fallback_artifact": "decision-record",
+      "lifecycle": "active",
+      "smoke_fixture_id": "smoke.decision-log",
+      "support_state": "native"
+    },
+    {
+      "canonical_owner": "hplan-core",
+      "capability_id": "design-token",
+      "entrypoint": "capability:design-token",
+      "fallback_artifact": "design-token-set",
+      "lifecycle": "active",
+      "smoke_fixture_id": "smoke.design-token",
+      "support_state": "native"
+    },
+    {
+      "canonical_owner": "hplan-core",
+      "capability_id": "evidence-rubric",
+      "entrypoint": "capability:evidence-rubric",
+      "fallback_artifact": "evidence-scorecard",
+      "lifecycle": "active",
+      "smoke_fixture_id": "smoke.evidence-rubric",
+      "support_state": "native"
+    },
+    {
+      "canonical_owner": "hplan-core",
+      "capability_id": "exclusions",
+      "entrypoint": "capability:exclusions",
+      "fallback_artifact": "exclusion-register",
+      "lifecycle": "active",
+      "smoke_fixture_id": "smoke.exclusions",
+      "support_state": "native"
+    },
+    {
+      "canonical_owner": "hplan-core",
+      "capability_id": "handoff",
+      "entrypoint": "capability:handoff",
+      "fallback_artifact": "handoff-brief",
+      "lifecycle": "active",
+      "smoke_fixture_id": "smoke.handoff",
+      "support_state": "native"
+    },
+    {
+      "canonical_owner": "hplan-core",
+      "capability_id": "hitl",
+      "entrypoint": "capability:hitl",
+      "fallback_artifact": "approval-plan",
+      "lifecycle": "active",
+      "smoke_fixture_id": "smoke.hitl",
+      "support_state": "native"
+    },
+    {
+      "canonical_owner": "hplan-core",
+      "capability_id": "incident",
+      "entrypoint": "capability:incident",
+      "fallback_artifact": "incident-report",
+      "lifecycle": "active",
+      "smoke_fixture_id": "smoke.incident",
+      "support_state": "native"
+    },
+    {
+      "canonical_owner": "hplan-core",
+      "capability_id": "interview-synthesis",
+      "entrypoint": "capability:interview-synthesis",
+      "fallback_artifact": "research-synthesis",
+      "lifecycle": "active",
+      "smoke_fixture_id": "smoke.interview-synthesis",
+      "support_state": "native"
+    },
+    {
+      "canonical_owner": "hplan-core",
+      "capability_id": "memory-arch",
+      "entrypoint": "capability:memory-arch",
+      "fallback_artifact": "memory-architecture",
+      "lifecycle": "active",
+      "smoke_fixture_id": "smoke.memory-arch",
+      "support_state": "native"
+    },
+    {
+      "canonical_owner": "hplan-core",
+      "capability_id": "metrics-design",
+      "entrypoint": "capability:metrics-design",
+      "fallback_artifact": "metrics-tree",
+      "lifecycle": "active",
+      "smoke_fixture_id": "smoke.metrics-design",
+      "support_state": "native"
+    },
+    {
+      "canonical_owner": "hplan-core",
+      "capability_id": "opp-tree",
+      "entrypoint": "capability:opp-tree",
+      "fallback_artifact": "opportunity-tree",
+      "lifecycle": "active",
+      "smoke_fixture_id": "smoke.opp-tree",
+      "support_state": "native"
+    },
+    {
+      "canonical_owner": "hplan-core",
+      "capability_id": "ops-review",
+      "entrypoint": "capability:ops-review",
+      "fallback_artifact": "operations-review",
+      "lifecycle": "active",
+      "smoke_fixture_id": "smoke.ops-review",
+      "support_state": "native"
+    },
+    {
+      "canonical_owner": "hplan-core",
+      "capability_id": "orchestration",
+      "entrypoint": "capability:orchestration",
+      "fallback_artifact": "orchestration-design",
+      "lifecycle": "active",
+      "smoke_fixture_id": "smoke.orchestration",
+      "support_state": "native"
+    },
+    {
+      "canonical_owner": "hplan-core",
+      "capability_id": "ost",
+      "entrypoint": "capability:ost",
+      "fallback_artifact": "opportunity-solution-tree",
+      "lifecycle": "active",
+      "smoke_fixture_id": "smoke.ost",
+      "support_state": "native"
+    },
+    {
+      "canonical_owner": "hplan-core",
+      "capability_id": "pm-engine",
+      "entrypoint": "capability:pm-engine",
+      "fallback_artifact": "knowledge-unit",
+      "lifecycle": "active",
+      "smoke_fixture_id": "smoke.pm-engine",
+      "support_state": "native"
+    },
+    {
+      "canonical_owner": "hplan-core",
+      "capability_id": "portfolio",
+      "entrypoint": "capability:portfolio",
+      "fallback_artifact": "portfolio-review",
+      "lifecycle": "active",
+      "smoke_fixture_id": "smoke.portfolio",
+      "support_state": "native"
+    },
+    {
+      "canonical_owner": "hplan-core",
+      "capability_id": "prd",
+      "entrypoint": "capability:prd",
+      "fallback_artifact": "product-requirements-document",
+      "lifecycle": "active",
+      "smoke_fixture_id": "smoke.prd",
+      "support_state": "native"
+    },
+    {
+      "canonical_owner": "hplan-core",
+      "capability_id": "qa-checklist",
+      "entrypoint": "capability:qa-checklist",
+      "fallback_artifact": "quality-checklist",
+      "lifecycle": "active",
+      "smoke_fixture_id": "smoke.qa-checklist",
+      "support_state": "native"
+    },
+    {
+      "canonical_owner": "hplan-core",
+      "capability_id": "reliability",
+      "entrypoint": "capability:reliability",
+      "fallback_artifact": "reliability-review",
+      "lifecycle": "active",
+      "smoke_fixture_id": "smoke.reliability",
+      "support_state": "native"
+    },
+    {
+      "canonical_owner": "hplan-core",
+      "capability_id": "respect",
+      "entrypoint": "capability:respect",
+      "fallback_artifact": "collaboration-brief",
+      "lifecycle": "active",
+      "smoke_fixture_id": "smoke.respect",
+      "support_state": "native"
+    },
+    {
+      "canonical_owner": "hplan-core",
+      "capability_id": "socratic-question",
+      "entrypoint": "capability:socratic-question",
+      "fallback_artifact": "discovery-question-set",
+      "lifecycle": "active",
+      "smoke_fixture_id": "smoke.socratic-question",
+      "support_state": "native"
+    },
+    {
+      "canonical_owner": "hplan-core",
+      "capability_id": "sprint",
+      "entrypoint": "capability:sprint",
+      "fallback_artifact": "sprint-plan",
+      "lifecycle": "active",
+      "smoke_fixture_id": "smoke.sprint",
+      "support_state": "native"
+    },
+    {
+      "canonical_owner": "hplan-core",
+      "capability_id": "strategy",
+      "entrypoint": "capability:strategy",
+      "fallback_artifact": "strategy-brief",
+      "lifecycle": "active",
+      "smoke_fixture_id": "smoke.strategy",
+      "support_state": "native"
+    },
+    {
+      "canonical_owner": "hplan-core",
+      "capability_id": "ticket-bridge",
+      "entrypoint": "capability:ticket-bridge",
+      "fallback_artifact": "ticket-brief",
+      "lifecycle": "active",
+      "smoke_fixture_id": "smoke.ticket-bridge",
+      "support_state": "native"
+    },
+    {
+      "canonical_owner": "hplan-core",
+      "capability_id": "ui-validate",
+      "entrypoint": "capability:ui-validate",
+      "fallback_artifact": "ui-validation-report",
+      "lifecycle": "active",
+      "smoke_fixture_id": "smoke.ui-validate",
+      "support_state": "native"
+    }
+  ],
+  "contract_version": "1.0.0",
+  "rules": [
+    {
+      "requirement": "Declare the permitted work scope before delegated execution.",
+      "rule_id": "agent-scope-declaration",
+      "title": "Agent Scope Declaration"
+    },
+    {
+      "requirement": "After significant work, state what changed, what was verified, and what remains.",
+      "rule_id": "checkpoint-after-significant-step",
+      "title": "Checkpoint After Every Significant Step"
+    },
+    {
+      "requirement": "Expose uncertainty and incomplete verification without presenting it as complete.",
+      "rule_id": "fail-loud",
+      "title": "Fail Loud"
+    },
+    {
+      "requirement": "Translate work into verifiable goals and cite verification before completion.",
+      "rule_id": "goal-driven-execution",
+      "title": "Goal-Driven Execution"
+    },
+    {
+      "requirement": "Use deterministic logic for deterministic control decisions.",
+      "rule_id": "models-for-judgment-only",
+      "title": "Models for Judgment Tasks Only"
+    },
+    {
+      "requirement": "Use the minimum implementation that satisfies the stated need.",
+      "rule_id": "simplicity-first",
+      "title": "Simplicity First"
+    },
+    {
+      "requirement": "Change only the requested surface and preserve intentional surrounding work.",
+      "rule_id": "surgical-changes",
+      "title": "Surgical Changes"
+    },
+    {
+      "requirement": "Design tests that fail when the intended behavior changes.",
+      "rule_id": "tests-verify-intent",
+      "title": "Tests Verify Intent"
+    },
+    {
+      "requirement": "State material assumptions and request clarification when ambiguity changes the outcome.",
+      "rule_id": "think-before-coding",
+      "title": "Think Before Coding"
+    }
+  ],
+  "target": "claude"
+}

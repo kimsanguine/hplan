@@ -1,0 +1,20 @@
+{
+  "adapter_schema_version": "1.0.0",
+  "target": "claude",
+  "core": {
+    "version": "1.0.0",
+    "contract_version": "1.0.0",
+    "commit": "2c45e58b9ed92a66f8757c056c9de62b0fb3804d",
+    "source_sha256": "e420b1f0adf9162f04198fb0266ed14126deac9511ffa7ecc9a5e6e1ac93def8"
+  },
+  "snapshot": {
+    "lock_file": "../hplan-core.lock",
+    "matrix_file": "hplan-capability-matrix.json",
+    "markdown_file": "HPLAN_CAPABILITY_MATRIX.md",
+    "canonical_capability_count": 34,
+    "compatibility_alias_count": 3,
+    "support_state_counts": {
+      "native": 34
+    }
+  }
+}

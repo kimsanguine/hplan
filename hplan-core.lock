@@ -1,0 +1,10 @@
+{
+  "contract_version": "1.0.0",
+  "files": [
+    "hplan-core.lock",
+    "hplan-capability-matrix.json",
+    "HPLAN_CAPABILITY_MATRIX.md"
+  ],
+  "source_sha256": "e420b1f0adf9162f04198fb0266ed14126deac9511ffa7ecc9a5e6e1ac93def8",
+  "target": "claude"
+}
