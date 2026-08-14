@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# setup.sh — private hplan installer served from https://habix.ai/hplan/install.sh
+# setup.sh — hplan installer served from https://habix.ai/hplan/install.sh
 
 set -euo pipefail
 
@@ -104,7 +104,7 @@ ALIASES
 
 echo ""
 echo "========================================"
-echo " hplan private installer"
+echo " hplan installer"
 echo "========================================"
 echo ""
 echo "Manifest: ${BASE_URL}/version.json"
