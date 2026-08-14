@@ -1,14 +1,15 @@
 import hashlib
 import json
+import os
 import re
 import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
-CORE_ROOT = Path("/Users/sanguinekim/Documents/3_Code/Vibe/Project/hplan-core")
-CORE_RENDERER = CORE_ROOT / "scripts" / "render_adapter_snapshot.py"
 LOCK_PATH = REPO_ROOT / "hplan-core.lock"
 MATRIX_PATH = REPO_ROOT / "docs" / "hplan-capability-matrix.json"
 MARKDOWN_PATH = REPO_ROOT / "docs" / "HPLAN_CAPABILITY_MATRIX.md"
@@ -37,21 +38,33 @@ def load_json(path):
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def core_source_sha256():
+def core_root():
+    configured = os.environ.get("HPLAN_CORE_ROOT")
+    if not configured:
+        pytest.skip("Set HPLAN_CORE_ROOT to run hplan-core renderer parity checks.")
+    root = Path(configured).expanduser().resolve()
+    if not (root / "scripts" / "render_adapter_snapshot.py").is_file():
+        pytest.fail(f"HPLAN_CORE_ROOT does not contain render_adapter_snapshot.py: {root}")
+    return root
+
+
+def core_source_sha256(root):
     digest = hashlib.sha256()
     for filename in ("rules.json", "capabilities.json", "aliases.json"):
         digest.update(filename.encode("utf-8"))
         digest.update(b"\0")
-        digest.update((CORE_ROOT / "contracts" / filename).read_bytes())
+        digest.update((root / "contracts" / filename).read_bytes())
         digest.update(b"\0")
     return digest.hexdigest()
 
 
 def test_claude_adapter_artifacts_match_the_current_core_renderer(tmp_path):
+    core = core_root()
+    renderer = core / "scripts" / "render_adapter_snapshot.py"
     rendered_dir = tmp_path / "claude"
     subprocess.run(
-        [sys.executable, str(CORE_RENDERER), "--target", "claude", "--output-dir", str(rendered_dir)],
-        cwd=CORE_ROOT,
+        [sys.executable, str(renderer), "--target", "claude", "--output-dir", str(rendered_dir)],
+        cwd=core,
         check=True,
     )
 
@@ -66,16 +79,16 @@ def test_claude_adapter_artifacts_match_the_current_core_renderer(tmp_path):
 
     core_revision = subprocess.run(
         ["git", "rev-parse", "HEAD"],
-        cwd=CORE_ROOT,
+        cwd=core,
         text=True,
         capture_output=True,
         check=True,
     ).stdout.strip()
-    core_contract = load_json(CORE_ROOT / "contracts" / "capabilities.json")
+    core_contract = load_json(core / "contracts" / "capabilities.json")
     adapter = load_json(ADAPTER_PATH)
     assert re.fullmatch(r"[0-9a-f]{40}", core_revision)
     assert adapter["core_version"] == core_contract["contract_version"]
-    assert adapter["core_source_sha256"] == core_source_sha256()
+    assert adapter["core_source_sha256"] == core_source_sha256(core)
 
 
 def test_claude_adapter_snapshot_has_the_complete_core_contract():

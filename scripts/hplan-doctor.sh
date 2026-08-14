@@ -61,6 +61,29 @@ else
     recoverable_check "Claude Code" "claude 명령을 찾을 수 없습니다." "Claude Code를 설치한 뒤 새 터미널에서 다시 실행하세요."
   fi
 
+  if [ -n "${HPLAN_PROFILE:-}" ]; then
+    profile_path="$HPLAN_PROFILE"
+  elif [ "$(basename "${SHELL:-bash}")" = "zsh" ]; then
+    profile_path="$HOME/.zshrc"
+  else
+    profile_path="$HOME/.bashrc"
+  fi
+  launcher_ready=false
+  if [ -f "$profile_path" ] && grep -Fq "alias claude-hplan=" "$profile_path"; then
+    launcher_ready=true
+    for plugin in hplan discover architect deliver operate; do
+      if ! grep -Fq -- "--plugin-dir ${ROOT_DIR}/${plugin}" "$profile_path"; then
+        launcher_ready=false
+        break
+      fi
+    done
+  fi
+  if "$launcher_ready"; then
+    normal_check "claude-hplan launcher" "${profile_path}에 이 설치 경로의 5개 plugin-dir가 등록되어 있습니다."
+  else
+    recoverable_check "claude-hplan launcher" "이 설치 경로의 launcher를 ${profile_path}에서 찾지 못했습니다." "bash scripts/setup.sh --dir \"${ROOT_DIR}\" --no-hooks 를 실행한 뒤 source \"${profile_path}\" 하세요."
+  fi
+
   if command -v python3 >/dev/null 2>&1 && python3 -c 'import json, sys; assert sys.version_info >= (3, 9)' >/dev/null 2>&1; then
     normal_check "Python" "$(python3 --version 2>&1)"
   else
@@ -70,6 +93,7 @@ else
   if command -v python3 >/dev/null 2>&1; then
     snapshot_result="$(python3 - "$ROOT_DIR" <<'PY'
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -90,7 +114,7 @@ try:
     matrix = json.loads(required["matrix"].read_text(encoding="utf-8"))
     adapter = json.loads(required["adapter"].read_text(encoding="utf-8"))
 except (OSError, json.JSONDecodeError) as exc:
-    print(f"INVALID|JSON을 읽을 수 없습니다: {exc}")
+    print(f"INVALID|hplan-core snapshot 무결성 실패: JSON을 읽을 수 없습니다: {exc}")
     raise SystemExit
 
 expected_files = [
@@ -99,27 +123,96 @@ expected_files = [
     "HPLAN_CAPABILITY_MATRIX.md",
     "hplan-core-adapter.json",
 ]
-version = lock.get("contract_version")
-source = lock.get("source_sha256")
-valid = (
-    lock.get("target") == "claude"
-    and lock.get("files") == expected_files
-    and isinstance(source, str)
-    and len(source) == 64
-    and matrix.get("target") == "claude"
-    and matrix.get("contract_version") == version
-    and len(matrix.get("capabilities", [])) == 34
-    and adapter.get("target") == "claude"
-    and adapter.get("core_version") == version
-    and adapter.get("core_source_sha256") == source
-    and adapter.get("external_connector_writes") == "disabled"
-    and f"Contract version: `{version}`" in required["markdown"].read_text(encoding="utf-8")
-    and "Target: `claude`" in required["markdown"].read_text(encoding="utf-8")
-)
-if not valid:
-    print("INVALID|lock, matrix, markdown, adapter의 대상·버전·보호 정책이 일치하지 않습니다.")
+hex64 = re.compile(r"[0-9a-f]{64}\Z")
+errors = []
+
+if not isinstance(lock, dict):
+    errors.append("lock 형식")
+if not isinstance(matrix, dict):
+    errors.append("matrix 형식")
+if not isinstance(adapter, dict):
+    errors.append("adapter 형식")
+
+if not errors:
+    version = lock.get("contract_version")
+    source = lock.get("source_sha256")
+    if lock.get("target") != "claude" or not isinstance(version, str) or not version:
+        errors.append("lock target/version")
+    if lock.get("files") != expected_files:
+        errors.append("lock files")
+    if not isinstance(source, str) or not hex64.fullmatch(source):
+        errors.append("lock source_sha256")
+    if lock.get("core_source_sha256") != source:
+        errors.append("lock core_source_sha256")
+
+    rules = matrix.get("rules")
+    capabilities = matrix.get("capabilities")
+    aliases = matrix.get("aliases")
+    if matrix.get("target") != "claude" or matrix.get("contract_version") != version:
+        errors.append("matrix target/version")
+    if not isinstance(rules, list) or len(rules) != 9:
+        errors.append("9 rules")
+    elif any(not isinstance(rule, dict) or not isinstance(rule.get("rule_id"), str) or not rule["rule_id"] for rule in rules) or len({rule["rule_id"] for rule in rules}) != 9:
+        errors.append("unique rule ids")
+    if not isinstance(capabilities, list) or len(capabilities) != 34:
+        errors.append("34 capabilities")
+        capabilities = []
+    capability_ids = []
+    for capability in capabilities:
+        if not isinstance(capability, dict):
+            errors.append("capability type")
+            continue
+        capability_id = capability.get("capability_id")
+        capability_ids.append(capability_id)
+        if (
+            not isinstance(capability_id, str)
+            or not capability_id
+            or capability.get("canonical_owner") != "hplan-core"
+            or capability.get("support_state") != "native"
+            or capability.get("entrypoint") != f"capability:{capability_id}"
+            or capability.get("smoke_fixture_id") != f"smoke.{capability_id}"
+            or not isinstance(capability.get("fallback_artifact"), str)
+            or not capability["fallback_artifact"]
+            or not isinstance(capability.get("lifecycle"), str)
+            or not capability["lifecycle"]
+        ):
+            errors.append("capability entrypoint/fallback")
+    if len(capability_ids) != 34 or len(set(capability_ids)) != 34:
+        errors.append("unique canonical capability ids")
+    if not isinstance(aliases, list) or len(aliases) != 3:
+        errors.append("3 aliases")
+    elif any(
+        not isinstance(alias, dict)
+        or not all(isinstance(alias.get(key), str) and alias[key] for key in ("alias_id", "target", "expiry"))
+        for alias in aliases
+    ) or len({alias["alias_id"] for alias in aliases}) != 3:
+        errors.append("unique alias ids")
+
+    if (
+        adapter.get("target") != "claude"
+        or adapter.get("core_version") != version
+        or adapter.get("core_source_sha256") != source
+        or adapter.get("capability_status_source") != "hplan-capability-matrix.json"
+        or adapter.get("native_execution_policy") != "entrypoint-and-smoke-fixture-required"
+        or adapter.get("non_native_fallback") != "fallback_artifact"
+        or adapter.get("external_connector_writes") != "disabled"
+    ):
+        errors.append("adapter policy")
+
+    try:
+        markdown = required["markdown"].read_text(encoding="utf-8")
+    except OSError as exc:
+        errors.append(f"markdown read: {exc}")
+        markdown = ""
+    if f"Contract version: `{version}`" not in markdown or "Target: `claude`" not in markdown:
+        errors.append("markdown target/version")
+    if any(f"| {capability_id} |" not in markdown for capability_id in capability_ids if isinstance(capability_id, str)):
+        errors.append("markdown capability rows")
+
+if errors:
+    print("INVALID|hplan-core snapshot 무결성 실패: " + ", ".join(dict.fromkeys(errors)))
 else:
-    print(f"OK|contract {version}, 34 capabilities, external writes disabled")
+    print(f"OK|contract {version}, 9 rules, 3 aliases, 34 unique capabilities, external writes disabled")
 PY
 )"
     case "$snapshot_result" in
