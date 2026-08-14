@@ -45,7 +45,7 @@ Drop this into your project's `.claude/settings.json` (or copy the bundled [`.cl
 
 > Prefer one plugin at a time? `/plugin marketplace add kimsanguine/hplan && /plugin install hplan@hplan`. See [Installation](#installation) for all paths.
 
-> **v1.1.0** — hplan ships as a complete **ADK (Agent Development Kit)**: **L1 Memory** (`CLAUDE.md` — 9 behavioral rules auto-loaded every session) · **L2 Skills** (34 PM disciplines, auto-invoked) · **L3 Hooks** (`hooks/` — SessionStart gate status · PreToolUse gate enforcement · PostToolUse secret scanner + **MD→HTML auto-renderer**) · **L4 Subagents** (task-sequential subagent dispatch + spec→quality gates, via `deliver/skills/conductor`) · **L5 Plugins** (marketplace). One `git clone` + `bash scripts/install-hooks.sh` activates all 5 layers. See [CHANGELOG.md](CHANGELOG.md) for release history.
+> **v1.1.0** — hplan ships as a complete **ADK (Agent Development Kit)**: **L1 Memory** (`CLAUDE.md` — 9 behavioral rules auto-loaded every session) · **L2 Skills** (34 PM disciplines, auto-invoked) · **L3 Hooks** (`hooks/` — SessionStart gate status · PreToolUse gate enforcement · PostToolUse secret scanner + **MD→HTML auto-renderer**) · **L4 Subagents** (task-sequential subagent dispatch + spec→quality gates, via `deliver/skills/conductor`) · **L5 Plugins** (marketplace). `git clone` + `bash scripts/install-hooks.sh` configures the local L1–L4 setup; activate L5 separately through the Marketplace or the bundled settings example. See [CHANGELOG.md](CHANGELOG.md) for release history.
 
 ### 📺 99-second intro
 
@@ -212,7 +212,7 @@ Use the Marketplace route when you want Claude Code plugins in a project without
    - `evidence-rubric` — turns interviews and market material into an explicit evidence threshold.
    - `cogs-sentinel` — tests whether the proposed AI usage and price can support a margin.
 
-   Then run `/hplan "your idea"` for the combined build/hold/investigate verdict. `HOLD` is an expected evidence-first result: collect at least four concrete signals (for example dated interview quotes, observed workaround, market evidence, and a cost/price input) before reopening the gate. These are decision artifacts; they do not authorize deployments, connector writes, or other external changes.
+   Before the first `/hplan`, create and keep the evidence in this exact project workspace: `harness/pain.md`, `harness/cogs.md`, `harness/market.md`, and `harness/competitors.md`. A first `HOLD` caused by missing documents is normal: add dated interview quotes, observed workarounds, market evidence, and cost/price inputs (at least four concrete signals across those files), then rerun `/hplan "your idea"`. These are decision artifacts; they do not authorize deployments, connector writes, or other external changes.
 
 ```bash
 # 1. Install the marketplace

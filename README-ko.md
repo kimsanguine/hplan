@@ -99,7 +99,7 @@ git clone https://github.com/kimsanguine/hplan.git ~/hplan
    - `evidence-rubric` — 인터뷰·시장 자료를 명시적 증거 기준으로 바꿉니다.
    - `cogs-sentinel` — 제안한 AI 사용량과 가격이 마진을 만들 수 있는지 검증합니다.
 
-   다음에 `/hplan "내 아이디어"`로 build / hold / investigate 통합 판정을 실행합니다. `HOLD`는 정상적인 evidence-first 결과입니다. 날짜가 있는 인터뷰 발화, 관찰된 우회법, 시장 근거, 비용·가격 입력처럼 구체적 신호를 최소 4개 모은 뒤 게이트를 다시 여세요. 이 결과물은 의사결정용이며 배포·connector write·다른 외부 변경을 허용하지 않습니다.
+   첫 `/hplan` 전에 현재 프로젝트 작업 폴더에 `harness/pain.md`, `harness/cogs.md`, `harness/market.md`, `harness/competitors.md`를 정확히 만들고 근거를 저장하세요. 문서가 없어 첫 결과가 `HOLD`가 되는 것은 정상입니다. 날짜가 있는 인터뷰 발화, 관찰된 우회법, 시장 근거, 비용·가격 입력처럼 네 문서 전체에서 구체적 신호를 최소 4개 모은 뒤 `/hplan "내 아이디어"`를 다시 실행하세요. 이 결과물은 의사결정용이며 배포·connector write·다른 외부 변경을 허용하지 않습니다.
 
 ## 5분 빠른 시작
 
@@ -113,7 +113,7 @@ git clone https://github.com/kimsanguine/hplan.git ~/hplan
 
 > 💡 **심화 내용** — 처음이라면 건너뛰어도 됩니다.
 >
-> **v1.1.0** — hplan 은 AI 도구가 HOW 로 달려가기 전에 **WHETHER 를 묻는 Product Build Gate** 입니다. ADK 5-Layer: L1 Memory (CLAUDE.md) · L2 Skills (34개 PM 규율) · L3 Hooks (SessionStart · PreToolUse · PostToolUse) · L4 Subagents (conductor — 태스크 순차 디스패치 + spec→quality 게이트) · L5 Plugins (마켓플레이스). `git clone` + `bash scripts/install-hooks.sh` 한 번으로 5개 레이어 전체 활성화. 자세한 변경 내역은 [CHANGELOG.md](CHANGELOG.md).
+> **v1.1.0** — hplan 은 AI 도구가 HOW 로 달려가기 전에 **WHETHER 를 묻는 Product Build Gate** 입니다. ADK 5-Layer: L1 Memory (CLAUDE.md) · L2 Skills (34개 PM 규율) · L3 Hooks (SessionStart · PreToolUse · PostToolUse) · L4 Subagents (conductor — 태스크 순차 디스패치 + spec→quality 게이트) · L5 Plugins (마켓플레이스). `git clone` + `bash scripts/install-hooks.sh`는 로컬 L1–L4 설정을 구성하며, L5는 Marketplace 또는 동봉 settings example로 별도 활성화합니다. 자세한 변경 내역은 [CHANGELOG.md](CHANGELOG.md).
 
 ### 📺 99초 소개 영상
 

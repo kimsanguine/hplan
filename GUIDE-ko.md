@@ -84,13 +84,13 @@ cp -r architect/skills/orchestration/ ~/.claude/skills/
 
 ### 다른 도구에서도 사용 가능
 
-| 도구 | 스킬 (SKILL.md) | 커맨드 체이닝 |
-|-----|:---:|:---:|
-| Claude Code | ✅ | ✅ |
-| Gemini CLI | ✅ | ⚠️ 수동 |
-| Cursor | ✅ | ⚠️ 수동 |
-| Codex CLI | ✅ | ⚠️ 수동 |
-| Kiro | ✅ | ⚠️ 수동 |
+| 도구 | 스킬 (SKILL.md) | 커맨드 체이닝 | 비고 |
+|-----|:---:|:---:|------|
+| Claude Code | ✅ | ✅ | — |
+| Gemini CLI | ✅ | ⚠️ 수동 | — |
+| Cursor | ✅ | ⚠️ 수동 | — |
+| Codex CLI | 25 native / 9 adapter-required | ❌ | [hplan_codex capability matrix](https://github.com/kimsanguine/hplan_codex/blob/main/docs/HPLAN_CAPABILITY_MATRIX.md) 확인 후 Codex 전용 adapter 사용 |
+| Kiro | ✅ | ⚠️ 수동 | — |
 
 ---
 
