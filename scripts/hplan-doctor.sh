@@ -69,11 +69,18 @@ else
     profile_path="$HOME/.bashrc"
   fi
   launcher_ready=false
+  launcher_issue=""
   if [ -f "$profile_path" ] && grep -Fq "alias claude-hplan=" "$profile_path"; then
     launcher_ready=true
     for plugin in hplan discover architect deliver operate; do
+      if [ ! -d "${ROOT_DIR}/${plugin}" ] || [ ! -r "${ROOT_DIR}/${plugin}" ]; then
+        launcher_ready=false
+        launcher_issue="${plugin} plugin directory is missing or unreadable"
+        break
+      fi
       if ! grep -Fq -- "--plugin-dir ${ROOT_DIR}/${plugin}" "$profile_path"; then
         launcher_ready=false
+        launcher_issue="${plugin} plugin-dir is not registered"
         break
       fi
     done
@@ -81,7 +88,11 @@ else
   if "$launcher_ready"; then
     normal_check "claude-hplan launcher" "${profile_path}에 이 설치 경로의 5개 plugin-dir가 등록되어 있습니다."
   else
-    recoverable_check "claude-hplan launcher" "이 설치 경로의 launcher를 ${profile_path}에서 찾지 못했습니다." "bash scripts/setup.sh --dir \"${ROOT_DIR}\" --no-hooks 를 실행한 뒤 source \"${profile_path}\" 하세요."
+    launcher_detail="이 설치 경로의 launcher를 ${profile_path}에서 찾지 못했습니다."
+    if [ -n "$launcher_issue" ]; then
+      launcher_detail="${launcher_issue}."
+    fi
+    recoverable_check "claude-hplan launcher" "$launcher_detail" "bash scripts/setup.sh --dir \"${ROOT_DIR}\" --no-hooks 를 실행한 뒤 source \"${profile_path}\" 하세요."
   fi
 
   if command -v python3 >/dev/null 2>&1 && python3 -c 'import json, sys; assert sys.version_info >= (3, 9)' >/dev/null 2>&1; then
@@ -91,13 +102,14 @@ else
   fi
 
   if command -v python3 >/dev/null 2>&1; then
-    snapshot_result="$(python3 - "$ROOT_DIR" <<'PY'
+    snapshot_result="$(python3 - "$ROOT_DIR" "$SCRIPT_DIR/../hplan-core-fixture/contracts" <<'PY'
 import json
 import re
 import sys
 from pathlib import Path
 
 root = Path(sys.argv[1])
+fixture_contracts = Path(sys.argv[2])
 required = {
     "lock": root / "hplan-core.lock",
     "matrix": root / "docs" / "hplan-capability-matrix.json",
@@ -116,6 +128,37 @@ try:
 except (OSError, json.JSONDecodeError) as exc:
     print(f"INVALID|hplan-core snapshot 무결성 실패: JSON을 읽을 수 없습니다: {exc}")
     raise SystemExit
+
+try:
+    fixture_rules = json.loads((fixture_contracts / "rules.json").read_text(encoding="utf-8"))
+    fixture_capabilities = json.loads((fixture_contracts / "capabilities.json").read_text(encoding="utf-8"))
+    fixture_aliases = json.loads((fixture_contracts / "aliases.json").read_text(encoding="utf-8"))
+except (OSError, json.JSONDecodeError) as exc:
+    print(f"INVALID|hplan-core snapshot 무결성 실패: pinned core fixture를 읽을 수 없습니다: {exc}")
+    raise SystemExit
+
+def digest_contracts(directory):
+    import hashlib
+    digest = hashlib.sha256()
+    for filename in ("rules.json", "capabilities.json", "aliases.json"):
+        digest.update(filename.encode("utf-8"))
+        digest.update(b"\0")
+        digest.update((directory / filename).read_bytes())
+        digest.update(b"\0")
+    return digest.hexdigest()
+
+expected_rule_ids = {entry.get("rule_id") for entry in fixture_rules.get("rules", []) if isinstance(entry, dict)}
+expected_capability_lifecycles = {
+    entry.get("capability_id"): entry.get("lifecycle")
+    for entry in fixture_capabilities.get("capabilities", [])
+    if isinstance(entry, dict)
+}
+expected_aliases = {
+    entry.get("alias_id"): (entry.get("target"), entry.get("expiry"))
+    for entry in fixture_aliases.get("aliases", [])
+    if isinstance(entry, dict)
+}
+expected_source = digest_contracts(fixture_contracts)
 
 expected_files = [
     "hplan-core.lock",
@@ -144,6 +187,8 @@ if not errors:
         errors.append("lock source_sha256")
     if lock.get("core_source_sha256") != source:
         errors.append("lock core_source_sha256")
+    if source != expected_source:
+        errors.append("pinned core source identity")
 
     rules = matrix.get("rules")
     capabilities = matrix.get("capabilities")
@@ -154,6 +199,8 @@ if not errors:
         errors.append("9 rules")
     elif any(not isinstance(rule, dict) or not isinstance(rule.get("rule_id"), str) or not rule["rule_id"] for rule in rules) or len({rule["rule_id"] for rule in rules}) != 9:
         errors.append("unique rule ids")
+    elif {rule["rule_id"] for rule in rules} != expected_rule_ids:
+        errors.append("canonical rule id set")
     if not isinstance(capabilities, list) or len(capabilities) != 34:
         errors.append("34 capabilities")
         capabilities = []
@@ -179,6 +226,10 @@ if not errors:
             errors.append("capability entrypoint/fallback")
     if len(capability_ids) != 34 or len(set(capability_ids)) != 34:
         errors.append("unique canonical capability ids")
+    elif set(capability_ids) != set(expected_capability_lifecycles):
+        errors.append("canonical capability id set")
+    elif any(capability.get("lifecycle") != expected_capability_lifecycles[capability["capability_id"]] for capability in capabilities):
+        errors.append("canonical capability lifecycle")
     if not isinstance(aliases, list) or len(aliases) != 3:
         errors.append("3 aliases")
     elif any(
@@ -187,6 +238,8 @@ if not errors:
         for alias in aliases
     ) or len({alias["alias_id"] for alias in aliases}) != 3:
         errors.append("unique alias ids")
+    elif {alias["alias_id"]: (alias["target"], alias["expiry"]) for alias in aliases} != expected_aliases:
+        errors.append("canonical alias mapping")
 
     if (
         adapter.get("target") != "claude"

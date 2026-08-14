@@ -16,6 +16,7 @@ ARTIFACTS = (
     "docs/HPLAN_CAPABILITY_MATRIX.md",
     "docs/hplan-core-adapter.json",
 )
+PLUGIN_DIRS = ("hplan", "discover", "architect", "deliver", "operate")
 
 
 def _copy_snapshot(tmp_path):
@@ -25,6 +26,8 @@ def _copy_snapshot(tmp_path):
         target = root / relative_path
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, target)
+    for plugin_dir in PLUGIN_DIRS:
+        (root / plugin_dir).mkdir()
     return root
 
 
@@ -102,6 +105,17 @@ def test_doctor_marks_missing_quickstart_launcher_as_recoverable(tmp_path):
     assert "setup.sh" in result.stdout
 
 
+def test_doctor_marks_missing_launcher_plugin_directory_as_recoverable(tmp_path):
+    root = _copy_snapshot(tmp_path)
+    (root / "operate").rmdir()
+
+    result = _run_doctor(root, _fake_claude(tmp_path), _launcher_profile(tmp_path, root))
+
+    assert result.returncode == 0
+    assert "[자동 복구 가능] claude-hplan launcher" in result.stdout
+    assert "operate" in result.stdout
+
+
 @pytest.mark.parametrize(
     ("relative_path", "mutate"),
     [
@@ -112,6 +126,21 @@ def test_doctor_marks_missing_quickstart_launcher_as_recoverable(tmp_path):
         ),
         ("docs/hplan-capability-matrix.json", lambda value: value.update(rules=[])),
         ("docs/hplan-capability-matrix.json", lambda value: value.update(capabilities={})),
+        (
+            "docs/hplan-capability-matrix.json",
+            lambda value: value["rules"][0].update(rule_id="invented-rule"),
+        ),
+        (
+            "docs/hplan-capability-matrix.json",
+            lambda value: value["capabilities"][0].update(
+                capability_id="invented-capability",
+                entrypoint="capability:invented-capability",
+                smoke_fixture_id="smoke.invented-capability",
+            ),
+        ),
+        ("docs/hplan-capability-matrix.json", lambda value: value["capabilities"][0].update(lifecycle="retired")),
+        ("docs/hplan-capability-matrix.json", lambda value: value["aliases"][0].update(target="invented-target")),
+        ("docs/hplan-capability-matrix.json", lambda value: value["aliases"][0].update(expiry="2099-01-01")),
     ],
 )
 def test_doctor_escalates_for_declared_contract_integrity_mutations(tmp_path, relative_path, mutate):

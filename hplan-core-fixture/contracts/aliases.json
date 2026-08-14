@@ -1,0 +1,8 @@
+{
+  "contract_version": "1.0.0",
+  "aliases": [
+    {"alias_id": "roadmap", "target": "prd", "expiry": "2027-08-14"},
+    {"alias_id": "router", "target": "orchestration", "expiry": "2027-08-14"},
+    {"alias_id": "stakeholder-update", "target": "ops-review", "expiry": "2027-08-14"}
+  ]
+}

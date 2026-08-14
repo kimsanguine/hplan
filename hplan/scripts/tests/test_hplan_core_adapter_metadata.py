@@ -10,6 +10,7 @@ import pytest
 
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
+VENDORED_CORE_ROOT = REPO_ROOT / "hplan-core-fixture"
 LOCK_PATH = REPO_ROOT / "hplan-core.lock"
 MATRIX_PATH = REPO_ROOT / "docs" / "hplan-capability-matrix.json"
 MARKDOWN_PATH = REPO_ROOT / "docs" / "HPLAN_CAPABILITY_MATRIX.md"
@@ -40,12 +41,16 @@ def load_json(path):
 
 def core_root():
     configured = os.environ.get("HPLAN_CORE_ROOT")
-    if not configured:
-        pytest.skip("Set HPLAN_CORE_ROOT to run hplan-core renderer parity checks.")
-    root = Path(configured).expanduser().resolve()
+    root = Path(configured).expanduser().resolve() if configured else VENDORED_CORE_ROOT
     if not (root / "scripts" / "render_adapter_snapshot.py").is_file():
-        pytest.fail(f"HPLAN_CORE_ROOT does not contain render_adapter_snapshot.py: {root}")
+        pytest.fail(f"hplan-core renderer fixture is unavailable: {root}")
     return root
+
+
+def test_renderer_parity_has_a_vendored_core_fixture_without_environment(monkeypatch):
+    monkeypatch.delenv("HPLAN_CORE_ROOT", raising=False)
+
+    assert core_root() == VENDORED_CORE_ROOT
 
 
 def core_source_sha256(root):
