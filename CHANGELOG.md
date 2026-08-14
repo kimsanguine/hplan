@@ -4,6 +4,13 @@ All notable changes to hplan (renamed from AI_PM_Skills in v0.5) are documented 
 
 ---
 
+## [1.1.1] — 2026-08-14
+
+### Documentation and installer guidance
+
+- Align the public installer, Marketplace, first-decision, evidence-first, and Codex adapter guidance with the released contracts.
+- Clarify that `hplan-core` remains private/local and that external connector writes are disabled.
+
 ## [1.1.0] — 2026-06-15
 
 > **cogs 단위경제·적응형 변동성 확장 + 구독 호환.** COGS Sentinel을 보고서 수준으로 끌어올리고, 비용 변동성을 워크로드별로 도출하며, 스킬 모델 핀을 풀어 구독 환경에서 동작하게 함.
