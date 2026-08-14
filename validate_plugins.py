@@ -193,6 +193,19 @@ def validate_marketplace(root):
         ok(f"marketplace.json: All {len(expected)} plugins listed")
 
 
+def public_surface_violations(root: Path) -> set[str]:
+    """Return every tracked-tree style path containing a private directory name."""
+    forbidden = {"docs", ".archive"}
+    violations = set()
+    for candidate in root.rglob("*"):
+        relative = candidate.relative_to(root)
+        if ".git" in relative.parts:
+            continue
+        if forbidden.intersection(relative.parts):
+            violations.add(relative.as_posix())
+    return violations
+
+
 def main():
     root = Path(__file__).parent
     targets = sys.argv[1:] if len(sys.argv) > 1 else PLUGINS
@@ -200,6 +213,14 @@ def main():
     print("=" * 60)
     print("hplan — Plugin Validator")
     print("=" * 60)
+
+    print("\n🛡️ Public surface")
+    violations = public_surface_violations(root)
+    if violations:
+        for relative in sorted(violations):
+            error(f"Public repository policy forbids docs/.archive path: {relative}")
+    else:
+        ok("No docs/.archive path components in public source")
 
     # Marketplace
     print("\n📦 Marketplace")

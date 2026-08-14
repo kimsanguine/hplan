@@ -2,7 +2,7 @@
 
 This repository publishes only the hplan runtime, skills, installer assets, and the verification material needed to operate them.
 
-- `docs/` and `.archive/` are local/private only. They must not be added to Git or installer packages.
+- Any `docs` or `.archive` directory at any depth is local/private only. It must not be added to Git or installer packages.
 - The four public core-contract artifacts live only in `runtime/hplan-core/`.
 - Product planning, internal design, progress notes, and archived material stay outside this public repository.
 - If a new runtime dependency is needed, add the minimum executable or machine-readable artifact under an existing public runtime path; do not create a replacement public document folder.

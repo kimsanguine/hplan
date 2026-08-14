@@ -4,6 +4,12 @@ All notable changes to hplan (renamed from AI_PM_Skills in v0.5) are documented 
 
 ---
 
+## [1.1.3] — 2026-08-14
+
+### Fixed
+
+- Enforce the public-surface policy recursively so any nested `docs` or `.archive` directory fails validation before it can reach public main.
+
 ## [1.1.2] — 2026-08-14
 
 ### Changed
