@@ -2,7 +2,7 @@
 
 70-second README intro video. Korean narration (Gemini TTS) + bilingual on-screen captions.
 
-> Full production plan: see [`../../docs/video/plan.md`](../../docs/video/plan.md).
+> The full production plan is maintained locally/private and is intentionally not part of this public repository.
 
 ## Quick Start
 

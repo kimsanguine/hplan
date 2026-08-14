@@ -89,7 +89,7 @@ cp -r architect/skills/orchestration/ ~/.claude/skills/
 | Claude Code | ✅ | ✅ | — |
 | Gemini CLI | ✅ | ⚠️ 수동 | — |
 | Cursor | ✅ | ⚠️ 수동 | — |
-| Codex CLI | 25 native / 9 adapter-required | ❌ | [hplan_codex capability matrix](https://github.com/kimsanguine/hplan_codex/blob/main/docs/HPLAN_CAPABILITY_MATRIX.md) 확인 후 Codex 전용 adapter 사용 |
+| Codex CLI | 25 native / 9 adapter-required | ❌ | [hplan_codex capability matrix](https://github.com/kimsanguine/hplan_codex/blob/main/runtime/hplan-core/HPLAN_CAPABILITY_MATRIX.md) 확인 후 Codex 전용 adapter 사용 |
 | Kiro | ✅ | ⚠️ 수동 | — |
 
 ---
@@ -487,7 +487,7 @@ AI 헬스케어 복약 알림 앱 COGS를 계산해줘.
 ## 자주 묻는 질문
 
 **Q: Claude Code가 없으면 못 쓰나요?**
-A: Gemini CLI와 Cursor는 각 도구의 스킬 경로로 수동 사용이 가능합니다. Codex는 Claude 스킬 파일을 복사해 쓰는 대상이 아닙니다. [hplan_codex capability matrix](https://github.com/kimsanguine/hplan_codex/blob/main/docs/HPLAN_CAPABILITY_MATRIX.md)의 Codex 전용 adapter(25 native / 9 adapter-required, command 없음)를 사용하세요.
+A: Gemini CLI와 Cursor는 각 도구의 스킬 경로로 수동 사용이 가능합니다. Codex는 Claude 스킬 파일을 복사해 쓰는 대상이 아닙니다. [hplan_codex capability matrix](https://github.com/kimsanguine/hplan_codex/blob/main/runtime/hplan-core/HPLAN_CAPABILITY_MATRIX.md)의 Codex 전용 adapter(25 native / 9 adapter-required, command 없음)를 사용하세요.
 
 **Q: 기존 PM 스킬이랑 충돌하나요?**
 A: 아닙니다. 기존 PM 스킬은 일반 PM 업무(로드맵, 스테이크홀더 커뮤니케이션 등)를 다루고, 이 스킬셋은 에이전트 구축/운영을 다룹니다. 둘 다 설치해서 쓰세요.

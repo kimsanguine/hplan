@@ -11,10 +11,10 @@ import pytest
 REPO_ROOT = Path(__file__).resolve().parents[3]
 DOCTOR = REPO_ROOT / "scripts" / "hplan-doctor.sh"
 ARTIFACTS = (
-    "hplan-core.lock",
-    "docs/hplan-capability-matrix.json",
-    "docs/HPLAN_CAPABILITY_MATRIX.md",
-    "docs/hplan-core-adapter.json",
+    "runtime/hplan-core/hplan-core.lock",
+    "runtime/hplan-core/hplan-capability-matrix.json",
+    "runtime/hplan-core/HPLAN_CAPABILITY_MATRIX.md",
+    "runtime/hplan-core/hplan-core-adapter.json",
 )
 PLUGIN_DIRS = ("hplan", "discover", "architect", "deliver", "operate")
 
@@ -86,7 +86,7 @@ def test_doctor_reports_normal_for_a_complete_read_only_snapshot(tmp_path):
 
 def test_doctor_escalates_when_a_required_core_artifact_is_missing(tmp_path):
     root = _copy_snapshot(tmp_path)
-    (root / "docs" / "hplan-core-adapter.json").unlink()
+    (root / "runtime" / "hplan-core" / "hplan-core-adapter.json").unlink()
 
     result = _run_doctor(root, _fake_claude(tmp_path), _launcher_profile(tmp_path, root))
 
@@ -119,28 +119,28 @@ def test_doctor_marks_missing_launcher_plugin_directory_as_recoverable(tmp_path)
 @pytest.mark.parametrize(
     ("relative_path", "mutate"),
     [
-        ("hplan-core.lock", lambda value: value.update(source_sha256="z" * 64)),
+        ("runtime/hplan-core/hplan-core.lock", lambda value: value.update(source_sha256="z" * 64)),
         (
-            "docs/hplan-capability-matrix.json",
+            "runtime/hplan-core/hplan-capability-matrix.json",
             lambda value: value["capabilities"].__setitem__(1, value["capabilities"][0]),
         ),
-        ("docs/hplan-capability-matrix.json", lambda value: value.update(rules=[])),
-        ("docs/hplan-capability-matrix.json", lambda value: value.update(capabilities={})),
+        ("runtime/hplan-core/hplan-capability-matrix.json", lambda value: value.update(rules=[])),
+        ("runtime/hplan-core/hplan-capability-matrix.json", lambda value: value.update(capabilities={})),
         (
-            "docs/hplan-capability-matrix.json",
+            "runtime/hplan-core/hplan-capability-matrix.json",
             lambda value: value["rules"][0].update(rule_id="invented-rule"),
         ),
         (
-            "docs/hplan-capability-matrix.json",
+            "runtime/hplan-core/hplan-capability-matrix.json",
             lambda value: value["capabilities"][0].update(
                 capability_id="invented-capability",
                 entrypoint="capability:invented-capability",
                 smoke_fixture_id="smoke.invented-capability",
             ),
         ),
-        ("docs/hplan-capability-matrix.json", lambda value: value["capabilities"][0].update(lifecycle="retired")),
-        ("docs/hplan-capability-matrix.json", lambda value: value["aliases"][0].update(target="invented-target")),
-        ("docs/hplan-capability-matrix.json", lambda value: value["aliases"][0].update(expiry="2099-01-01")),
+        ("runtime/hplan-core/hplan-capability-matrix.json", lambda value: value["capabilities"][0].update(lifecycle="retired")),
+        ("runtime/hplan-core/hplan-capability-matrix.json", lambda value: value["aliases"][0].update(target="invented-target")),
+        ("runtime/hplan-core/hplan-capability-matrix.json", lambda value: value["aliases"][0].update(expiry="2099-01-01")),
     ],
 )
 def test_doctor_escalates_for_declared_contract_integrity_mutations(tmp_path, relative_path, mutate):

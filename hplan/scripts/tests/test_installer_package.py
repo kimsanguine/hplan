@@ -34,6 +34,9 @@ def test_installer_package_contains_pinned_core_fixture_and_doctor_runs_after_ex
     installed = tmp_path / "hplan"
     assert (installed / "hplan-core-fixture" / "contracts" / "capabilities.json").is_file()
     assert (installed / "hplan-core-fixture" / "scripts" / "render_adapter_snapshot.py").is_file()
+    assert (installed / "runtime" / "hplan-core" / "hplan-core.lock").is_file()
+    assert not (installed / "docs").exists()
+    assert not (installed / ".archive").exists()
     assert not (tmp_path / "hplan-core").exists()
 
     profile = tmp_path / ".zshrc"
