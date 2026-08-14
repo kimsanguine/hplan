@@ -94,6 +94,20 @@ When using Agent or worktree, explicitly state the allowed paths/files in the pr
 
 ---
 
+## hplan Core Contract Sync
+
+The 9 Behavioral Rules above are synchronized with hplan-core contract `1.0.0`: `think-before-coding`, `simplicity-first`, `surgical-changes`, `goal-driven-execution`, `models-for-judgment-only`, `tests-verify-intent`, `checkpoint-after-significant-step`, `fail-loud`, and `agent-scope-declaration`.
+
+The Claude adapter snapshot source is [`docs/hplan-capability-matrix.json`](docs/hplan-capability-matrix.json); the readable matrix is [`docs/HPLAN_CAPABILITY_MATRIX.md`](docs/HPLAN_CAPABILITY_MATRIX.md).
+
+adapter-required is not execution permission or external-write permission. It only records a missing target-specific adapter; it does not enable Hooks, MCP, or any external write.
+
+## Installation Doctor
+
+After installing the local package, run `bash scripts/hplan-doctor.sh` from the hplan directory before the first Claude session. It is a read-only check of the Claude CLI, the `claude-hplan` launcher registration, Python, and the four hplan-core adapter artifacts; it never edits local settings or performs external writes. `정상` is ready to use, `자동 복구 가능` provides a local next action, and `강사 호출` requires reinstalling the package before escalating with the complete doctor output.
+
+---
+
 ## hplan Gate Rules
 
 These rules enforce the Signal Gate discipline at the file-write level.

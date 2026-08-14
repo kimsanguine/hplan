@@ -1,0 +1,14 @@
+{
+  "contract_version": "1.0.0",
+  "rules": [
+    {"rule_id": "think-before-coding", "title": "Think Before Coding", "requirement": "State material assumptions and request clarification when ambiguity changes the outcome."},
+    {"rule_id": "simplicity-first", "title": "Simplicity First", "requirement": "Use the minimum implementation that satisfies the stated need."},
+    {"rule_id": "surgical-changes", "title": "Surgical Changes", "requirement": "Change only the requested surface and preserve intentional surrounding work."},
+    {"rule_id": "goal-driven-execution", "title": "Goal-Driven Execution", "requirement": "Translate work into verifiable goals and cite verification before completion."},
+    {"rule_id": "models-for-judgment-only", "title": "Models for Judgment Tasks Only", "requirement": "Use deterministic logic for deterministic control decisions."},
+    {"rule_id": "tests-verify-intent", "title": "Tests Verify Intent", "requirement": "Design tests that fail when the intended behavior changes."},
+    {"rule_id": "checkpoint-after-significant-step", "title": "Checkpoint After Every Significant Step", "requirement": "After significant work, state what changed, what was verified, and what remains."},
+    {"rule_id": "fail-loud", "title": "Fail Loud", "requirement": "Expose uncertainty and incomplete verification without presenting it as complete."},
+    {"rule_id": "agent-scope-declaration", "title": "Agent Scope Declaration", "requirement": "Declare the permitted work scope before delegated execution."}
+  ]
+}

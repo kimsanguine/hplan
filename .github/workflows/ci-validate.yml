@@ -36,4 +36,6 @@ jobs:
         run: python3 validate_plugins.py
 
       - name: Run parser/renderer tests
+        env:
+          HPLAN_CORE_ROOT: ${{ github.workspace }}/hplan-core-fixture
         run: python3 -m pytest hplan/scripts/tests/ -q

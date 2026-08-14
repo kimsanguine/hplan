@@ -1,0 +1,9 @@
+{
+  "capability_status_source": "hplan-capability-matrix.json",
+  "core_source_sha256": "aa5a43827a850892d4b3dab4c2520104cbade9529e835b8bd933ae462d7e263d",
+  "core_version": "1.0.0",
+  "external_connector_writes": "disabled",
+  "native_execution_policy": "entrypoint-and-smoke-fixture-required",
+  "non_native_fallback": "fallback_artifact",
+  "target": "claude"
+}

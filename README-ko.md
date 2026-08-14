@@ -64,6 +64,35 @@ git clone https://github.com/kimsanguine/hplan.git ~/hplan
 
 </details>
 
+## 첫 10분: 설치 → doctor → 첫 의사결정
+
+1. Claude를 시작하기 전에 로컬 패키지를 확인합니다. 이 점검은 **읽기 전용**이며 파일·설정·외부 시스템을 바꾸지 않습니다.
+
+   ```bash
+   cd ~/hplan
+   bash scripts/hplan-doctor.sh
+   ```
+
+   `정상`은 시작 가능한 상태입니다. `자동 복구 가능`은 Claude Code 설치 후 새 터미널을 여는 것처럼 바로 실행할 다음 조치를 안내합니다. `강사 호출`은 core snapshot이 없거나 서로 맞지 않는 상태입니다. 먼저 재설치하고, 계속되면 doctor 전체 출력을 강사에게 보내세요.
+
+2. 설치된 플러그인으로 Claude를 시작한 뒤, 제품 아이디어를 자연어로 말합니다.
+
+   ```bash
+   claude-hplan
+   ```
+
+   ```text
+   "[내 아이디어]를 만들어볼까 하는데"
+   ```
+
+3. 처음에는 아래 세 스킬을 이 순서로 사용하세요.
+
+   - `socratic-question` — 해결책을 제안하기 전에 위험한 가정을 드러냅니다.
+   - `evidence-rubric` — 인터뷰·시장 자료를 명시적 증거 기준으로 바꿉니다.
+   - `cogs-sentinel` — 제안한 AI 사용량과 가격이 마진을 만들 수 있는지 검증합니다.
+
+   다음에 `/hplan "내 아이디어"`로 build / hold / investigate 통합 판정을 실행합니다. 이 결과물은 의사결정용이며 배포·connector write·다른 외부 변경을 허용하지 않습니다.
+
 ## 5분 빠른 시작
 
 설치 완료 후 Claude 세션에서 **아이디어를 자연어로 말하면** 됩니다 (별도 명령 불필요):

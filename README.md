@@ -171,6 +171,35 @@ bash <(curl -fsSL https://habix.ai/hplan/install.sh)
 
 This installs the current private package to `~/hplan` and registers local Claude CLI aliases. See [`docs/private-distribution.md`](docs/private-distribution.md) for the Worker/R2 publishing flow.
 
+### Your first 10 minutes: install → doctor → first decision
+
+1. Confirm the local package before starting Claude. This check is read-only: it does not edit files, settings, or external systems.
+
+   ```bash
+   cd ~/hplan
+   bash scripts/hplan-doctor.sh
+   ```
+
+   `정상` means the prerequisite is usable. `자동 복구 가능` gives a local next step (for example, install Claude Code and open a new terminal). `강사 호출` means the core snapshot is incomplete or inconsistent; reinstall first, then send the complete doctor output to your instructor if it remains.
+
+2. Start Claude with the installed plugins, then state the product idea in plain language.
+
+   ```bash
+   claude-hplan
+   ```
+
+   ```text
+   "[your idea]를 만들어볼까 하는데"
+   ```
+
+3. Use these three skills first, in this order:
+
+   - `socratic-question` — exposes the risky assumption before a solution is proposed.
+   - `evidence-rubric` — turns interviews and market material into an explicit evidence threshold.
+   - `cogs-sentinel` — tests whether the proposed AI usage and price can support a margin.
+
+   Then run `/hplan "your idea"` for the combined build/hold/investigate verdict. These are decision artifacts; they do not authorize deployments, connector writes, or other external changes.
+
 ```bash
 # 1. Install the marketplace
 /plugin marketplace add kimsanguine/hplan
