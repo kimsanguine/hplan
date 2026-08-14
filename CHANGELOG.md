@@ -4,6 +4,14 @@ All notable changes to hplan (renamed from AI_PM_Skills in v0.5) are documented 
 
 ---
 
+## [1.1.2] — 2026-08-14
+
+### Changed
+
+- Remove public `docs/` and `.archive/` directories. Runtime core artifacts now live in `runtime/hplan-core/`, public images in `assets/images/`, and the installer, doctor, package, and Worker assets use those paths.
+- Add a public-surface policy that rejects future `docs` and `.archive` directories from the tracked repository.
+- Rename the public installer/package labels so they do not imply access-controlled distribution.
+
 ## [1.1.1] — 2026-08-14
 
 ### Documentation and installer guidance
