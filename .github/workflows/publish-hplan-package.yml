@@ -51,10 +51,10 @@ jobs:
       - name: Upload package artifact
         uses: actions/upload-artifact@v6
         with:
-          name: hplan-private-package
+          name: hplan-installer-package
           path: dist/
 
-      - name: Deploy Worker with private package assets
+      - name: Deploy Worker with installer package assets
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
