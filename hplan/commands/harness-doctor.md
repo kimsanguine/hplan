@@ -1,5 +1,5 @@
 ---
-description: "Diagnostic health check for hplan installation — verifies Claude Code hook registration, gate_guard execution, checkpoint state, exclusions registry integrity, and git pre-commit hook. Run after fresh install, when gate behavior is unexpected, or to confirm setup is correct."
+description: "Use when hplan을 새로 설치했거나 gate 동작이 예상과 다를 때 설치 상태를 확인해야 합니다. Verifies Claude Code hook registration, gate_guard execution, checkpoint state, exclusions registry integrity, and git pre-commit hook."
 argument-hint: ""
 allowed-tools: ["Read", "Bash"]
 ---

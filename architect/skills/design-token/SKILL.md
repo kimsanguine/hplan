@@ -11,7 +11,7 @@ model: inherit
 ## 목적
 2-step 디자인 파이프라인: Phase A (레퍼런스 수집 → DESIGN_BRIEF.md 생성) → Phase B (토큰/DESIGN.md 생성).
 
-Parse `--step` from arguments:
+Parse `--step` from `$ARGUMENTS`:
 - `--step brief` → Run Phase A only (design-reference 로직)
 - `--step token` → Run Phase B only (기존 design-token 로직)
 - `--step all` or no flag → Run Phase A then Phase B
