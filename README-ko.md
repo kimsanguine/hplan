@@ -236,7 +236,7 @@ Day 50-60   매출·성과 구조
 - 🧪 **실행 가능한 COGS sentinel** — LLM 추정이 아니라 실제 Python sampler가 provider 단가 스냅샷으로 p50/p90 월간 마진 계산. 무료 사용자 abuse도 모델링.
 - 📚 **Append-only exclusions registry** — 모든 "Do Not Build" 결정이 JSONL에 `reopen_trigger`와 함께 저장. 새 아이디어는 한국어 fuzzy match로 자동 collision check.
 - 📊 **Self-evaluating decision log** — 모든 gate 결정이 이유와 함께 기록되고, outcome은 나중에 back-fill, `audit` 명령이 hit rate / false holds / missed builds 산출. 자기 정확도를 측정하는 유일한 PM gate.
-- 🔌 **MCP server** — 같은 gate primitive가 MCP tool로도 노출되어 Cursor / Windsurf / Kiro / Codex / Goose에서도 호출 가능.
+- 🔌 **MCP server** — 같은 gate primitive가 설정된 Cursor / Windsurf / Kiro / Goose 등의 MCP tool로 노출됩니다. Codex는 Claude 스킬 복사 대상이 아니라 [hplan_codex capability matrix](https://github.com/kimsanguine/hplan_codex/blob/main/docs/HPLAN_CAPABILITY_MATRIX.md)의 25 native / 9 adapter-required 전용 adapter를 사용하며 Claude slash command는 제공하지 않습니다.
 - 🛑 **Claude Code PreToolUse hook** — `harness/build-gate/checkpoint.json`이 `status: "approved"`가 되기 전까지 PRD.md / specs/* / .kiro/specs/* 작성을 파일 시스템 레벨에서 차단. 프롬프트 룰이 아닌 강제력 있는 게이트.
 - 🚚 **Multi-target handoff** — 단일 brief JSON이 Spec-Kit `specs/NNN-slug/`, Kiro `.kiro/specs/`, GStack `/office-hours` brief, Claude Code `AGENTS.md` + `CLAUDE.md`로 동시 export.
 - 📋 **Append-only qa_log.jsonl** — 배포 전 QA 라운드별 영구 로그. 페르소나·개발 리뷰어 풀, CRITICAL/HIGH 건수, 자동 수정 내역, 테스트 delta 추적. `decisions.jsonl` 패턴 확장 — "몇 라운드 만에 CRITICAL=0이 됐는지"가 다음 제품 QA 설계의 학습 데이터.
@@ -384,7 +384,7 @@ hplan   discover  architect  deliver   operate
 ### hplan이 나머지 4개와 다른 점
 
 다른 plugin들은 **prompt-driven thinking** — LLM이 고민하고 사람이 결정합니다.
-`hplan`은 **deterministic measurement** — Python 스크립트가 p50/p90 COGS 마진을 계산하고, append-only registry가 exclusions/decisions를 영구 누적하고, MCP 서버가 Cursor/Windsurf/Kiro/Codex에서 hplan을 호출 가능하게 하고, PreToolUse hook이 사람 승인 전까지 PRD/spec 작성을 차단합니다. **`scripts/validate-mermaid.py`**가 PRD의 workflow ↔ userflow ↔ requirements 정합성을 결정론으로 차분 검증합니다. **discover/architect/deliver/operate를 대체하지 않고 layering**합니다.
+`hplan`은 **deterministic measurement** — Python 스크립트가 p50/p90 COGS 마진을 계산하고, append-only registry가 exclusions/decisions를 영구 누적하고, 설정된 MCP client가 hplan primitive를 호출하며, PreToolUse hook이 사람 승인 전까지 PRD/spec 작성을 차단합니다. Codex는 raw Claude skill 복사가 아니라 [hplan_codex capability matrix](https://github.com/kimsanguine/hplan_codex/blob/main/docs/HPLAN_CAPABILITY_MATRIX.md)의 25 native / 9 adapter-required adapter 경로를 사용합니다. **`scripts/validate-mermaid.py`**가 PRD의 workflow ↔ userflow ↔ requirements 정합성을 결정론으로 차분 검증합니다. **discover/architect/deliver/operate를 대체하지 않고 layering**합니다.
 
 특히 중요한 건 **마지막 단계인 operate → 첫 단계인 discover로 이어지는 순환 구조**입니다. operate에서 축적한 PM 운영 노하우(TK)가 다음 에이전트를 만들 때 자동으로 반영되기 때문에, 에이전트를 만들수록 다음 에이전트의 품질이 올라갑니다.
 
@@ -494,7 +494,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 
 **게이트 세밀 제어:** `/hplan` · `/harness-exclude` · `/harness-handoff` · `/harness-doctor`
 
-**Cross-cutting 자산:** MCP 서버 (`hplan_mcp/`) — Cursor / Windsurf / Kiro / Codex / Goose 호환 · PreToolUse hook (`hooks/gate_guard.py`) · 4개 role-locked reviewer agents (`agents/`)
+**Cross-cutting 자산:** MCP 서버 (`hplan_mcp/`) — 설정된 MCP client용 · PreToolUse hook (`hooks/gate_guard.py`) · 4개 role-locked reviewer agents (`agents/`). Codex는 Claude 스킬 복사 대신 [hplan_codex capability matrix](https://github.com/kimsanguine/hplan_codex/blob/main/docs/HPLAN_CAPABILITY_MATRIX.md)를 따릅니다.
 </details>
 
 <details>
@@ -646,7 +646,7 @@ claude \
 |------|:------:|:--------:|--------|
 | **Gemini CLI** | ✅ | ❌ | `.gemini/skills/`에 복사 |
 | **Cursor** | ✅ | ❌ | `.cursor/skills/`에 복사 |
-| **Codex CLI** | ✅ | ❌ | `.codex/skills/`에 복사 |
+| **Codex CLI** | 25 native / 9 adapter-required | ❌ | [hplan_codex capability matrix](https://github.com/kimsanguine/hplan_codex/blob/main/docs/HPLAN_CAPABILITY_MATRIX.md) 사용; Claude 스킬을 `.codex/skills/`에 복사하는 방식은 지원하지 않음 |
 | **Kiro** | ✅ | ❌ | `.kiro/skills/`에 복사 |
 
 ---

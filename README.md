@@ -138,7 +138,7 @@ For the technically curious, here's what makes hplan different from every other 
 - 🧪 **Executable COGS sentinel** — p50 / p90 monthly margin is computed by a real Python sampler with provider pricing snapshots, not estimated by an LLM. Free-user abuse is modeled, not hand-waved.
 - 📚 **Append-only exclusions registry** — every "Do Not Build" gets a JSONL entry with a `reopen_trigger`. New ideas auto-collision-check with Korean-aware fuzzy match.
 - 📊 **Self-evaluating decision log** — every gate decision is logged with reasons; outcomes are back-filled later; an `audit` command surfaces hit rate, false holds, and missed builds. The only PM gate that measures its own accuracy.
-- 🔌 **MCP server** — the same gate primitives are exposed as MCP tools, so Cursor / Windsurf / Kiro / Codex / Goose can call them, not just Claude Code.
+- 🔌 **MCP server** — the same gate primitives are exposed as MCP tools for configured clients such as Cursor / Windsurf / Kiro / Goose. Codex uses the separate [hplan_codex adapter matrix](https://github.com/kimsanguine/hplan_codex/blob/main/docs/HPLAN_CAPABILITY_MATRIX.md): 25 native capabilities and 9 adapter-required capabilities, with no Claude slash commands.
 - 🛑 **Claude Code PreToolUse hook** — blocks writes to `PRD.md` / `specs/*` / `.kiro/specs/*` until `harness/build-gate/checkpoint.json` shows `status: "approved"`. Gate enforcement at the filesystem level, not just in prompts.
 - 🚚 **Multi-target handoff** — one brief JSON exports simultaneously to Spec-Kit `specs/NNN-slug/`, Kiro `.kiro/specs/`, GStack `/office-hours` brief, and Claude Code `AGENTS.md` + `CLAUDE.md`.
 
@@ -272,7 +272,7 @@ This isn't a random collection of skills. It's a **complete lifecycle** — the 
 ### What makes hplan different from the other 4
 
 Other plugins are **prompt-driven thinking** — LLM ponders, you decide.
-`hplan` adds **deterministic measurement** — Python scripts calculate p50/p90 COGS margins, append-only registries persist exclusions and decisions across runs, an MCP server lets Cursor/Windsurf/Kiro/Codex call hplan primitives, and a PreToolUse hook blocks PRD/spec writes until the human approves the gate. It is paired with discover/architect/deliver/operate, not a replacement.
+`hplan` adds **deterministic measurement** — Python scripts calculate p50/p90 COGS margins, append-only registries persist exclusions and decisions across runs, configured MCP clients can call hplan primitives, and a PreToolUse hook blocks PRD/spec writes until the human approves the gate. Codex is not a raw-copy target; use the [hplan_codex adapter matrix](https://github.com/kimsanguine/hplan_codex/blob/main/docs/HPLAN_CAPABILITY_MATRIX.md) for its 25 native / 9 adapter-required split. hplan is paired with discover/architect/deliver/operate, not a replacement.
 
 Each skill **auto-loads from natural language** — describe your task and the right skill fires. Skills also **route across plugins**: ops-review (operate) detects a cost spike → suggests orchestration `--pattern router` (architect) for model change → triggers cost-sim (discover) for re-simulation.
 
@@ -364,7 +364,7 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 
 **Commands (12 total — 11 in `hplan/` + `/prd` from deliver):** `/hplan` ⭐ · `/prd` · `/evidence-rubric` · `/cogs-sentinel` · `/harness-discover` · `/harness-plan` · `/harness-build` · `/harness-operate` · `/harness-exclude` · `/harness-handoff` · `/harness-verify` · `/harness-doctor`
 
-**Cross-cutting assets:** MCP server (`hplan_mcp/`) for Cursor / Windsurf / Kiro / Codex / Goose · PreToolUse hook (`hooks/gate_guard.py`) · 4 role-locked reviewer agents (`agents/`)
+**Cross-cutting assets:** MCP server (`hplan_mcp/`) for configured clients · PreToolUse hook (`hooks/gate_guard.py`) · 4 role-locked reviewer agents (`agents/`). For Codex, use the [hplan_codex adapter matrix](https://github.com/kimsanguine/hplan_codex/blob/main/docs/HPLAN_CAPABILITY_MATRIX.md), not copied Claude skills.
 </details>
 
 <details>
@@ -481,7 +481,7 @@ If you'd rather add the marketplace and pick plugins one at a time:
 git clone https://github.com/kimsanguine/hplan.git
 cd hplan
 
-# Install all 5 ADK layers at once:
+# Configure local hooks (L3 only):
 bash scripts/install-hooks.sh   # L3 hooks + git pre-commit
 
 claude --plugin-dir ./hplan     # L2 Skills — pick what you need (hplan, discover, architect, deliver, operate)
@@ -511,7 +511,7 @@ hplan ships as a complete **Agent Development Kit** — five reinforcing layers 
 | `PreToolUse.sh` | Before every Write / Edit | Blocks PRD/ARCHITECTURE writes without approved checkpoint |
 | `PostToolUse.sh` | After every Write / Edit | Warns if API keys / secrets appear in written content |
 
-**After `scripts/install-hooks.sh`**, run `/harness-doctor` to verify all 5 layers are wired correctly.
+**After `scripts/install-hooks.sh`**, run `/harness-doctor` to verify the local hook and gate setup. It does not verify L5 Marketplace activation; verify that separately in the next Claude session or through the settings-based plugin route.
 
 ### Option 3: Enterprise / Team Rollout
 
@@ -565,7 +565,7 @@ For regulated environments (financial services, healthcare, government), the rec
 |------|:------:|:--------:|-----------|
 | **Gemini CLI** | ✅ | ❌ | Copy to `.gemini/skills/` |
 | **Cursor** | ✅ | ❌ | Copy to `.cursor/skills/` |
-| **Codex CLI** | ✅ | ❌ | Copy to `.codex/skills/` |
+| **Codex CLI** | 25 native / 9 adapter-required | ❌ | Use the [hplan_codex adapter matrix](https://github.com/kimsanguine/hplan_codex/blob/main/docs/HPLAN_CAPABILITY_MATRIX.md); copying Claude skills to `.codex/skills/` is unsupported. |
 | **Kiro** | ✅ | ❌ | Copy to `.kiro/skills/` |
 
 ---
