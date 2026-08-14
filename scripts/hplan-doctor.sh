@@ -111,10 +111,10 @@ from pathlib import Path
 root = Path(sys.argv[1])
 fixture_contracts = Path(sys.argv[2])
 required = {
-    "lock": root / "hplan-core.lock",
-    "matrix": root / "docs" / "hplan-capability-matrix.json",
-    "markdown": root / "docs" / "HPLAN_CAPABILITY_MATRIX.md",
-    "adapter": root / "docs" / "hplan-core-adapter.json",
+    "lock": root / "runtime" / "hplan-core" / "hplan-core.lock",
+    "matrix": root / "runtime" / "hplan-core" / "hplan-capability-matrix.json",
+    "markdown": root / "runtime" / "hplan-core" / "HPLAN_CAPABILITY_MATRIX.md",
+    "adapter": root / "runtime" / "hplan-core" / "hplan-core-adapter.json",
 }
 missing = [str(path.relative_to(root)) for path in required.values() if not path.is_file()]
 if missing:

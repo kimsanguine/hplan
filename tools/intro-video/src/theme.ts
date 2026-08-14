@@ -1,6 +1,6 @@
 /**
  * Catppuccin Mocha — visual theme for hplan intro video.
- * Matches the existing docs/images/demo-terminal.svg palette so the video
+ * Matches the existing assets/images/demo-terminal.svg palette so the video
  * and the static README SVG feel like the same product.
  */
 

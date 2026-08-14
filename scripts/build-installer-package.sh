@@ -19,7 +19,7 @@ required_paths=(
   "profiles"
   "hplan-core-fixture"
   "scripts"
-  "docs"
+  "runtime"
   "assets"
   "README.md"
   "README-ko.md"
@@ -28,7 +28,6 @@ required_paths=(
   "CLAUDE.md"
   "CONTRIBUTING.md"
   "LICENSE"
-  "hplan-core.lock"
   "validate_plugins.py"
 )
 

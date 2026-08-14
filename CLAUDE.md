@@ -98,7 +98,7 @@ When using Agent or worktree, explicitly state the allowed paths/files in the pr
 
 The 9 Behavioral Rules above are synchronized with hplan-core contract `1.0.0`: `think-before-coding`, `simplicity-first`, `surgical-changes`, `goal-driven-execution`, `models-for-judgment-only`, `tests-verify-intent`, `checkpoint-after-significant-step`, `fail-loud`, and `agent-scope-declaration`.
 
-The Claude adapter snapshot source is [`docs/hplan-capability-matrix.json`](docs/hplan-capability-matrix.json); the readable matrix is [`docs/HPLAN_CAPABILITY_MATRIX.md`](docs/HPLAN_CAPABILITY_MATRIX.md).
+The Claude adapter snapshot source is [`runtime/hplan-core/hplan-capability-matrix.json`](runtime/hplan-core/hplan-capability-matrix.json); the readable matrix is [`runtime/hplan-core/HPLAN_CAPABILITY_MATRIX.md`](runtime/hplan-core/HPLAN_CAPABILITY_MATRIX.md).
 
 adapter-required is not execution permission or external-write permission. It only records a missing target-specific adapter; it does not enable Hooks, MCP, or any external write.
 

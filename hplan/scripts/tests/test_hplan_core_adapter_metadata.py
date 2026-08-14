@@ -12,10 +12,11 @@ import pytest
 REPO_ROOT = Path(__file__).resolve().parents[3]
 VENDORED_CORE_ROOT = REPO_ROOT / "hplan-core-fixture"
 FIXTURE_PROVENANCE_PATH = VENDORED_CORE_ROOT / "PROVENANCE.json"
-LOCK_PATH = REPO_ROOT / "hplan-core.lock"
-MATRIX_PATH = REPO_ROOT / "docs" / "hplan-capability-matrix.json"
-MARKDOWN_PATH = REPO_ROOT / "docs" / "HPLAN_CAPABILITY_MATRIX.md"
-ADAPTER_PATH = REPO_ROOT / "docs" / "hplan-core-adapter.json"
+RUNTIME_CORE = REPO_ROOT / "runtime" / "hplan-core"
+LOCK_PATH = RUNTIME_CORE / "hplan-core.lock"
+MATRIX_PATH = RUNTIME_CORE / "hplan-capability-matrix.json"
+MARKDOWN_PATH = RUNTIME_CORE / "HPLAN_CAPABILITY_MATRIX.md"
+ADAPTER_PATH = RUNTIME_CORE / "hplan-core-adapter.json"
 CLAUDE_MD_PATH = REPO_ROOT / "CLAUDE.md"
 
 EXPECTED_RULE_IDS = {
@@ -162,7 +163,7 @@ def test_claude_md_declares_the_synced_rule_contract_and_adapter_boundary():
     claude_md = CLAUDE_MD_PATH.read_text(encoding="utf-8")
 
     assert "hplan Core Contract Sync" in claude_md
-    assert "docs/hplan-capability-matrix.json" in claude_md
+    assert "runtime/hplan-core/hplan-capability-matrix.json" in claude_md
     assert "adapter-required is not execution permission or external-write permission" in claude_md
     for rule_id in EXPECTED_RULE_IDS:
         assert rule_id in claude_md

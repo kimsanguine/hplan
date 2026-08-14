@@ -2,6 +2,10 @@
 PM-ENGINE-MEMORY.md
 **/PM-ENGINE-MEMORY.md
 
+# Public repository policy: keep planning documents and historical archives local/private.
+/docs/
+/.archive/
+
 # Personal profiles (each operator's own running data) — keep _template + README public
 profiles/*
 !profiles/_template/
