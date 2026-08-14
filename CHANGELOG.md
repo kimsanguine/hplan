@@ -8,6 +8,12 @@ All notable changes to hplan (renamed from AI_PM_Skills in v0.5) are documented 
 
 > **cogs 단위경제·적응형 변동성 확장 + 구독 호환.** COGS Sentinel을 보고서 수준으로 끌어올리고, 비용 변동성을 워크로드별로 도출하며, 스킬 모델 핀을 풀어 구독 환경에서 동작하게 함.
 
+### 2026-08-14 addendum — core contract and install verification
+
+- **Pinned hplan-core fixture** — private/local hplan-core의 승인된 commit에서 가져온 중립 contract·renderer fixture를 public hplan에 고정하고, Claude adapter의 capability matrix·lock·adapter metadata가 renderer 출력과 byte parity를 유지하는지 CI에서 확인.
+- **Install doctor and package parity** — `scripts/hplan-doctor.sh`가 Claude launcher, Python, 4개 core artifact, external connector writes disabled 정책을 읽기 전용으로 확인. installer package를 build→extract한 설치본에서도 fixture와 lock을 포함해 같은 doctor 경로를 검증.
+- **Boundary** — hplan-core 원본은 private/local이며 공개 clone URL을 전제하지 않는다. public hplan은 pinned fixture provenance만 포함한다.
+
 ### Added
 - **cogs ARPPU/ARPU + 단위경제** — count 기반 blended margin, LTV/CAC/Payback, cost ratio, overall_verdict(BUILD/INVESTIGATE/HOLD). 전부 옵션 입력, 하위호환.
 - **cogs 적응형 cost-variance** — `--workload {chat,rag,agent,batch}`(리서치 보정 prior) · `--p90-p50-ratio`(분포 직접) · realtime 측정 · 2.2 fallback의 레이어드 해소. 출처 `references/cost-variance.md`.

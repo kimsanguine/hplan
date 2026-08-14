@@ -98,7 +98,7 @@ cp -r architect/skills/orchestration/ ~/.claude/skills/
 
 > 💡 **심화 내용** — 처음이라면 건너뛰어도 됩니다.
 
-`ticket-bridge`와 `ask-team` 스킬은 MCP 연결이나 팀 맵 파일 없이도 초안 생성 모드로 동작합니다. 그러나 자동 연동을 원하면 아래 설정이 필요합니다.
+`ticket-bridge`와 `ask-team` 스킬은 MCP 연결이나 팀 맵 파일 없이도 초안 생성 모드로 동작합니다. hplan core adapter의 외부 connector write는 disabled이므로, 아래 연결은 초안·조회·수동 승인 경로를 위한 선택 사항이며 hplan이 직접 전송하거나 티켓을 생성하지 않습니다.
 
 ### Linear 연동 (`ticket-bridge --system linear`)
 
@@ -124,7 +124,7 @@ cp -r architect/skills/orchestration/ ~/.claude/skills/
 
 ### Slack 연동 (`ask-team --mode ask`)
 
-`ask-team` 스킬은 Gmail MCP(이미 Claude Code에 내장)를 기본 발송 채널로 사용합니다. Slack DM으로 바로 전송하려면 Slack MCP를 추가 등록하세요.
+`ask-team`은 Gmail MCP가 Claude Code에 내장되어 있다고 가정하지 않습니다. Gmail·Slack 등 연결 도구는 사용자가 자신의 Claude 환경에 별도로 구성할 때만 사용할 수 있으며, hplan은 메시지 초안을 만듭니다.
 
 ```bash
 # .mcp.json에 추가
@@ -141,7 +141,7 @@ cp -r architect/skills/orchestration/ ~/.claude/skills/
 
 Slack Bot Token은 **api.slack.com → Your Apps → OAuth & Permissions**에서 `chat:write` 스코프로 발급합니다.
 
-> **Slack MCP 없이도** `ask-team --mode ask`는 동작합니다 — 메시지 초안을 생성하고 클립보드 복사 또는 Gmail 발송 방식으로 안내합니다.
+> **Slack MCP 없이도** `ask-team --mode ask`는 동작합니다 — 메시지 초안을 생성하고 사용자가 승인한 채널로 수동 전달하도록 안내합니다.
 
 ### team-map.json 초기 설정 (`ask-team --mode ask`)
 
@@ -167,15 +167,15 @@ EOF
 
 ## MCP 연결 빠른 가이드
 
-hplan의 일부 스킬(ask-team, ticket-bridge)은 외부 MCP 서버가 필요합니다.
+hplan의 일부 스킬(ask-team, ticket-bridge)은 선택적으로 외부 MCP 도구를 참조할 수 있습니다. connector write는 core adapter에서 disabled이며, 도구 가용성은 사용자의 Claude 환경 설정에 따라 달라집니다.
 
 | 스킬 | 필요한 MCP | 연결 방법 |
 |---|---|---|
-| ask-team (팀 질문) | Gmail / Notion / Slack / Zoom | Claude 데스크탑 앱 → 설정 → MCP 서버 추가 |
-| ticket-bridge (티켓 연동) | GitHub (기본 내장) / Linear / Jira | Linear/Jira는 별도 MCP 플러그인 설치 필요 |
+| ask-team (팀 질문) | 사용자가 구성한 Gmail / Notion / Slack / Zoom | Claude 환경에서 해당 MCP 도구를 별도 구성 |
+| ticket-bridge (티켓 초안) | 사용자가 구성한 GitHub / Linear / Jira | 해당 MCP 도구를 별도 구성; hplan은 초안·로컬 artifact만 생성 |
 
-> MCP 없이 시작하면 `ask-team --mode solo`와 `ticket-bridge --system github`만 사용 가능합니다.
-> MCP 없는 상태에서 연결이 필요한 스킬을 호출하면 어떤 MCP가 없는지 안내해줍니다(fail loud).
+> MCP 없이 시작하면 `ask-team --mode solo`와 ticket-ready local artifact 생성부터 시작합니다.
+> 연결이 필요한 스킬을 호출했는데 도구가 없으면 어떤 MCP가 없는지 안내합니다(fail loud).
 
 ---
 
@@ -360,7 +360,7 @@ TK-041: 긴급 트리거 검증 규칙
 | `respect` | 2-mode UI respect (brief = 코딩 전 RESPECT.md / checkpoint = ship 전 α/β/γ 게이트) | "ship 직전 사용자 존중 게이트를 강제하고 싶어" |
 | `ui-validate` | 통합 UI 검증 (hierarchy/motion/drift/mobile/tc-gate) — 각 check 독립 실행·실패 | "Playwright로 위계·모션·드리프트·모바일을 검증하고 싶어" |
 | `ask-team` | 질문을 올바른 이해관계자 또는 에이전트 역할로 구조화하여 라우팅. `--mode review`는 PRD 스테이크홀더 리뷰 | "이 트레이드오프를 누구에게 물어봐야 하지? / PRD 리뷰를 추적하고 싶어" |
-| `ticket-bridge` | PRD 결정·게이트 출력물 → 추적 가능한 티켓으로 변환 (Linear / Jira / GitHub Issues) | "게이트 판정 결과를 스프린트 티켓으로 자동 전환하고 싶어" |
+| `ticket-bridge` | PRD 결정·게이트 출력물 → Linear / Jira / GitHub Issues용 티켓 초안으로 변환 | "게이트 판정 결과에서 스프린트 티켓 초안을 만들고 싶어" |
 
 ### operate — 측정·학습·포트폴리오 운영 (6개 스킬)
 
@@ -536,7 +536,7 @@ A: 네. 먼저 `/hplan` 게이트로 "정말 만들 가치가 있는가(WHETHER)
 
 특히 `pm-engine`(TK 유닛)과 `orchestration`(멀티에이전트 설계 — Hierarchical 패턴)은 스킬 없이는 Claude가 제대로 수행하지 못하는 **역량 게이팅(capability-gating)** 영역이었습니다.
 
-> **측정 caveat:** 이 수치(100% vs 88% 등)는 v0.4 (당시 32개 스킬) 기준 측정값입니다([CHANGELOG 0.4.0](CHANGELOG.md), 2026-03-06). v1.0.1 (34개 스킬, 5-plugin 구조) 기준 재측정은 아직 끝나지 않았으므로 *직접적인 v1.0.1 비교가 아니라 이전 baseline*입니다. v1.0.1 재측정은 진행 중입니다.
+> **측정 caveat:** 이 수치(100% vs 88% 등)는 v0.4 (당시 32개 스킬) 기준 측정값입니다([CHANGELOG 0.4.0](CHANGELOG.md), 2026-03-06). v1.1.0 (34개 스킬, 5-plugin 구조) 기준 재측정은 아직 끝나지 않았으므로 *직접적인 v1.1.0 비교가 아니라 이전 baseline*입니다. v1.1.0 재측정은 별도 후속입니다.
 
 ---
 

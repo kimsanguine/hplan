@@ -1,6 +1,6 @@
-# Private Distribution
+# Public Installer Distribution
 
-`kimsanguine/hplan`은 private repo로 유지하고, 수강생 설치는 Cloudflare Worker로 제공한다. 현재 운영안은 R2 없이 Worker Static Assets에 private package를 같이 배포한다.
+`kimsanguine/hplan`은 공개 GitHub 저장소다. Habix installer와 package도 인증 없이 내려받을 수 있으며, 현재 배포 경로에 access control은 적용하지 않는다. 별도의 `hplan-core` 원본은 private/local로 유지되고, 공개 hplan package에는 검증용 pinned fixture만 포함된다.
 
 ## Student Command
 
@@ -10,12 +10,12 @@
 bash <(curl -fsSL https://habix.ai/hplan/install.sh)
 ```
 
-학생은 별도 GitHub access token이나 `HPLAN_TOKEN`을 입력하지 않는다.
+사용자는 GitHub access token이나 `HPLAN_TOKEN`을 입력하지 않는다.
 
 ## Flow
 
 ```text
-private GitHub repo
+public GitHub repo
   -> GitHub Actions
   -> scripts/build-installer-package.sh
   -> scripts/prepare-worker-assets.sh
@@ -32,7 +32,7 @@ Worker asset paths:
 
 ## What Gets Installed
 
-The package installs the current private repo content needed for the hplan ADK:
+The package installs the public hplan content needed for the hplan ADK:
 
 - `hplan`, `discover`, `architect`, `deliver`, `operate`
 - `hooks`
@@ -40,21 +40,14 @@ The package installs the current private repo content needed for the hplan ADK:
 - `profiles`
 - `scripts`
 - `docs`, `assets`
+- `hplan-core.lock` and the pinned `hplan-core-fixture` used by the local doctor and CI parity checks
 - root docs such as `README.md`, `README-ko.md`, `GUIDE-ko.md`, `CLAUDE.md`
 
 Generated caches, bytecode, personal profiles, and local env files are excluded.
 
-## Optional Link Control
+## Access Boundary
 
-By default, the link is public-by-obscurity: anyone who has the URL can install the package, but the GitHub repo stays private.
-
-If cohort-level control is needed, set Worker secret `HPLAN_ACCESS_TOKEN` and share a cohort path:
-
-```bash
-bash <(curl -fsSL https://habix.ai/hplan/fc-2026/install.sh)
-```
-
-In that mode `fc-2026` must match the Worker secret. Students still run one command; they do not type a separate token.
+The current installer and package are public and unauthenticated. They are not cohort-gated or access-controlled. Do not describe the URL as private or share it as though it were protected.
 
 ## Cloudflare Setup
 
@@ -89,4 +82,4 @@ npx wrangler deploy --config infra/cloudflare/hplan-installer/wrangler.toml
 
 ## R2 Alternative
 
-If R2 is enabled later, the same package can be moved from Worker Static Assets to a private R2 bucket. The Worker already keeps an `HPLAN_R2` fallback path, but the current `wrangler.toml` uses only static assets because it makes the one-line installer work without enabling R2 first.
+R2 is not part of the current delivery path. Any future storage or access-policy change requires a separate operational decision and documentation update; the current `wrangler.toml` uses Worker Static Assets for the unauthenticated one-line installer.

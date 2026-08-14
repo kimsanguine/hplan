@@ -5,12 +5,12 @@ This directory is an immutable, minimal vendor snapshot of `hplan-core` commit
 three neutral contracts and the renderer/validator required for deterministic
 adapter parity in this repository's CI.
 
-`hplan-core` has no published remote yet, so CI must not invent a clone URL or
+`hplan-core` remains private and local. CI must not invent a clone URL or
 silently skip the renderer check. The validation workflow sets
 `HPLAN_CORE_ROOT` to this fixture and runs the real pinned renderer against all
 four adapter artifacts. A local release check can instead set `HPLAN_CORE_ROOT`
 to a live hplan-core checkout; that comparison detects fixture or adapter drift.
 
-When hplan-core receives a published immutable source, replace this fixture with
-that pinned dependency and retain the same byte-parity test. Do not hand-edit
-individual fixture files: refresh all five files from one reviewed core commit.
+Do not hand-edit individual fixture files. Refresh all five files and
+`PROVENANCE.json` together from one approved local hplan-core commit, then run
+the byte-parity test. There is no hplan-core clone URL for this repository.
