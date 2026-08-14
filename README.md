@@ -45,7 +45,7 @@ Drop this into your project's `.claude/settings.json` (or copy the bundled [`.cl
 
 > Prefer one plugin at a time? `/plugin marketplace add kimsanguine/hplan && /plugin install hplan@hplan`. See [Installation](#installation) for all paths.
 
-> **v1.0.1** — hplan now ships as a complete **ADK (Agent Development Kit)**: **L1 Memory** (`CLAUDE.md` — 9 behavioral rules auto-loaded every session) · **L2 Skills** (34 PM disciplines, auto-invoked) · **L3 Hooks** (`hooks/` — SessionStart gate status · PreToolUse gate enforcement · PostToolUse secret scanner + **MD→HTML auto-renderer**) · **L4 Subagents** (task-sequential subagent dispatch + spec→quality gates, via `deliver/skills/conductor`) · **L5 Plugins** (marketplace). One `git clone` + `bash scripts/install-hooks.sh` activates all 5 layers. v0.9.4–v1.0.1 history: see [CHANGELOG.md](CHANGELOG.md).
+> **v1.1.0** — hplan ships as a complete **ADK (Agent Development Kit)**: **L1 Memory** (`CLAUDE.md` — 9 behavioral rules auto-loaded every session) · **L2 Skills** (34 PM disciplines, auto-invoked) · **L3 Hooks** (`hooks/` — SessionStart gate status · PreToolUse gate enforcement · PostToolUse secret scanner + **MD→HTML auto-renderer**) · **L4 Subagents** (task-sequential subagent dispatch + spec→quality gates, via `deliver/skills/conductor`) · **L5 Plugins** (marketplace). `git clone` + `bash scripts/install-hooks.sh` configures the local L1–L4 setup; activate L5 separately through the Marketplace or the bundled settings example. See [CHANGELOG.md](CHANGELOG.md) for release history.
 
 ### 📺 99-second intro
 
@@ -138,7 +138,7 @@ For the technically curious, here's what makes hplan different from every other 
 - 🧪 **Executable COGS sentinel** — p50 / p90 monthly margin is computed by a real Python sampler with provider pricing snapshots, not estimated by an LLM. Free-user abuse is modeled, not hand-waved.
 - 📚 **Append-only exclusions registry** — every "Do Not Build" gets a JSONL entry with a `reopen_trigger`. New ideas auto-collision-check with Korean-aware fuzzy match.
 - 📊 **Self-evaluating decision log** — every gate decision is logged with reasons; outcomes are back-filled later; an `audit` command surfaces hit rate, false holds, and missed builds. The only PM gate that measures its own accuracy.
-- 🔌 **MCP server** — the same gate primitives are exposed as MCP tools, so Cursor / Windsurf / Kiro / Codex / Goose can call them, not just Claude Code.
+- 🔌 **MCP server** — the same gate primitives are exposed as MCP tools for configured clients such as Cursor / Windsurf / Kiro / Goose. Codex uses the separate [hplan_codex adapter matrix](https://github.com/kimsanguine/hplan_codex/blob/main/docs/HPLAN_CAPABILITY_MATRIX.md): 25 native capabilities and 9 adapter-required capabilities, with no Claude slash commands.
 - 🛑 **Claude Code PreToolUse hook** — blocks writes to `PRD.md` / `specs/*` / `.kiro/specs/*` until `harness/build-gate/checkpoint.json` shows `status: "approved"`. Gate enforcement at the filesystem level, not just in prompts.
 - 🚚 **Multi-target handoff** — one brief JSON exports simultaneously to Spec-Kit `specs/NNN-slug/`, Kiro `.kiro/specs/`, GStack `/office-hours` brief, and Claude Code `AGENTS.md` + `CLAUDE.md`.
 
@@ -163,13 +163,19 @@ This project turns those questions into **34 production-grade skills** across th
 
 ## Quick Start (60 seconds)
 
-For private course distribution, use the one-line installer:
+### Option A: Habix CLI installer
+
+Use the unauthenticated Habix installer when you want the local `claude-hplan` launcher:
 
 ```bash
 bash <(curl -fsSL https://habix.ai/hplan/install.sh)
 ```
 
-This installs the current private package to `~/hplan` and registers local Claude CLI aliases. See [`docs/private-distribution.md`](docs/private-distribution.md) for the Worker/R2 publishing flow.
+This installs the public package to `~/hplan` and registers local Claude CLI aliases. See [`docs/private-distribution.md`](docs/private-distribution.md) for the current public installer boundary.
+
+### Option B: GitHub Marketplace
+
+Use the Marketplace route when you want Claude Code plugins in a project without the local launcher. It is separate from the Habix CLI installer.
 
 ### Your first 10 minutes: install → doctor → first decision
 
@@ -182,7 +188,15 @@ This installs the current private package to `~/hplan` and registers local Claud
 
    `정상` means the prerequisite is usable. `자동 복구 가능` gives a local next step (for example, install Claude Code and open a new terminal). `강사 호출` means the core snapshot is incomplete or inconsistent; reinstall first, then send the complete doctor output to your instructor if it remains.
 
-2. Start Claude with the installed plugins, then state the product idea in plain language.
+2. Load the launcher into the current shell, or open a new terminal. Then move to the project workspace you want to evaluate.
+
+   ```bash
+   source ~/.zshrc   # zsh
+   # or: source ~/.bashrc
+   cd /path/to/your-project
+   ```
+
+3. Start Claude with the installed plugins, then state the product idea in plain language.
 
    ```bash
    claude-hplan
@@ -192,13 +206,13 @@ This installs the current private package to `~/hplan` and registers local Claud
    "[your idea]를 만들어볼까 하는데"
    ```
 
-3. Use these three skills first, in this order:
+4. Use these three skills first, in this order:
 
    - `socratic-question` — exposes the risky assumption before a solution is proposed.
    - `evidence-rubric` — turns interviews and market material into an explicit evidence threshold.
    - `cogs-sentinel` — tests whether the proposed AI usage and price can support a margin.
 
-   Then run `/hplan "your idea"` for the combined build/hold/investigate verdict. These are decision artifacts; they do not authorize deployments, connector writes, or other external changes.
+   Before the first `/hplan`, create and keep the evidence in this exact project workspace: `harness/pain.md`, `harness/cogs.md`, `harness/market.md`, and `harness/competitors.md`. A first `HOLD` caused by missing documents is normal: add dated interview quotes, observed workarounds, market evidence, and cost/price inputs (at least four concrete signals across those files), then rerun `/hplan "your idea"`. These are decision artifacts; they do not authorize deployments, connector writes, or other external changes.
 
 ```bash
 # 1. Install the marketplace
@@ -258,7 +272,7 @@ This isn't a random collection of skills. It's a **complete lifecycle** — the 
 ### What makes hplan different from the other 4
 
 Other plugins are **prompt-driven thinking** — LLM ponders, you decide.
-`hplan` adds **deterministic measurement** — Python scripts calculate p50/p90 COGS margins, append-only registries persist exclusions and decisions across runs, an MCP server lets Cursor/Windsurf/Kiro/Codex call hplan primitives, and a PreToolUse hook blocks PRD/spec writes until the human approves the gate. It is paired with discover/architect/deliver/operate, not a replacement.
+`hplan` adds **deterministic measurement** — Python scripts calculate p50/p90 COGS margins, append-only registries persist exclusions and decisions across runs, configured MCP clients can call hplan primitives, and a PreToolUse hook blocks PRD/spec writes until the human approves the gate. Codex is not a raw-copy target; use the [hplan_codex adapter matrix](https://github.com/kimsanguine/hplan_codex/blob/main/docs/HPLAN_CAPABILITY_MATRIX.md) for its 25 native / 9 adapter-required split. hplan is paired with discover/architect/deliver/operate, not a replacement.
 
 Each skill **auto-loads from natural language** — describe your task and the right skill fires. Skills also **route across plugins**: ops-review (operate) detects a cost spike → suggests orchestration `--pattern router` (architect) for model change → triggers cost-sim (discover) for re-simulation.
 
@@ -304,7 +318,7 @@ Every skill is measured. 10 quality tests with 54 assertions prove what skills a
 
 `pm-engine` without skill drops to 40%. `cost-sim` with skill adds +46.6% output. This is **data-driven proof** that the skills work.
 
-> **Measurement caveat (same honesty as the trigger-accuracy number):** these ROI figures (100% vs 88%, pm-engine 40%, cost-sim +46.6%) were measured at **v0.4 on the then-32-skill set** ([CHANGELOG 0.4.0](CHANGELOG.md), 2026-03-06). They have **not yet been re-measured against the current v1.0.1 / 34-skill build**, so they are an earlier baseline — *not a direct v1.0.1 comparison* (a v1.0.1 re-measurement is a separate follow-up).
+> **Measurement caveat (same honesty as the trigger-accuracy number):** these ROI figures (100% vs 88%, pm-engine 40%, cost-sim +46.6%) were measured at **v0.4 on the then-32-skill set** ([CHANGELOG 0.4.0](CHANGELOG.md), 2026-03-06). They have **not yet been re-measured against the current v1.1.0 / 34-skill build**, so they are an earlier baseline — *not a direct v1.1.0 comparison* (a v1.1.0 re-measurement is a separate follow-up).
 
 ### ⑤ Good/Bad Examples for Data-Driven Improvement
 
@@ -350,7 +364,7 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 
 **Commands (12 total — 11 in `hplan/` + `/prd` from deliver):** `/hplan` ⭐ · `/prd` · `/evidence-rubric` · `/cogs-sentinel` · `/harness-discover` · `/harness-plan` · `/harness-build` · `/harness-operate` · `/harness-exclude` · `/harness-handoff` · `/harness-verify` · `/harness-doctor`
 
-**Cross-cutting assets:** MCP server (`hplan_mcp/`) for Cursor / Windsurf / Kiro / Codex / Goose · PreToolUse hook (`hooks/gate_guard.py`) · 4 role-locked reviewer agents (`agents/`)
+**Cross-cutting assets:** MCP server (`hplan_mcp/`) for configured clients · PreToolUse hook (`hooks/gate_guard.py`) · 4 role-locked reviewer agents (`agents/`). For Codex, use the [hplan_codex adapter matrix](https://github.com/kimsanguine/hplan_codex/blob/main/docs/HPLAN_CAPABILITY_MATRIX.md), not copied Claude skills.
 </details>
 
 <details>
@@ -404,7 +418,7 @@ The gate that runs *before* discovery. Deterministic measurement (Python scripts
 | `respect` | Brief (`--mode brief`): interview-driven RESPECT.md before any UI code. Checkpoint (`--mode checkpoint`): pre-ship α/β/γ gate enforcement | "Capture user-respect intent before coding" / "Ship-time user-respect gate" |
 | `ui-validate` | Playwright 375/768/1440px viewport gate + DOM saliency + WCAG AA + design-system drift detection | "Do not declare build complete until all viewports pass per DESIGN.md spec" |
 | `ask-team` | Structured question routing to the right stakeholder or agent role — prevents wrong-audience decisions. `--mode review` runs a multi-stakeholder PRD review — assigns reviewers, collects comments, and keeps a signoff audit trail | "Who should I ask about this trade-off?" / "Run a PRD signoff review with reviewer assignment and an audit trail" |
-| `ticket-bridge` | Convert PRD decisions and gate outputs into trackable tickets (Linear / Jira / GitHub Issues) | "Turn the gate verdict into sprint tickets automatically" |
+| `ticket-bridge` | Turn PRD decisions and gate outputs into ticket-ready drafts for Linear / Jira / GitHub Issues; external connector writes are disabled in the core adapter | "Prepare sprint-ticket drafts from the gate verdict" |
 
 **Commands:** `/harness-build`
 </details>
@@ -467,7 +481,7 @@ If you'd rather add the marketplace and pick plugins one at a time:
 git clone https://github.com/kimsanguine/hplan.git
 cd hplan
 
-# Install all 5 ADK layers at once:
+# Configure local hooks (L3 only):
 bash scripts/install-hooks.sh   # L3 hooks + git pre-commit
 
 claude --plugin-dir ./hplan     # L2 Skills — pick what you need (hplan, discover, architect, deliver, operate)
@@ -497,7 +511,7 @@ hplan ships as a complete **Agent Development Kit** — five reinforcing layers 
 | `PreToolUse.sh` | Before every Write / Edit | Blocks PRD/ARCHITECTURE writes without approved checkpoint |
 | `PostToolUse.sh` | After every Write / Edit | Warns if API keys / secrets appear in written content |
 
-**After `scripts/install-hooks.sh`**, run `/harness-doctor` to verify all 5 layers are wired correctly.
+**After `scripts/install-hooks.sh`**, run `/harness-doctor` to verify the local hook and gate setup. It does not verify L5 Marketplace activation; verify that separately in the next Claude session or through the settings-based plugin route.
 
 ### Option 3: Enterprise / Team Rollout
 
@@ -538,7 +552,7 @@ hplan is designed to operate within your organization's existing security perime
 | Concern | hplan behavior |
 |---|---|
 | **Where PRD and signoff data lives** | `harness/` inside your local repo. No cloud sync unless you push to your own Git remote. |
-| **External API calls** | Only when you explicitly use `ask-team --mode review` (Gmail draft) or `ticket-bridge --system jira`. Both require user confirmation before any write. |
+| **External connector writes** | The core adapter declares external connector writes disabled. `ask-team` and `ticket-bridge` produce drafts or local artifacts; any separately configured external tool remains outside hplan and requires explicit confirmation. |
 | **Confluence / internal wikis** | `ops-review --mode confluence-export` outputs a Confluence-formatted `.md` file for manual upload — no Confluence API call, no credentials required. |
 | **GitHub public repo risk** | If your project repo is public, keep `harness/` in `.gitignore`. The `profiles/` directory is gitignored by default. |
 | **Role-based access** | Use your Git host's branch protection and access controls. hplan does not manage permissions — it defers to your existing IAM. |
@@ -551,7 +565,7 @@ For regulated environments (financial services, healthcare, government), the rec
 |------|:------:|:--------:|-----------|
 | **Gemini CLI** | ✅ | ❌ | Copy to `.gemini/skills/` |
 | **Cursor** | ✅ | ❌ | Copy to `.cursor/skills/` |
-| **Codex CLI** | ✅ | ❌ | Copy to `.codex/skills/` |
+| **Codex CLI** | 25 native / 9 adapter-required | ❌ | Use the [hplan_codex adapter matrix](https://github.com/kimsanguine/hplan_codex/blob/main/docs/HPLAN_CAPABILITY_MATRIX.md); copying Claude skills to `.codex/skills/` is unsupported. |
 | **Kiro** | ✅ | ❌ | Copy to `.kiro/skills/` |
 
 ---

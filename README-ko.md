@@ -75,7 +75,15 @@ git clone https://github.com/kimsanguine/hplan.git ~/hplan
 
    `정상`은 시작 가능한 상태입니다. `자동 복구 가능`은 Claude Code 설치 후 새 터미널을 여는 것처럼 바로 실행할 다음 조치를 안내합니다. `강사 호출`은 core snapshot이 없거나 서로 맞지 않는 상태입니다. 먼저 재설치하고, 계속되면 doctor 전체 출력을 강사에게 보내세요.
 
-2. 설치된 플러그인으로 Claude를 시작한 뒤, 제품 아이디어를 자연어로 말합니다.
+2. 현재 쉘에 launcher를 반영하거나 새 터미널을 열고, 평가할 프로젝트 작업 폴더로 이동합니다.
+
+   ```bash
+   source ~/.zshrc   # zsh
+   # 또는: source ~/.bashrc
+   cd /path/to/your-project
+   ```
+
+3. 설치된 플러그인으로 Claude를 시작한 뒤, 제품 아이디어를 자연어로 말합니다.
 
    ```bash
    claude-hplan
@@ -85,13 +93,13 @@ git clone https://github.com/kimsanguine/hplan.git ~/hplan
    "[내 아이디어]를 만들어볼까 하는데"
    ```
 
-3. 처음에는 아래 세 스킬을 이 순서로 사용하세요.
+4. 처음에는 아래 세 스킬을 이 순서로 사용하세요.
 
    - `socratic-question` — 해결책을 제안하기 전에 위험한 가정을 드러냅니다.
    - `evidence-rubric` — 인터뷰·시장 자료를 명시적 증거 기준으로 바꿉니다.
    - `cogs-sentinel` — 제안한 AI 사용량과 가격이 마진을 만들 수 있는지 검증합니다.
 
-   다음에 `/hplan "내 아이디어"`로 build / hold / investigate 통합 판정을 실행합니다. 이 결과물은 의사결정용이며 배포·connector write·다른 외부 변경을 허용하지 않습니다.
+   첫 `/hplan` 전에 현재 프로젝트 작업 폴더에 `harness/pain.md`, `harness/cogs.md`, `harness/market.md`, `harness/competitors.md`를 정확히 만들고 근거를 저장하세요. 문서가 없어 첫 결과가 `HOLD`가 되는 것은 정상입니다. 날짜가 있는 인터뷰 발화, 관찰된 우회법, 시장 근거, 비용·가격 입력처럼 네 문서 전체에서 구체적 신호를 최소 4개 모은 뒤 `/hplan "내 아이디어"`를 다시 실행하세요. 이 결과물은 의사결정용이며 배포·connector write·다른 외부 변경을 허용하지 않습니다.
 
 ## 5분 빠른 시작
 
@@ -105,7 +113,7 @@ git clone https://github.com/kimsanguine/hplan.git ~/hplan
 
 > 💡 **심화 내용** — 처음이라면 건너뛰어도 됩니다.
 >
-> **v1.0.1** — hplan 은 AI 도구가 HOW 로 달려가기 전에 **WHETHER 를 묻는 Product Build Gate** 입니다. ADK 5-Layer 완성: L1 Memory (CLAUDE.md) · L2 Skills (34개 PM 규율) · L3 Hooks (SessionStart · PreToolUse · PostToolUse) · L4 Subagents (conductor — 태스크 순차 디스패치 + spec→quality 게이트) · L5 Plugins (마켓플레이스). `git clone` + `bash scripts/install-hooks.sh` 한 번으로 5개 레이어 전체 활성화. 자세한 변경 내역은 [CHANGELOG.md](CHANGELOG.md).
+> **v1.1.0** — hplan 은 AI 도구가 HOW 로 달려가기 전에 **WHETHER 를 묻는 Product Build Gate** 입니다. ADK 5-Layer: L1 Memory (CLAUDE.md) · L2 Skills (34개 PM 규율) · L3 Hooks (SessionStart · PreToolUse · PostToolUse) · L4 Subagents (conductor — 태스크 순차 디스패치 + spec→quality 게이트) · L5 Plugins (마켓플레이스). `git clone` + `bash scripts/install-hooks.sh`는 로컬 L1–L4 설정을 구성하며, L5는 Marketplace 또는 동봉 settings example로 별도 활성화합니다. 자세한 변경 내역은 [CHANGELOG.md](CHANGELOG.md).
 
 ### 📺 99초 소개 영상
 
@@ -228,7 +236,7 @@ Day 50-60   매출·성과 구조
 - 🧪 **실행 가능한 COGS sentinel** — LLM 추정이 아니라 실제 Python sampler가 provider 단가 스냅샷으로 p50/p90 월간 마진 계산. 무료 사용자 abuse도 모델링.
 - 📚 **Append-only exclusions registry** — 모든 "Do Not Build" 결정이 JSONL에 `reopen_trigger`와 함께 저장. 새 아이디어는 한국어 fuzzy match로 자동 collision check.
 - 📊 **Self-evaluating decision log** — 모든 gate 결정이 이유와 함께 기록되고, outcome은 나중에 back-fill, `audit` 명령이 hit rate / false holds / missed builds 산출. 자기 정확도를 측정하는 유일한 PM gate.
-- 🔌 **MCP server** — 같은 gate primitive가 MCP tool로도 노출되어 Cursor / Windsurf / Kiro / Codex / Goose에서도 호출 가능.
+- 🔌 **MCP server** — 같은 gate primitive가 설정된 Cursor / Windsurf / Kiro / Goose 등의 MCP tool로 노출됩니다. Codex는 Claude 스킬 복사 대상이 아니라 [hplan_codex capability matrix](https://github.com/kimsanguine/hplan_codex/blob/main/docs/HPLAN_CAPABILITY_MATRIX.md)의 25 native / 9 adapter-required 전용 adapter를 사용하며 Claude slash command는 제공하지 않습니다.
 - 🛑 **Claude Code PreToolUse hook** — `harness/build-gate/checkpoint.json`이 `status: "approved"`가 되기 전까지 PRD.md / specs/* / .kiro/specs/* 작성을 파일 시스템 레벨에서 차단. 프롬프트 룰이 아닌 강제력 있는 게이트.
 - 🚚 **Multi-target handoff** — 단일 brief JSON이 Spec-Kit `specs/NNN-slug/`, Kiro `.kiro/specs/`, GStack `/office-hours` brief, Claude Code `AGENTS.md` + `CLAUDE.md`로 동시 export.
 - 📋 **Append-only qa_log.jsonl** — 배포 전 QA 라운드별 영구 로그. 페르소나·개발 리뷰어 풀, CRITICAL/HIGH 건수, 자동 수정 내역, 테스트 delta 추적. `decisions.jsonl` 패턴 확장 — "몇 라운드 만에 CRITICAL=0이 됐는지"가 다음 제품 QA 설계의 학습 데이터.
@@ -306,19 +314,19 @@ claude-hplan-gate  # 게이트만 (WHETHER 판단 전용)
 
 > **시스템 요구사항:** Claude Code v1.0+, Python 3.9+ (Evidence Gate 스크립트용), Git (pre-commit hook 선택). 자세한 설치 환경은 [GUIDE-ko.md](GUIDE-ko.md#시스템-요구사항) 참조.
 
-### 유료 강의 수강생용 private 설치
+### Habix CLI installer
 
 ```bash
 bash <(curl -fsSL https://habix.ai/hplan/install.sh)
 ```
 
-이 명령은 private package를 `~/hplan`에 설치하고 로컬 Claude CLI alias를 등록합니다. 운영 방식은 [`docs/private-distribution.md`](docs/private-distribution.md)에 정리되어 있습니다.
+이 명령은 인증 없는 공개 package를 `~/hplan`에 설치하고 로컬 Claude CLI alias를 등록합니다. Marketplace 설치와는 별도 경로입니다. 현재 공개 installer 범위는 [`docs/private-distribution.md`](docs/private-distribution.md)에 정리되어 있습니다.
 
 > **설치는 맨 위 "이것만 따라하세요"(settings.json 5개 일괄) 하나면 됩니다.** 마켓플레이스에서 하나씩 고르거나 로컬 클론하는 방법은 아래 [설치](#설치) 섹션에 정리돼 있습니다.
 
 ### 첫 실행 — 게이트가 먼저, 그다음 라이프사이클
 
-설치가 끝났으면 Claude 세션에서 이 순서로 실행하세요. **`/hplan` 게이트가 먼저입니다** — WHETHER(만들지 말지)가 GO여야 라이프사이클로 넘어갑니다.
+설치가 끝났으면 `source ~/.zshrc`(bash면 `source ~/.bashrc`) 또는 새 터미널을 연 뒤 프로젝트 폴더에서 Claude를 시작하세요. **`/hplan` 게이트가 먼저입니다** — HOLD는 근거를 더 모으라는 정상 결과이며, 최소 4개의 구체적 신호를 확보한 뒤 다시 판단합니다.
 
 ```bash
 # Claude 세션에서 실행
@@ -376,7 +384,7 @@ hplan   discover  architect  deliver   operate
 ### hplan이 나머지 4개와 다른 점
 
 다른 plugin들은 **prompt-driven thinking** — LLM이 고민하고 사람이 결정합니다.
-`hplan`은 **deterministic measurement** — Python 스크립트가 p50/p90 COGS 마진을 계산하고, append-only registry가 exclusions/decisions를 영구 누적하고, MCP 서버가 Cursor/Windsurf/Kiro/Codex에서 hplan을 호출 가능하게 하고, PreToolUse hook이 사람 승인 전까지 PRD/spec 작성을 차단합니다. **`scripts/validate-mermaid.py`**가 PRD의 workflow ↔ userflow ↔ requirements 정합성을 결정론으로 차분 검증합니다. **discover/architect/deliver/operate를 대체하지 않고 layering**합니다.
+`hplan`은 **deterministic measurement** — Python 스크립트가 p50/p90 COGS 마진을 계산하고, append-only registry가 exclusions/decisions를 영구 누적하고, 설정된 MCP client가 hplan primitive를 호출하며, PreToolUse hook이 사람 승인 전까지 PRD/spec 작성을 차단합니다. Codex는 raw Claude skill 복사가 아니라 [hplan_codex capability matrix](https://github.com/kimsanguine/hplan_codex/blob/main/docs/HPLAN_CAPABILITY_MATRIX.md)의 25 native / 9 adapter-required adapter 경로를 사용합니다. **`scripts/validate-mermaid.py`**가 PRD의 workflow ↔ userflow ↔ requirements 정합성을 결정론으로 차분 검증합니다. **discover/architect/deliver/operate를 대체하지 않고 layering**합니다.
 
 특히 중요한 건 **마지막 단계인 operate → 첫 단계인 discover로 이어지는 순환 구조**입니다. operate에서 축적한 PM 운영 노하우(TK)가 다음 에이전트를 만들 때 자동으로 반영되기 때문에, 에이전트를 만들수록 다음 에이전트의 품질이 올라갑니다.
 
@@ -441,7 +449,7 @@ PM의 판단/경험 기록 → /extract 명령어 → TK-NNN으로 구조화
 
 구체적으로 보면, `pm-engine` 스킬 없이 Claude에게 "운영 노하우를 구조화해줘"라고 하면 통과율이 40%까지 떨어집니다. `cost-sim` 스킬을 적용하면 비용 분석 산출량이 +46.6% 증가합니다. 이런 숫자가 있기 때문에, 어떤 스킬이 실제로 가치를 더하는지, 어떤 스킬을 개선해야 하는지를 **데이터로 판단**할 수 있습니다.
 
-> **측정 caveat (트리거 정확도 수치와 같은 정직성):** 이 ROI 수치(100% vs 88%, pm-engine 40%, cost-sim +46.6%)는 v0.4 (당시 32개 스킬) 기준 측정값입니다([CHANGELOG 0.4.0](CHANGELOG.md), 2026-03-06). v1.0.1 (34개 스킬, 5-plugin 구조) 기준으로는 *직접적인 v1.0.1 비교가 아니라 이전 baseline*입니다. **아직 v1.0.1 기준 재측정되지 않았습니다(별도 후속).**
+> **측정 caveat (트리거 정확도 수치와 같은 정직성):** 이 ROI 수치(100% vs 88%, pm-engine 40%, cost-sim +46.6%)는 v0.4 (당시 32개 스킬) 기준 측정값입니다([CHANGELOG 0.4.0](CHANGELOG.md), 2026-03-06). v1.1.0 (34개 스킬, 5-plugin 구조) 기준으로는 *직접적인 v1.1.0 비교가 아니라 이전 baseline*입니다. **아직 v1.1.0 기준 재측정되지 않았습니다(별도 후속).**
 
 ### ⑤ Good/Bad 예시 — 스킬 품질을 지속적으로 개선하는 장치
 
@@ -486,7 +494,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 
 **게이트 세밀 제어:** `/hplan` · `/harness-exclude` · `/harness-handoff` · `/harness-doctor`
 
-**Cross-cutting 자산:** MCP 서버 (`hplan_mcp/`) — Cursor / Windsurf / Kiro / Codex / Goose 호환 · PreToolUse hook (`hooks/gate_guard.py`) · 4개 role-locked reviewer agents (`agents/`)
+**Cross-cutting 자산:** MCP 서버 (`hplan_mcp/`) — 설정된 MCP client용 · PreToolUse hook (`hooks/gate_guard.py`) · 4개 role-locked reviewer agents (`agents/`). Codex는 Claude 스킬 복사 대신 [hplan_codex capability matrix](https://github.com/kimsanguine/hplan_codex/blob/main/docs/HPLAN_CAPABILITY_MATRIX.md)를 따릅니다.
 </details>
 
 <details>
@@ -526,7 +534,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 <details>
 <summary><strong>4. deliver</strong> — 어떻게 스펙을 쓰고 출시할까? <code>(10 skills)</code></summary>
 
-실제로 만들고 출시하는 단계입니다. 프로젝트 온보딩(CLAUDE.md 자동 생성)부터 통합 15섹션 PRD 작성, 구현 루프 오케스트레이션, 스프린트 계획·추적, QA 체크리스트, UI 검증, 사용자 존중 게이트, 팀 질의·티켓 동기화까지 포함합니다.
+실제로 만들고 출시하는 단계입니다. 프로젝트 온보딩(CLAUDE.md 자동 생성)부터 통합 15섹션 PRD 작성, 구현 루프 오케스트레이션, 스프린트 계획·추적, QA 체크리스트, UI 검증, 사용자 존중 게이트, 팀 질의·티켓 초안 준비까지 포함합니다.
 
 > v0.14.1 흡수: roadmap → `prd --mode roadmap` · stakeholder-review → `ask-team --mode review` · stakeholder-update → operate `ops-review`.
 
@@ -541,7 +549,7 @@ Claude Code의 최신 플랫폼 스펙을 모두 적용했습니다: auto-invoca
 | `ui-validate` | 통합 UI 검증 — hierarchy(Playwright DOM saliency + WCAG AA) · motion(transition drift) · drift(pHash N-screen) · mobile(375/768/1440px) · tc-gate(TC별 스크린샷 증거). 각 check는 `--check`로 독립 실행 | "ship 전 UI 위계·모션·드리프트·모바일을 측정으로 검증" |
 | `respect` | 2-mode 사용자 존중 게이트 — `--mode brief`는 코딩 전 RESPECT.md 설계 브리프, `--mode checkpoint`는 ship 직전 α/β/γ 매트릭스 게이트. RESPECT.md 부재 시 craft-lint 차단(exit 2) | "UI 화면 시작 전 존중 의도를 capture / ship 직전 존중 게이트" |
 | `ask-team` | PM이 사람에게 질문하고 답을 모으는 비동기 채널 — comms MCP(Gmail/Notion/Zoom/Slack) 래퍼. `--mode ask\|pull-answers\|digest\|solo\|init`. `--mode review`는 PRD 스테이크홀더 리뷰 — 리뷰어 배정·코멘트 수집·Signoff audit trail. 메시지를 자동 발송하지 않음(초안/코멘트까지) | "이 트레이드오프를 누구에게 물어봐야 하지?" / "멀티 스테이크홀더 PRD 리뷰 + 사인오프 추적" |
-| `ticket-bridge` | GitHub Issues / Linear / Jira ⇄ hplan 실행 레이어 번역기 — `--mode pull\|estimate\|status\|push`, `--system github\|linear\|jira`. sprint 산출물을 이슈로 전달만 (추정 직접 계산 안 함) | "게이트 판정·스프린트 추정·진척을 이슈에 자동 동기화하고 싶어" |
+| `ticket-bridge` | GitHub Issues / Linear / Jira용 티켓 초안 번역기 — `--mode pull\|estimate\|status\|push`, `--system github\|linear\|jira`. core adapter의 외부 connector write는 disabled이며 sprint 산출물을 초안·로컬 artifact로만 준비 | "게이트 판정에서 스프린트 티켓 초안을 만들고 싶어" |
 
 **커맨드:** `/harness-build`
 </details>
@@ -602,7 +610,7 @@ source ~/.zshrc
 /plugin install operate@hplan
 ```
 
-> **Private repo 환경**: 마켓플레이스 설치가 "not found"로 실패하면, 방법 3(수동 로컬 클론)을 사용하세요. 로컬 클론은 repo 공개 여부와 무관하게 동작합니다.
+> **Marketplace 경로**: 현재 `kimsanguine/hplan`은 공개 저장소입니다. Marketplace 설치가 실패하면 Claude Code의 marketplace 설정을 확인하거나 방법 3(수동 로컬 클론)을 사용하세요.
 
 ---
 
@@ -638,7 +646,7 @@ claude \
 |------|:------:|:--------:|--------|
 | **Gemini CLI** | ✅ | ❌ | `.gemini/skills/`에 복사 |
 | **Cursor** | ✅ | ❌ | `.cursor/skills/`에 복사 |
-| **Codex CLI** | ✅ | ❌ | `.codex/skills/`에 복사 |
+| **Codex CLI** | 25 native / 9 adapter-required | ❌ | [hplan_codex capability matrix](https://github.com/kimsanguine/hplan_codex/blob/main/docs/HPLAN_CAPABILITY_MATRIX.md) 사용; Claude 스킬을 `.codex/skills/`에 복사하는 방식은 지원하지 않음 |
 | **Kiro** | ✅ | ❌ | `.kiro/skills/`에 복사 |
 
 ---
