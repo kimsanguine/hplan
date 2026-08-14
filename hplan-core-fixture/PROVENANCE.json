@@ -1,0 +1,11 @@
+{
+  "core_commit": "3055f65e52991e226cc1aabd6fa0f31071aa99d7",
+  "core_source_sha256": "aa5a43827a850892d4b3dab4c2520104cbade9529e835b8bd933ae462d7e263d",
+  "files": {
+    "contracts/aliases.json": "b55560c47d3a50aca0af41b80a2592a8d20b9b88c96b78c241af20ac7bd814ff",
+    "contracts/capabilities.json": "9ece4dd6addbb2605ba07058337926b192bea7fa212bdbdda8748c8421af7e5d",
+    "contracts/rules.json": "c6369184840c4176af8e0b369dc441dc6909ee9ecd6c373a967f18204ef4cfa1",
+    "scripts/render_adapter_snapshot.py": "69d5fd7c5bba7bb68fec44be3e12d74e7ca32197fd9b6f51125adf31f9fa99d7",
+    "scripts/validate_core.py": "784224b0c2781cd1a118fcfbc12d878b5c0cbde8b398d18c736ceb4115651477"
+  }
+}

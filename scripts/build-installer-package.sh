@@ -17,6 +17,7 @@ required_paths=(
   "hooks"
   "harness"
   "profiles"
+  "hplan-core-fixture"
   "scripts"
   "docs"
   "assets"
@@ -27,6 +28,7 @@ required_paths=(
   "CLAUDE.md"
   "CONTRIBUTING.md"
   "LICENSE"
+  "hplan-core.lock"
   "validate_plugins.py"
 )
 
