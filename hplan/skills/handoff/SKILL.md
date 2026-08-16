@@ -1,7 +1,7 @@
 ---
 name: handoff
-description: "Export an approved Build Gate brief to the downstream coding ecosystem you actually use — Spec-Kit (specs/NNN-slug/{spec,plan,tasks}.md), Kiro (.kiro/specs/<slug>/{requirements,design,tasks}.md), GStack (/office-hours brief), or Claude Code (AGENTS.md + CLAUDE.md). Use when Evidence + Product + Build Gate have all been approved and you're ready to start implementation in your coding agent of choice."
-argument-hint: "[brief.json] [--target spec-kit|kiro|gstack|claude|all]"
+description: "Export an approved Build Gate brief to a downstream coding ecosystem, or emit a read-only AI PM Handoff Profile v0 for growth planning. Use only after the Build Gate checkpoint and referenced decision agree."
+argument-hint: "[brief.json] [--target spec-kit|kiro|gstack|claude|all] | [--root <project> [--output <file>] [--force]]"
 allowed-tools: ["Read", "Write", "Bash"]
 model: inherit
 ---
@@ -15,6 +15,7 @@ Running for: **$ARGUMENTS**
 - hplan은 단독 도구가 아니라 *전처리기*. Build Gate가 통과하면 결과물을 spec-kit / kiro / gstack / claude code 어느 곳으로든 export.
 - 단일 brief JSON → 4개 생태계 동시 export 가능 (`--target all`).
 - 각 생태계의 네이티브 컨벤션 (spec-kit의 `specs/NNN-slug/`, Kiro의 `.kiro/specs/`) 그대로 따름.
+- AI PM Handoff Profile v0는 checkpoint와 decision log를 읽기만 하고 source-owned 상태와 opaque reference만 전달.
 
 ## Trigger Gate
 
@@ -41,6 +42,14 @@ Running for: **$ARGUMENTS**
 ```bash
 python3 hplan/scripts/export_handoff.py brief.json --target all --root .
 ```
+
+AI PM Handoff Profile v0를 stdout으로 내보내기:
+
+```bash
+python3 hplan/scripts/export_growth_handoff.py --root .
+```
+
+검증을 모두 통과한 뒤 명시한 로컬 파일에 저장하려면 `--output <path>`를 사용한다. 기존 파일은 기본적으로 거부하며, 의도적으로 교체할 때만 `--force`를 함께 사용한다.
 
 ```json
 {
@@ -75,6 +84,7 @@ python3 hplan/scripts/export_handoff.py brief.json --target all --root .
 | kiro | `harness/exports/kiro/.kiro/specs/<slug>/{requirements,design,tasks}.md` |
 | gstack | `harness/exports/gstack/office-hours-brief.md` |
 | claude | `harness/exports/claude/AGENTS.md` + `CLAUDE.md` |
+| AI PM Profile v0 | stdout (또는 명시한 `--output` JSON 파일) |
 
 ## Verification
 
@@ -83,3 +93,5 @@ python3 hplan/scripts/export_handoff.py brief.json --target all --root .
 - [ ] Kiro `.kiro/specs/<slug>/` exists with 3 files
 - [ ] GStack brief includes "Next GStack Steps" section
 - [ ] Claude AGENTS.md mentions COGS sentinel as build gate
+- [ ] AI PM Profile는 approved checkpoint의 `decision_ref`가 같은 project의 decision을 가리킬 때만 생성
+- [ ] AI PM Profile의 `status`는 decision log 원문을 유지하고 checkpoint/decision 원본 파일은 불변
