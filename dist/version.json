@@ -1,0 +1,9 @@
+{
+  "name": "hplan",
+  "version": "1.2.0",
+  "commit": "6ebe67f",
+  "built_at": "2026-08-16T15:55:44Z",
+  "package": "hplan-package.tar.gz",
+  "sha256": "1f05f9a5d9252eb2853a30d77385a3564d970a7afcf9447fec058fa019bfd847",
+  "install": "install.sh"
+}
