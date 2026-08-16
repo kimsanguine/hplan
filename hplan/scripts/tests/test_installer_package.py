@@ -1,3 +1,4 @@
+import json
 import os
 import stat
 import subprocess
@@ -22,12 +23,18 @@ def test_installer_package_contains_pinned_core_fixture_and_doctor_runs_after_ex
     subprocess.run(
         ["bash", str(BUILD_SCRIPT)],
         cwd=REPO_ROOT,
-        env={**os.environ, "HPLAN_VERSION": "0.0.0-test"},
         check=True,
         capture_output=True,
         text=True,
     )
     package = REPO_ROOT / "dist" / "hplan-package.tar.gz"
+    version = json.loads((REPO_ROOT / "dist" / "version.json").read_text(encoding="utf-8"))
+    manifest = json.loads(
+        (REPO_ROOT / "hplan" / ".claude-plugin" / "plugin.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert version["version"] == manifest["version"]
     with tarfile.open(package, "r:gz") as archive:
         archive.extractall(tmp_path, filter="data")
 
