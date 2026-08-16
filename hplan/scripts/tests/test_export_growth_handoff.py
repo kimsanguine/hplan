@@ -15,11 +15,14 @@ def _write_sources(
     decision_ref: str = "dec-001",
     logged_decision_ref: str | None = None,
     decision_project: str | None = None,
+    checkpoint_gate: str = "build",
+    checkpoint_decision: str = "CONDITIONAL_GO",
+    decision_gate: str = "build",
     decision_status: str = "CONDITIONAL_GO",
     approved_by: str = "portfolio-owner",
     approved_at: str = "2026-08-16T18:30:00+09:00",
 ) -> None:
-    logged_decision_ref = logged_decision_ref or decision_ref
+    logged_decision_ref = decision_ref if logged_decision_ref is None else logged_decision_ref
     decision_project = checkpoint_project if decision_project is None else decision_project
     checkpoint_path = root / "harness" / "build-gate" / "checkpoint.json"
     checkpoint_path.parent.mkdir(parents=True)
@@ -28,8 +31,8 @@ def _write_sources(
             {
                 "status": checkpoint_status,
                 "project": checkpoint_project,
-                "gate": "build",
-                "decision": "CONDITIONAL_GO",
+                "gate": checkpoint_gate,
+                "decision": checkpoint_decision,
                 "decision_ref": decision_ref,
                 "approved_at": approved_at,
                 "approved_by": approved_by,
@@ -53,7 +56,7 @@ def _write_sources(
             {
                 "id": logged_decision_ref,
                 "project": decision_project,
-                "gate": "build",
+                "gate": decision_gate,
                 "decision": decision_status,
             }
         )
@@ -68,7 +71,16 @@ def _run(root: Path, *args: str) -> subprocess.CompletedProcess[str]:
         text=True,
         capture_output=True,
         check=False,
+        cwd=root,
     )
+
+
+def _source_bytes(root: Path) -> dict[Path, bytes]:
+    paths = (
+        root / "harness" / "build-gate" / "checkpoint.json",
+        root / "harness" / "decisions.jsonl",
+    )
+    return {path: path.read_bytes() for path in paths}
 
 
 def test_approved_checkpoint_exports_profile_v0_to_stdout(tmp_path):
@@ -126,6 +138,69 @@ def test_decision_project_mismatch_is_rejected(tmp_path):
     assert "decision project does not match checkpoint project" in result.stderr
 
 
+def test_checkpoint_must_be_for_build_gate(tmp_path):
+    _write_sources(tmp_path, checkpoint_gate="product")
+    before = _source_bytes(tmp_path)
+
+    result = _run(tmp_path)
+
+    assert result.returncode == 1
+    assert result.stdout == ""
+    assert "checkpoint gate must be 'build'" in result.stderr
+    assert _source_bytes(tmp_path) == before
+
+
+def test_referenced_decision_must_be_for_build_gate(tmp_path):
+    _write_sources(tmp_path, decision_gate="evidence")
+    before = _source_bytes(tmp_path)
+
+    result = _run(tmp_path)
+
+    assert result.returncode == 1
+    assert result.stdout == ""
+    assert "referenced decision gate must be 'build'" in result.stderr
+    assert _source_bytes(tmp_path) == before
+
+
+def test_non_forward_decisions_are_rejected(tmp_path):
+    for status in ("hold", "interview", "pivot"):
+        root = tmp_path / status
+        _write_sources(root, checkpoint_decision=status, decision_status=status)
+        before = _source_bytes(root)
+
+        result = _run(root)
+
+        assert result.returncode == 1
+        assert result.stdout == ""
+        assert "decision must be 'build' or 'CONDITIONAL_GO'" in result.stderr
+        assert _source_bytes(root) == before
+
+
+def test_checkpoint_and_referenced_decision_must_agree(tmp_path):
+    _write_sources(
+        tmp_path,
+        checkpoint_decision="build",
+        decision_status="CONDITIONAL_GO",
+    )
+    before = _source_bytes(tmp_path)
+
+    result = _run(tmp_path)
+
+    assert result.returncode == 1
+    assert result.stdout == ""
+    assert "checkpoint decision does not match referenced decision" in result.stderr
+    assert _source_bytes(tmp_path) == before
+
+
+def test_build_decision_is_forward_capable(tmp_path):
+    _write_sources(tmp_path, checkpoint_decision="build", decision_status="build")
+
+    result = _run(tmp_path)
+
+    assert result.returncode == 0, result.stderr
+    assert json.loads(result.stdout)["status"] == "build"
+
+
 def test_stdout_export_does_not_mutate_source_files(tmp_path):
     _write_sources(tmp_path)
     checkpoint_path = tmp_path / "harness" / "build-gate" / "checkpoint.json"
@@ -147,9 +222,9 @@ def test_stdout_export_does_not_mutate_source_files(tmp_path):
 
 def test_named_output_file_is_written_after_source_validation(tmp_path):
     _write_sources(tmp_path)
-    output_path = tmp_path / "exports" / "growth-handoff.json"
+    output_path = tmp_path / "harness" / "exports" / "ai-pm" / "growth-handoff.json"
 
-    result = _run(tmp_path, "--output", str(output_path))
+    result = _run(tmp_path, "--output", "growth-handoff.json")
 
     assert result.returncode == 0, result.stderr
     assert result.stdout == ""
@@ -158,10 +233,11 @@ def test_named_output_file_is_written_after_source_validation(tmp_path):
 
 def test_existing_output_is_not_overwritten_without_force(tmp_path):
     _write_sources(tmp_path)
-    output_path = tmp_path / "growth-handoff.json"
+    output_path = tmp_path / "harness" / "exports" / "ai-pm" / "growth-handoff.json"
+    output_path.parent.mkdir(parents=True)
     output_path.write_text("keep-me\n", encoding="utf-8")
 
-    result = _run(tmp_path, "--output", str(output_path))
+    result = _run(tmp_path, "--output", "growth-handoff.json")
 
     assert result.returncode == 1
     assert result.stdout == ""
@@ -171,9 +247,9 @@ def test_existing_output_is_not_overwritten_without_force(tmp_path):
 
 def test_invalid_source_does_not_create_named_output(tmp_path):
     _write_sources(tmp_path, checkpoint_status="pending")
-    output_path = tmp_path / "new-directory" / "growth-handoff.json"
+    output_path = tmp_path / "harness" / "exports" / "ai-pm" / "growth-handoff.json"
 
-    result = _run(tmp_path, "--output", str(output_path))
+    result = _run(tmp_path, "--output", "growth-handoff.json")
 
     assert result.returncode == 1
     assert "checkpoint status must be 'approved'" in result.stderr
@@ -183,13 +259,77 @@ def test_invalid_source_does_not_create_named_output(tmp_path):
 
 def test_force_allows_replacing_existing_output(tmp_path):
     _write_sources(tmp_path)
-    output_path = tmp_path / "growth-handoff.json"
+    output_path = tmp_path / "harness" / "exports" / "ai-pm" / "growth-handoff.json"
+    output_path.parent.mkdir(parents=True)
     output_path.write_text("replace-me\n", encoding="utf-8")
 
-    result = _run(tmp_path, "--output", str(output_path), "--force")
+    result = _run(tmp_path, "--output", "growth-handoff.json", "--force")
 
     assert result.returncode == 0, result.stderr
     assert json.loads(output_path.read_text(encoding="utf-8"))["project_id"] == "project-alpha"
+
+
+def test_absolute_output_is_rejected_before_parent_creation(tmp_path):
+    root = tmp_path / "root"
+    _write_sources(root)
+    before = _source_bytes(root)
+    output_path = tmp_path / "outside" / "growth-handoff.json"
+
+    result = _run(root, "--output", str(output_path), "--force")
+
+    assert result.returncode == 1
+    assert result.stdout == ""
+    assert "output must be a relative path" in result.stderr
+    assert not output_path.parent.exists()
+    assert _source_bytes(root) == before
+
+
+def test_traversal_output_is_rejected_before_parent_creation(tmp_path):
+    root = tmp_path / "root"
+    _write_sources(root)
+    before = _source_bytes(root)
+    escaped_path = tmp_path / "escaped" / "growth-handoff.json"
+
+    result = _run(root, "--output", "../escaped/growth-handoff.json", "--force")
+
+    assert result.returncode == 1
+    assert result.stdout == ""
+    assert "output path traversal is not allowed" in result.stderr
+    assert not escaped_path.parent.exists()
+    assert _source_bytes(root) == before
+
+
+def test_source_ledgers_are_never_valid_output_targets(tmp_path):
+    for name, source_path in (
+        ("checkpoint", Path("harness/build-gate/checkpoint.json")),
+        ("decisions", Path("harness/decisions.jsonl")),
+    ):
+        root = tmp_path / name
+        _write_sources(root)
+        before = _source_bytes(root)
+
+        result = _run(root, "--output", str(root / source_path), "--force")
+
+        assert result.returncode == 1
+        assert result.stdout == ""
+        assert _source_bytes(root) == before
+
+
+def test_symlink_output_to_decision_ledger_is_rejected(tmp_path):
+    _write_sources(tmp_path)
+    before = _source_bytes(tmp_path)
+    export_root = tmp_path / "harness" / "exports" / "ai-pm"
+    export_root.mkdir(parents=True)
+    output_path = export_root / "growth-handoff.json"
+    output_path.symlink_to(tmp_path / "harness" / "decisions.jsonl")
+
+    result = _run(tmp_path, "--output", "growth-handoff.json", "--force")
+
+    assert result.returncode == 1
+    assert result.stdout == ""
+    assert "output path must not contain symlinks" in result.stderr
+    assert output_path.is_symlink()
+    assert _source_bytes(tmp_path) == before
 
 
 def test_blank_profile_fields_are_rejected(tmp_path):
@@ -219,3 +359,45 @@ def test_approved_at_without_timezone_is_rejected(tmp_path):
     assert result.returncode == 1
     assert result.stdout == ""
     assert "approved_at must include a UTC offset" in result.stderr
+
+
+def test_non_rfc3339_timestamp_separator_is_rejected(tmp_path):
+    _write_sources(tmp_path, approved_at="2026-08-16X18:30:00+09:00")
+    before = _source_bytes(tmp_path)
+
+    result = _run(tmp_path)
+
+    assert result.returncode == 1
+    assert result.stdout == ""
+    assert "approved_at must be an RFC 3339 timestamp" in result.stderr
+    assert _source_bytes(tmp_path) == before
+
+
+def test_malformed_checkpoint_json_has_sanitized_error(tmp_path):
+    _write_sources(tmp_path)
+    checkpoint_path = tmp_path / "harness" / "build-gate" / "checkpoint.json"
+    checkpoint_path.write_bytes(b"{\n")
+    before = _source_bytes(tmp_path)
+
+    result = _run(tmp_path)
+
+    assert result.returncode == 1
+    assert result.stdout == ""
+    assert result.stderr == "error: checkpoint.json is malformed JSON\n"
+    assert "Traceback" not in result.stderr
+    assert _source_bytes(tmp_path) == before
+
+
+def test_malformed_decision_jsonl_has_sanitized_error(tmp_path):
+    _write_sources(tmp_path)
+    decisions_path = tmp_path / "harness" / "decisions.jsonl"
+    decisions_path.write_text("not-json\n", encoding="utf-8")
+    before = _source_bytes(tmp_path)
+
+    result = _run(tmp_path)
+
+    assert result.returncode == 1
+    assert result.stdout == ""
+    assert result.stderr == "error: decisions.jsonl line 1 is malformed JSON\n"
+    assert "Traceback" not in result.stderr
+    assert _source_bytes(tmp_path) == before

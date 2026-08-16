@@ -49,7 +49,7 @@ AI PM Handoff Profile v0를 stdout으로 내보내기:
 python3 hplan/scripts/export_growth_handoff.py --root .
 ```
 
-검증을 모두 통과한 뒤 명시한 로컬 파일에 저장하려면 `--output <path>`를 사용한다. 기존 파일은 기본적으로 거부하며, 의도적으로 교체할 때만 `--force`를 함께 사용한다.
+검증을 모두 통과한 뒤 저장하려면 `--output growth-handoff.json`처럼 상대 경로를 사용한다. 결과는 project root의 `harness/exports/ai-pm/` 아래에만 생성된다. absolute path, `..` traversal, symlink는 거부하며, 기존 안전 출력 파일을 의도적으로 교체할 때만 `--force`를 함께 사용한다.
 
 ```json
 {
@@ -84,7 +84,7 @@ python3 hplan/scripts/export_growth_handoff.py --root .
 | kiro | `harness/exports/kiro/.kiro/specs/<slug>/{requirements,design,tasks}.md` |
 | gstack | `harness/exports/gstack/office-hours-brief.md` |
 | claude | `harness/exports/claude/AGENTS.md` + `CLAUDE.md` |
-| AI PM Profile v0 | stdout (또는 명시한 `--output` JSON 파일) |
+| AI PM Profile v0 | stdout (또는 `harness/exports/ai-pm/<output>` JSON 파일) |
 
 ## Verification
 
