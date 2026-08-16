@@ -4,6 +4,17 @@ All notable changes to hplan (renamed from AI_PM_Skills in v0.5) are documented 
 
 ---
 
+## [1.2.0] — 2026-08-17
+
+### Added
+
+- Export an approved hplan Build Gate as an AI PM Handoff Profile v0 for signal-to-growth planning. The reference-only envelope preserves the source decision-log status and defaults to stdout.
+
+### Security
+
+- Fail closed unless the approved build checkpoint maps canonically to its referenced forward-capable build decision (`GO` → `build`, `CONDITIONAL_GO` → `CONDITIONAL_GO`) for the same project.
+- Restrict optional file output to `harness/exports/ai-pm/`, reject absolute, traversal, symlink, source-ledger, and overwrite attacks, and sanitize malformed-source and filesystem failures without mutating source records.
+
 ## [1.1.3] — 2026-08-14
 
 ### Fixed
