@@ -16,6 +16,7 @@ Running for: **$ARGUMENTS**
 - 단일 brief JSON → 4개 생태계 동시 export 가능 (`--target all`).
 - 각 생태계의 네이티브 컨벤션 (spec-kit의 `specs/NNN-slug/`, Kiro의 `.kiro/specs/`) 그대로 따름.
 - AI PM Handoff Profile v0는 checkpoint와 decision log를 읽기만 하고 source-owned 상태와 opaque reference만 전달.
+- Unconditional approval은 checkpoint `GO`와 decision-log `build`, conditional approval은 양쪽 `CONDITIONAL_GO` 조합만 허용.
 
 ## Trigger Gate
 

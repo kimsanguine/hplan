@@ -162,8 +162,8 @@ def test_referenced_decision_must_be_for_build_gate(tmp_path):
     assert _source_bytes(tmp_path) == before
 
 
-def test_non_forward_decisions_are_rejected(tmp_path):
-    for status in ("hold", "interview", "pivot"):
+def test_noncanonical_or_non_forward_checkpoint_decisions_are_rejected(tmp_path):
+    for status in ("hold", "interview", "pivot", "build"):
         root = tmp_path / status
         _write_sources(root, checkpoint_decision=status, decision_status=status)
         before = _source_bytes(root)
@@ -172,28 +172,34 @@ def test_non_forward_decisions_are_rejected(tmp_path):
 
         assert result.returncode == 1
         assert result.stdout == ""
-        assert "decision must be 'build' or 'CONDITIONAL_GO'" in result.stderr
+        assert "checkpoint decision must be 'GO' or 'CONDITIONAL_GO'" in result.stderr
         assert _source_bytes(root) == before
 
 
 def test_checkpoint_and_referenced_decision_must_agree(tmp_path):
-    _write_sources(
-        tmp_path,
-        checkpoint_decision="build",
-        decision_status="CONDITIONAL_GO",
+    cases = (
+        ("GO", "CONDITIONAL_GO"),
+        ("CONDITIONAL_GO", "build"),
     )
-    before = _source_bytes(tmp_path)
+    for checkpoint_decision, decision_status in cases:
+        root = tmp_path / f"{checkpoint_decision}-{decision_status}"
+        _write_sources(
+            root,
+            checkpoint_decision=checkpoint_decision,
+            decision_status=decision_status,
+        )
+        before = _source_bytes(root)
 
-    result = _run(tmp_path)
+        result = _run(root)
 
-    assert result.returncode == 1
-    assert result.stdout == ""
-    assert "checkpoint decision does not match referenced decision" in result.stderr
-    assert _source_bytes(tmp_path) == before
+        assert result.returncode == 1
+        assert result.stdout == ""
+        assert "checkpoint decision does not map to referenced decision" in result.stderr
+        assert _source_bytes(root) == before
 
 
 def test_build_decision_is_forward_capable(tmp_path):
-    _write_sources(tmp_path, checkpoint_decision="build", decision_status="build")
+    _write_sources(tmp_path, checkpoint_decision="GO", decision_status="build")
 
     result = _run(tmp_path)
 
@@ -267,6 +273,40 @@ def test_force_allows_replacing_existing_output(tmp_path):
 
     assert result.returncode == 0, result.stderr
     assert json.loads(output_path.read_text(encoding="utf-8"))["project_id"] == "project-alpha"
+
+
+def test_directory_output_error_is_sanitized(tmp_path):
+    _write_sources(tmp_path)
+    before = _source_bytes(tmp_path)
+    output_path = tmp_path / "harness" / "exports" / "ai-pm" / "existing-dir"
+    output_path.mkdir(parents=True)
+
+    result = _run(tmp_path, "--output", "existing-dir", "--force")
+
+    assert result.returncode == 1
+    assert result.stdout == ""
+    assert result.stderr.startswith("error: unable to write output:")
+    assert "Traceback" not in result.stderr
+    assert output_path.is_dir()
+    assert list(output_path.parent.glob(".existing-dir.*.tmp")) == []
+    assert _source_bytes(tmp_path) == before
+
+
+def test_non_directory_output_parent_error_is_sanitized(tmp_path):
+    _write_sources(tmp_path)
+    before = _source_bytes(tmp_path)
+    blocked_parent = tmp_path / "harness" / "exports" / "ai-pm" / "blocked"
+    blocked_parent.parent.mkdir(parents=True)
+    blocked_parent.write_text("keep-me\n", encoding="utf-8")
+
+    result = _run(tmp_path, "--output", "blocked/profile.json", "--force")
+
+    assert result.returncode == 1
+    assert result.stdout == ""
+    assert result.stderr.startswith("error: unable to write output:")
+    assert "Traceback" not in result.stderr
+    assert blocked_parent.read_text(encoding="utf-8") == "keep-me\n"
+    assert _source_bytes(tmp_path) == before
 
 
 def test_absolute_output_is_rejected_before_parent_creation(tmp_path):

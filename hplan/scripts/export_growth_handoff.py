@@ -14,7 +14,10 @@ import tempfile
 
 
 EXPORT_ROOT = Path("harness") / "exports" / "ai-pm"
-FORWARD_DECISIONS = {"build", "CONDITIONAL_GO"}
+CHECKPOINT_DECISION_MAP = {
+    "GO": "build",
+    "CONDITIONAL_GO": "CONDITIONAL_GO",
+}
 RFC3339_PATTERN = re.compile(
     r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?P<offset>Z|[+-]\d{2}:\d{2})?$"
 )
@@ -102,10 +105,12 @@ def build_profile(root: Path) -> dict:
         raise ExportError("referenced decision gate must be 'build'")
     checkpoint_decision = _required_text(checkpoint, "decision", "checkpoint decision")
     decision_status = _required_text(decision, "decision", "decision status")
-    if checkpoint_decision not in FORWARD_DECISIONS or decision_status not in FORWARD_DECISIONS:
-        raise ExportError("decision must be 'build' or 'CONDITIONAL_GO'")
-    if checkpoint_decision != decision_status:
-        raise ExportError("checkpoint decision does not match referenced decision")
+    if checkpoint_decision not in CHECKPOINT_DECISION_MAP:
+        raise ExportError("checkpoint decision must be 'GO' or 'CONDITIONAL_GO'")
+    if decision_status not in CHECKPOINT_DECISION_MAP.values():
+        raise ExportError("referenced decision must be 'build' or 'CONDITIONAL_GO'")
+    if CHECKPOINT_DECISION_MAP[checkpoint_decision] != decision_status:
+        raise ExportError("checkpoint decision does not map to referenced decision")
     approved_at_text = _required_text(checkpoint, "approved_at", "approved_at")
     match = RFC3339_PATTERN.fullmatch(approved_at_text)
     if match is None:
@@ -165,33 +170,40 @@ def _resolve_output_path(root: Path, value: str) -> Path:
 
 
 def _write_output(path: Path, content: str, force: bool) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    if not force:
-        try:
-            with path.open("x", encoding="utf-8") as handle:
-                handle.write(content)
-        except FileExistsError as exc:
-            raise ExportError("refusing to overwrite existing output without --force") from exc
-        return
-
-    temporary_path: Path | None = None
     try:
-        with tempfile.NamedTemporaryFile(
-            "w",
-            encoding="utf-8",
-            dir=path.parent,
-            prefix=f".{path.name}.",
-            suffix=".tmp",
-            delete=False,
-        ) as handle:
-            handle.write(content)
-            handle.flush()
-            os.fsync(handle.fileno())
-            temporary_path = Path(handle.name)
-        os.replace(temporary_path, path)
-    finally:
-        if temporary_path is not None and temporary_path.exists():
-            temporary_path.unlink()
+        path.parent.mkdir(parents=True, exist_ok=True)
+        if not force:
+            try:
+                with path.open("x", encoding="utf-8") as handle:
+                    handle.write(content)
+            except FileExistsError as exc:
+                raise ExportError(
+                    "refusing to overwrite existing output without --force"
+                ) from exc
+            return
+
+        temporary_path: Path | None = None
+        try:
+            with tempfile.NamedTemporaryFile(
+                "w",
+                encoding="utf-8",
+                dir=path.parent,
+                prefix=f".{path.name}.",
+                suffix=".tmp",
+                delete=False,
+            ) as handle:
+                handle.write(content)
+                handle.flush()
+                os.fsync(handle.fileno())
+                temporary_path = Path(handle.name)
+            os.replace(temporary_path, path)
+        finally:
+            if temporary_path is not None and temporary_path.exists():
+                temporary_path.unlink()
+    except ExportError:
+        raise
+    except OSError as exc:
+        raise ExportError(f"unable to write output: {exc.strerror or exc}") from exc
 
 
 def parse_args() -> argparse.Namespace:
